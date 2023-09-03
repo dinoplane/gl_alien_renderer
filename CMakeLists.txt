@@ -28,6 +28,18 @@ target_include_directories(glad
     ${VENDOR_DIR}/glad/include
 )
 
+# glm
+# add_library(glm
+#   STATIC
+#     ${VENDOR_DIR}/glad/src/glad.c
+# )
+
+include_directories(
+   ${VENDOR_DIR}/glm/
+)
+
+
+
 # Project
 add_executable(${PROJECT_NAME})
 
