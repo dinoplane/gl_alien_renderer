@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.17)
 project(flocking)
 
 # Variables
+set(VENDOR_DIR "${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}/vendor")
 set(SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}/src")
 
 
