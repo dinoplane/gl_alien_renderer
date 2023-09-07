@@ -166,6 +166,78 @@ flocking/src/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/flocking.dir/build.make CMakeFiles/flocking.dir/flocking/src/main.cpp.s
 .PHONY : flocking/src/main.cpp.s
 
+flocking/src/solids/cube.o: flocking/src/solids/cube.cpp.o
+.PHONY : flocking/src/solids/cube.o
+
+# target to build an object file
+flocking/src/solids/cube.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/flocking.dir/build.make CMakeFiles/flocking.dir/flocking/src/solids/cube.cpp.o
+.PHONY : flocking/src/solids/cube.cpp.o
+
+flocking/src/solids/cube.i: flocking/src/solids/cube.cpp.i
+.PHONY : flocking/src/solids/cube.i
+
+# target to preprocess a source file
+flocking/src/solids/cube.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/flocking.dir/build.make CMakeFiles/flocking.dir/flocking/src/solids/cube.cpp.i
+.PHONY : flocking/src/solids/cube.cpp.i
+
+flocking/src/solids/cube.s: flocking/src/solids/cube.cpp.s
+.PHONY : flocking/src/solids/cube.s
+
+# target to generate assembly for a file
+flocking/src/solids/cube.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/flocking.dir/build.make CMakeFiles/flocking.dir/flocking/src/solids/cube.cpp.s
+.PHONY : flocking/src/solids/cube.cpp.s
+
+flocking/src/solids/pyramid.o: flocking/src/solids/pyramid.cpp.o
+.PHONY : flocking/src/solids/pyramid.o
+
+# target to build an object file
+flocking/src/solids/pyramid.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/flocking.dir/build.make CMakeFiles/flocking.dir/flocking/src/solids/pyramid.cpp.o
+.PHONY : flocking/src/solids/pyramid.cpp.o
+
+flocking/src/solids/pyramid.i: flocking/src/solids/pyramid.cpp.i
+.PHONY : flocking/src/solids/pyramid.i
+
+# target to preprocess a source file
+flocking/src/solids/pyramid.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/flocking.dir/build.make CMakeFiles/flocking.dir/flocking/src/solids/pyramid.cpp.i
+.PHONY : flocking/src/solids/pyramid.cpp.i
+
+flocking/src/solids/pyramid.s: flocking/src/solids/pyramid.cpp.s
+.PHONY : flocking/src/solids/pyramid.s
+
+# target to generate assembly for a file
+flocking/src/solids/pyramid.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/flocking.dir/build.make CMakeFiles/flocking.dir/flocking/src/solids/pyramid.cpp.s
+.PHONY : flocking/src/solids/pyramid.cpp.s
+
+flocking/src/solids/solid.o: flocking/src/solids/solid.cpp.o
+.PHONY : flocking/src/solids/solid.o
+
+# target to build an object file
+flocking/src/solids/solid.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/flocking.dir/build.make CMakeFiles/flocking.dir/flocking/src/solids/solid.cpp.o
+.PHONY : flocking/src/solids/solid.cpp.o
+
+flocking/src/solids/solid.i: flocking/src/solids/solid.cpp.i
+.PHONY : flocking/src/solids/solid.i
+
+# target to preprocess a source file
+flocking/src/solids/solid.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/flocking.dir/build.make CMakeFiles/flocking.dir/flocking/src/solids/solid.cpp.i
+.PHONY : flocking/src/solids/solid.cpp.i
+
+flocking/src/solids/solid.s: flocking/src/solids/solid.cpp.s
+.PHONY : flocking/src/solids/solid.s
+
+# target to generate assembly for a file
+flocking/src/solids/solid.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/flocking.dir/build.make CMakeFiles/flocking.dir/flocking/src/solids/solid.cpp.s
+.PHONY : flocking/src/solids/solid.cpp.s
+
 flocking/vendor/glad/src/glad.o: flocking/vendor/glad/src/glad.c.o
 .PHONY : flocking/vendor/glad/src/glad.o
 
@@ -203,6 +275,15 @@ help:
 	@echo "... flocking/src/main.o"
 	@echo "... flocking/src/main.i"
 	@echo "... flocking/src/main.s"
+	@echo "... flocking/src/solids/cube.o"
+	@echo "... flocking/src/solids/cube.i"
+	@echo "... flocking/src/solids/cube.s"
+	@echo "... flocking/src/solids/pyramid.o"
+	@echo "... flocking/src/solids/pyramid.i"
+	@echo "... flocking/src/solids/pyramid.s"
+	@echo "... flocking/src/solids/solid.o"
+	@echo "... flocking/src/solids/solid.i"
+	@echo "... flocking/src/solids/solid.s"
 	@echo "... flocking/vendor/glad/src/glad.o"
 	@echo "... flocking/vendor/glad/src/glad.i"
 	@echo "... flocking/vendor/glad/src/glad.s"

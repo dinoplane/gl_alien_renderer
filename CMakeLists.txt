@@ -36,22 +36,57 @@ target_include_directories(glad
 
 include_directories(
    ${VENDOR_DIR}/glm/
+   ${VENDOR_DIR}/glad/include/
+   ${VENDOR_DIR}/stb/
+   ${SRC_DIR}/solids/
+   ${SRC_DIR}/
 )
 
 
+# file(GLOB VENDORS_SOURCES Glitter/Vendor/glad/src/glad.c)
+file(GLOB PROJECT_HEADERS ${SRC_DIR}/*.hpp
+                          ${SRC_DIR}/solids/*.hpp)
+
+file(GLOB PROJECT_SOURCES ${SRC_DIR}/*.cpp
+                          ${SRC_DIR}/solids/*.cpp)
+# file(GLOB PROJECT_SHADERS Glitter/Shaders/*.comp
+#                           Glitter/Shaders/*.frag
+#                           Glitter/Shaders/*.geom
+#                           Glitter/Shaders/*.vert)
+# file(GLOB PROJECT_CONFIGS CMakeLists.txt
+#                           Readme.md
+#                          .gitattributes
+#                          .gitignore
+#                          .gitmodules)
+
+source_group("Headers" FILES ${PROJECT_HEADERS})
+# source_group("Shaders" FILES ${PROJECT_SHADERS})
+source_group("Sources" FILES ${PROJECT_SOURCES})
+# source_group("Vendors" FILES ${VENDORS_SOURCES})
+
+add_definitions(-DGLFW_INCLUDE_NONE
+                -DPROJECT_SOURCE_DIR=\"${PROJECT_SOURCE_DIR}\")
+add_executable(${PROJECT_NAME} ${PROJECT_SOURCES} ${PROJECT_HEADERS})
+                              #  ${PROJECT_SHADERS} ${PROJECT_CONFIGS}
+                              #  ${VENDORS_SOURCES})
 
 # Project
-add_executable(${PROJECT_NAME})
+# add_executable(${PROJECT_NAME})
 
-target_include_directories(${PROJECT_NAME}
-  PRIVATE
-    ${VENDOR_DIR}/glad/include
-)
+# target_include_directories(${PROJECT_NAME}
+#   PRIVATE
+#     ${VENDOR_DIR}/glad/include
+#     ${SRC_DIR}/solids
+#     ${SRC_DIR}/
 
-target_sources(${PROJECT_NAME}
-  PRIVATE
-    ${SRC_DIR}/main.cpp
-)
+# )
+
+# target_sources(${PROJECT_NAME}
+#   PRIVATE
+#     ${SRC_DIR}/main.cpp
+#     ${SRC_DIR}/shader_s.h
+#     ${SRC_DIR}/solids/*.cpp
+# )
 
 target_link_libraries(${PROJECT_NAME}
   PRIVATE

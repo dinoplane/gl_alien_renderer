@@ -9,6 +9,9 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/alien/Documents/flocking-opengl/flocking/src/main.cpp" "CMakeFiles/flocking.dir/flocking/src/main.cpp.o" "gcc" "CMakeFiles/flocking.dir/flocking/src/main.cpp.o.d"
+  "/home/alien/Documents/flocking-opengl/flocking/src/solids/cube.cpp" "CMakeFiles/flocking.dir/flocking/src/solids/cube.cpp.o" "gcc" "CMakeFiles/flocking.dir/flocking/src/solids/cube.cpp.o.d"
+  "/home/alien/Documents/flocking-opengl/flocking/src/solids/pyramid.cpp" "CMakeFiles/flocking.dir/flocking/src/solids/pyramid.cpp.o" "gcc" "CMakeFiles/flocking.dir/flocking/src/solids/pyramid.cpp.o.d"
+  "/home/alien/Documents/flocking-opengl/flocking/src/solids/solid.cpp" "CMakeFiles/flocking.dir/flocking/src/solids/solid.cpp.o" "gcc" "CMakeFiles/flocking.dir/flocking/src/solids/solid.cpp.o.d"
   )
 
 # Targets to which this target links.

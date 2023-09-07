@@ -1,6 +1,12 @@
 file(REMOVE_RECURSE
   "CMakeFiles/flocking.dir/flocking/src/main.cpp.o"
   "CMakeFiles/flocking.dir/flocking/src/main.cpp.o.d"
+  "CMakeFiles/flocking.dir/flocking/src/solids/cube.cpp.o"
+  "CMakeFiles/flocking.dir/flocking/src/solids/cube.cpp.o.d"
+  "CMakeFiles/flocking.dir/flocking/src/solids/pyramid.cpp.o"
+  "CMakeFiles/flocking.dir/flocking/src/solids/pyramid.cpp.o.d"
+  "CMakeFiles/flocking.dir/flocking/src/solids/solid.cpp.o"
+  "CMakeFiles/flocking.dir/flocking/src/solids/solid.cpp.o.d"
   "flocking/flocking"
   "flocking/flocking.pdb"
 )
