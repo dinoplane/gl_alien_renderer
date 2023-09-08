@@ -69,10 +69,24 @@ include CMakeFiles/flocking.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/flocking.dir/flags.make
 
+CMakeFiles/flocking.dir/flocking/src/boids/boid.cpp.o: CMakeFiles/flocking.dir/flags.make
+CMakeFiles/flocking.dir/flocking/src/boids/boid.cpp.o: flocking/src/boids/boid.cpp
+CMakeFiles/flocking.dir/flocking/src/boids/boid.cpp.o: CMakeFiles/flocking.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/alien/Documents/flocking-opengl/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/flocking.dir/flocking/src/boids/boid.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/flocking.dir/flocking/src/boids/boid.cpp.o -MF CMakeFiles/flocking.dir/flocking/src/boids/boid.cpp.o.d -o CMakeFiles/flocking.dir/flocking/src/boids/boid.cpp.o -c /home/alien/Documents/flocking-opengl/flocking/src/boids/boid.cpp
+
+CMakeFiles/flocking.dir/flocking/src/boids/boid.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/flocking.dir/flocking/src/boids/boid.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/alien/Documents/flocking-opengl/flocking/src/boids/boid.cpp > CMakeFiles/flocking.dir/flocking/src/boids/boid.cpp.i
+
+CMakeFiles/flocking.dir/flocking/src/boids/boid.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/flocking.dir/flocking/src/boids/boid.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/alien/Documents/flocking-opengl/flocking/src/boids/boid.cpp -o CMakeFiles/flocking.dir/flocking/src/boids/boid.cpp.s
+
 CMakeFiles/flocking.dir/flocking/src/main.cpp.o: CMakeFiles/flocking.dir/flags.make
 CMakeFiles/flocking.dir/flocking/src/main.cpp.o: flocking/src/main.cpp
 CMakeFiles/flocking.dir/flocking/src/main.cpp.o: CMakeFiles/flocking.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/alien/Documents/flocking-opengl/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/flocking.dir/flocking/src/main.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/alien/Documents/flocking-opengl/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/flocking.dir/flocking/src/main.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/flocking.dir/flocking/src/main.cpp.o -MF CMakeFiles/flocking.dir/flocking/src/main.cpp.o.d -o CMakeFiles/flocking.dir/flocking/src/main.cpp.o -c /home/alien/Documents/flocking-opengl/flocking/src/main.cpp
 
 CMakeFiles/flocking.dir/flocking/src/main.cpp.i: cmake_force
@@ -86,7 +100,7 @@ CMakeFiles/flocking.dir/flocking/src/main.cpp.s: cmake_force
 CMakeFiles/flocking.dir/flocking/src/solids/cube.cpp.o: CMakeFiles/flocking.dir/flags.make
 CMakeFiles/flocking.dir/flocking/src/solids/cube.cpp.o: flocking/src/solids/cube.cpp
 CMakeFiles/flocking.dir/flocking/src/solids/cube.cpp.o: CMakeFiles/flocking.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/alien/Documents/flocking-opengl/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/flocking.dir/flocking/src/solids/cube.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/alien/Documents/flocking-opengl/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/flocking.dir/flocking/src/solids/cube.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/flocking.dir/flocking/src/solids/cube.cpp.o -MF CMakeFiles/flocking.dir/flocking/src/solids/cube.cpp.o.d -o CMakeFiles/flocking.dir/flocking/src/solids/cube.cpp.o -c /home/alien/Documents/flocking-opengl/flocking/src/solids/cube.cpp
 
 CMakeFiles/flocking.dir/flocking/src/solids/cube.cpp.i: cmake_force
@@ -100,7 +114,7 @@ CMakeFiles/flocking.dir/flocking/src/solids/cube.cpp.s: cmake_force
 CMakeFiles/flocking.dir/flocking/src/solids/pyramid.cpp.o: CMakeFiles/flocking.dir/flags.make
 CMakeFiles/flocking.dir/flocking/src/solids/pyramid.cpp.o: flocking/src/solids/pyramid.cpp
 CMakeFiles/flocking.dir/flocking/src/solids/pyramid.cpp.o: CMakeFiles/flocking.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/alien/Documents/flocking-opengl/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/flocking.dir/flocking/src/solids/pyramid.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/alien/Documents/flocking-opengl/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/flocking.dir/flocking/src/solids/pyramid.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/flocking.dir/flocking/src/solids/pyramid.cpp.o -MF CMakeFiles/flocking.dir/flocking/src/solids/pyramid.cpp.o.d -o CMakeFiles/flocking.dir/flocking/src/solids/pyramid.cpp.o -c /home/alien/Documents/flocking-opengl/flocking/src/solids/pyramid.cpp
 
 CMakeFiles/flocking.dir/flocking/src/solids/pyramid.cpp.i: cmake_force
@@ -114,7 +128,7 @@ CMakeFiles/flocking.dir/flocking/src/solids/pyramid.cpp.s: cmake_force
 CMakeFiles/flocking.dir/flocking/src/solids/solid.cpp.o: CMakeFiles/flocking.dir/flags.make
 CMakeFiles/flocking.dir/flocking/src/solids/solid.cpp.o: flocking/src/solids/solid.cpp
 CMakeFiles/flocking.dir/flocking/src/solids/solid.cpp.o: CMakeFiles/flocking.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/alien/Documents/flocking-opengl/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/flocking.dir/flocking/src/solids/solid.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/alien/Documents/flocking-opengl/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/flocking.dir/flocking/src/solids/solid.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/flocking.dir/flocking/src/solids/solid.cpp.o -MF CMakeFiles/flocking.dir/flocking/src/solids/solid.cpp.o.d -o CMakeFiles/flocking.dir/flocking/src/solids/solid.cpp.o -c /home/alien/Documents/flocking-opengl/flocking/src/solids/solid.cpp
 
 CMakeFiles/flocking.dir/flocking/src/solids/solid.cpp.i: cmake_force
@@ -127,6 +141,7 @@ CMakeFiles/flocking.dir/flocking/src/solids/solid.cpp.s: cmake_force
 
 # Object files for target flocking
 flocking_OBJECTS = \
+"CMakeFiles/flocking.dir/flocking/src/boids/boid.cpp.o" \
 "CMakeFiles/flocking.dir/flocking/src/main.cpp.o" \
 "CMakeFiles/flocking.dir/flocking/src/solids/cube.cpp.o" \
 "CMakeFiles/flocking.dir/flocking/src/solids/pyramid.cpp.o" \
@@ -135,6 +150,7 @@ flocking_OBJECTS = \
 # External object files for target flocking
 flocking_EXTERNAL_OBJECTS =
 
+flocking/flocking: CMakeFiles/flocking.dir/flocking/src/boids/boid.cpp.o
 flocking/flocking: CMakeFiles/flocking.dir/flocking/src/main.cpp.o
 flocking/flocking: CMakeFiles/flocking.dir/flocking/src/solids/cube.cpp.o
 flocking/flocking: CMakeFiles/flocking.dir/flocking/src/solids/pyramid.cpp.o
@@ -143,7 +159,7 @@ flocking/flocking: CMakeFiles/flocking.dir/build.make
 flocking/flocking: /usr/lib/x86_64-linux-gnu/libglfw.so.3.3
 flocking/flocking: libglad.a
 flocking/flocking: CMakeFiles/flocking.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/alien/Documents/flocking-opengl/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable flocking/flocking"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/alien/Documents/flocking-opengl/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX executable flocking/flocking"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/flocking.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

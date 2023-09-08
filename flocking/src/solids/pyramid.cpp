@@ -16,7 +16,7 @@ void Pyramid::init(){
 }
 
 void Pyramid::calculateVertices(){
-    std::cout << "Hello" << std::endl;
+    // std::cout << "Hello" << std::endl;
     vertices = {
         // positions         // colors              // texcoords
          0.5f, -0.5f,  0.5f,    1.0f, 1.0f, 0.0f,   1.0f, 1.0f,

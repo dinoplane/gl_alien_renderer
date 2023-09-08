@@ -16,7 +16,7 @@ void Cube::init(){
 }
 
 void Cube::calculateVertices(){
-    std::cout << "Hello" << std::endl;
+    // std::cout << "Hello" << std::endl;
     vertices = {
         // positions         // colors              // texcoords
 

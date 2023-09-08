@@ -408,6 +408,7 @@ CMakeFiles/flocking.dir/flocking/src/main.cpp.o: \
  /usr/include/c++/11/bits/stl_bvector.h \
  /usr/include/c++/11/bits/vector.tcc \
  /home/alien/Documents/flocking-opengl/flocking/src/solids/pyramid.hpp \
+ /home/alien/Documents/flocking-opengl/flocking/src/boids/boid.hpp \
  /home/alien/Documents/flocking-opengl/flocking/vendor/stb/stb_image.h \
  /usr/include/c++/11/stdlib.h /usr/include/c++/11/math.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/emmintrin.h \

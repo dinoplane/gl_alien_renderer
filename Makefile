@@ -142,6 +142,30 @@ flocking/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/flocking.dir/build.make CMakeFiles/flocking.dir/build
 .PHONY : flocking/fast
 
+flocking/src/boids/boid.o: flocking/src/boids/boid.cpp.o
+.PHONY : flocking/src/boids/boid.o
+
+# target to build an object file
+flocking/src/boids/boid.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/flocking.dir/build.make CMakeFiles/flocking.dir/flocking/src/boids/boid.cpp.o
+.PHONY : flocking/src/boids/boid.cpp.o
+
+flocking/src/boids/boid.i: flocking/src/boids/boid.cpp.i
+.PHONY : flocking/src/boids/boid.i
+
+# target to preprocess a source file
+flocking/src/boids/boid.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/flocking.dir/build.make CMakeFiles/flocking.dir/flocking/src/boids/boid.cpp.i
+.PHONY : flocking/src/boids/boid.cpp.i
+
+flocking/src/boids/boid.s: flocking/src/boids/boid.cpp.s
+.PHONY : flocking/src/boids/boid.s
+
+# target to generate assembly for a file
+flocking/src/boids/boid.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/flocking.dir/build.make CMakeFiles/flocking.dir/flocking/src/boids/boid.cpp.s
+.PHONY : flocking/src/boids/boid.cpp.s
+
 flocking/src/main.o: flocking/src/main.cpp.o
 .PHONY : flocking/src/main.o
 
@@ -272,6 +296,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... flocking"
 	@echo "... glad"
+	@echo "... flocking/src/boids/boid.o"
+	@echo "... flocking/src/boids/boid.i"
+	@echo "... flocking/src/boids/boid.s"
 	@echo "... flocking/src/main.o"
 	@echo "... flocking/src/main.i"
 	@echo "... flocking/src/main.s"

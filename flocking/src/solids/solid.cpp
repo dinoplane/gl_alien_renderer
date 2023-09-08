@@ -17,7 +17,7 @@ Solid::Solid(){
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
 
-    model = glm::mat4(1.0f);
+    modelMat = glm::mat4(1.0f);
 }
 
 void Solid::deleteBuffers(){
@@ -45,10 +45,10 @@ void Solid::calculateVertices(){
     vertices = {
         // positions         // colors          // texcoords
 
-         0.5f,  0.5f, 0.5f,  0.0f, 0.0f, 0.0f, //  1.0, 1.0, // top right
-         0.5f, -0.5f, 0.5f,  1.0f, 0.0f, 0.0f, //  1.0, 0.0, // bottom right
-        -0.5f, -0.5f, 0.5f,  0.0f, 1.0f, 0.0f, //  0.0, 0.0, // bottom left
-        -0.5f,  0.5f, 0.5f,  1.0f, 0.0f, 1.0f //  0.0, 1.0 // top left
+         0.5f,  0.5f, 0.5f,  0.0f, 0.0f, 0.0f,  1.0, 0.0, // top right
+         0.5f, -0.5f, 0.5f,  1.0f, 0.0f, 0.0f,  1.0, 1.0, // bottom right
+        -0.5f, -0.5f, 0.5f,  0.0f, 1.0f, 0.0f,  0.0, 1.0, // bottom left
+        -0.5f,  0.5f, 0.5f,  1.0f, 0.0f, 1.0f,  0.0, 0.0 // top left
     };
 
     indices = {  // note that we start from 0!

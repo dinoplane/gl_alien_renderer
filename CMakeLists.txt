@@ -39,16 +39,21 @@ include_directories(
    ${VENDOR_DIR}/glad/include/
    ${VENDOR_DIR}/stb/
    ${SRC_DIR}/solids/
+   ${SRC_DIR}/boids/
    ${SRC_DIR}/
 )
 
 
 # file(GLOB VENDORS_SOURCES Glitter/Vendor/glad/src/glad.c)
 file(GLOB PROJECT_HEADERS ${SRC_DIR}/*.hpp
-                          ${SRC_DIR}/solids/*.hpp)
+                          ${SRC_DIR}/solids/*.hpp
+                          ${SRC_DIR}/boids/*.hpp
+                          )
 
 file(GLOB PROJECT_SOURCES ${SRC_DIR}/*.cpp
-                          ${SRC_DIR}/solids/*.cpp)
+                          ${SRC_DIR}/solids/*.cpp
+                          ${SRC_DIR}/boids/*.cpp
+                          )
 # file(GLOB PROJECT_SHADERS Glitter/Shaders/*.comp
 #                           Glitter/Shaders/*.frag
 #                           Glitter/Shaders/*.geom

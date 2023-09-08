@@ -5,6 +5,7 @@
 #include <shader_s.hpp>
 #include <cube.hpp>
 #include <pyramid.hpp>
+#include <boid.hpp>
 
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -119,8 +120,56 @@ void setupShaders(unsigned int &shaderProgram){
 }
 
 
+std::vector<unsigned int> loadAllTextures(std::convertible_to<std::string_view> auto&& ...s){
+    std::initializer_list<std::string_view> filenames = {s... };
+
+    std::vector<unsigned int> textureNums;
+    int width, height, nrChannels;
+    unsigned char *data;
+
+    size_t i = 0;
+    for (auto f_n : filenames){
+        std::cout <<  f_n << " ";
+        unsigned int texture;
+        glGenTextures(1, &texture);
+        glBindTexture(GL_TEXTURE_2D, texture);
+        // set the texture wrapping parameters
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        // set texture filtering parameters
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
+
+        // load image, create texture and generate mipmaps
+        data = stbi_load(f_n.data(), &width, &height, &nrChannels, 0);
+        if (data)
+        {
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+            glGenerateMipmap(GL_TEXTURE_2D);
+        }
+        else
+        {
+            std::cout << "Failed to load texture" << std::endl;
+        }
+        stbi_image_free(data);
+        textureNums.push_back(texture);
+        i += 1;
+    }
+
+    std::cout << std::endl;
+
+    return textureNums;
+}
+
+// Create a camera class
+
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
+    if (glfwGetInputMode(window, GLFW_CURSOR) != GLFW_CURSOR_DISABLED){
+        return;
+    }
     if (firstMouse)
     {
         lastX = xpos;
@@ -177,63 +226,69 @@ int main()
     // uncomment this call to draw in wireframe polygons.
 //    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-
+    std::vector<unsigned int> textureID = loadAllTextures("sky.png", "awesomeface.png");
     // load and create a texture
     // -------------------------
-    unsigned int texture1, texture2;
-    // texture 1
-    // ---------
-    glGenTextures(1, &texture1);
-    glBindTexture(GL_TEXTURE_2D, texture1);
-    // set the texture wrapping parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    // set texture filtering parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    // load image, create texture and generate mipmaps
-    int width, height, nrChannels;
-    stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
-    unsigned char *data = stbi_load("container.jpg", &width, &height, &nrChannels, 0);
-    if (data)
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-    {
-        std::cout << "Failed to load texture" << std::endl;
-    }
-    stbi_image_free(data);
-    // texture 2
-    // ---------
-    glGenTextures(1, &texture2);
-    glBindTexture(GL_TEXTURE_2D, texture2);
-    // set the texture wrapping parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    // set texture filtering parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    // load image, create texture and generate mipmaps
-    data = stbi_load("awesomeface.png", &width, &height, &nrChannels, 0);
-    if (data)
-    {
-        // note that the awesomeface.png has transparency and thus an alpha channel, so make sure to tell OpenGL the data type is of GL_RGBA
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-    {
-        std::cout << "Failed to load texture" << std::endl;
-    }
-    stbi_image_free(data);
+    // unsigned int texture1, texture2;
+    // // texture 1
+    // // ---------
+    // glGenTextures(1, &texture1);
+    // glBindTexture(GL_TEXTURE_2D, texture1);
+    //  // set the texture wrapping parameters
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // // set texture filtering parameters
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // // load image, create texture and generate mipmaps
+    // int width, height, nrChannels;
+    // stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
+    // // The FileSystem::getPath(...) is part of the GitHub repository so we can find files on any IDE/platform; replace it with your own image path.
+    // unsigned char *data = stbi_load("sky.png", &width, &height, &nrChannels, 0);
+    // if (data)
+    // {
+    //     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    //     glGenerateMipmap(GL_TEXTURE_2D);
+    // }
+    // else
+    // {
+    //     std::cout << "Failed to load texture" << std::endl;
+    // }
+    // stbi_image_free(data);
+    // textureID.push_back(texture1);
+
+    // // texture 2
+    // // ---------
+    // glGenTextures(1, &texture2);
+    // glBindTexture(GL_TEXTURE_2D, texture2);
+    // // set the texture wrapping parameters
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // // set texture filtering parameters
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // // load image, create texture and generate mipmaps
+    // data = stbi_load("awesomeface.png", &width, &height, &nrChannels, 0);
+    // if (data)
+    // {
+    //     // note that the awesomeface.png has transparency and thus an alpha channel, so make sure to tell OpenGL the data type is of GL_RGBA
+    //     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    //     glGenerateMipmap(GL_TEXTURE_2D);
+    // }
+    // else
+    // {
+    //     std::cout << "Failed to load texture" << std::endl;
+    // }
+    // stbi_image_free(data);
+    // textureID.push_back(texture2);
 
     // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
     // -------------------------------------------------------------------------------------------
     ourShader.use();
     ourShader.setInt("texture1", 0);
     ourShader.setInt("texture2", 1);
+
+
 
 
     // pass projection matrix to shader (as projection matrix rarely changes there's no need to do this per frame)
@@ -250,10 +305,26 @@ int main()
     test.init();
     test.scale(glm::vec3(100.0));
 
-    std::cout << glm::to_string(test.model) << std::endl;
-    std::cout << glm::to_string(view * test.model) << std::endl;
+
+    Cube xcoord;
+    xcoord.init();
+    xcoord.translate(glm::vec3(20.0, 0.0, 0.0));
+    xcoord.scale(glm::vec3(10.0));
 
 
+    Cube zcoord;
+    zcoord.init();
+    zcoord.translate(glm::vec3(0.0, 0.0, 10.0));
+    zcoord.scale(glm::vec3(10.0));
+
+    std::cout << glm::to_string(test.modelMat) << std::endl;
+
+
+    Boid b(glm::vec3(0.0, 3.0, 0.0));
+
+    b.updatePosition();
+
+    std::cout << glm::to_string(b.model.modelMat) << std::endl;
     glEnable(GL_DEPTH_TEST);
     glfwSetCursorPosCallback(window, mouse_callback);
     // render loop
@@ -273,25 +344,38 @@ int main()
 
         // bind textures on corresponding texture units
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture1);
+        glBindTexture(GL_TEXTURE_2D, textureID[0]);
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, texture2);
+        glBindTexture(GL_TEXTURE_2D, textureID[1]);
 
         // draw our first triangle
-        ourShader.use();
-        // const float radius = 3.0f;
-        // float camX = sin(glfwGetTime()) * radius;
-        // float camY = cos(glfwGetTime()) * radius;
-        // float camZ = cos(glfwGetTime()) * radius;
-        // glm::mat4 view;
+
         view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
+        ourShader.use();
         ourShader.setMat4("view", view);
-
-
-        ourShader.setMat4("model", test.model);
-
+        ourShader.setMat4("model", test.modelMat);
         test.render();
+
+        ourShader.use();
+        ourShader.setMat4("view", view);
+        ourShader.setMat4("model", xcoord.modelMat);
+        xcoord.render();
+
+        ourShader.use();
+        ourShader.setMat4("view", view);
+        ourShader.setMat4("model", zcoord.modelMat);
+        zcoord.render();
+
+
+
+        ourShader.use();
+        ourShader.setMat4("view", view);
+        ourShader.setMat4("model", b.model.modelMat);
+        b.model.render();
+
+        b.updatePosition();
+
         // glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
         // glDrawArrays(GL_TRIANGLES, 0, 3);
         // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -325,7 +409,7 @@ int main()
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
 
-float SPEED_MULTIPLIER = 100;
+float SPEED_MULTIPLIER = 10;
 void processInput(GLFWwindow *window)
 {
     double mWidth = (double) SCR_WIDTH;
@@ -338,7 +422,7 @@ void processInput(GLFWwindow *window)
 
     // if (glfwSetCursorPosCallback)
     if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS && glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_NORMAL){
-        std::cout << "MOOOSED " << deltaTime << std::endl;
+        // std::cout << "MOOOSED " << deltaTime << std::endl;
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
         // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -355,7 +439,7 @@ void processInput(GLFWwindow *window)
         glfwSetWindowShouldClose(window, true);
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS){
-        std::cout << "PRESSED " << deltaTime << std::endl;
+        // std::cout << "PRESSED " << deltaTime << std::endl;
         cameraPos += cameraFront * deltaTime * SPEED_MULTIPLIER;
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS){
@@ -364,7 +448,7 @@ void processInput(GLFWwindow *window)
 
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS){
 
-        std::cout << "PRESSED " << deltaTime << std::endl;
+        // std::cout << "PRESSED " << deltaTime << std::endl;
         cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * deltaTime * SPEED_MULTIPLIER;
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS){

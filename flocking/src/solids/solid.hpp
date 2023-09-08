@@ -27,7 +27,7 @@ class Solid {
     public:
         std::string type;
         glm::vec4 color;
-        glm::mat4 model;
+        glm::mat4 modelMat;
 
     // private:
     //     void drawTriangle3D();
@@ -40,20 +40,20 @@ class Solid {
 
 
         void translate(glm::vec3 delta){
-            model = glm::translate(model, delta);
+            modelMat = glm::translate(modelMat, delta);
         };
         void rotate(float angle, glm::vec3 axis){
-            model = glm::rotate(model, angle, axis);
+            modelMat = glm::rotate(modelMat, angle, axis);
         };
         void scale(glm::vec3 factor){
-            model = glm::scale(model, factor);
+            modelMat = glm::scale(modelMat, factor);
         };
 
         void reset() {
-
+            modelMat = glm::mat4(1.0);
 
         };
 
-        void render(); // I believe we can optimize this from asg3
+        virtual void render(); // I believe we can optimize this from asg3
 };
 #endif
