@@ -11,6 +11,9 @@
 #include <camera.hpp>
 
 #include <cstdlib>
+#include <thread>
+#include <barrier>
+#include <chrono>
 
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -26,6 +29,10 @@ const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
 const unsigned int NUM_BOIDS = 100;
+
+// const unsigned int NUM_THREADS = 16;
+// const int CHUNK_SIZE = (NUM_BOIDS + (NUM_THREADS - 1)) / NUM_THREADS;
+// std::barrier sync_point(NUM_THREADS);
 
 // timing
 float deltaTime = 0.0f;	// time between current frame and last frame
@@ -186,6 +193,19 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     camera.processMouseMovement(xoffset, yoffset);
 }
 
+
+// void updateBoids(std::vector<std::shared_ptr<Boid>> &boids, Shader& ourShader,
+//         int start, int end, int tid){
+//     for (int i = start; i < end; i++){
+//         boids[i]->calculateForce();
+//         sync_point.arrive_and_wait();
+
+//         boids[i]->updatePosition();
+//         sync_point.arrive_and_wait();
+//     }
+
+// }
+
 // Add load texture function
 int main()
 {
@@ -251,10 +271,10 @@ int main()
     cam.init();
 
     // AHAHAHA Smart pointers
-    std::vector<std::unique_ptr<Boid>> boids;
+    std::vector<std::shared_ptr<Boid>> boids;
 
     for (int i = 0; i < NUM_BOIDS; i++){
-        boids.push_back( std::make_unique<Boid>(
+        boids.push_back( std::make_shared<Boid>(
                             glm::linearRand(
                                 glm::vec3(-7.1f, 0.0f, -7.1f),
                                 glm::vec3(7.1, 0.0f, 7.1)),
@@ -269,10 +289,25 @@ int main()
     // std::cout << glm::to_string(b.model.modelMat) << std::endl;
     glEnable(GL_DEPTH_TEST);
     glfwSetCursorPosCallback(window, mouse_callback);
+
+
+    // timing variables
+    auto begin = std::chrono::high_resolution_clock::now();
+
+    auto start = std::chrono::high_resolution_clock::now();
+
+    auto stop = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+    std::cout << "Time taken by function: "
+         << duration.count() << " microseconds" << std::endl;
+    double counter = 0;
+
+    unsigned int accum = 0;
     // render loop
     // -----------
     while (!glfwWindowShouldClose(window))
     {
+        start = std::chrono::high_resolution_clock::now();
         // input
         // -----
         processInput(window);
@@ -315,9 +350,16 @@ int main()
         zcoord.render();
 
 
+        // std::thread *thread_array = new std::thread[NUM_THREADS];
+        // for (int tid = 0; tid < num_threads; tid++){
+        //     int start = chunk_size * tid + 1;
+        //     int end = std::min(start + chunk_size, size - 1);
+        //     thread_array[tid] = std::thread(blur, input, output, repeats, start, end, tid);
+        // }
+
         for (int i = 0; i < NUM_BOIDS; i++){
             boids[i]->calculateForce();
-        } // When multithreading we put a barrier here...
+        }
 
         for (int i = 0; i < NUM_BOIDS; i++){
             boids[i]->updatePosition();
@@ -335,7 +377,19 @@ int main()
         glfwPollEvents();
         deltaTime = glfwGetTime() - lastFrame;
         lastFrame = glfwGetTime();
+
+        stop = std::chrono::high_resolution_clock::now();
+        duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+
+        std::cout << "Time taken by function: "
+            << duration.count() << " microseconds" << std::endl;
+        counter++;
+        accum += duration.count();
     }
+
+    std::cout << "Average Time taken by function: "
+        << (accum/counter) << " microseconds" << std::endl;
+
 
     // optional: de-allocate all resources once they've outlived their purpose:
     // ------------------------------------------------------------------------
