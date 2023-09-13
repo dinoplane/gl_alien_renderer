@@ -2,10 +2,15 @@
 #include <GLFW/glfw3.h>
 
 #include <glm/gtx/string_cast.hpp>
+#include <glm/gtc/random.hpp>
+
 #include <shader_s.hpp>
 #include <cube.hpp>
 #include <pyramid.hpp>
 #include <boid.hpp>
+#include <camera.hpp>
+
+#include <cstdlib>
 
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -21,10 +26,12 @@ const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
 
+const unsigned int NUM_BOIDS = 100;
+
 // camera
-glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f,  0.5f);
-glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
+// glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f,  20.0f);
+// glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+// glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
 
 // timing
 float deltaTime = 0.0f;	// time between current frame and last frame
@@ -36,6 +43,8 @@ float yaw   = -90.0f;	// yaw is initialized to -90.0 degrees since a yaw of 0.0 
 float pitch =  0.0f;
 float lastX =  800.0f / 2.0;
 float lastY =  600.0 / 2.0;
+
+Camera camera((float) SCR_WIDTH, (float) SCR_HEIGHT);
 
 int setupGLFW(GLFWwindow* &window){
 	// glfw: initialize and configure
@@ -119,7 +128,7 @@ void setupShaders(unsigned int &shaderProgram){
     // glDeleteShader(fragmentShader);
 }
 
-
+// Assume there are alpha channels... need to find way to support jpeg later
 std::vector<unsigned int> loadAllTextures(std::convertible_to<std::string_view> auto&& ...s){
     std::initializer_list<std::string_view> filenames = {s... };
 
@@ -182,23 +191,25 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     lastX = xpos;
     lastY = ypos;
 
-    float sensitivity = 0.1f;
-    xoffset *= sensitivity;
-    yoffset *= sensitivity;
+    camera.processMouseMovement(xoffset, yoffset);
+    // float sensitivity = 0.1f;
+    // xoffset *= sensitivity;
+    // yoffset *= sensitivity;
 
-    yaw   += xoffset;
-    pitch += yoffset;
+    // yaw   += xoffset;
+    // pitch += yoffset;
 
-    if(pitch > 89.0f)
-        pitch = 89.0f;
-    if(pitch < -89.0f)
-        pitch = -89.0f;
+    // if(pitch > 89.0f)
+    //     pitch = 89.0f;
+    // if(pitch < -89.0f)
+    //     pitch = -89.0f;
 
-    glm::vec3 direction;
-    direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-    direction.y = sin(glm::radians(pitch));
-    direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-    cameraFront = glm::normalize(direction);
+    // glm::vec3 direction;
+    // direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+    // direction.y = sin(glm::radians(pitch));
+    // direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+    // cameraFront = glm::normalize(direction);
+
 }
 
 // Add load texture function
@@ -294,9 +305,12 @@ int main()
     // pass projection matrix to shader (as projection matrix rarely changes there's no need to do this per frame)
     // -----------------------------------------------------------------------------------------------------------
     ourShader.use();
-    glm::mat4 view          = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-    glm::mat4 projection    = glm::mat4(1.0f);
-    projection = glm::perspective(glm::radians(60.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 2000.0f);
+    // glm::mat4 projection    = glm::mat4(1.0f);
+
+
+    // projection = glm::perspective(glm::radians(60.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 2000.0f);
+    glm::mat4 view = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+    glm::mat4 projection = camera.getProjMatrix();
     ourShader.setMat4("projection", projection);
     // // camera/view transformation
 
@@ -308,23 +322,55 @@ int main()
 
     Cube xcoord;
     xcoord.init();
-    xcoord.translate(glm::vec3(20.0, 0.0, 0.0));
-    xcoord.scale(glm::vec3(10.0));
+    xcoord.translate(glm::vec3(10.0, 0.0, 0.0));
+    // xcoord.scale(glm::vec3(10.0));
 
 
     Cube zcoord;
     zcoord.init();
     zcoord.translate(glm::vec3(0.0, 0.0, 10.0));
-    zcoord.scale(glm::vec3(10.0));
+    // zcoord.scale(glm::vec3(10.0));
 
     std::cout << glm::to_string(test.modelMat) << std::endl;
 
+    Pyramid cam;
+    cam.init();
 
-    Boid b(glm::vec3(0.0, 3.0, 0.0));
 
-    b.updatePosition();
+    std::vector<std::unique_ptr<Boid>> boids;
 
-    std::cout << glm::to_string(b.model.modelMat) << std::endl;
+    for (int i = 0; i < NUM_BOIDS; i++){
+        boids.push_back( std::make_unique<Boid>(
+                            glm::linearRand(
+                                glm::vec3(-7.1f, 0.0f, -7.1f),
+                                glm::vec3(7.1, 0.0f, 7.1)),
+                            0.15f*glm::normalize(glm::linearRand(
+                                glm::vec3(-0.15f, -0.15f, -0.15f),
+                                glm::vec3(0.15f, 0.15f, 0.15f)))));
+        // boids.push_back(b);
+        // Boid::exper.push_back(&boids[i]);
+
+
+    }
+    for (auto p = Boid::boids.begin(); p != Boid::boids.end(); p++){
+        std::cout  << "ID" << (*p)->ID  << ": "<< glm::to_string((*p)->position) << std::endl;
+    // i++;
+    }
+
+
+    // boids.push_back(Boid(glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.001f)));
+    // boids.push_back(Boid(glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.00000000000001f)));
+
+    // int i = 0;
+    // for (auto p = Boid::boids.begin(); p != Boid::boids.end(); p++){
+    //     std::cout  << "ID" << (*p).ID  << ": "<< glm::to_string((*p).position) << std::endl;
+    //     // i++;
+    // }
+
+
+    // b.updatePosition();
+
+    // std::cout << glm::to_string(b.model.modelMat) << std::endl;
     glEnable(GL_DEPTH_TEST);
     glfwSetCursorPosCallback(window, mouse_callback);
     // render loop
@@ -350,9 +396,11 @@ int main()
 
         // draw our first triangle
 
-        view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+        // view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+        view = camera.getViewMatrix();
 
         ourShader.use();
+        ourShader.setInt("selected", 1);
         ourShader.setMat4("view", view);
         ourShader.setMat4("model", test.modelMat);
         test.render();
@@ -368,14 +416,36 @@ int main()
         zcoord.render();
 
 
+        // ourShader.use();
+        // ourShader.setMat4("view", view);
+        // cam.reset();
+        // cam.modelMat = glm::lookAt(glm::vec3(0.0), cameraFront, cameraUp);
+        // cam.modelMat = glm::inverse(cam.modelMat);
+        // cam.rotate(glm::radians(90.0f), glm::vec3(-1.0, 0.0,0.0));
+        // cam.scale(glm::vec3(5.0));
 
-        ourShader.use();
-        ourShader.setMat4("view", view);
-        ourShader.setMat4("model", b.model.modelMat);
-        b.model.render();
+        // ourShader.setMat4("model", cam.modelMat);
+        // cam.render();
 
-        b.updatePosition();
 
+
+
+        for (int i = 0; i < NUM_BOIDS; i++){
+            boids[i]->calculateForce();
+        } // When multithreading we put a barrier here...
+        for (int i = 0; i < NUM_BOIDS; i++){
+            boids[i]->updatePosition();
+            ourShader.use();
+            ourShader.setInt("selected", 0);
+            ourShader.setMat4("view", view);
+            ourShader.setMat4("model", boids[i]->model.modelMat);
+            // std::cout << boids[i].ID << std::endl;
+            boids[i]->render();
+        }
+        // std::cout << "KE: " << Boid::calculateKineticEnergy() << std::endl;
+        // for (auto p = Boid::boids.begin(); p != Boid::boids.end(); p++){
+        //     std::cout  << "ID" << (*p)->ID  << ": "<< glm::to_string((*p)->position) << std::endl;
+        // }
         // glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
         // glDrawArrays(GL_TRIANGLES, 0, 3);
         // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -440,19 +510,16 @@ void processInput(GLFWwindow *window)
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS){
         // std::cout << "PRESSED " << deltaTime << std::endl;
-        cameraPos += cameraFront * deltaTime * SPEED_MULTIPLIER;
+        camera.moveForward(deltaTime);
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS){
-        cameraPos -= cameraFront * deltaTime * SPEED_MULTIPLIER;
+        camera.moveBackward(deltaTime);
     }
-
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS){
-
-        // std::cout << "PRESSED " << deltaTime << std::endl;
-        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * deltaTime * SPEED_MULTIPLIER;
+        camera.moveLeft(deltaTime);
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS){
-        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * deltaTime * SPEED_MULTIPLIER;
+        camera.moveRight(deltaTime);
     }
 
 

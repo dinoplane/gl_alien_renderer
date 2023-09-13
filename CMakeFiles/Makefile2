@@ -83,7 +83,7 @@ clean: CMakeFiles/flocking.dir/clean
 CMakeFiles/glad.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/glad.dir/build.make CMakeFiles/glad.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/glad.dir/build.make CMakeFiles/glad.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/alien/Documents/flocking-opengl/CMakeFiles --progress-num=7,8 "Built target glad"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/alien/Documents/flocking-opengl/CMakeFiles --progress-num=8,9 "Built target glad"
 .PHONY : CMakeFiles/glad.dir/all
 
 # Build rule for subdir invocation for target.
@@ -109,12 +109,12 @@ CMakeFiles/glad.dir/clean:
 CMakeFiles/flocking.dir/all: CMakeFiles/glad.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/flocking.dir/build.make CMakeFiles/flocking.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/flocking.dir/build.make CMakeFiles/flocking.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/alien/Documents/flocking-opengl/CMakeFiles --progress-num=1,2,3,4,5,6 "Built target flocking"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/alien/Documents/flocking-opengl/CMakeFiles --progress-num=1,2,3,4,5,6,7 "Built target flocking"
 .PHONY : CMakeFiles/flocking.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/flocking.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/alien/Documents/flocking-opengl/CMakeFiles 8
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/alien/Documents/flocking-opengl/CMakeFiles 9
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/flocking.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/alien/Documents/flocking-opengl/CMakeFiles 0
 .PHONY : CMakeFiles/flocking.dir/rule

@@ -166,6 +166,30 @@ flocking/src/boids/boid.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/flocking.dir/build.make CMakeFiles/flocking.dir/flocking/src/boids/boid.cpp.s
 .PHONY : flocking/src/boids/boid.cpp.s
 
+flocking/src/camera.o: flocking/src/camera.cpp.o
+.PHONY : flocking/src/camera.o
+
+# target to build an object file
+flocking/src/camera.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/flocking.dir/build.make CMakeFiles/flocking.dir/flocking/src/camera.cpp.o
+.PHONY : flocking/src/camera.cpp.o
+
+flocking/src/camera.i: flocking/src/camera.cpp.i
+.PHONY : flocking/src/camera.i
+
+# target to preprocess a source file
+flocking/src/camera.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/flocking.dir/build.make CMakeFiles/flocking.dir/flocking/src/camera.cpp.i
+.PHONY : flocking/src/camera.cpp.i
+
+flocking/src/camera.s: flocking/src/camera.cpp.s
+.PHONY : flocking/src/camera.s
+
+# target to generate assembly for a file
+flocking/src/camera.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/flocking.dir/build.make CMakeFiles/flocking.dir/flocking/src/camera.cpp.s
+.PHONY : flocking/src/camera.cpp.s
+
 flocking/src/main.o: flocking/src/main.cpp.o
 .PHONY : flocking/src/main.o
 
@@ -299,6 +323,9 @@ help:
 	@echo "... flocking/src/boids/boid.o"
 	@echo "... flocking/src/boids/boid.i"
 	@echo "... flocking/src/boids/boid.s"
+	@echo "... flocking/src/camera.o"
+	@echo "... flocking/src/camera.i"
+	@echo "... flocking/src/camera.s"
 	@echo "... flocking/src/main.o"
 	@echo "... flocking/src/main.i"
 	@echo "... flocking/src/main.s"
