@@ -14,8 +14,8 @@
 #include <sstream>
 #include <iostream>
 
-const float YAW         = -90.0f;
-const float PITCH       =  -89.0f;
+const float YAW         = -135.0f;
+const float PITCH       =  -45.0f;
 const float SPEED       =  10.0f;
 const float SENSITIVITY =  0.1f;
 const float ZOOM        =  45.0f;
@@ -44,7 +44,7 @@ class Camera {
     public:
         Camera(
                 float width, float height,
-                glm::vec3 pos = glm::vec3(0.0, 20.0f, 0.0),
+                glm::vec3 pos = glm::vec3(20.0, 20.0f, 20.0),
                 glm::vec3 upv = glm::vec3(0.0, 1.0, 0.0),
                 float yaw_val = YAW, float pitch_val = PITCH
             ) : front(glm::vec3(0.0f, 0.0f, -1.0f)), speed(SPEED), sensitivity(SENSITIVITY){

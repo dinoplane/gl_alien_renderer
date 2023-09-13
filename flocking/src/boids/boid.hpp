@@ -20,11 +20,8 @@
 #include <memory>
 
 class Boid {
-
     public:
         static std::vector<Boid*> boids; // consider a concurrent linked list??
-        // static std::vector<Boid*> exper; // consider a concurrent linked list??
-
 
         static int count;
         float maxForce = 0.001;
@@ -45,7 +42,6 @@ class Boid {
         // the genetic multithreading will be a fun multithreading experiment
 
         Pyramid model;
-        // glm::mat4 modelMat;
 
     // private:
 
@@ -53,7 +49,7 @@ class Boid {
         Boid(glm::vec3 pos = glm::vec3(0.0f), glm::vec3 vel = glm::vec3(1.0, 0.0, 1.0)) {
             position = pos;
             velocity = vel;
-            std::cout << glm::to_string(position) << std::endl;
+            // std::cout << glm::to_string(position) << std::endl;
 
             acceleration = glm::vec3(0.0f);
             force = glm::vec3(0.0f);
@@ -63,18 +59,10 @@ class Boid {
             behaviors.push_back(std::make_pair(1.5f, alignment));
             behaviors.push_back(std::make_pair(1.0f, cohesion));
 
-
-            // Boid::boids.push_back(*this);
-            // Boid::exper.push_back(&*this);
-            std::cout << "DEFAULT CALLED" << std::endl;
+            // std::cout << "DEFAULT CALLED" << std::endl;
             ID = Boid::count;
             addToBoidList();
             Boid::count += 1;
-            // int i = 0;
-            // for (auto p = Boid::boids.begin(); p != Boid::boids.end(); p++){
-            //     std::cout  << "count " << i  << ": "<< glm::to_string((*p).position) << std::endl;
-            //     i++;
-            // }
         }
 
         Boid(const Boid &other){
@@ -88,23 +76,17 @@ class Boid {
             addToBoidList();
         }
 
-
-        // ~Boid(){
-        //     Boid::boids.erase(std::find(Boid::boids.begin(), Boid::boids.end(), this));
-        // }
-
         void addToBoidList(){
             Boid::boids.push_back(this);
         }
 
-
-
     public:
         static std::vector<Boid*> getAllBoidsInRange(Boid & b, float range);
         // static std::unique_ptr<Boid> createBoid(glm::vec3 pos, glm::vec3 vel);
-        static float calculateKineticEnergy();
-        // Rule of five O_O
 
+        static float calculateKineticEnergy();
+
+        // Rule of five O_O
         ~Boid(){
             Boid::boids.erase(
                 std::find(Boid::boids.begin(),

@@ -237,15 +237,15 @@ int main()
     Cube xcoord;
     xcoord.init();
     xcoord.translate(glm::vec3(10.0, 0.0, 0.0));
-    // xcoord.scale(glm::vec3(10.0));
 
+    Cube ycoord;
+    ycoord.init();
+    ycoord.translate(glm::vec3(0.0, 10.0, 0.0));
 
     Cube zcoord;
     zcoord.init();
     zcoord.translate(glm::vec3(0.0, 0.0, 10.0));
-    // zcoord.scale(glm::vec3(10.0));
 
-    std::cout << glm::to_string(test.modelMat) << std::endl;
 
     Pyramid cam;
     cam.init();
@@ -262,10 +262,9 @@ int main()
                                 glm::vec3(-0.15f, -0.15f, -0.15f),
                                 glm::vec3(0.15f, 0.15f, 0.15f)))));
     }
-    for (auto p = Boid::boids.begin(); p != Boid::boids.end(); p++){
-        std::cout  << "ID" << (*p)->ID  << ": "<< glm::to_string((*p)->position) << std::endl;
-    // i++;
-    }
+    // for (auto p = Boid::boids.begin(); p != Boid::boids.end(); p++){
+    //     std::cout  << "ID" << (*p)->ID  << ": "<< glm::to_string((*p)->position) << std::endl;
+    // }
 
     // std::cout << glm::to_string(b.model.modelMat) << std::endl;
     glEnable(GL_DEPTH_TEST);
@@ -304,6 +303,11 @@ int main()
         ourShader.setMat4("view", view);
         ourShader.setMat4("model", xcoord.modelMat);
         xcoord.render();
+
+        ourShader.use();
+        ourShader.setMat4("view", view);
+        ourShader.setMat4("model", ycoord.modelMat);
+        ycoord.render();
 
         ourShader.use();
         ourShader.setMat4("view", view);
