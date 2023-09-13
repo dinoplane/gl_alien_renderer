@@ -25,13 +25,7 @@ void processInput(GLFWwindow *window);
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-
 const unsigned int NUM_BOIDS = 100;
-
-// camera
-// glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f,  20.0f);
-// glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-// glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
 
 // timing
 float deltaTime = 0.0f;	// time between current frame and last frame
@@ -172,8 +166,6 @@ std::vector<unsigned int> loadAllTextures(std::convertible_to<std::string_view> 
     return textureNums;
 }
 
-// Create a camera class
-
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
     if (glfwGetInputMode(window, GLFW_CURSOR) != GLFW_CURSOR_DISABLED){
@@ -192,24 +184,6 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     lastY = ypos;
 
     camera.processMouseMovement(xoffset, yoffset);
-    // float sensitivity = 0.1f;
-    // xoffset *= sensitivity;
-    // yoffset *= sensitivity;
-
-    // yaw   += xoffset;
-    // pitch += yoffset;
-
-    // if(pitch > 89.0f)
-    //     pitch = 89.0f;
-    // if(pitch < -89.0f)
-    //     pitch = -89.0f;
-
-    // glm::vec3 direction;
-    // direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-    // direction.y = sin(glm::radians(pitch));
-    // direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-    // cameraFront = glm::normalize(direction);
-
 }
 
 // Add load texture function
@@ -224,13 +198,10 @@ int main()
 		return -1;
 	}
 
-
     // glEnable(GL_DEPTH_TEST);
 
     // build and compile our shader program
     // ------------------------------------
-    // unsigned int shaderProgram;
-	// setupShaders(shaderProgram);
     Shader ourShader("./flocking/shader/exv.vs", "./flocking/shader/exf.fs");
 
 
@@ -238,69 +209,12 @@ int main()
 //    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     std::vector<unsigned int> textureID = loadAllTextures("sky.png", "awesomeface.png");
-    // load and create a texture
-    // -------------------------
-    // unsigned int texture1, texture2;
-    // // texture 1
-    // // ---------
-    // glGenTextures(1, &texture1);
-    // glBindTexture(GL_TEXTURE_2D, texture1);
-    //  // set the texture wrapping parameters
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    // // set texture filtering parameters
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    // // load image, create texture and generate mipmaps
-    // int width, height, nrChannels;
-    // stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
-    // // The FileSystem::getPath(...) is part of the GitHub repository so we can find files on any IDE/platform; replace it with your own image path.
-    // unsigned char *data = stbi_load("sky.png", &width, &height, &nrChannels, 0);
-    // if (data)
-    // {
-    //     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-    //     glGenerateMipmap(GL_TEXTURE_2D);
-    // }
-    // else
-    // {
-    //     std::cout << "Failed to load texture" << std::endl;
-    // }
-    // stbi_image_free(data);
-    // textureID.push_back(texture1);
-
-    // // texture 2
-    // // ---------
-    // glGenTextures(1, &texture2);
-    // glBindTexture(GL_TEXTURE_2D, texture2);
-    // // set the texture wrapping parameters
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    // // set texture filtering parameters
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    // // load image, create texture and generate mipmaps
-    // data = stbi_load("awesomeface.png", &width, &height, &nrChannels, 0);
-    // if (data)
-    // {
-    //     // note that the awesomeface.png has transparency and thus an alpha channel, so make sure to tell OpenGL the data type is of GL_RGBA
-    //     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-    //     glGenerateMipmap(GL_TEXTURE_2D);
-    // }
-    // else
-    // {
-    //     std::cout << "Failed to load texture" << std::endl;
-    // }
-    // stbi_image_free(data);
-    // textureID.push_back(texture2);
 
     // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
     // -------------------------------------------------------------------------------------------
     ourShader.use();
     ourShader.setInt("texture1", 0);
     ourShader.setInt("texture2", 1);
-
-
-
 
     // pass projection matrix to shader (as projection matrix rarely changes there's no need to do this per frame)
     // -----------------------------------------------------------------------------------------------------------
@@ -336,7 +250,7 @@ int main()
     Pyramid cam;
     cam.init();
 
-
+    // AHAHAHA Smart pointers
     std::vector<std::unique_ptr<Boid>> boids;
 
     for (int i = 0; i < NUM_BOIDS; i++){
@@ -347,28 +261,11 @@ int main()
                             0.15f*glm::normalize(glm::linearRand(
                                 glm::vec3(-0.15f, -0.15f, -0.15f),
                                 glm::vec3(0.15f, 0.15f, 0.15f)))));
-        // boids.push_back(b);
-        // Boid::exper.push_back(&boids[i]);
-
-
     }
     for (auto p = Boid::boids.begin(); p != Boid::boids.end(); p++){
         std::cout  << "ID" << (*p)->ID  << ": "<< glm::to_string((*p)->position) << std::endl;
     // i++;
     }
-
-
-    // boids.push_back(Boid(glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.001f)));
-    // boids.push_back(Boid(glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.00000000000001f)));
-
-    // int i = 0;
-    // for (auto p = Boid::boids.begin(); p != Boid::boids.end(); p++){
-    //     std::cout  << "ID" << (*p).ID  << ": "<< glm::to_string((*p).position) << std::endl;
-    //     // i++;
-    // }
-
-
-    // b.updatePosition();
 
     // std::cout << glm::to_string(b.model.modelMat) << std::endl;
     glEnable(GL_DEPTH_TEST);
@@ -377,8 +274,6 @@ int main()
     // -----------
     while (!glfwWindowShouldClose(window))
     {
-
-
         // input
         // -----
         processInput(window);
@@ -394,11 +289,11 @@ int main()
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, textureID[1]);
 
-        // draw our first triangle
-
-        // view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+        // Set up view matrix
         view = camera.getViewMatrix();
 
+
+        // Setup markers
         ourShader.use();
         ourShader.setInt("selected", 1);
         ourShader.setMat4("view", view);
@@ -416,23 +311,10 @@ int main()
         zcoord.render();
 
 
-        // ourShader.use();
-        // ourShader.setMat4("view", view);
-        // cam.reset();
-        // cam.modelMat = glm::lookAt(glm::vec3(0.0), cameraFront, cameraUp);
-        // cam.modelMat = glm::inverse(cam.modelMat);
-        // cam.rotate(glm::radians(90.0f), glm::vec3(-1.0, 0.0,0.0));
-        // cam.scale(glm::vec3(5.0));
-
-        // ourShader.setMat4("model", cam.modelMat);
-        // cam.render();
-
-
-
-
         for (int i = 0; i < NUM_BOIDS; i++){
             boids[i]->calculateForce();
         } // When multithreading we put a barrier here...
+
         for (int i = 0; i < NUM_BOIDS; i++){
             boids[i]->updatePosition();
             ourShader.use();
@@ -442,14 +324,6 @@ int main()
             // std::cout << boids[i].ID << std::endl;
             boids[i]->render();
         }
-        // std::cout << "KE: " << Boid::calculateKineticEnergy() << std::endl;
-        // for (auto p = Boid::boids.begin(); p != Boid::boids.end(); p++){
-        //     std::cout  << "ID" << (*p)->ID  << ": "<< glm::to_string((*p)->position) << std::endl;
-        // }
-        // glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-        // glDrawArrays(GL_TRIANGLES, 0, 3);
-        // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-        // glBindVertexArray(0); // no need to unbind it every time
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
@@ -461,9 +335,6 @@ int main()
 
     // optional: de-allocate all resources once they've outlived their purpose:
     // ------------------------------------------------------------------------
-    // glDeleteVertexArrays(1, &VAO);
-    // glDeleteBuffers(1, &VBO);
-    // glDeleteBuffers(1, &EBO);
     test.deleteBuffers();
     ourShader.deleteProgram();
 
@@ -472,8 +343,6 @@ int main()
     glfwTerminate();
     return 0;
 }
-
-
 
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
@@ -485,18 +354,8 @@ void processInput(GLFWwindow *window)
     double mWidth = (double) SCR_WIDTH;
     double mHeight = (double) SCR_HEIGHT;
 
-    // GLFW_CURSOR_HIDDEN
-    // glfwSetCursor
-    // glfwdisa
-    // glfwGetCursorPos(window, &mWidth, &mHeight);
-
-    // if (glfwSetCursorPosCallback)
     if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS && glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_NORMAL){
-        // std::cout << "MOOOSED " << deltaTime << std::endl;
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-        // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
     }
 
     if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS && glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED){
@@ -521,8 +380,6 @@ void processInput(GLFWwindow *window)
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS){
         camera.moveRight(deltaTime);
     }
-
-
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
