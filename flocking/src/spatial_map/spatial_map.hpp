@@ -23,12 +23,14 @@
 #include <sstream>
 #include <iostream>
 
+class Boid;
+
 struct SpatialEntry {
-    std::shared_ptr<Boid> boid;
+    Boid* boid;
     glm::vec3 position;
     glm::vec3 dimensions;
     glm::vec3 blb_ind;
-    glm::vec3 trt_int;
+    glm::vec3 trt_ind;
     // unsigned long hash(){return std::hash<glm::vec3>(position);};
 };
 
@@ -38,9 +40,9 @@ class SpatialMap {
         std::unordered_map<glm::vec3, std::unordered_set<std::shared_ptr<SpatialEntry>>> sp_map;
 
         glm::vec3 _key(glm::vec3 pos);
-        void _insert(std::shared_ptr<SpatialEntry> e);
-        // void _remove(std::shared_ptr<Boid> b);
-        // void _update(std::shared_ptr<Boid> b);// Update only if needed!
+        std::shared_ptr<SpatialEntry> _insert(std::shared_ptr<SpatialEntry> e);
+        // void _remove(Boid* b);
+        // void _update(Boid* b);// Update only if needed!
 
     public:
         glm::vec3 bound_dims; // the total size
@@ -49,7 +51,7 @@ class SpatialMap {
         glm::vec3 unit_dims;
         glm::vec3 grid_dims; // number of cubes along each axis
 
-    SpatialMap(glm::vec3 dims=glm::vec3(10.0f), glm::vec3 gsize=glm::vec3(3.0f)){ // We could test the affects of granulity
+    SpatialMap(glm::vec3 dims=glm::vec3(20.0f), glm::vec3 gsize=glm::vec3(10.0f)){ // We could test the affects of granulity
         bound_dims = dims;
         grid_dims = gsize;
 
@@ -73,7 +75,7 @@ class SpatialMap {
                 }
             }
         }
-        sp_map[glm::vec3(-1.0f)] = std::unordered_set<std::shared_ptr<SpatialEntry>>();
+        // sp_map[glm::vec3(-1.0f)] = std::unordered_set<std::shared_ptr<SpatialEntry>>();
 
         minbound = blb;
         maxbound = blb + gsize*udims;
@@ -111,10 +113,12 @@ class SpatialMap {
 
 
     void printMap();
-    void insert(std::shared_ptr<Boid> b);
+    std::shared_ptr<SpatialEntry> insert(Boid* b);
     void remove(std::shared_ptr<SpatialEntry> e);
-    // void update(std::shared_ptr<Boid> b);// Update only if needed!
-    // std::unordered_set<std::shared_ptr<Boid>> getNear(7dfloat range);
+    void update(std::shared_ptr<SpatialEntry> e);// Update only if needed!
+    std::unordered_set<Boid*> getNearby(Boid* b, float range);
+    // std::unordered_set<std::shared_ptr<SpatialEntry>> getNearby(glm::vec3 src, float range);
+
 };
 
 #endif

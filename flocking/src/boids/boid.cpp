@@ -14,9 +14,12 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <algorithm>
 
 
 std::vector<Boid*>  Boid::boids;
+SpatialMap Boid::boid_map;
+
 int Boid::count = 0;
 
 glm::vec3 limit(glm::vec3 v, float maxMag){
@@ -57,6 +60,9 @@ void Boid::updatePosition(){
     model.modelMat *= glm::inverse(glm::lookAt(glm::vec3(0.0), velocity, glm::vec3(0.0, 1.0, 0.0)));
     model.rotate(glm::radians(90.0f), glm::vec3(-1.0, 0.0,0.0));
     model.scale(glm::vec3(0.5f, 0.7f, 0.5f));
+
+    // Update Entry
+    Boid::boid_map.update(entry);
 
     // std::cout << "Position: " << glm::to_string(glm::vec4(position, 1.0)) << std::endl;
 }
@@ -109,7 +115,7 @@ glm::vec3 Boid::cohesion(Boid& b){
     float neighborDist = 2.5;
     glm::vec3 avgPos;   // Start with empty vector to accumulate all locations
     glm::vec3 steer = glm::vec3(0.0f);
-    std::vector<Boid*> flock = Boid::getAllBoidsInRange(b, neighborDist);
+    std::unordered_set<Boid*> flock = Boid::getAllBoidsInRange(b, neighborDist);
 
     for (Boid* d : flock){
         avgPos += d->position;
@@ -129,7 +135,7 @@ glm::vec3 Boid::cohesion(Boid& b){
 glm::vec3 Boid::separation(Boid& b){
     float desiredSeparation = 1.2;
     glm::vec3 steer = glm::vec3(0.0);
-    std::vector<Boid*> flock = Boid::getAllBoidsInRange(b, desiredSeparation);
+    std::unordered_set<Boid*> flock = Boid::getAllBoidsInRange(b, desiredSeparation);
     glm::vec3 diff;
 
     for (Boid* d : flock){
@@ -159,7 +165,7 @@ glm::vec3 Boid::separation(Boid& b){
 glm::vec3 Boid::alignment(Boid& b){
     float neighborDist = 2.0;
     glm::vec3 steer = glm::vec3(0.0);
-    std::vector<Boid*> flock = Boid::getAllBoidsInRange(b, neighborDist);
+    std::unordered_set<Boid*> flock = Boid::getAllBoidsInRange(b, neighborDist);
 
     for (Boid* d : flock){
         steer += d->velocity;
@@ -183,17 +189,46 @@ void Boid::render(){
 
 }
 
-std::vector<Boid*> Boid::getAllBoidsInRange(Boid& b, float range){
-    std::vector<Boid*> ret;
+std::unordered_set<Boid*> Boid::getAllBoidsInRange(Boid& b, float range){
+    // std::cout << "\nCalled" << std::endl;
+    // std::vector<Boid*> ret;
 
-    for(auto d = Boid::boids.begin(); d != Boid::boids.end(); d++){
-        float dist = glm::length(b.position - (*d)->position) ;
+    // for(auto d = Boid::boids.begin(); d != Boid::boids.end(); d++){
+    //     float dist = glm::length(b.position - (*d)->position) ;
 
-        if ((b.ID != (*d)->ID) && 0.0f < dist && dist <= range)
-            ret.push_back(*d);
-    }
+    //     if ((b.ID != (*d)->ID) && 0.0f < dist && dist <= range){
+    //         ret.push_back(*d);
+    //         // std::cout << glm::to_string((*d)->position) << " ";
+    //     }
 
-    return ret;
+
+    // }
+    // std::cout << std::endl << std::endl;
+
+    std::unordered_set<Boid*> rset = Boid::boid_map.getNearby(&b, range);
+
+    // std::cout << "Vec Size = " << ret.size() << std::endl;
+
+
+    // std::cout << "Set Size = " << rset.size() << std::endl;
+
+    // for (Boid* d : ret){
+    //     if (!rset.contains(d)){
+    //         std::cout << glm::to_string(d->position) << std::endl;
+    //         std::cout << glm::to_string(Boid::boid_map._key(d->position)) << std::endl;
+    //     }
+    // }
+
+    // for (Boid* d : rset){
+    //     if (std::find(ret.begin(), ret.end(), d) == ret.end()){
+    //         std::cout << glm::to_string(d->position) << std::endl;
+    //         std::cout << glm::to_string(Boid::boid_map._key(d->position)) << std::endl;
+    //     }
+    // }
+
+    // assert(ret.size() == rset.size());
+
+    return rset;
 }
 
 

@@ -7,10 +7,12 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <pyramid.hpp>
-// #include <spatial_map.hpp>
+#include <spatial_map.hpp>
 
 #include <string>
 #include <vector>
+#include <unordered_set>
+
 
 #include <fstream>
 #include <sstream>
@@ -20,10 +22,14 @@
 
 #include <memory>
 
+class SpatialEntry;
+class SpatialMap;
+
+
 class Boid{
     public:
         static std::vector<Boid*> boids; // consider a concurrent linked list??
-        // static SpatialMap boid_map;
+        static SpatialMap boid_map;
 
         static int count;
         float maxForce = 0.001;
@@ -44,6 +50,8 @@ class Boid{
         // the genetic multithreading will be a fun multithreading experiment
 
         Pyramid model;
+
+        std::shared_ptr<SpatialEntry> entry;
 
     // private:
 
@@ -83,10 +91,11 @@ class Boid{
 
         void addToBoidList(){
             Boid::boids.push_back(this);
+            entry = Boid::boid_map.insert(this);
         }
 
     public:
-        static std::vector<Boid*> getAllBoidsInRange(Boid & b, float range);
+        static std::unordered_set<Boid*> getAllBoidsInRange(Boid & b, float range);
         // static std::unique_ptr<Boid> createBoid(glm::vec3 pos, glm::vec3 vel);
 
         static float calculateKineticEnergy();
@@ -96,6 +105,7 @@ class Boid{
             Boid::boids.erase(
                 std::find(Boid::boids.begin(),
                 Boid::boids.end(), this));
+            Boid::boid_map.remove(entry);
         }
 
         Boid& operator=(const Boid &other){

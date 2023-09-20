@@ -32,9 +32,9 @@ void processInput(GLFWwindow *window);
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-const unsigned int NUM_BOIDS = 100;
+const unsigned int NUM_BOIDS = 400;
 
-const unsigned int NUM_THREADS = 32;
+const unsigned int NUM_THREADS = 1;
 const int CHUNK_SIZE = std::max((NUM_BOIDS + (NUM_THREADS - 1)) / NUM_THREADS, (unsigned int) 1);
 std::barrier sync_point(NUM_THREADS);
 
@@ -237,19 +237,26 @@ void testMap(){
     std::cout << "Hello" << std::endl;
     // assert(true);
 
-    SpatialMap hello(glm::vec3(10.0f),  glm::vec3(2.0f));
+    SpatialMap hello;
     std::cout << glm::to_string(hello._key(glm::vec3(-5.0f, 0.0f, 5.0f))) << std::endl;
 
 
-    std::shared_ptr<int> i(new int(1));
-    std::shared_ptr<Boid> j(new Boid(glm::vec3(0.0f)));
+    // std::shared_ptr<int> i(new int(1));
+    Boid* j = new Boid(glm::vec3(0.0f));
     std::cout << glm::to_string(j->position) << std::endl;
 
-    // hello.insert(j); // Return the spatial entry!!!
-    hello.printMap();
+    // auto e = hello.insert(j); // Return the spatial entry!!!
+    // hello.printMap();
 
-    // hello.insert();
-    // hello.remove();
+    // // hello.insert();
+    // hello.remove(e);
+    // hello.printMap();
+
+    std::cout << glm::to_string(hello._key(glm::vec3(0.0f))) << std::endl;
+
+
+    delete j;
+
     // assert(false);
 
 }
