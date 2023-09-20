@@ -111,7 +111,7 @@ class SpatialMap {
 
 
     void printMap();
-    void insert(Boid* b);
+    void insert(std::shared_ptr<Boid> b);
     void remove(std::shared_ptr<SpatialEntry> e);
     // void update(std::shared_ptr<Boid> b);// Update only if needed!
     // std::unordered_set<std::shared_ptr<Boid>> getNear(7dfloat range);

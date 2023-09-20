@@ -245,7 +245,7 @@ void testMap(){
     std::shared_ptr<Boid> j(new Boid(glm::vec3(0.0f)));
     std::cout << glm::to_string(j->position) << std::endl;
 
-    hello.insert(j); // Return the spatial entry!!!
+    // hello.insert(j); // Return the spatial entry!!!
     hello.printMap();
 
     // hello.insert();
