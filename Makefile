@@ -286,6 +286,30 @@ flocking/src/solids/solid.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/flocking.dir/build.make CMakeFiles/flocking.dir/flocking/src/solids/solid.cpp.s
 .PHONY : flocking/src/solids/solid.cpp.s
 
+flocking/src/spatial_map/spatial_map.o: flocking/src/spatial_map/spatial_map.cpp.o
+.PHONY : flocking/src/spatial_map/spatial_map.o
+
+# target to build an object file
+flocking/src/spatial_map/spatial_map.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/flocking.dir/build.make CMakeFiles/flocking.dir/flocking/src/spatial_map/spatial_map.cpp.o
+.PHONY : flocking/src/spatial_map/spatial_map.cpp.o
+
+flocking/src/spatial_map/spatial_map.i: flocking/src/spatial_map/spatial_map.cpp.i
+.PHONY : flocking/src/spatial_map/spatial_map.i
+
+# target to preprocess a source file
+flocking/src/spatial_map/spatial_map.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/flocking.dir/build.make CMakeFiles/flocking.dir/flocking/src/spatial_map/spatial_map.cpp.i
+.PHONY : flocking/src/spatial_map/spatial_map.cpp.i
+
+flocking/src/spatial_map/spatial_map.s: flocking/src/spatial_map/spatial_map.cpp.s
+.PHONY : flocking/src/spatial_map/spatial_map.s
+
+# target to generate assembly for a file
+flocking/src/spatial_map/spatial_map.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/flocking.dir/build.make CMakeFiles/flocking.dir/flocking/src/spatial_map/spatial_map.cpp.s
+.PHONY : flocking/src/spatial_map/spatial_map.cpp.s
+
 flocking/vendor/glad/src/glad.o: flocking/vendor/glad/src/glad.c.o
 .PHONY : flocking/vendor/glad/src/glad.o
 
@@ -338,6 +362,9 @@ help:
 	@echo "... flocking/src/solids/solid.o"
 	@echo "... flocking/src/solids/solid.i"
 	@echo "... flocking/src/solids/solid.s"
+	@echo "... flocking/src/spatial_map/spatial_map.o"
+	@echo "... flocking/src/spatial_map/spatial_map.i"
+	@echo "... flocking/src/spatial_map/spatial_map.s"
 	@echo "... flocking/vendor/glad/src/glad.o"
 	@echo "... flocking/vendor/glad/src/glad.i"
 	@echo "... flocking/vendor/glad/src/glad.s"

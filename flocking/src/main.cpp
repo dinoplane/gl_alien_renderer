@@ -10,10 +10,14 @@
 #include <boid.hpp>
 #include <camera.hpp>
 
+#include <spatial_map.hpp>
+
+
 #include <cstdlib>
 #include <thread>
 #include <barrier>
 #include <chrono>
+#include <cassert>
 
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -30,9 +34,9 @@ const unsigned int SCR_HEIGHT = 600;
 
 const unsigned int NUM_BOIDS = 100;
 
-// const unsigned int NUM_THREADS = 16;
-// const int CHUNK_SIZE = (NUM_BOIDS + (NUM_THREADS - 1)) / NUM_THREADS;
-// std::barrier sync_point(NUM_THREADS);
+const unsigned int NUM_THREADS = 32;
+const int CHUNK_SIZE = std::max((NUM_BOIDS + (NUM_THREADS - 1)) / NUM_THREADS, (unsigned int) 1);
+std::barrier sync_point(NUM_THREADS);
 
 // timing
 float deltaTime = 0.0f;	// time between current frame and last frame
@@ -194,21 +198,71 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 }
 
 
-// void updateBoids(std::vector<std::shared_ptr<Boid>> &boids, Shader& ourShader,
-//         int start, int end, int tid){
-//     for (int i = start; i < end; i++){
-//         boids[i]->calculateForce();
-//         sync_point.arrive_and_wait();
+void updateBoids(std::vector<std::shared_ptr<Boid>> *boids,
+        unsigned int start, unsigned int end, unsigned int tid){
+    for (int i = start; i < end; i++){
+        (*boids)[i]->calculateForce();
+        // std::string msg = std::to_string(tid) + "  Completed force!\n";
+    }
+        // std::cout << msg;
+    sync_point.arrive_and_wait();
+    for (int i = start; i < end; i++){
+            (*boids)[i]->updatePosition();
+        // msg = std::to_string(tid) + "  Completed position!\n";
+        // std::cout << msg;
 
-//         boids[i]->updatePosition();
+    }
+    sync_point.arrive_and_wait();
+}
+
+// void updateBoids(std::vector<std::shared_ptr<Boid>> *boids,
+//         unsigned int start, unsigned int end, unsigned int tid){
+//     for (int i = start; i < end; i++){
+//         if (i < NUM_BOIDS)
+//             (*boids)[i]->calculateForce();
+//         // std::string msg = std::to_string(tid) + "  Completed force!\n";
+//         // std::cout << msg;
+//         sync_point.arrive_and_wait();
+//         if (i < NUM_BOIDS)
+//            (*boids)[i]->updatePosition();
+//         // msg = std::to_string(tid) + "  Completed position!\n";
+//         // std::cout << msg;
 //         sync_point.arrive_and_wait();
 //     }
 
 // }
 
+
+void testMap(){
+    std::cout << "Hello" << std::endl;
+    // assert(true);
+
+    SpatialMap hello(glm::vec3(10.0f),  glm::vec3(2.0f));
+    std::cout << glm::to_string(hello._key(glm::vec3(-5.0f, 0.0f, 5.0f))) << std::endl;
+
+
+    std::shared_ptr<int> i(new int(1));
+    std::shared_ptr<Boid> j(new Boid(glm::vec3(0.0f)));
+    std::cout << glm::to_string(j->position) << std::endl;
+
+    hello.insert(j); // Return the spatial entry!!!
+    hello.printMap();
+
+    // hello.insert();
+    // hello.remove();
+    // assert(false);
+
+}
+
 // Add load texture function
 int main()
 {
+
+
+
+    // i = std::make_shared<Boid>();
+
+
 	GLFWwindow* window;
 	if (setupGLFW(window) < 0){
 		return -1;
@@ -219,6 +273,9 @@ int main()
 	}
 
     // glEnable(GL_DEPTH_TEST);
+
+
+    testMap();
 
     // build and compile our shader program
     // ------------------------------------
@@ -350,21 +407,32 @@ int main()
         zcoord.render();
 
 
-        // std::thread *thread_array = new std::thread[NUM_THREADS];
-        // for (int tid = 0; tid < num_threads; tid++){
-        //     int start = chunk_size * tid + 1;
-        //     int end = std::min(start + chunk_size, size - 1);
-        //     thread_array[tid] = std::thread(blur, input, output, repeats, start, end, tid);
+
+
+        std::thread *thread_array = new std::thread[NUM_THREADS];
+        for (unsigned int tid = 0; tid < NUM_THREADS; tid++){
+            unsigned int start = CHUNK_SIZE * tid;
+            // unsigned int end = start + CHUNK_SIZE;
+            unsigned int end = std::min(start + CHUNK_SIZE, NUM_BOIDS);
+
+            // if (start < end)
+            // std::cout << start << " "  << end << std::endl;
+            thread_array[tid] =
+                std::thread(updateBoids, &boids, start, end, tid);
+        }
+
+        for (unsigned int tid = 0; tid < NUM_THREADS; tid++){
+            thread_array[tid].join();
+        }
+
+        // for (int i = 0; i < NUM_BOIDS; i++){
+        //     boids[i]->calculateForce();
         // }
 
         for (int i = 0; i < NUM_BOIDS; i++){
-            boids[i]->calculateForce();
-        }
-
-        for (int i = 0; i < NUM_BOIDS; i++){
-            boids[i]->updatePosition();
+            // boids[i]->updatePosition();
             ourShader.use();
-            ourShader.setInt("selected", 0);
+            ourShader.setInt("selected", 1);
             ourShader.setMat4("view", view);
             ourShader.setMat4("model", boids[i]->model.modelMat);
             // std::cout << boids[i].ID << std::endl;

@@ -6,7 +6,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include<pyramid.hpp>
+#include <pyramid.hpp>
+// #include <spatial_map.hpp>
 
 #include <string>
 #include <vector>
@@ -19,15 +20,15 @@
 
 #include <memory>
 
-class Boid {
+class Boid{
     public:
         static std::vector<Boid*> boids; // consider a concurrent linked list??
+        // static SpatialMap boid_map;
 
         static int count;
         float maxForce = 0.001;
         float minForce = 0.000000001;
-
-        float maxSpeed = 0.2;
+        float maxSpeed = 0.15;
 
         int ID;
 
@@ -37,6 +38,7 @@ class Boid {
         glm::vec3 position;
         glm::vec3 lastPosition;
 
+        glm::vec3 dimensions = glm::vec3(1.0f);
 
         std::vector<std::pair<float, glm::vec3(*)(Boid&)>> behaviors; // Consider making this a class to make the mutation easier
         // the genetic multithreading will be a fun multithreading experiment
@@ -47,6 +49,7 @@ class Boid {
 
         // Boid() {model.init();};
         Boid(glm::vec3 pos = glm::vec3(0.0f), glm::vec3 vel = glm::vec3(1.0, 0.0, 1.0)) {
+            std::cout<< "hello" <<std::endl;
             position = pos;
             velocity = vel;
             // std::cout << glm::to_string(position) << std::endl;
@@ -59,13 +62,15 @@ class Boid {
             behaviors.push_back(std::make_pair(1.5f, alignment));
             behaviors.push_back(std::make_pair(1.0f, cohesion));
 
-            // std::cout << "DEFAULT CALLED" << std::endl;
+            std::cout << "DEFAULT CALLED" << std::endl;
             ID = Boid::count;
             addToBoidList();
             Boid::count += 1;
         }
 
         Boid(const Boid &other){
+            std::cout<< "hello" <<std::endl;
+
             std::cout << "COPY CALLED" << std::endl;
             addToBoidList();
         }
@@ -94,10 +99,14 @@ class Boid {
         }
 
         Boid& operator=(const Boid &other){
+            std::cout<< "hello" <<std::endl;
+
             return *this;
         }
 
         Boid& operator=(Boid &&other){
+            std::cout<< "hello" <<std::endl;
+
             return *this;
         }
 

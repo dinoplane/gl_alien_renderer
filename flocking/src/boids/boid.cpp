@@ -4,11 +4,11 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
 #include <glm/gtx/string_cast.hpp>
 
 #include<boid.hpp>
 #include <pyramid.hpp>
+// #include <spatial_map.hpp>
 
 #include <string>
 #include <fstream>
@@ -33,6 +33,9 @@ void Boid::calculateForce(){
     for (auto pair : behaviors){
         force += pair.first * pair.second(*this);
     }
+
+    // std::string msg = std::to_string(ID) + "  finished\n";
+    // std::cout << msg;
 }
 
 void Boid::updatePosition(){
@@ -104,7 +107,7 @@ glm::vec3 Boid::seek(Boid& b, glm::vec3 target){
 */
 glm::vec3 Boid::cohesion(Boid& b){
     float neighborDist = 2.5;
-    glm::vec3 avgPos = glm::vec3(0.0f);   // Start with empty vector to accumulate all locations
+    glm::vec3 avgPos;   // Start with empty vector to accumulate all locations
     glm::vec3 steer = glm::vec3(0.0f);
     std::vector<Boid*> flock = Boid::getAllBoidsInRange(b, neighborDist);
 

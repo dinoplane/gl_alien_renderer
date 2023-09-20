@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = -DGLFW_INCLUDE_NONE -DPROJECT_SOURCE_DIR=\"/home/alien/Documents/flocking-opengl\"
 
-CXX_INCLUDES = -I/home/alien/Documents/flocking-opengl/flocking/vendor/glm -I/home/alien/Documents/flocking-opengl/flocking/vendor/glad/include -I/home/alien/Documents/flocking-opengl/flocking/vendor/stb -I/home/alien/Documents/flocking-opengl/flocking/src/solids -I/home/alien/Documents/flocking-opengl/flocking/src/boids -I/home/alien/Documents/flocking-opengl/flocking/src
+CXX_INCLUDES = -I/home/alien/Documents/flocking-opengl/flocking/vendor/glm -I/home/alien/Documents/flocking-opengl/flocking/vendor/glad/include -I/home/alien/Documents/flocking-opengl/flocking/vendor/stb -I/home/alien/Documents/flocking-opengl/flocking/src/solids -I/home/alien/Documents/flocking-opengl/flocking/src/boids -I/home/alien/Documents/flocking-opengl/flocking/src/spatial_map -I/home/alien/Documents/flocking-opengl/flocking/src
 
 CXX_FLAGS = -Werror -std=c++20
 

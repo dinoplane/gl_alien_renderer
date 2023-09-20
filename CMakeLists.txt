@@ -40,6 +40,7 @@ include_directories(
    ${VENDOR_DIR}/stb/
    ${SRC_DIR}/solids/
    ${SRC_DIR}/boids/
+   ${SRC_DIR}/spatial_map/
    ${SRC_DIR}/
 )
 
@@ -48,11 +49,15 @@ include_directories(
 file(GLOB PROJECT_HEADERS ${SRC_DIR}/*.hpp
                           ${SRC_DIR}/solids/*.hpp
                           ${SRC_DIR}/boids/*.hpp
+                          ${SRC_DIR}/spatial_map/*.hpp
+
                           )
 
 file(GLOB PROJECT_SOURCES ${SRC_DIR}/*.cpp
                           ${SRC_DIR}/solids/*.cpp
                           ${SRC_DIR}/boids/*.cpp
+                          ${SRC_DIR}/spatial_map/*.cpp
+
                           )
 # file(GLOB PROJECT_SHADERS Glitter/Shaders/*.comp
 #                           Glitter/Shaders/*.frag
@@ -99,6 +104,8 @@ target_link_libraries(${PROJECT_NAME}
     glad
     ${CMAKE_DL_LIBS} # Needed for glad - https://stackoverflow.com/a/56842079/2394163
 )
+
+# set(CMAKE_BUILD_TYPE RelWithDebInfo)
 
 set_target_properties(${PROJECT_NAME}
   PROPERTIES

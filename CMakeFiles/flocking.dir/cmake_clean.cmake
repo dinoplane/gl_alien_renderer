@@ -11,6 +11,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/flocking.dir/flocking/src/solids/pyramid.cpp.o.d"
   "CMakeFiles/flocking.dir/flocking/src/solids/solid.cpp.o"
   "CMakeFiles/flocking.dir/flocking/src/solids/solid.cpp.o.d"
+  "CMakeFiles/flocking.dir/flocking/src/spatial_map/spatial_map.cpp.o"
+  "CMakeFiles/flocking.dir/flocking/src/spatial_map/spatial_map.cpp.o.d"
   "flocking/flocking"
   "flocking/flocking.pdb"
 )
