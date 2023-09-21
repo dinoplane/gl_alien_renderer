@@ -32,7 +32,7 @@ void processInput(GLFWwindow *window);
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-const unsigned int NUM_BOIDS = 400;
+const unsigned int NUM_BOIDS = 100;
 
 const unsigned int NUM_THREADS = 1;
 const int CHUNK_SIZE = std::max((NUM_BOIDS + (NUM_THREADS - 1)) / NUM_THREADS, (unsigned int) 1);
@@ -242,11 +242,11 @@ void testMap(){
 
 
     // std::shared_ptr<int> i(new int(1));
-    Boid* j = new Boid(glm::vec3(0.0f));
+    Boid* j = new Boid(glm::vec3(33.0f));
     std::cout << glm::to_string(j->position) << std::endl;
 
-    // auto e = hello.insert(j); // Return the spatial entry!!!
-    // hello.printMap();
+    auto e = hello.insert(j); // Return the spatial entry!!!
+    hello.printMap();
 
     // // hello.insert();
     // hello.remove(e);
@@ -261,16 +261,18 @@ void testMap(){
 
 }
 
+
+
 // Add load texture function
 int main()
 {
 
 
+	GLFWwindow* window;
 
     // i = std::make_shared<Boid>();
 
 
-	GLFWwindow* window;
 	if (setupGLFW(window) < 0){
 		return -1;
 	}
@@ -281,8 +283,9 @@ int main()
 
     // glEnable(GL_DEPTH_TEST);
 
-
     testMap();
+    // assert(false);
+
 
     // build and compile our shader program
     // ------------------------------------
@@ -497,8 +500,11 @@ void processInput(GLFWwindow *window)
 
 
     // std::cout << mWidth << " " << mHeight << std::endl;
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
+        Boid::boid_map.printMap();
         glfwSetWindowShouldClose(window, true);
+
+    }
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS){
         // std::cout << "PRESSED " << deltaTime << std::endl;
