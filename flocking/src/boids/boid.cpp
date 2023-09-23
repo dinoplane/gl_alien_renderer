@@ -18,7 +18,7 @@
 
 
 std::vector<Boid*>  Boid::boids;
-SpatialMap Boid::boid_map;
+SpatialMap Boid::boid_map(glm::vec3(5.0f), glm::ivec3(5));
 
 int Boid::count = 0;
 
@@ -61,17 +61,22 @@ void Boid::updatePosition(){
     model.rotate(glm::radians(90.0f), glm::vec3(-1.0, 0.0,0.0));
     model.scale(glm::vec3(0.5f, 0.7f, 0.5f));
 
+    // std::cout << "Position: " << glm::to_string(glm::vec4(position, 1.0)) << std::endl;
+}
+
+void Boid::updateMapEntry(){
     // Update Entry
     Boid::boid_map.update(entry);
-
-    // std::cout << "Position: " << glm::to_string(glm::vec4(position, 1.0)) << std::endl;
 }
 
 // Not called cuz multithreading
 void Boid::update(){
     calculateForce();
     updatePosition();
+    updateMapEntry();
 }
+
+
 
 glm::vec3 Boid::hunger(Boid& b){
     return glm::vec3(0.0f);
@@ -191,22 +196,20 @@ void Boid::render(){
 
 std::unordered_set<Boid*> Boid::getAllBoidsInRange(Boid& b, float range){
     // std::cout << "\nCalled" << std::endl;
-    std::vector<Boid*> ret;
+    // std::vector<Boid*> ret;
 
-    for(auto d = Boid::boids.begin(); d != Boid::boids.end(); d++){
-        float dist = glm::length(b.position - (*d)->position) ;
+    // for(auto d = Boid::boids.begin(); d != Boid::boids.end(); d++){
+    //     float dist = glm::length(b.position - (*d)->position) ;
 
-        if ((b.ID != (*d)->ID) && 0.0f < dist && dist <= range){
-            ret.push_back(*d);
-            // std::cout << glm::to_string((*d)->position) << " ";
-        }
-
-
-    }
+    //     if ((b.ID != (*d)->ID) && 0.0f < dist && dist <= range){
+    //         ret.push_back(*d);
+    //         // std::cout << glm::to_string((*d)->position) << " ";
+    //     }
+    // }
     // std::cout << std::endl << std::endl;
 
     std::unordered_set<Boid*> rset = Boid::boid_map.getNearby(&b, range);
-
+    /*
     if (ret.size() != rset.size()){
 
         std::cout << "CLOSEST TO: " << glm::to_string(b.position) << std::endl;
@@ -278,7 +281,7 @@ std::unordered_set<Boid*> Boid::getAllBoidsInRange(Boid& b, float range){
 
         // glfwSetWindowShouldClose(window, true);
     }
-
+    */
 
     return rset;
 }

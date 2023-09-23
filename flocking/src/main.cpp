@@ -32,9 +32,9 @@ void processInput(GLFWwindow *window);
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-const unsigned int NUM_BOIDS = 100;
+const unsigned int NUM_BOIDS = 1000;
 
-const unsigned int NUM_THREADS = 1;
+const unsigned int NUM_THREADS = 16;
 const int CHUNK_SIZE = std::max((NUM_BOIDS + (NUM_THREADS - 1)) / NUM_THREADS, (unsigned int) 1);
 std::barrier sync_point(NUM_THREADS);
 
@@ -215,22 +215,39 @@ void updateBoids(std::vector<std::shared_ptr<Boid>> *boids,
     sync_point.arrive_and_wait();
 }
 
-// void updateBoids(std::vector<std::shared_ptr<Boid>> *boids,
-//         unsigned int start, unsigned int end, unsigned int tid){
-//     for (int i = start; i < end; i++){
-//         if (i < NUM_BOIDS)
-//             (*boids)[i]->calculateForce();
-//         // std::string msg = std::to_string(tid) + "  Completed force!\n";
-//         // std::cout << msg;
-//         sync_point.arrive_and_wait();
-//         if (i < NUM_BOIDS)
-//            (*boids)[i]->updatePosition();
-//         // msg = std::to_string(tid) + "  Completed position!\n";
-//         // std::cout << msg;
-//         sync_point.arrive_and_wait();
-//     }
+void updateBoidsForce(std::vector<std::shared_ptr<Boid>> *boids,
+        unsigned int start, unsigned int end, unsigned int tid){
+    for (int i = start; i < end; i++){
+        if (i < NUM_BOIDS)
+            (*boids)[i]->calculateForce();
+        // std::string msg = std::to_string(tid) + "  Completed force!\n";
+        // std::cout << msg;
+    }
+    sync_point.arrive_and_wait();
+}
 
-// }
+void updateBoidsPos(std::vector<std::shared_ptr<Boid>> *boids,
+        unsigned int start, unsigned int end, unsigned int tid){
+    for (int i = start; i < end; i++){
+        if (i < NUM_BOIDS)
+           (*boids)[i]->updatePosition();
+        // msg = std::to_string(tid) + "  Completed position!\n";
+        // std::cout << msg;
+    }
+    sync_point.arrive_and_wait();
+}
+
+void updateBoidsEntry(std::vector<std::shared_ptr<Boid>> *boids,
+        unsigned int start, unsigned int end, unsigned int tid){
+    for (int i = start; i < end; i++){
+        if (i < NUM_BOIDS)
+           (*boids)[i]->updateMapEntry();
+        // msg = std::to_string(tid) + "  Completed position!\n";
+        // std::cout << msg;
+    }
+    sync_point.arrive_and_wait();
+}
+
 
 
 void testMap(){
@@ -242,7 +259,7 @@ void testMap(){
 
 
     // std::shared_ptr<int> i(new int(1));
-    Boid* j = new Boid(glm::vec3(33.0f));
+    Boid* j = new Boid(glm::vec3(-7.0f));
     std::cout << glm::to_string(j->position) << std::endl;
 
     auto e = hello.insert(j); // Return the spatial entry!!!
@@ -363,6 +380,8 @@ int main()
 
     auto start = std::chrono::high_resolution_clock::now();
 
+    auto chkpt = std::chrono::high_resolution_clock::now();
+
     auto stop = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
     std::cout << "Time taken by function: "
@@ -420,43 +439,115 @@ int main()
 
 
         std::thread *thread_array = new std::thread[NUM_THREADS];
-        for (unsigned int tid = 0; tid < NUM_THREADS; tid++){
-            unsigned int start = CHUNK_SIZE * tid;
-            // unsigned int end = start + CHUNK_SIZE;
-            unsigned int end = std::min(start + CHUNK_SIZE, NUM_BOIDS);
+        { // Force Calculation
+            chkpt = std::chrono::high_resolution_clock::now();
+            for (unsigned int tid = 0; tid < NUM_THREADS; tid++){
+                unsigned int start = CHUNK_SIZE * tid;
+                // unsigned int end = start + CHUNK_SIZE;
+                unsigned int end = std::min(start + CHUNK_SIZE, NUM_BOIDS);
 
-            // if (start < end)
-            // std::cout << start << " "  << end << std::endl;
-            thread_array[tid] =
-                std::thread(updateBoids, &boids, start, end, tid);
+                // if (start < end)
+                // std::cout << start << " "  << end << std::endl;
+                thread_array[tid] =
+                    std::thread(updateBoidsForce, &boids, start, end, tid);
+            }
+
+            for (unsigned int tid = 0; tid < NUM_THREADS; tid++){
+                thread_array[tid].join();
+            }
+
+            stop = std::chrono::high_resolution_clock::now();
+            duration = std::chrono::duration_cast<
+                        std::chrono::microseconds>(stop - chkpt);
+
+            std::cout << "Time taken by Update Force: "
+                << duration.count() << " microseconds" << std::endl;
         }
 
-        for (unsigned int tid = 0; tid < NUM_THREADS; tid++){
-            thread_array[tid].join();
+        { // Position Update
+            chkpt = std::chrono::high_resolution_clock::now();
+            for (unsigned int tid = 0; tid < NUM_THREADS; tid++){
+                unsigned int start = CHUNK_SIZE * tid;
+                // unsigned int end = start + CHUNK_SIZE;
+                unsigned int end = std::min(start + CHUNK_SIZE, NUM_BOIDS);
+
+                // if (start < end)
+                // std::cout << start << " "  << end << std::endl;
+                thread_array[tid] =
+                    std::thread(updateBoidsPos, &boids, start, end, tid);
+            }
+
+            for (unsigned int tid = 0; tid < NUM_THREADS; tid++){
+                thread_array[tid].join();
+            }
+
+            stop = std::chrono::high_resolution_clock::now();
+            duration = std::chrono::duration_cast<
+                        std::chrono::microseconds>(stop - chkpt);
+
+            std::cout << "Time taken by Update Position: "
+                << duration.count() << " microseconds" << std::endl;
+        }
+
+        { // Map Entry Update
+            chkpt = std::chrono::high_resolution_clock::now();
+            for (unsigned int tid = 0; tid < NUM_THREADS; tid++){
+                unsigned int start = CHUNK_SIZE * tid;
+                // unsigned int end = start + CHUNK_SIZE;
+                unsigned int end = std::min(start + CHUNK_SIZE, NUM_BOIDS);
+
+                // if (start < end)
+                // std::cout << start << " "  << end << std::endl;
+                thread_array[tid] =
+                    std::thread(updateBoidsEntry, &boids, start, end, tid);
+            }
+
+            for (unsigned int tid = 0; tid < NUM_THREADS; tid++){
+                thread_array[tid].join();
+            }
+
+            stop = std::chrono::high_resolution_clock::now();
+            duration = std::chrono::duration_cast<
+                        std::chrono::microseconds>(stop - chkpt);
+
+            std::cout << "Time taken by Update Entry: "
+                << duration.count() << " microseconds" << std::endl;
         }
 
         // for (int i = 0; i < NUM_BOIDS; i++){
         //     boids[i]->calculateForce();
         // }
 
-        for (int i = 0; i < NUM_BOIDS; i++){
-            // boids[i]->updatePosition();
-            ourShader.use();
-            ourShader.setInt("selected", 1);
-            ourShader.setMat4("view", view);
-            ourShader.setMat4("model", boids[i]->model.modelMat);
-            // std::cout << boids[i].ID << std::endl;
-            boids[i]->render();
+        { // Rendering
+            chkpt = std::chrono::high_resolution_clock::now();
+
+            for (int i = 0; i < NUM_BOIDS; i++){
+                // boids[i]->updatePosition();
+                ourShader.use();
+                ourShader.setInt("selected", 1);
+                ourShader.setMat4("view", view);
+                ourShader.setMat4("model", boids[i]->model.modelMat);
+                // std::cout << boids[i].ID << std::endl;
+                boids[i]->render();
+            }
+
+            // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
+            // -------------------------------------------------------------------------------
+            glfwSwapBuffers(window);
+            glfwPollEvents();
+            deltaTime = glfwGetTime() - lastFrame;
+            lastFrame = glfwGetTime();
+
+            stop = std::chrono::high_resolution_clock::now();
+
+            duration = std::chrono::duration_cast<
+                        std::chrono::microseconds>(stop - chkpt);
+
+            std::cout << "Time taken by Rendering: "
+                << duration.count() << " microseconds" << std::endl;
         }
 
-        // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
-        // -------------------------------------------------------------------------------
-        glfwSwapBuffers(window);
-        glfwPollEvents();
-        deltaTime = glfwGetTime() - lastFrame;
-        lastFrame = glfwGetTime();
 
-        stop = std::chrono::high_resolution_clock::now();
         duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 
         std::cout << "Time taken by function: "

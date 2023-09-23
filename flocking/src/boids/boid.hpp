@@ -124,6 +124,9 @@ class Boid{
 
         void updatePosition();
 
+        void updateMapEntry();
+
+
         void update();
 
         // Absolutes of life
