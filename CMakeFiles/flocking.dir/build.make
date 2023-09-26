@@ -125,10 +125,24 @@ CMakeFiles/flocking.dir/flocking/src/solids/cube.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/flocking.dir/flocking/src/solids/cube.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/alien/Documents/flocking-opengl/flocking/src/solids/cube.cpp -o CMakeFiles/flocking.dir/flocking/src/solids/cube.cpp.s
 
+CMakeFiles/flocking.dir/flocking/src/solids/plane.cpp.o: CMakeFiles/flocking.dir/flags.make
+CMakeFiles/flocking.dir/flocking/src/solids/plane.cpp.o: flocking/src/solids/plane.cpp
+CMakeFiles/flocking.dir/flocking/src/solids/plane.cpp.o: CMakeFiles/flocking.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/alien/Documents/flocking-opengl/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/flocking.dir/flocking/src/solids/plane.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/flocking.dir/flocking/src/solids/plane.cpp.o -MF CMakeFiles/flocking.dir/flocking/src/solids/plane.cpp.o.d -o CMakeFiles/flocking.dir/flocking/src/solids/plane.cpp.o -c /home/alien/Documents/flocking-opengl/flocking/src/solids/plane.cpp
+
+CMakeFiles/flocking.dir/flocking/src/solids/plane.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/flocking.dir/flocking/src/solids/plane.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/alien/Documents/flocking-opengl/flocking/src/solids/plane.cpp > CMakeFiles/flocking.dir/flocking/src/solids/plane.cpp.i
+
+CMakeFiles/flocking.dir/flocking/src/solids/plane.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/flocking.dir/flocking/src/solids/plane.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/alien/Documents/flocking-opengl/flocking/src/solids/plane.cpp -o CMakeFiles/flocking.dir/flocking/src/solids/plane.cpp.s
+
 CMakeFiles/flocking.dir/flocking/src/solids/pyramid.cpp.o: CMakeFiles/flocking.dir/flags.make
 CMakeFiles/flocking.dir/flocking/src/solids/pyramid.cpp.o: flocking/src/solids/pyramid.cpp
 CMakeFiles/flocking.dir/flocking/src/solids/pyramid.cpp.o: CMakeFiles/flocking.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/alien/Documents/flocking-opengl/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/flocking.dir/flocking/src/solids/pyramid.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/alien/Documents/flocking-opengl/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/flocking.dir/flocking/src/solids/pyramid.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/flocking.dir/flocking/src/solids/pyramid.cpp.o -MF CMakeFiles/flocking.dir/flocking/src/solids/pyramid.cpp.o.d -o CMakeFiles/flocking.dir/flocking/src/solids/pyramid.cpp.o -c /home/alien/Documents/flocking-opengl/flocking/src/solids/pyramid.cpp
 
 CMakeFiles/flocking.dir/flocking/src/solids/pyramid.cpp.i: cmake_force
@@ -142,7 +156,7 @@ CMakeFiles/flocking.dir/flocking/src/solids/pyramid.cpp.s: cmake_force
 CMakeFiles/flocking.dir/flocking/src/solids/solid.cpp.o: CMakeFiles/flocking.dir/flags.make
 CMakeFiles/flocking.dir/flocking/src/solids/solid.cpp.o: flocking/src/solids/solid.cpp
 CMakeFiles/flocking.dir/flocking/src/solids/solid.cpp.o: CMakeFiles/flocking.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/alien/Documents/flocking-opengl/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/flocking.dir/flocking/src/solids/solid.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/alien/Documents/flocking-opengl/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/flocking.dir/flocking/src/solids/solid.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/flocking.dir/flocking/src/solids/solid.cpp.o -MF CMakeFiles/flocking.dir/flocking/src/solids/solid.cpp.o.d -o CMakeFiles/flocking.dir/flocking/src/solids/solid.cpp.o -c /home/alien/Documents/flocking-opengl/flocking/src/solids/solid.cpp
 
 CMakeFiles/flocking.dir/flocking/src/solids/solid.cpp.i: cmake_force
@@ -156,7 +170,7 @@ CMakeFiles/flocking.dir/flocking/src/solids/solid.cpp.s: cmake_force
 CMakeFiles/flocking.dir/flocking/src/spatial_map/spatial_map.cpp.o: CMakeFiles/flocking.dir/flags.make
 CMakeFiles/flocking.dir/flocking/src/spatial_map/spatial_map.cpp.o: flocking/src/spatial_map/spatial_map.cpp
 CMakeFiles/flocking.dir/flocking/src/spatial_map/spatial_map.cpp.o: CMakeFiles/flocking.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/alien/Documents/flocking-opengl/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/flocking.dir/flocking/src/spatial_map/spatial_map.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/alien/Documents/flocking-opengl/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/flocking.dir/flocking/src/spatial_map/spatial_map.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/flocking.dir/flocking/src/spatial_map/spatial_map.cpp.o -MF CMakeFiles/flocking.dir/flocking/src/spatial_map/spatial_map.cpp.o.d -o CMakeFiles/flocking.dir/flocking/src/spatial_map/spatial_map.cpp.o -c /home/alien/Documents/flocking-opengl/flocking/src/spatial_map/spatial_map.cpp
 
 CMakeFiles/flocking.dir/flocking/src/spatial_map/spatial_map.cpp.i: cmake_force
@@ -173,6 +187,7 @@ flocking_OBJECTS = \
 "CMakeFiles/flocking.dir/flocking/src/camera.cpp.o" \
 "CMakeFiles/flocking.dir/flocking/src/main.cpp.o" \
 "CMakeFiles/flocking.dir/flocking/src/solids/cube.cpp.o" \
+"CMakeFiles/flocking.dir/flocking/src/solids/plane.cpp.o" \
 "CMakeFiles/flocking.dir/flocking/src/solids/pyramid.cpp.o" \
 "CMakeFiles/flocking.dir/flocking/src/solids/solid.cpp.o" \
 "CMakeFiles/flocking.dir/flocking/src/spatial_map/spatial_map.cpp.o"
@@ -184,6 +199,7 @@ flocking/flocking: CMakeFiles/flocking.dir/flocking/src/boids/boid.cpp.o
 flocking/flocking: CMakeFiles/flocking.dir/flocking/src/camera.cpp.o
 flocking/flocking: CMakeFiles/flocking.dir/flocking/src/main.cpp.o
 flocking/flocking: CMakeFiles/flocking.dir/flocking/src/solids/cube.cpp.o
+flocking/flocking: CMakeFiles/flocking.dir/flocking/src/solids/plane.cpp.o
 flocking/flocking: CMakeFiles/flocking.dir/flocking/src/solids/pyramid.cpp.o
 flocking/flocking: CMakeFiles/flocking.dir/flocking/src/solids/solid.cpp.o
 flocking/flocking: CMakeFiles/flocking.dir/flocking/src/spatial_map/spatial_map.cpp.o
@@ -191,7 +207,7 @@ flocking/flocking: CMakeFiles/flocking.dir/build.make
 flocking/flocking: /usr/lib/x86_64-linux-gnu/libglfw.so.3.3
 flocking/flocking: libglad.a
 flocking/flocking: CMakeFiles/flocking.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/alien/Documents/flocking-opengl/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Linking CXX executable flocking/flocking"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/alien/Documents/flocking-opengl/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Linking CXX executable flocking/flocking"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/flocking.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

@@ -34,16 +34,19 @@ class Camera {
 
     // glm::mat4 viewMat;
 
-    glm::mat4 projMat;
+    // glm::mat4 projMat;
 
 
     float yaw;
     float pitch;
 
+    float width;
+    float height;
+
 
     public:
         Camera(
-                float width, float height,
+                float w, float h,
                 glm::vec3 pos = glm::vec3(20.0, 20.0f, 20.0),
                 glm::vec3 upv = glm::vec3(0.0, 1.0, 0.0),
                 float yaw_val = YAW, float pitch_val = PITCH
@@ -53,9 +56,9 @@ class Camera {
             worldUp = upv;
             yaw = yaw_val;
             pitch = pitch_val;
-            updateCameraVectors();
 
-            projMat = glm::perspective(glm::radians(60.0f), width / height, 0.1f, 2000.0f);
+            setPerspectiveSize(w, h);
+            updateCameraVectors();
         }
 
         void moveLeft(float deltaTime);
@@ -65,13 +68,17 @@ class Camera {
 
         void processMouseMovement(float xoffset, float yoffset);
 
+        void setPerspectiveSize(float w, float h){
+            width = w;
+            height = h;
+        }
 
         glm::mat4 getViewMatrix(){
             return glm::lookAt(position, position + front, up);
         }
 
         glm::mat4 getProjMatrix(){
-            return projMat;
+            return glm::perspective(glm::radians(60.0f), width / height, 0.1f, 2000.0f);
         }
 
     private:

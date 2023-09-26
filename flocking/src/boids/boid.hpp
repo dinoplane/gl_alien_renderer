@@ -57,7 +57,7 @@ class Boid{
 
         // Boid() {model.init();};
         Boid(glm::vec3 pos = glm::vec3(0.0f), glm::vec3 vel = glm::vec3(1.0, 0.0, 1.0)) {
-            std::cout<< "hello" <<std::endl;
+            // std::cout<< "hello" <<std::endl;
             position = pos;
             velocity = vel;
             // std::cout << glm::to_string(position) << std::endl;
@@ -70,7 +70,7 @@ class Boid{
             behaviors.push_back(std::make_pair(1.5f, alignment));
             behaviors.push_back(std::make_pair(1.0f, cohesion));
 
-            std::cout << "DEFAULT CALLED" << std::endl;
+            // std::cout << "DEFAULT CALLED" << std::endl;
             ID = Boid::count;
             addToBoidList();
             Boid::count += 1;

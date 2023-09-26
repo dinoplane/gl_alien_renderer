@@ -12,7 +12,7 @@
 #include <iostream>
 
 class Solid {
-    protected:
+    public:
         // Create a renderer class and compare times
 
         unsigned int VBO, VAO, EBO;
@@ -53,6 +53,8 @@ class Solid {
             modelMat = glm::mat4(1.0);
 
         };
+
+        void printVertices();
 
         virtual void render(); // I believe we can optimize this from asg3
 };

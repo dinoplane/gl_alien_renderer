@@ -3,6 +3,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <glm/gtx/string_cast.hpp>
+
 #include<solid.hpp>
 
 #include <string>
@@ -41,7 +43,6 @@ void Solid::init(){
 // }
 
 void Solid::calculateVertices(){
-    std::cout << "Solid" << std::endl;
     vertices = {
         // positions         // colors          // texcoords
 
@@ -86,4 +87,26 @@ void Solid::render(){
     glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
     // glDrawArrays(GL_TRIANGLES, 0, 3);
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+}
+
+
+void Solid::printVertices(){
+    std::cout << "      Position                 Color                   TexCoord" << std::endl;
+    for (int i = 0; i < vertices.size();){
+        std::printf("%3d  ", i/8);
+        for (int j = 0; j < 8; j++, i++){
+            std::printf(" %6.3f ",  vertices[i]);
+        }
+        std::cout << std::endl;
+    }
+
+    std::cout << "\nIndices" << std::endl;
+    for (int i = 0; i < indices.size();){
+        std::printf("%3d  ", i/3);
+        for (int j = 0; j < 3; j++, i++){
+            std::printf(" %d ", indices[i]);
+        }
+        std::cout << std::endl;
+    }
+
 }

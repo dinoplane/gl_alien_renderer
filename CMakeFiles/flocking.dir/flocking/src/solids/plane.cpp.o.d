@@ -1,5 +1,5 @@
-CMakeFiles/flocking.dir/flocking/src/solids/solid.cpp.o: \
- /home/alien/Documents/flocking-opengl/flocking/src/solids/solid.cpp \
+CMakeFiles/flocking.dir/flocking/src/solids/plane.cpp.o: \
+ /home/alien/Documents/flocking-opengl/flocking/src/solids/plane.cpp \
  /usr/include/stdc-predef.h \
  /home/alien/Documents/flocking-opengl/flocking/vendor/glad/include/glad/glad.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h \
@@ -374,6 +374,7 @@ CMakeFiles/flocking.dir/flocking/src/solids/solid.cpp.o: \
  /usr/include/c++/11/bits/basic_string.tcc \
  /home/alien/Documents/flocking-opengl/flocking/vendor/glm/glm/gtx/string_cast.inl \
  /usr/include/c++/11/cstdarg \
+ /home/alien/Documents/flocking-opengl/flocking/src/solids/plane.hpp \
  /home/alien/Documents/flocking-opengl/flocking/src/solids/solid.hpp \
  /usr/include/c++/11/vector /usr/include/c++/11/bits/stl_uninitialized.h \
  /usr/include/c++/11/bits/stl_vector.h \

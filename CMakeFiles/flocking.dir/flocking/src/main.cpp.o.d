@@ -411,6 +411,7 @@ CMakeFiles/flocking.dir/flocking/src/main.cpp.o: \
  /usr/include/c++/11/bits/stl_bvector.h \
  /usr/include/c++/11/bits/vector.tcc \
  /home/alien/Documents/flocking-opengl/flocking/src/solids/pyramid.hpp \
+ /home/alien/Documents/flocking-opengl/flocking/src/solids/plane.hpp \
  /home/alien/Documents/flocking-opengl/flocking/src/boids/boid.hpp \
  /home/alien/Documents/flocking-opengl/flocking/src/spatial_map/spatial_map.hpp \
  /home/alien/Documents/flocking-opengl/flocking/vendor/glm/glm/gtx/hash.hpp \

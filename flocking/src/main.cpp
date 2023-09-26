@@ -7,6 +7,7 @@
 #include <shader_s.hpp>
 #include <cube.hpp>
 #include <pyramid.hpp>
+#include <plane.hpp>
 #include <boid.hpp>
 #include <camera.hpp>
 
@@ -32,7 +33,7 @@ void processInput(GLFWwindow *window);
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-const unsigned int NUM_BOIDS = 1000;
+const unsigned int NUM_BOIDS = 0;
 
 const unsigned int NUM_THREADS = 16;
 const int CHUNK_SIZE = std::max((NUM_BOIDS + (NUM_THREADS - 1)) / NUM_THREADS, (unsigned int) 1);
@@ -91,46 +92,6 @@ int setupGLAD(){
 
 void setupShaders(unsigned int &shaderProgram){
 
-
-	// // Compile shaders
-	// unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    // glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-    // glCompileShader(vertexShader);
-    // // check for shader compile errors
-    // int success;
-    // char infoLog[512];
-    // glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-    // if (!success)
-    // {
-    //     glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-    //     std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
-    // }
-
-    // unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    // glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    // glCompileShader(fragmentShader);
-    // // check for shader compile errors
-    // glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-    // if (!success)
-    // {
-    //     glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-    //     std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
-    // }
-
-
-	// // Link shaders
-	// shaderProgram = glCreateProgram();
-    // glAttachShader(shaderProgram, vertexShader);
-    // glAttachShader(shaderProgram, fragmentShader);
-    // glLinkProgram(shaderProgram);
-    // // check for linking errors
-    // glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-    // if (!success) {
-    //     glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-    //     std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
-    // }
-    // glDeleteShader(vertexShader);
-    // glDeleteShader(fragmentShader);
 }
 
 // Assume there are alpha channels... need to find way to support jpeg later
@@ -208,6 +169,7 @@ void updateBoids(std::vector<std::shared_ptr<Boid>> *boids,
     sync_point.arrive_and_wait();
     for (int i = start; i < end; i++){
             (*boids)[i]->updatePosition();
+            (*boids)[i]->updateMapEntry();
         // msg = std::to_string(tid) + "  Completed position!\n";
         // std::cout << msg;
 
@@ -249,37 +211,6 @@ void updateBoidsEntry(std::vector<std::shared_ptr<Boid>> *boids,
 }
 
 
-
-void testMap(){
-    std::cout << "Hello" << std::endl;
-    // assert(true);
-
-    SpatialMap hello;
-    std::cout << glm::to_string(hello._key(glm::vec3(-5.0f, 0.0f, 5.0f))) << std::endl;
-
-
-    // std::shared_ptr<int> i(new int(1));
-    Boid* j = new Boid(glm::vec3(-7.0f));
-    std::cout << glm::to_string(j->position) << std::endl;
-
-    auto e = hello.insert(j); // Return the spatial entry!!!
-    hello.printMap();
-
-    // // hello.insert();
-    // hello.remove(e);
-    // hello.printMap();
-
-    std::cout << glm::to_string(hello._key(glm::vec3(0.0f))) << std::endl;
-
-
-    delete j;
-
-    // assert(false);
-
-}
-
-
-
 // Add load texture function
 int main()
 {
@@ -300,19 +231,22 @@ int main()
 
     // glEnable(GL_DEPTH_TEST);
 
-    testMap();
+    // testMap();
     // assert(false);
 
 
     // build and compile our shader program
     // ------------------------------------
     Shader ourShader("./flocking/shader/exv.vs", "./flocking/shader/exf.fs");
+    Shader boidShader("./flocking/shader/boid.vs", "./flocking/shader/boid.fs");
+    Shader seaShader("./flocking/shader/sea.vs", "./flocking/shader/sea.fs");
+
 
 
     // uncomment this call to draw in wireframe polygons.
 //    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    std::vector<unsigned int> textureID = loadAllTextures("sky.png", "awesomeface.png");
+    std::vector<unsigned int> textureID = loadAllTextures("sky.png", "awesomeface.png", "noise.png");
 
     // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
     // -------------------------------------------------------------------------------------------
@@ -320,23 +254,28 @@ int main()
     ourShader.setInt("texture1", 0);
     ourShader.setInt("texture2", 1);
 
+    boidShader.use();
+    boidShader.setInt("texture1", 0);
+    boidShader.setInt("texture2", 1);
+    boidShader.setInt("noise1", 2);
+
+    seaShader.use();
+    seaShader.setInt("texture1", 0);
+    seaShader.setInt("texture2", 1);
     // pass projection matrix to shader (as projection matrix rarely changes there's no need to do this per frame)
     // -----------------------------------------------------------------------------------------------------------
-    ourShader.use();
+    // ourShader.use();
     // glm::mat4 projection    = glm::mat4(1.0f);
 
 
     // projection = glm::perspective(glm::radians(60.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 2000.0f);
     glm::mat4 view = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
     glm::mat4 projection = camera.getProjMatrix();
-    ourShader.setMat4("projection", projection);
+
     // // camera/view transformation
-
-
     Cube test;
     test.init();
     test.scale(glm::vec3(100.0));
-
 
     Cube xcoord;
     xcoord.init();
@@ -350,9 +289,19 @@ int main()
     zcoord.init();
     zcoord.translate(glm::vec3(0.0, 0.0, 10.0));
 
+    Cube light;
+    light.init();
+    glm::vec3 lightPos = glm::vec3(0.0, 15.0, 5.0);
+    light.translate(lightPos);
 
-    Pyramid cam;
-    cam.init();
+    Plane sea;
+    sea.setTiles(glm::ivec2(128));
+    sea.init();
+    sea.scale(glm::vec3(50.0));
+
+    // sea.printVertices();
+    // assert(false);
+
 
     // AHAHAHA Smart pointers
     std::vector<std::shared_ptr<Boid>> boids;
@@ -408,37 +357,53 @@ int main()
         glBindTexture(GL_TEXTURE_2D, textureID[0]);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, textureID[1]);
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, textureID[2]);
 
-        // Set up view matrix
+        // Set up projection and view matrix
+        projection = camera.getProjMatrix();
         view = camera.getViewMatrix();
 
 
-        // Setup markers
+        // Setup markers and area
+
         ourShader.use();
+        ourShader.setMat4("projection", projection);
+        ourShader.setMat4("view", view);
+
         ourShader.setInt("selected", 1);
-        ourShader.setMat4("view", view);
         ourShader.setMat4("model", test.modelMat);
-        test.render();
+        // test.render();
+
+        // ourShader.use();
+        // ourShader.setMat4("model", xcoord.modelMat);
+        // xcoord.render();
+
+        // ourShader.use();
+        // ourShader.setMat4("model", ycoord.modelMat);
+        // ycoord.render();
+
+        // ourShader.use();
+        // ourShader.setMat4("model", zcoord.modelMat);
+        // zcoord.render();
 
         ourShader.use();
-        ourShader.setMat4("view", view);
-        ourShader.setMat4("model", xcoord.modelMat);
-        xcoord.render();
+        ourShader.setMat4("model", light.modelMat);
+        light.render();
 
-        ourShader.use();
-        ourShader.setMat4("view", view);
-        ourShader.setMat4("model", ycoord.modelMat);
-        ycoord.render();
+        seaShader.use();
+        seaShader.setMat4("projection", projection);
+        seaShader.setMat4("view", view);
+        seaShader.setInt("selected", 0);
+        seaShader.setFloat("uTime", glfwGetTime());
+        seaShader.setMat4("model", sea.modelMat);
+        seaShader.setVec3("uLightPos", lightPos);
 
-        ourShader.use();
-        ourShader.setMat4("view", view);
-        ourShader.setMat4("model", zcoord.modelMat);
-        zcoord.render();
-
-
+        sea.render();
 
 
         std::thread *thread_array = new std::thread[NUM_THREADS];
+        /*
         { // Force Calculation
             chkpt = std::chrono::high_resolution_clock::now();
             for (unsigned int tid = 0; tid < NUM_THREADS; tid++){
@@ -517,17 +482,44 @@ int main()
         // for (int i = 0; i < NUM_BOIDS; i++){
         //     boids[i]->calculateForce();
         // }
+        */
+
+        { // All calculation
+            chkpt = std::chrono::high_resolution_clock::now();
+            for (unsigned int tid = 0; tid < NUM_THREADS; tid++){
+                unsigned int start = CHUNK_SIZE * tid;
+                // unsigned int end = start + CHUNK_SIZE;
+                unsigned int end = std::min(start + CHUNK_SIZE, NUM_BOIDS);
+
+                // if (start < end)
+                // std::cout << start << " "  << end << std::endl;
+                thread_array[tid] =
+                    std::thread(updateBoids, &boids, start, end, tid);
+            }
+
+            for (unsigned int tid = 0; tid < NUM_THREADS; tid++){
+                thread_array[tid].join();
+            }
+
+            stop = std::chrono::high_resolution_clock::now();
+            duration = std::chrono::duration_cast<
+                        std::chrono::microseconds>(stop - chkpt);
+
+            std::cout << "Time taken by Update Boids: "
+                << duration.count() << " microseconds" << std::endl;
+        }
 
         { // Rendering
             chkpt = std::chrono::high_resolution_clock::now();
+            boidShader.use();
+            boidShader.setMat4("projection", projection);
+            boidShader.setInt("selected", 1);
+            boidShader.setMat4("view", view);
 
             for (int i = 0; i < NUM_BOIDS; i++){
                 // boids[i]->updatePosition();
-                ourShader.use();
-                ourShader.setInt("selected", 1);
-                ourShader.setMat4("view", view);
-                ourShader.setMat4("model", boids[i]->model.modelMat);
-                // std::cout << boids[i].ID << std::endl;
+                boidShader.use();
+                boidShader.setMat4("model", boids[i]->model.modelMat);
                 boids[i]->render();
             }
 
@@ -564,6 +556,9 @@ int main()
     // ------------------------------------------------------------------------
     test.deleteBuffers();
     ourShader.deleteProgram();
+    boidShader.deleteProgram();
+    seaShader.deleteProgram();
+
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
@@ -610,6 +605,29 @@ void processInput(GLFWwindow *window)
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS){
         camera.moveRight(deltaTime);
     }
+
+    // if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS){
+    //     // std::cout << "PRESSED " << deltaTime << std::endl;
+    //     camera.moveForward(deltaTime);
+    // }
+    // if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS){
+    //     camera.moveBackward(deltaTime);
+    // }
+    // if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS){
+    //     camera.moveLeft(deltaTime);
+    // }
+    // if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS){
+    //     camera.moveRight(deltaTime);
+    // }
+    // if (glfwGetKey(window, GLFW_KEY_SLASH) == GLFW_PRESS){
+    //     camera.moveLeft(deltaTime);
+    // }
+    // if (glfwGetKey(window, GLFW_KEY_PERIOD) == GLFW_PRESS){
+    //     camera.moveRight(deltaTime);
+    // }
+
+
+
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
@@ -619,5 +637,6 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     // make sure the viewport matches the new window dimensions; note that width and
     // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, width, height);
+    camera.setPerspectiveSize(width, height);
 }
 

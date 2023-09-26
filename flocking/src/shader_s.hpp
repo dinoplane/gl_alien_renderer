@@ -1,6 +1,8 @@
 #ifndef SHADER_H
 #define SHADER_H
 
+// Source: https://github.com/JoeyDeVries/LearnOpenGL/blob/master/includes/learnopengl/shader_m.h
+
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 

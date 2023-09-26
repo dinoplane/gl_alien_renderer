@@ -21,6 +21,8 @@
 #include <boid.hpp>
 #include <spatial_map.hpp>
 
+// Inspiration from: https://www.youtube.com/watch?v=sx4IIQL0x7c
+
 /*
     Returns the index of the cell the position is in.
 
