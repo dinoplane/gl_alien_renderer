@@ -50,7 +50,12 @@ float pitch =  0.0f;
 float lastX =  800.0f / 2.0;
 float lastY =  600.0 / 2.0;
 
+float lightSpeed = 10.0;
+
 Camera camera((float) SCR_WIDTH, (float) SCR_HEIGHT);
+
+
+glm::vec3 lightPos = glm::vec3(0.0, 15.0, 5.0);
 
 int setupGLFW(GLFWwindow* &window){
 	// glfw: initialize and configure
@@ -237,9 +242,9 @@ int main()
 
     // build and compile our shader program
     // ------------------------------------
-    Shader ourShader("./flocking/shader/exv.vs", "./flocking/shader/exf.fs");
-    Shader boidShader("./flocking/shader/boid.vs", "./flocking/shader/boid.fs");
-    Shader seaShader("./flocking/shader/sea.vs", "./flocking/shader/sea.fs");
+    Shader ourShader("./shader/exv.vs", "./shader/exf.fs");
+    Shader boidShader("./shader/boid.vs", "./shader/boid.fs");
+    Shader seaShader("./shader/sea.vs", "./shader/sea.fs");
 
 
 
@@ -289,9 +294,10 @@ int main()
     zcoord.init();
     zcoord.translate(glm::vec3(0.0, 0.0, 10.0));
 
+
     Cube light;
     light.init();
-    glm::vec3 lightPos = glm::vec3(0.0, 15.0, 5.0);
+    lightPos = glm::vec3(0.0, 15.0, 5.0);
     light.translate(lightPos);
 
     Plane sea;
@@ -326,17 +332,13 @@ int main()
 
     // timing variables
     auto begin = std::chrono::high_resolution_clock::now();
-
     auto start = std::chrono::high_resolution_clock::now();
-
     auto chkpt = std::chrono::high_resolution_clock::now();
-
     auto stop = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
     std::cout << "Time taken by function: "
          << duration.count() << " microseconds" << std::endl;
     double counter = 0;
-
     unsigned int accum = 0;
     // render loop
     // -----------
@@ -346,7 +348,8 @@ int main()
         // input
         // -----
         processInput(window);
-
+        light.reset();
+        light.translate(lightPos);
         // render
         // ------
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -606,25 +609,25 @@ void processInput(GLFWwindow *window)
         camera.moveRight(deltaTime);
     }
 
-    // if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS){
-    //     // std::cout << "PRESSED " << deltaTime << std::endl;
-    //     camera.moveForward(deltaTime);
-    // }
-    // if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS){
-    //     camera.moveBackward(deltaTime);
-    // }
-    // if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS){
-    //     camera.moveLeft(deltaTime);
-    // }
-    // if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS){
-    //     camera.moveRight(deltaTime);
-    // }
-    // if (glfwGetKey(window, GLFW_KEY_SLASH) == GLFW_PRESS){
-    //     camera.moveLeft(deltaTime);
-    // }
-    // if (glfwGetKey(window, GLFW_KEY_PERIOD) == GLFW_PRESS){
-    //     camera.moveRight(deltaTime);
-    // }
+    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS){
+        // std::cout << "PRESSED " << deltaTime << std::endl;
+        lightPos += glm::vec3(0.0, 0.0, -1.0) * lightSpeed * deltaTime;
+    }
+    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS){
+        lightPos += glm::vec3(0.0, 0.0, 1.0) * lightSpeed * deltaTime;
+    }
+    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS){
+        lightPos += glm::vec3(-1.0, 0.0, 0.0) * lightSpeed * deltaTime;
+    }
+    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS){
+        lightPos += glm::vec3(1.0, 0.0, 0.0) * lightSpeed * deltaTime;
+    }
+    if (glfwGetKey(window, GLFW_KEY_SLASH) == GLFW_PRESS){
+        lightPos += glm::vec3(0.0, 1.0, 0.0) * lightSpeed * deltaTime;
+    }
+    if (glfwGetKey(window, GLFW_KEY_PERIOD) == GLFW_PRESS){
+        lightPos += glm::vec3(0.0, -1.0, 0.0) * lightSpeed * deltaTime;
+    }
 
 
 

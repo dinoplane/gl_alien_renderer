@@ -65,5 +65,6 @@
         "unordered_set": "cpp",
         "condition_variable": "cpp",
         "mutex": "cpp"
-    }
+    },
+    "C_Cpp.default.compilerPath": "/usr/bin/gcc"
 }
