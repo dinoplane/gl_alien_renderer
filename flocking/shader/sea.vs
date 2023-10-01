@@ -15,12 +15,20 @@ uniform mat4 projection;
 uniform int selected;
 uniform float uTime;
 
-
 out vec2 TexCoord;
 flat out int Selected;
-out vec4 FragPos;
+out vec3 FragPos;
 out vec3 Normal;
 
+float random (vec2 st) {
+    return fract(sin(dot(st.xy,
+                         vec2(12.9898,78.233)))*
+        43758.5453123);
+}
+
+float random (int i) {
+    return random(vec2(i));
+}
 
 struct Wave{
     float L; // Wavelength, frequency w = 2pi/L
@@ -31,11 +39,25 @@ struct Wave{
 
 
 Wave waveArray[WAVECOUNT] = Wave[WAVECOUNT](
-    Wave(5.0, 0.1, 5, vec2(1.0, 0.0)),
+    Wave(14.0, 0.07, 5, vec2(1.0, 5.0)),
     Wave(7.0, 0.05, 1, vec2(-1.0, 1.0)),
-    Wave(10.0, 0.1, 4, vec2(0.0, 1.0)),
-    Wave(8.0, 0.3, 2, vec2(-1.0, -1.0))
+    Wave(10.0, 0.07, 4, vec2(1.0, 0.5)),
+    Wave(8.0, 0.15, 2, vec2(-1.0, -1.0))
 );
+
+float waveFunction(float x, float z, float t, Wave wv){
+    float w = 2*PI / wv.L;
+    return wv.A * sin( dot(wv.D, vec2(x, z) * w) + t * (wv.S * w) );
+}
+
+float waveDerivativeX(float x, float z, float t, Wave wv){
+    float w = 2*PI / wv.L;
+    return -w * wv.D.x * wv.A * cos( dot(wv.D, vec2(x, z) * w) + t * (wv.S * w) );
+}
+float waveDerivativeZ(float x, float z, float t, Wave wv){
+    float w = 2*PI / wv.L;
+    return -w * wv.D.y * wv.A * cos( dot(wv.D, vec2(x, z) * w) + t * (wv.S * w) );
+}
 
 void main()
 {
@@ -50,13 +72,32 @@ void main()
 
     Normal = vec3(0, 1, 0);
     // General sum of sines
-    for (int i = 0; i < WAVECOUNT; i++){
-        Wave wv = waveArray[i];
-        float w = 2*PI / wv.L;
-        pos.y += wv.A * sin( dot(wv.D, vec2(x, z) * w) + t * (wv.S * w) );
-        Normal.x -= w * wv.D.x * wv.A * cos( dot(wv.D, vec2(x, z) * w) + t * (wv.S * w) );
-        Normal.z -= w * wv.D.y * wv.A * cos( dot(wv.D, vec2(x, z) * w) + t * (wv.S * w) );
+
+
+    // for (int i = 0; i < 1; i++){
+    //     Wave wv = waveArray[i];
+    //     pos.y += waveFunction(x, z, t, wv);
+    //     Normal.x += waveDerivativeX(x, z, t, wv);
+    //     Normal.z += waveDerivativeZ(x, z, t, wv);
+    // }
+    float L = 75.0;
+    float A = 0.7;
+    float S = 20.0;
+
+    float persistance = 0.5;
+    float lacunarity = 0.7;
+    for (float i = 0; i < 32.0; i++){ //random(vec2(x, i))*5, random(vec2(z, i)))*5
+        Wave wv = Wave(L, A, S, normalize(vec2(random(vec2(i)), random(vec2(0.5+ i))))*5.0);
+        // Wave wv = Wave(L, A, 5, vec2(random(vec2(x, i)), random(vec2(z, i))));
+        pos.y += waveFunction(x, z, t, wv);
+        Normal.x += waveDerivativeX(x, z, t, wv);
+        Normal.z += waveDerivativeZ(x, z, t, wv);
+
+        L *= lacunarity;
+        A *= persistance;
+        S *= lacunarity;
     }
+
 
     // pos.y += sin(0.5*i) + sin(i);
 
@@ -66,8 +107,8 @@ void main()
 
     // Normal = cross(b, t);
 
-    FragPos = pos;
-    gl_Position = projection * view * FragPos;
+    FragPos = pos.xyz/pos.w;
+    gl_Position = projection * view * pos;
 
 
     Selected = selected;

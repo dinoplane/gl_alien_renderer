@@ -33,7 +33,7 @@ void processInput(GLFWwindow *window);
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-const unsigned int NUM_BOIDS = 0;
+const unsigned int NUM_BOIDS = 100;
 
 const unsigned int NUM_THREADS = 16;
 const int CHUNK_SIZE = std::max((NUM_BOIDS + (NUM_THREADS - 1)) / NUM_THREADS, (unsigned int) 1);
@@ -401,6 +401,8 @@ int main()
         seaShader.setFloat("uTime", glfwGetTime());
         seaShader.setMat4("model", sea.modelMat);
         seaShader.setVec3("uLightPos", lightPos);
+        seaShader.setVec3("uViewPos", camera.position);
+
 
         sea.render();
 

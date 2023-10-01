@@ -23,25 +23,28 @@ const float ZOOM        =  45.0f;
 
 class Camera {
     // float fov;
-    float speed;
-    float sensitivity;
+    public:
+        glm::vec3 position;
 
-    glm::vec3 front;
-    glm::vec3 right;
-    glm::vec3 position;
-    glm::vec3 worldUp;
-    glm::vec3 up;
+    private:
+        float speed;
+        float sensitivity;
 
-    // glm::mat4 viewMat;
+        glm::vec3 front;
+        glm::vec3 right;
+        glm::vec3 worldUp;
+        glm::vec3 up;
 
-    // glm::mat4 projMat;
+        // glm::mat4 viewMat;
+
+        // glm::mat4 projMat;
 
 
-    float yaw;
-    float pitch;
+        float yaw;
+        float pitch;
 
-    float width;
-    float height;
+        float width;
+        float height;
 
 
     public:
