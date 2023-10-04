@@ -301,7 +301,7 @@ int main()
     light.translate(lightPos);
 
     Plane sea;
-    sea.setTiles(glm::ivec2(128));
+    sea.setTiles(glm::ivec2(512));
     sea.init();
     sea.scale(glm::vec3(50.0));
 

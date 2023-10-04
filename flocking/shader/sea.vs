@@ -26,7 +26,7 @@ float random (vec2 st) {
         43758.5453123);
 }
 
-float random (int i) {
+float random (float i) {
     return random(vec2(i));
 }
 
@@ -81,17 +81,31 @@ void main()
     //     Normal.z += waveDerivativeZ(x, z, t, wv);
     // }
     float L = 75.0;
-    float A = 0.7;
-    float S = 20.0;
+    float A = 0.5;
+    float S = 40.0;
 
     float persistance = 0.5;
-    float lacunarity = 0.7;
+    float lacunarity = 0.72;
+    float prevDx = 0.0;
+    float prevDz = 0.0;
+
     for (float i = 0; i < 32.0; i++){ //random(vec2(x, i))*5, random(vec2(z, i)))*5
-        Wave wv = Wave(L, A, S, normalize(vec2(random(vec2(i)), random(vec2(0.5+ i))))*5.0);
+        Wave wv = Wave(L, A, S, normalize(
+                                    vec2(
+                                        random(i),
+                                        random(0.5+i)
+                                    )
+                                )
+                            *5.0);
         // Wave wv = Wave(L, A, 5, vec2(random(vec2(x, i)), random(vec2(z, i))));
-        pos.y += waveFunction(x, z, t, wv);
-        Normal.x += waveDerivativeX(x, z, t, wv);
-        Normal.z += waveDerivativeZ(x, z, t, wv);
+        pos.y += waveFunction(x + prevDx, z + prevDz, t, wv);
+
+        prevDx = waveDerivativeX(x, z, t, wv);
+        prevDz = waveDerivativeZ(x, z, t, wv);
+
+        Normal.x += prevDx;
+        Normal.z += prevDz;
+
 
         L *= lacunarity;
         A *= persistance;

@@ -19,6 +19,9 @@ void main()
     vec3 lightVec = normalize(uLightPos - FragPos);
     vec3 norm = normalize(Normal);
     float diff = max(dot(lightVec, norm), 0.0);
+    if (diff  == 0 && uLightPos.y <= 0){
+        diff = max(dot(lightVec, -norm), 0.0);
+    }
     float albedo = 1.0;
     vec4 diffuse = albedo * diff * diffColor;
 
