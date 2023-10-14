@@ -522,6 +522,9 @@ CMakeFiles/flocking.dir/flocking/src/boids/boid.cpp.o: ../flocking/src/boids/boi
   /usr/include/c++/11/bits/ranges_util.h \
   /usr/include/c++/11/pstl/glue_algorithm_defs.h
 
+CMakeFiles/flocking.dir/flocking/src/boids/formation.cpp.o: ../flocking/src/boids/formation.cpp \
+  /usr/include/stdc-predef.h
+
 CMakeFiles/flocking.dir/flocking/src/camera.cpp.o: ../flocking/src/camera.cpp \
   /usr/include/stdc-predef.h \
   ../flocking/vendor/glad/include/glad/glad.h \
@@ -3836,6 +3839,8 @@ CMakeFiles/flocking.dir/flocking/src/spatial_map/spatial_map.cpp.o: ../flocking/
 
 /usr/include/c++/11/bits/stl_tree.h:
 
+../flocking/src/spatial_map/spatial_map.cpp:
+
 ../flocking/vendor/glm/glm/detail/type_half.inl:
 
 ../flocking/vendor/glm/glm/detail/func_trigonometric.inl:
@@ -4894,6 +4899,8 @@ CMakeFiles/flocking.dir/flocking/src/spatial_map/spatial_map.cpp.o: ../flocking/
 
 /usr/include/c++/11/mutex:
 
+../flocking/src/boids/formation.cpp:
+
 /usr/include/c++/11/ratio:
 
 /usr/include/c++/11/thread:
@@ -4917,5 +4924,3 @@ CMakeFiles/flocking.dir/flocking/src/spatial_map/spatial_map.cpp.o: ../flocking/
 ../flocking/src/solids/cube.cpp:
 
 ../flocking/src/solids/pyramid.cpp:
-
-../flocking/src/spatial_map/spatial_map.cpp:

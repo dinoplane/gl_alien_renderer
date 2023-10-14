@@ -11,6 +11,11 @@
 },
 {
   "directory": "/home/alien/Documents/flocking-opengl/build",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DPROJECT_SOURCE_DIR=\\\"/home/alien/Documents/flocking-opengl\\\" -I/home/alien/Documents/flocking-opengl/flocking/vendor/glm -I/home/alien/Documents/flocking-opengl/flocking/vendor/glad/include -I/home/alien/Documents/flocking-opengl/flocking/vendor/stb -I/home/alien/Documents/flocking-opengl/flocking/src/solids -I/home/alien/Documents/flocking-opengl/flocking/src/boids -I/home/alien/Documents/flocking-opengl/flocking/src/spatial_map -I/home/alien/Documents/flocking-opengl/flocking/src -g -Werror -std=c++20 -o CMakeFiles/flocking.dir/flocking/src/boids/formation.cpp.o -c /home/alien/Documents/flocking-opengl/flocking/src/boids/formation.cpp",
+  "file": "/home/alien/Documents/flocking-opengl/flocking/src/boids/formation.cpp"
+},
+{
+  "directory": "/home/alien/Documents/flocking-opengl/build",
   "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DPROJECT_SOURCE_DIR=\\\"/home/alien/Documents/flocking-opengl\\\" -I/home/alien/Documents/flocking-opengl/flocking/vendor/glm -I/home/alien/Documents/flocking-opengl/flocking/vendor/glad/include -I/home/alien/Documents/flocking-opengl/flocking/vendor/stb -I/home/alien/Documents/flocking-opengl/flocking/src/solids -I/home/alien/Documents/flocking-opengl/flocking/src/boids -I/home/alien/Documents/flocking-opengl/flocking/src/spatial_map -I/home/alien/Documents/flocking-opengl/flocking/src -g -Werror -std=c++20 -o CMakeFiles/flocking.dir/flocking/src/camera.cpp.o -c /home/alien/Documents/flocking-opengl/flocking/src/camera.cpp",
   "file": "/home/alien/Documents/flocking-opengl/flocking/src/camera.cpp"
 },

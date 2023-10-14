@@ -8,6 +8,7 @@ layout (location = 2) in vec2 aTexCoord;
 
 #define PI 3.1415926535897932384626433832795
 
+#define K_C 4.5
 
 uniform mat4 model;
 uniform mat4 view;
@@ -48,15 +49,23 @@ Wave waveArray[WAVECOUNT] = Wave[WAVECOUNT](
 float waveFunction(float x, float z, float t, Wave wv){
     float w = 2*PI / wv.L;
     return wv.A * sin( dot(wv.D, vec2(x, z) * w) + t * (wv.S * w) );
+    // return 2.0 * wv.A * pow(((sin( dot(wv.D, vec2(x, z) * w) + t * (wv.S * w) ) + 1) / 2), K_C) ;
 }
 
 float waveDerivativeX(float x, float z, float t, Wave wv){
     float w = 2*PI / wv.L;
     return -w * wv.D.x * wv.A * cos( dot(wv.D, vec2(x, z) * w) + t * (wv.S * w) );
+    // return -K_C * w * wv.D.x * wv.A * cos( dot(wv.D, vec2(x, z) * w) + t * (wv.S * w) )
+    //         * pow(((sin( dot(wv.D, vec2(x, z) * w) + t * (wv.S * w) ) + 1) / 2), (K_C - 1));
+
 }
 float waveDerivativeZ(float x, float z, float t, Wave wv){
     float w = 2*PI / wv.L;
     return -w * wv.D.y * wv.A * cos( dot(wv.D, vec2(x, z) * w) + t * (wv.S * w) );
+
+    // return -K_C * w * wv.D.y * wv.A * cos( dot(wv.D, vec2(x, z) * w) + t * (wv.S * w) )
+    //         * pow(((sin( dot(wv.D, vec2(x, z) * w) + t * (wv.S * w) ) + 1) / 2), (K_C - 1));
+
 }
 
 void main()
