@@ -33,11 +33,10 @@ void processInput(GLFWwindow *window);
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-const unsigned int NUM_BOIDS = 100;
-
-const unsigned int NUM_THREADS = 16;
-const int CHUNK_SIZE = std::max((NUM_BOIDS + (NUM_THREADS - 1)) / NUM_THREADS, (unsigned int) 1);
-std::barrier sync_point(NUM_THREADS);
+unsigned int NUM_BOIDS = 100;
+unsigned int NUM_THREADS = 16;
+int CHUNK_SIZE = std::max((NUM_BOIDS + (NUM_THREADS - 1)) / NUM_THREADS, (unsigned int) 1);
+// std::barrier sync_point(NUM_THREADS);
 
 // timing
 float deltaTime = 0.0f;	// time between current frame and last frame
@@ -56,6 +55,29 @@ Camera camera((float) SCR_WIDTH, (float) SCR_HEIGHT);
 
 
 glm::vec3 lightPos = glm::vec3(0.0, 15.0, 5.0);
+
+void setupCmdArgs(int argc, char **argv){
+    int i = 1;
+    while (i < argc){
+        if (argv[i][0] != '-') {
+            std::cout << "Usage: flocking -b NUM_BOUNDS -t NUM_THREADS\n";
+            exit(EXIT_FAILURE);
+        }
+        switch (argv[i][1]){
+            case 'b':
+                i++;
+                NUM_BOIDS = std::stoi(argv[i]);
+                break;
+            case 't':
+                i++;
+                NUM_THREADS = std::stoi(argv[i]);
+                break;
+        }
+        i++;
+    }
+    CHUNK_SIZE = std::max((NUM_BOIDS + (NUM_THREADS - 1)) / NUM_THREADS, (unsigned int) 1);
+
+}
 
 int setupGLFW(GLFWwindow* &window){
 	// glfw: initialize and configure
@@ -143,6 +165,42 @@ std::vector<unsigned int> loadAllTextures(std::convertible_to<std::string_view> 
     return textureNums;
 }
 
+unsigned int loadCubeMap(std::convertible_to<std::string_view> auto&& ...s){
+    std::initializer_list<std::string_view> textures_faces = {s... };
+
+    unsigned int textureID;
+    int width, height, nrChannels;
+    unsigned char *data;
+
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+    int i = 0;
+    for(auto f_n : textures_faces)
+    {
+        data = stbi_load(f_n.data(), &width, &height, &nrChannels, 0);
+
+        if (data){
+            glTexImage2D(
+                GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+                0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data
+            );
+        } else {
+            std::cout << "Failed to load texture "  << f_n.data()  << std::endl;
+        }
+        stbi_image_free(data);
+        i++;
+    }
+
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+    return textureID;
+}
+
+
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
     if (glfwGetInputMode(window, GLFW_CURSOR) != GLFW_CURSOR_DISABLED){
@@ -165,7 +223,8 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 
 
 void updateBoids(std::vector<std::shared_ptr<Boid>> *boids,
-        unsigned int start, unsigned int end, unsigned int tid){
+        unsigned int start, unsigned int end, unsigned int tid,
+        std::barrier<std::function<void()>>& sync_point){
     for (int i = start; i < end; i++){
         (*boids)[i]->calculateForce();
         // std::string msg = std::to_string(tid) + "  Completed force!\n";
@@ -182,44 +241,46 @@ void updateBoids(std::vector<std::shared_ptr<Boid>> *boids,
     sync_point.arrive_and_wait();
 }
 
-void updateBoidsForce(std::vector<std::shared_ptr<Boid>> *boids,
-        unsigned int start, unsigned int end, unsigned int tid){
-    for (int i = start; i < end; i++){
-        if (i < NUM_BOIDS)
-            (*boids)[i]->calculateForce();
-        // std::string msg = std::to_string(tid) + "  Completed force!\n";
-        // std::cout << msg;
-    }
-    sync_point.arrive_and_wait();
-}
+// void updateBoidsForce(std::vector<std::shared_ptr<Boid>> *boids,
+//         unsigned int start, unsigned int end, unsigned int tid){
+//     for (int i = start; i < end; i++){
+//         if (i < NUM_BOIDS)
+//             (*boids)[i]->calculateForce();
+//         // std::string msg = std::to_string(tid) + "  Completed force!\n";
+//         // std::cout << msg;
+//     }
+//     sync_point.arrive_and_wait();
+// }
 
-void updateBoidsPos(std::vector<std::shared_ptr<Boid>> *boids,
-        unsigned int start, unsigned int end, unsigned int tid){
-    for (int i = start; i < end; i++){
-        if (i < NUM_BOIDS)
-           (*boids)[i]->updatePosition();
-        // msg = std::to_string(tid) + "  Completed position!\n";
-        // std::cout << msg;
-    }
-    sync_point.arrive_and_wait();
-}
+// void updateBoidsPos(std::vector<std::shared_ptr<Boid>> *boids,
+//         unsigned int start, unsigned int end, unsigned int tid){
+//     for (int i = start; i < end; i++){
+//         if (i < NUM_BOIDS)
+//            (*boids)[i]->updatePosition();
+//         // msg = std::to_string(tid) + "  Completed position!\n";
+//         // std::cout << msg;
+//     }
+//     sync_point.arrive_and_wait();
+// }
 
-void updateBoidsEntry(std::vector<std::shared_ptr<Boid>> *boids,
-        unsigned int start, unsigned int end, unsigned int tid){
-    for (int i = start; i < end; i++){
-        if (i < NUM_BOIDS)
-           (*boids)[i]->updateMapEntry();
-        // msg = std::to_string(tid) + "  Completed position!\n";
-        // std::cout << msg;
-    }
-    sync_point.arrive_and_wait();
-}
+// void updateBoidsEntry(std::vector<std::shared_ptr<Boid>> *boids,
+//         unsigned int start, unsigned int end, unsigned int tid){
+//     for (int i = start; i < end; i++){
+//         if (i < NUM_BOIDS)
+//            (*boids)[i]->updateMapEntry();
+//         // msg = std::to_string(tid) + "  Completed position!\n";
+//         // std::cout << msg;
+//     }
+//     sync_point.arrive_and_wait();
+// }
 
 
 // Add load texture function
-int main()
+int main(int argc, char **argv)
 {
+    setupCmdArgs(argc,argv);
 
+    std::barrier<std::function<void()>> sync_point(NUM_THREADS, []() noexcept {});
 
 	GLFWwindow* window;
 
@@ -245,14 +306,16 @@ int main()
     Shader ourShader("./shader/exv.vs", "./shader/exf.fs");
     Shader boidShader("./shader/boid.vs", "./shader/boid.fs");
     Shader seaShader("./shader/sea.vs", "./shader/sea.fs");
-
-
+    Shader seafloorShader("./shader/seafloor.vs", "./shader/seafloor.fs");
+    Shader normalsShader("./shader/sea.vs", "./shader/normals.fs", "./shader/normals.gs");
+    Shader skyboxShader("./shader/skybox.vs", "./shader/skybox.fs");
+    // assert(false);
 
     // uncomment this call to draw in wireframe polygons.
 //    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     std::vector<unsigned int> textureID = loadAllTextures("sky.png", "awesomeface.png", "noise.png");
-
+    unsigned int skyBoxID = loadCubeMap("bluecloud_rt.jpg", "bluecloud_lf.jpg", "bluecloud_up.jpg", "bluecloud_dn.jpg", "bluecloud_bk.jpg", "bluecloud_ft.jpg");
     // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
     // -------------------------------------------------------------------------------------------
     ourShader.use();
@@ -267,6 +330,12 @@ int main()
     seaShader.use();
     seaShader.setInt("texture1", 0);
     seaShader.setInt("texture2", 1);
+
+    normalsShader.use();
+    normalsShader.setInt("texture1", 0);
+    normalsShader.setInt("texture2", 1);
+
+
     // pass projection matrix to shader (as projection matrix rarely changes there's no need to do this per frame)
     // -----------------------------------------------------------------------------------------------------------
     // ourShader.use();
@@ -278,9 +347,9 @@ int main()
     glm::mat4 projection = camera.getProjMatrix();
 
     // // camera/view transformation
-    Cube test;
-    test.init();
-    test.scale(glm::vec3(100.0));
+    Cube skybox;
+    skybox.init();
+    skybox.scale(glm::vec3(100.0));
 
     Cube xcoord;
     xcoord.init();
@@ -300,10 +369,18 @@ int main()
     lightPos = glm::vec3(0.0, 15.0, 5.0);
     light.translate(lightPos);
 
+
+
     Plane sea;
-    sea.setTiles(glm::ivec2(512));
+    sea.setTiles(glm::ivec2(1024));
     sea.init();
-    sea.scale(glm::vec3(50.0));
+    sea.scale(glm::vec3(100.0));
+
+    Plane floor;
+    floor.setTiles(glm::ivec2(1024));
+    floor.init();
+    floor.scale(glm::vec3(100.0, 50.0, 100.0));
+    floor.translate(glm::vec3(0.0, -0.5, 0.0));
 
     // sea.printVertices();
     // assert(false);
@@ -362,11 +439,19 @@ int main()
         glBindTexture(GL_TEXTURE_2D, textureID[1]);
         glActiveTexture(GL_TEXTURE2);
         glBindTexture(GL_TEXTURE_2D, textureID[2]);
+        glDepthMask(GL_FALSE);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, skyBoxID);
+
 
         // Set up projection and view matrix
         projection = camera.getProjMatrix();
         view = camera.getViewMatrix();
 
+        skyboxShader.use();
+        skyboxShader.setMat4("projection", projection);
+        skyboxShader.setMat4("view", view);
+        skybox.render();
+        glDepthMask(GL_TRUE);
 
         // Setup markers and area
 
@@ -375,7 +460,21 @@ int main()
         ourShader.setMat4("view", view);
 
         ourShader.setInt("selected", 1);
-        ourShader.setMat4("model", test.modelMat);
+        ourShader.setMat4("model", floor.modelMat);
+        // seaShader.setInt("uIsFloor", 0);
+
+        seafloorShader.use();
+        seafloorShader.setMat4("projection", projection);
+        seafloorShader.setMat4("view", view);
+        seafloorShader.setInt("selected", 0);
+        seafloorShader.setFloat("uTime", glfwGetTime());
+        seafloorShader.setMat4("model", floor.modelMat);
+        seafloorShader.setVec3("uLightPos", lightPos);
+        seafloorShader.setVec3("uViewPos", camera.position);
+        floor.render();
+
+
+        // assert(false);
         // test.render();
 
         // ourShader.use();
@@ -402,9 +501,18 @@ int main()
         seaShader.setMat4("model", sea.modelMat);
         seaShader.setVec3("uLightPos", lightPos);
         seaShader.setVec3("uViewPos", camera.position);
-
-
+        // seaShader.setInt("uIsFloor", 0);
         sea.render();
+
+        // normalsShader.use();
+        // normalsShader.setMat4("projection", projection);
+        // normalsShader.setMat4("view", view);
+        // normalsShader.setInt("selected", 0);
+        // normalsShader.setFloat("uTime", glfwGetTime());
+        // normalsShader.setMat4("model", sea.modelMat);
+        // normalsShader.setVec3("uLightPos", lightPos);
+        // normalsShader.setVec3("uViewPos", camera.position);
+        // sea.render();
 
 
         std::thread *thread_array = new std::thread[NUM_THREADS];
@@ -499,7 +607,7 @@ int main()
                 // if (start < end)
                 // std::cout << start << " "  << end << std::endl;
                 thread_array[tid] =
-                    std::thread(updateBoids, &boids, start, end, tid);
+                    std::thread(updateBoids, &boids, start, end, tid, std::ref(sync_point));
             }
 
             for (unsigned int tid = 0; tid < NUM_THREADS; tid++){
@@ -551,6 +659,8 @@ int main()
             << duration.count() << " microseconds" << std::endl;
         counter++;
         accum += duration.count();
+
+        // assert(false);
     }
 
     std::cout << "Average Time taken by function: "
@@ -559,7 +669,7 @@ int main()
 
     // optional: de-allocate all resources once they've outlived their purpose:
     // ------------------------------------------------------------------------
-    test.deleteBuffers();
+    // test.deleteBuffers();
     ourShader.deleteProgram();
     boidShader.deleteProgram();
     seaShader.deleteProgram();

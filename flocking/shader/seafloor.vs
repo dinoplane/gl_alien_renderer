@@ -19,10 +19,9 @@ uniform float uTime;
 out vec2 TexCoord;
 flat out int Selected;
 out vec3 FragPos;
-out VS_OUT {
-    vec4 normal;
-} vs_out;
 out vec3 Normal;
+out vec3 oldPos;
+out vec3 newPos;
 
 
 float random (vec2 st) {
@@ -72,8 +71,17 @@ float waveDerivativeZ(float x, float z, float t, Wave wv){
 
 }
 
+
+// GPU Gems 1 Ch. 2
+vec3 line_plane_intercept(vec3 POI, vec3 planeP, vec3 planeN, vec3 lineU) {
+    float d = dot(planeP - POI, planeN) / dot(lineU, planeN);
+    return POI + lineU * d;
+}
+
 void main()
 {
+    // gl_Position = view  * vec4(aPos, 1.0);
+
     vec4 pos = model * vec4(aPos, 1.0);
 
     float x = pos.x;
@@ -87,19 +95,20 @@ void main()
     float S = 40.0;
 
     float persistance = 0.5;
-    float lacunarity = 0.7;
+    float lacunarity = 0.72;
     float prevDx = 0.0;
     float prevDz = 0.0;
 
-    for (float i = 0; i < 32.0; i++){ // random(vec2(x, i)) * 5, random(vec2(z, i)))*5
+    for (float i = 0; i < 6.0; i++){ //random(vec2(x, i))*5, random(vec2(z, i)))*5
         Wave wv = Wave(L, A, S, normalize(
                                     vec2(
                                         random(i),
                                         random(0.5+i)
                                     )
                                 )
-                            * 5.0);
-        pos.y += waveFunction(x + prevDx, z + prevDz, t, wv);
+                            *5.0);
+    //     // Wave wv = Wave(L, A, 5, vec2(random(vec2(x, i)), random(vec2(z, i))));
+    //     pos.y += waveFunction(x + prevDx, z + prevDz, t, wv);
 
         prevDx = waveDerivativeX(x, z, t, wv);
         prevDz = waveDerivativeZ(x, z, t, wv);
@@ -107,14 +116,25 @@ void main()
         Normal.x += prevDx;
         Normal.z += prevDz;
 
+
         L *= lacunarity;
         A *= persistance;
         S *= lacunarity;
     }
 
+    // Begin Caustic Calculation
+    // Snell's law
+    vec3 N = normalize(Normal);
+    vec3 ray = normalize(refract(vec3(0.0, 1.0, 0.0), N, 1.0/1.33));
+    vec3 POI = vec3(pos.x, 0.0, pos.z);
+
+
+    oldPos = pos.xyz;
+    newPos = line_plane_intercept(POI, pos.xyz, vec3(0.0, 1.0, 0.0), ray);
+    // Caustic = abs(asin(sqrt(1.0 - pow(dot(N, vec3(0.0, 1.0, 0.0)), 2.0))/1.33));
+
     FragPos = pos.xyz/pos.w;
     gl_Position = projection * view * pos;
-    vs_out.normal = projection * view * vec4(Normal, 0.0);
 
     Selected = selected;
     TexCoord = vec2(aTexCoord.x, 1.0 - aTexCoord.y);

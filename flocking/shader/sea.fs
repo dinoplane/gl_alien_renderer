@@ -15,7 +15,9 @@ uniform vec3 uViewPos;
 void main()
 {
     // Diffuse
-    vec4 diffColor = vec4(0.1, 0.2, 0.4, 1.0);
+    // vec4 diffColor = vec4(0.1, 0.2, 0.4, 1.0);
+    vec4 diffColor = vec4(0.62, 0.85, 0.84, 1.0);
+
     vec3 lightVec = normalize(uLightPos - FragPos);
     vec3 norm = normalize(Normal);
     float diff = max(dot(lightVec, norm), 0.0);

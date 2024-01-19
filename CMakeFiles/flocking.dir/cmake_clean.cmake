@@ -1,6 +1,8 @@
 file(REMOVE_RECURSE
   "CMakeFiles/flocking.dir/flocking/src/boids/boid.cpp.o"
   "CMakeFiles/flocking.dir/flocking/src/boids/boid.cpp.o.d"
+  "CMakeFiles/flocking.dir/flocking/src/boids/formation.cpp.o"
+  "CMakeFiles/flocking.dir/flocking/src/boids/formation.cpp.o.d"
   "CMakeFiles/flocking.dir/flocking/src/camera.cpp.o"
   "CMakeFiles/flocking.dir/flocking/src/camera.cpp.o.d"
   "CMakeFiles/flocking.dir/flocking/src/main.cpp.o"
