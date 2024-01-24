@@ -455,6 +455,15 @@ CMakeFiles/flocking.dir/flocking/src/boids/boid.cpp.o: flocking/src/boids/boid.c
   /usr/include/c++/11/bits/sstream.tcc \
   /usr/include/c++/11/iostream \
   flocking/src/spatial_map/spatial_map.hpp \
+  flocking/vendor/glm/glm/gtx/norm.hpp \
+  flocking/vendor/glm/glm/gtx/quaternion.hpp \
+  flocking/vendor/glm/glm/ext/quaternion_exponential.hpp \
+  flocking/vendor/glm/glm/ext/quaternion_exponential.inl \
+  flocking/vendor/glm/glm/gtx/quaternion.inl \
+  flocking/vendor/glm/glm/gtx/component_wise.hpp \
+  flocking/vendor/glm/glm/detail/setup.hpp \
+  flocking/vendor/glm/glm/gtx/component_wise.inl \
+  flocking/vendor/glm/glm/gtx/norm.inl \
   flocking/vendor/glm/glm/gtx/hash.hpp \
   /usr/include/c++/11/functional \
   /usr/include/c++/11/tuple \
@@ -1429,6 +1438,15 @@ CMakeFiles/flocking.dir/flocking/src/main.cpp.o: flocking/src/main.cpp \
   flocking/src/solids/plane.hpp \
   flocking/src/boids/boid.hpp \
   flocking/src/spatial_map/spatial_map.hpp \
+  flocking/vendor/glm/glm/gtx/norm.hpp \
+  flocking/vendor/glm/glm/gtx/quaternion.hpp \
+  flocking/vendor/glm/glm/ext/quaternion_exponential.hpp \
+  flocking/vendor/glm/glm/ext/quaternion_exponential.inl \
+  flocking/vendor/glm/glm/gtx/quaternion.inl \
+  flocking/vendor/glm/glm/gtx/component_wise.hpp \
+  flocking/vendor/glm/glm/detail/setup.hpp \
+  flocking/vendor/glm/glm/gtx/component_wise.inl \
+  flocking/vendor/glm/glm/gtx/norm.inl \
   flocking/vendor/glm/glm/gtx/hash.hpp \
   /usr/include/c++/11/functional \
   /usr/include/c++/11/tuple \
@@ -3812,6 +3830,7 @@ CMakeFiles/flocking.dir/flocking/src/spatial_map/spatial_map.cpp.o: flocking/src
   /usr/include/c++/11/sstream \
   /usr/include/c++/11/bits/sstream.tcc \
   /usr/include/c++/11/iostream \
+  /usr/include/c++/11/atomic \
   flocking/src/boids/boid.hpp \
   flocking/vendor/glad/include/glad/glad.h \
   flocking/vendor/glad/include/KHR/khrplatform.h \
@@ -3819,6 +3838,15 @@ CMakeFiles/flocking.dir/flocking/src/spatial_map/spatial_map.cpp.o: flocking/src
   flocking/src/solids/pyramid.hpp \
   flocking/src/solids/solid.hpp \
   flocking/src/spatial_map/spatial_map.hpp \
+  flocking/vendor/glm/glm/gtx/norm.hpp \
+  flocking/vendor/glm/glm/gtx/quaternion.hpp \
+  flocking/vendor/glm/glm/ext/quaternion_exponential.hpp \
+  flocking/vendor/glm/glm/ext/quaternion_exponential.inl \
+  flocking/vendor/glm/glm/gtx/quaternion.inl \
+  flocking/vendor/glm/glm/gtx/component_wise.hpp \
+  flocking/vendor/glm/glm/detail/setup.hpp \
+  flocking/vendor/glm/glm/gtx/component_wise.inl \
+  flocking/vendor/glm/glm/gtx/norm.inl \
   /usr/include/c++/11/unordered_set \
   /usr/include/c++/11/bits/unordered_set.h \
   /usr/include/c++/11/mutex \
@@ -3838,6 +3866,16 @@ CMakeFiles/flocking.dir/flocking/src/spatial_map/spatial_map.cpp.o: flocking/src
 /usr/include/c++/11/bits/stl_set.h:
 
 /usr/include/c++/11/bits/stl_tree.h:
+
+flocking/src/solids/plane.cpp:
+
+flocking/src/solids/cube.cpp:
+
+/usr/lib/gcc/x86_64-linux-gnu/11/include/mmintrin.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/11/include/xmmintrin.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/11/include/emmintrin.h:
 
 flocking/vendor/glm/glm/detail/func_trigonometric.inl:
 
@@ -3869,6 +3907,10 @@ flocking/vendor/glm/glm/ext/matrix_double4x3.hpp:
 
 flocking/vendor/glm/glm/ext/matrix_double4x2_precision.hpp:
 
+flocking/src/solids/solid.cpp:
+
+flocking/vendor/glm/glm/detail/compute_common.hpp:
+
 flocking/vendor/glm/glm/detail/func_matrix.inl:
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/float.h:
@@ -3897,8 +3939,6 @@ flocking/vendor/glm/glm/ext/matrix_float3x4_precision.hpp:
 
 flocking/vendor/glm/glm/ext/matrix_float3x3_precision.hpp:
 
-flocking/vendor/glm/glm/gtx/hash.hpp:
-
 flocking/vendor/glm/glm/ext/matrix_double3x3_precision.hpp:
 
 flocking/vendor/glm/glm/mat3x3.hpp:
@@ -3914,6 +3954,8 @@ flocking/vendor/glm/glm/ext/matrix_float3x2_precision.hpp:
 flocking/vendor/glm/glm/ext/matrix_double3x2_precision.hpp:
 
 flocking/vendor/glm/glm/detail/type_mat3x2.inl:
+
+flocking/vendor/glm/glm/ext/quaternion_exponential.hpp:
 
 flocking/vendor/glm/glm/ext/matrix_float2x4_precision.hpp:
 
@@ -4093,8 +4135,6 @@ flocking/vendor/glm/glm/glm.hpp:
 
 /usr/include/c++/11/string_view:
 
-/usr/include/c++/11/tr1/bessel_function.tcc:
-
 /usr/include/c++/11/tr1/riemann_zeta.tcc:
 
 flocking/vendor/glm/glm/ext/matrix_float4x2_precision.hpp:
@@ -4209,8 +4249,6 @@ flocking/vendor/glm/glm/ext/matrix_float2x3.hpp:
 
 /usr/include/c++/11/bits/iterator_concepts.h:
 
-/usr/lib/gcc/x86_64-linux-gnu/11/include/emmintrin.h:
-
 /usr/include/c++/11/bits/exception.h:
 
 /usr/include/c++/11/bits/locale_facets.h:
@@ -4254,6 +4292,10 @@ flocking/vendor/glm/glm/ext/vector_float3_precision.hpp:
 flocking/vendor/glm/glm/ext/matrix_float2x2_precision.hpp:
 
 /usr/include/c++/11/bits/stringfwd.h:
+
+/usr/include/c++/11/tr1/bessel_function.tcc:
+
+flocking/vendor/glm/glm/gtx/quaternion.hpp:
 
 /usr/include/c++/11/tr1/gamma.tcc:
 
@@ -4437,9 +4479,11 @@ flocking/vendor/glm/glm/simd/platform.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/limits.h:
 
+flocking/vendor/glm/glm/ext/quaternion_exponential.inl:
+
 /usr/include/x86_64-linux-gnu/bits/xopen_lim.h:
 
-flocking/src/solids/plane.cpp:
+flocking/vendor/glm/glm/gtx/quaternion.inl:
 
 /usr/include/x86_64-linux-gnu/bits/locale.h:
 
@@ -4477,19 +4521,15 @@ flocking/vendor/glm/glm/gtc/matrix_transform.inl:
 
 flocking/vendor/glm/glm/gtc/type_ptr.hpp:
 
-/usr/include/x86_64-linux-gnu/bits/time64.h:
-
 /usr/lib/gcc/x86_64-linux-gnu/11/include/mm_malloc.h:
+
+/usr/include/x86_64-linux-gnu/bits/time64.h:
 
 flocking/vendor/glm/glm/ext/vector_relational.hpp:
 
 /usr/include/c++/11/ext/aligned_buffer.h:
 
 /usr/include/c++/11/bits/locale_classes.tcc:
-
-flocking/vendor/glm/glm/detail/compute_common.hpp:
-
-flocking/src/solids/solid.cpp:
 
 /usr/include/x86_64-linux-gnu/bits/math-vector.h:
 
@@ -4637,6 +4677,12 @@ flocking/vendor/glm/glm/ext/vector_uint1.hpp:
 
 /usr/include/c++/11/cstdlib:
 
+flocking/src/solids/pyramid.cpp:
+
+/usr/include/c++/11/bits/cxxabi_forced.h:
+
+/usr/include/c++/11/bits/algorithmfwd.h:
+
 /usr/include/c++/11/pstl/execution_defs.h:
 
 /usr/include/c++/11/bits/uniform_int_dist.h:
@@ -4703,8 +4749,6 @@ flocking/src/boids/boid.cpp:
 
 /usr/include/c++/11/ext/string_conversions.h:
 
-flocking/src/solids/cube.cpp:
-
 /usr/include/c++/11/cstdio:
 
 /usr/include/stdio.h:
@@ -4745,6 +4789,8 @@ flocking/src/boids/boid.hpp:
 
 flocking/vendor/glm/glm/ext/vector_double2_precision.hpp:
 
+flocking/vendor/glm/glm/gtx/component_wise.inl:
+
 /usr/include/c++/11/fstream:
 
 flocking/vendor/glm/glm/detail/func_integer.inl:
@@ -4769,6 +4815,8 @@ flocking/vendor/glm/glm/ext/matrix_float2x4.hpp:
 
 /usr/include/c++/11/cwctype:
 
+flocking/vendor/glm/glm/gtx/norm.hpp:
+
 /usr/include/semaphore.h:
 
 /usr/include/x86_64-linux-gnu/bits/wctype-wchar.h:
@@ -4778,12 +4826,6 @@ flocking/vendor/glm/glm/ext/quaternion_transform.inl:
 /usr/include/x86_64-linux-gnu/c++/11/bits/ctype_base.h:
 
 /usr/include/c++/11/bits/streambuf_iterator.h:
-
-/usr/include/c++/11/bits/cxxabi_forced.h:
-
-/usr/include/c++/11/bits/algorithmfwd.h:
-
-flocking/src/solids/pyramid.cpp:
 
 /usr/include/x86_64-linux-gnu/c++/11/bits/ctype_inline.h:
 
@@ -4808,6 +4850,12 @@ flocking/vendor/glm/glm/geometric.hpp:
 /usr/include/x86_64-linux-gnu/asm/unistd_64.h:
 
 flocking/src/spatial_map/spatial_map.hpp:
+
+flocking/vendor/glm/glm/gtx/hash.hpp:
+
+flocking/vendor/glm/glm/gtx/component_wise.hpp:
+
+flocking/vendor/glm/glm/gtx/norm.inl:
 
 /usr/include/c++/11/tuple:
 
@@ -4920,7 +4968,3 @@ flocking/vendor/glm/glm/detail/setup.hpp:
 /usr/include/c++/11/stdlib.h:
 
 /usr/include/c++/11/math.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/11/include/xmmintrin.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/11/include/mmintrin.h:

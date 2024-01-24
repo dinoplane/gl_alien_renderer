@@ -234,6 +234,7 @@ void updateBoids(std::vector<std::shared_ptr<Boid>> *boids,
     for (int i = start; i < end; i++){
             (*boids)[i]->updatePosition();
             (*boids)[i]->updateMapEntry();
+
         // msg = std::to_string(tid) + "  Completed position!\n";
         // std::cout << msg;
 

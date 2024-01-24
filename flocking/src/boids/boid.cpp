@@ -93,7 +93,9 @@ glm::vec3 Boid::borders(Boid& b){
     glm::vec3 steer = glm::vec3(0.0);
 
     steer.x = (abs(b.position.x) > 10) ? glm::sign(b.position.x) * -0.0005f * (abs(b.position.x) - 10): 0; //
+    // steer.y = (abs(b.position.y+10) > 10) ? glm::sign(b.position.y+10) * -0.0005f * (abs(b.position.y+10) - 10): 0; //
     steer.y = (abs(b.position.y) > 10) ? glm::sign(b.position.y) * -0.0005f * (abs(b.position.y) - 10): 0; //
+
     steer.z = (abs(b.position.z) > 10) ? glm::sign(b.position.z) * -0.0005f * (abs(b.position.z) - 10): 0; //
 
     return steer;
@@ -117,7 +119,7 @@ glm::vec3 Boid::seek(Boid& b, glm::vec3 target){
     Mingle with your neighbors.
 */
 glm::vec3 Boid::cohesion(Boid& b){
-    float neighborDist = 2.5;
+    float neighborDist = 2.5*2.5; // Manual squaring
     glm::vec3 avgPos;   // Start with empty vector to accumulate all locations
     glm::vec3 steer = glm::vec3(0.0f);
     std::unordered_set<Boid*> flock = Boid::getAllBoidsInRange(b, neighborDist);
@@ -138,7 +140,7 @@ glm::vec3 Boid::cohesion(Boid& b){
     Move away from your closest neighbors
 */
 glm::vec3 Boid::separation(Boid& b){
-    float desiredSeparation = 1.2;
+    float desiredSeparation = 1.2 *1.2;
     glm::vec3 steer = glm::vec3(0.0);
     std::unordered_set<Boid*> flock = Boid::getAllBoidsInRange(b, desiredSeparation);
     glm::vec3 diff;
@@ -168,7 +170,7 @@ glm::vec3 Boid::separation(Boid& b){
     Match your direction with your neighbors
 */
 glm::vec3 Boid::alignment(Boid& b){
-    float neighborDist = 2.0;
+    float neighborDist = 2.0 * 2.0;
     glm::vec3 steer = glm::vec3(0.0);
     std::unordered_set<Boid*> flock = Boid::getAllBoidsInRange(b, neighborDist);
 
@@ -226,7 +228,7 @@ std::unordered_set<Boid*> Boid::getAllBoidsInRange(Boid& b, float range){
                 std::cout << "entry pos: " << glm::to_string(d->entry->position) << std::endl;
                 std::cout << "BLB indic: " << glm::to_string(d->entry->blb_ind) << std::endl;
                 std::cout << "TRT indic: " << glm::to_string(d->entry->trt_ind) << std::endl;
-                // for (auto s: boid_map.sp_map){
+                // for (auto s: boid_map.spatial_map){
                 //     for (std::shared_ptr<SpatialEntry> e : s.first.s_set){
                 //         if (e->boid->ID == d->ID){
                 //             std::cout << "Position: " << glm::to_string(e->position) << std::endl;
@@ -241,8 +243,8 @@ std::unordered_set<Boid*> Boid::getAllBoidsInRange(Boid& b, float range){
                 Boid::boid_map.printMap(d->entry->blb_ind, d->entry->trt_ind);
                 Boid::boid_map.displayContents(d->entry->blb_ind, d->entry->trt_ind);
 
-                auto bgn = Boid::boid_map.sp_map[d->entry->blb_ind].s_set.begin();
-                auto end = Boid::boid_map.sp_map[d->entry->blb_ind].s_set.end();
+                auto bgn = Boid::boid_map.spatial_map[d->entry->blb_ind].s_set.begin();
+                auto end = Boid::boid_map.spatial_map[d->entry->blb_ind].s_set.end();
                 for (; bgn != end; bgn++){
                     std::cout << glm::to_string((*bgn)->position) <<
                     " vs " <<

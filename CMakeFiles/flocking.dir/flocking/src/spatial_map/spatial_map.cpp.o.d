@@ -450,6 +450,7 @@ CMakeFiles/flocking.dir/flocking/src/spatial_map/spatial_map.cpp.o: \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++io.h \
  /usr/include/c++/11/bits/fstream.tcc /usr/include/c++/11/sstream \
  /usr/include/c++/11/bits/sstream.tcc /usr/include/c++/11/iostream \
+ /usr/include/c++/11/atomic \
  /home/alien/Documents/flocking-opengl/flocking/src/boids/boid.hpp \
  /home/alien/Documents/flocking-opengl/flocking/vendor/glad/include/glad/glad.h \
  /home/alien/Documents/flocking-opengl/flocking/vendor/glad/include/KHR/khrplatform.h \
@@ -457,6 +458,15 @@ CMakeFiles/flocking.dir/flocking/src/spatial_map/spatial_map.cpp.o: \
  /home/alien/Documents/flocking-opengl/flocking/src/solids/pyramid.hpp \
  /home/alien/Documents/flocking-opengl/flocking/src/solids/solid.hpp \
  /home/alien/Documents/flocking-opengl/flocking/src/spatial_map/spatial_map.hpp \
+ /home/alien/Documents/flocking-opengl/flocking/vendor/glm/glm/gtx/norm.hpp \
+ /home/alien/Documents/flocking-opengl/flocking/vendor/glm/glm/gtx/../gtx/quaternion.hpp \
+ /home/alien/Documents/flocking-opengl/flocking/vendor/glm/glm/gtx/../gtx/../ext/quaternion_exponential.hpp \
+ /home/alien/Documents/flocking-opengl/flocking/vendor/glm/glm/gtx/../gtx/../ext/quaternion_exponential.inl \
+ /home/alien/Documents/flocking-opengl/flocking/vendor/glm/glm/gtx/../gtx/quaternion.inl \
+ /home/alien/Documents/flocking-opengl/flocking/vendor/glm/glm/gtx/../gtx/component_wise.hpp \
+ /home/alien/Documents/flocking-opengl/flocking/vendor/glm/glm/gtx/../gtx/../detail/setup.hpp \
+ /home/alien/Documents/flocking-opengl/flocking/vendor/glm/glm/gtx/../gtx/component_wise.inl \
+ /home/alien/Documents/flocking-opengl/flocking/vendor/glm/glm/gtx/norm.inl \
  /usr/include/c++/11/unordered_set \
  /usr/include/c++/11/bits/unordered_set.h /usr/include/c++/11/mutex \
  /usr/include/c++/11/chrono /usr/include/c++/11/ratio \

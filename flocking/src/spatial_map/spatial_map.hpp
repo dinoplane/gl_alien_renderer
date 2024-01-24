@@ -3,6 +3,7 @@
 
 
 #include <glm/glm.hpp>
+#include <glm/gtx/norm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
@@ -47,7 +48,7 @@ class SpatialMap {
     public:
         std::mutex map_lock;
     // Let's generalize this later
-        std::unordered_map<glm::ivec3, SpatialSet> sp_map;
+        std::unordered_map<glm::ivec3, SpatialSet> spatial_map;
 
         glm::ivec3 _key(glm::vec3 pos);
         std::shared_ptr<SpatialEntry> _insert(std::shared_ptr<SpatialEntry> e);
@@ -80,9 +81,9 @@ class SpatialMap {
 
     //                 glm::vec3 key = glm::vec3(i, j, k);
 
-    //                 sp_map[key].s_set = std::unordered_set<std::shared_ptr<SpatialEntry>>();
-    //                 // std::unordered_map<glm::vec3, int> sp_set;
-    //                 // sp_set[key] = 1;
+    //                 spatial_map[key].s_set = std::unordered_set<std::shared_ptr<SpatialEntry>>();
+    //                 // std::unordered_map<glm::vec3, int> spatial_set;
+    //                 // spatial_set[key] = 1;
 
     //                 std::cout << glm::to_string(key) << std::endl;
     //             }
@@ -110,9 +111,9 @@ class SpatialMap {
 
     //                 glm::vec3 key = glm::vec3(i, j, k);
 
-    //                 sp_map[key].s_set = std::unordered_set<std::shared_ptr<SpatialEntry>>();
-    //                 // std::unordered_map<glm::vec3, int> sp_set;
-    //                 // sp_set[key] = 1;
+    //                 spatial_map[key].s_set = std::unordered_set<std::shared_ptr<SpatialEntry>>();
+    //                 // std::unordered_map<glm::vec3, int> spatial_set;
+    //                 // spatial_set[key] = 1;
 
     //                 std::cout << glm::to_string(key) << std::endl;
     //             }
@@ -132,7 +133,7 @@ class SpatialMap {
                 for (int k = -gdims.z/2; k <= gdims.z/2; k++){
                     glm::ivec3 key = glm::ivec3(i, j, k);
 
-                    sp_map[key];
+                    spatial_map[key];
                 }
             }
         }
@@ -141,19 +142,27 @@ class SpatialMap {
 
 
     ~SpatialMap(){
-        glm::ivec3 blb_ind = minbound;
-        glm::ivec3 trt_ind = maxbound;
-        for (int i = blb_ind.x; i <= trt_ind.x; i++){
-            for (int j = blb_ind.y; j <= trt_ind.y; j++){
-                for (int k = blb_ind.z; k <= trt_ind.z; k++){
-                    glm::ivec3 key = glm::ivec3(i, j, k);
 
-                    if (!sp_map.contains(key)){
-                        sp_map[key].s_set.clear();
-                    }
-                }
-            }
+        auto it = spatial_map.begin();
+
+        for (;it != spatial_map.end(); ++it){
+            it->second.s_set.clear();
         }
+        spatial_map.clear();
+
+        // glm::ivec3 blb_ind = minbound;
+        // glm::ivec3 trt_ind = maxbound;
+        // for (int i = blb_ind.x; i <= trt_ind.x; i++){
+        //     for (int j = blb_ind.y; j <= trt_ind.y; j++){
+        //         for (int k = blb_ind.z; k <= trt_ind.z; k++){
+        //             glm::ivec3 key = glm::ivec3(i, j, k);
+
+        //             if (!spatial_map.contains(key)){
+        //                 spatial_map[key].s_set.clear();
+        //             }
+        //         }
+        //     }
+        // }
 
     }
 
