@@ -242,38 +242,38 @@ void updateBoids(std::vector<std::shared_ptr<Boid>> *boids,
     sync_point.arrive_and_wait();
 }
 
-// void updateBoidsForce(std::vector<std::shared_ptr<Boid>> *boids,
-//         unsigned int start, unsigned int end, unsigned int tid){
-//     for (int i = start; i < end; i++){
-//         if (i < NUM_BOIDS)
-//             (*boids)[i]->calculateForce();
-//         // std::string msg = std::to_string(tid) + "  Completed force!\n";
-//         // std::cout << msg;
-//     }
-//     sync_point.arrive_and_wait();
-// }
+void updateBoidsForce(std::vector<std::shared_ptr<Boid>> *boids,
+        unsigned int start, unsigned int end, unsigned int tid, std::barrier<std::function<void()>>& sync_point){
+    for (int i = start; i < end; i++){
+        if (i < NUM_BOIDS)
+            (*boids)[i]->calculateForce();
+        // std::string msg = std::to_string(tid) + "  Completed force!\n";
+        // std::cout << msg;
+    }
+    sync_point.arrive_and_wait();
+}
 
-// void updateBoidsPos(std::vector<std::shared_ptr<Boid>> *boids,
-//         unsigned int start, unsigned int end, unsigned int tid){
-//     for (int i = start; i < end; i++){
-//         if (i < NUM_BOIDS)
-//            (*boids)[i]->updatePosition();
-//         // msg = std::to_string(tid) + "  Completed position!\n";
-//         // std::cout << msg;
-//     }
-//     sync_point.arrive_and_wait();
-// }
+void updateBoidsPos(std::vector<std::shared_ptr<Boid>> *boids,
+        unsigned int start, unsigned int end, unsigned int tid, std::barrier<std::function<void()>>& sync_point){
+    for (int i = start; i < end; i++){
+        if (i < NUM_BOIDS)
+           (*boids)[i]->updatePosition();
+        // msg = std::to_string(tid) + "  Completed position!\n";
+        // std::cout << msg;
+    }
+    sync_point.arrive_and_wait();
+}
 
-// void updateBoidsEntry(std::vector<std::shared_ptr<Boid>> *boids,
-//         unsigned int start, unsigned int end, unsigned int tid){
-//     for (int i = start; i < end; i++){
-//         if (i < NUM_BOIDS)
-//            (*boids)[i]->updateMapEntry();
-//         // msg = std::to_string(tid) + "  Completed position!\n";
-//         // std::cout << msg;
-//     }
-//     sync_point.arrive_and_wait();
-// }
+void updateBoidsEntry(std::vector<std::shared_ptr<Boid>> *boids,
+        unsigned int start, unsigned int end, unsigned int tid, std::barrier<std::function<void()>>& sync_point){
+    for (int i = start; i < end; i++){
+        if (i < NUM_BOIDS)
+           (*boids)[i]->updateMapEntry();
+        // msg = std::to_string(tid) + "  Completed position!\n";
+        // std::cout << msg;
+    }
+    sync_point.arrive_and_wait();
+}
 
 
 // Add load texture function
@@ -517,7 +517,7 @@ int main(int argc, char **argv)
 
 
         std::thread *thread_array = new std::thread[NUM_THREADS];
-        /*
+
         { // Force Calculation
             chkpt = std::chrono::high_resolution_clock::now();
             for (unsigned int tid = 0; tid < NUM_THREADS; tid++){
@@ -525,10 +525,8 @@ int main(int argc, char **argv)
                 // unsigned int end = start + CHUNK_SIZE;
                 unsigned int end = std::min(start + CHUNK_SIZE, NUM_BOIDS);
 
-                // if (start < end)
-                // std::cout << start << " "  << end << std::endl;
                 thread_array[tid] =
-                    std::thread(updateBoidsForce, &boids, start, end, tid);
+                    std::thread(updateBoidsForce, &boids, start, end, tid, std::ref(sync_point));
             }
 
             for (unsigned int tid = 0; tid < NUM_THREADS; tid++){
@@ -547,13 +545,10 @@ int main(int argc, char **argv)
             chkpt = std::chrono::high_resolution_clock::now();
             for (unsigned int tid = 0; tid < NUM_THREADS; tid++){
                 unsigned int start = CHUNK_SIZE * tid;
-                // unsigned int end = start + CHUNK_SIZE;
                 unsigned int end = std::min(start + CHUNK_SIZE, NUM_BOIDS);
 
-                // if (start < end)
-                // std::cout << start << " "  << end << std::endl;
                 thread_array[tid] =
-                    std::thread(updateBoidsPos, &boids, start, end, tid);
+                    std::thread(updateBoidsPos, &boids, start, end, tid, std::ref(sync_point));
             }
 
             for (unsigned int tid = 0; tid < NUM_THREADS; tid++){
@@ -572,13 +567,10 @@ int main(int argc, char **argv)
             chkpt = std::chrono::high_resolution_clock::now();
             for (unsigned int tid = 0; tid < NUM_THREADS; tid++){
                 unsigned int start = CHUNK_SIZE * tid;
-                // unsigned int end = start + CHUNK_SIZE;
                 unsigned int end = std::min(start + CHUNK_SIZE, NUM_BOIDS);
 
-                // if (start < end)
-                // std::cout << start << " "  << end << std::endl;
                 thread_array[tid] =
-                    std::thread(updateBoidsEntry, &boids, start, end, tid);
+                    std::thread(updateBoidsEntry, &boids, start, end, tid, std::ref(sync_point));
             }
 
             for (unsigned int tid = 0; tid < NUM_THREADS; tid++){
@@ -593,10 +585,7 @@ int main(int argc, char **argv)
                 << duration.count() << " microseconds" << std::endl;
         }
 
-        // for (int i = 0; i < NUM_BOIDS; i++){
-        //     boids[i]->calculateForce();
-        // }
-        */
+        /*
 
         { // All calculation
             chkpt = std::chrono::high_resolution_clock::now();
@@ -621,7 +610,7 @@ int main(int argc, char **argv)
 
             std::cout << "Time taken by Update Boids: "
                 << duration.count() << " microseconds" << std::endl;
-        }
+        }*/
 
         { // Rendering
             chkpt = std::chrono::high_resolution_clock::now();

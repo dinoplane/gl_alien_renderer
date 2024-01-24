@@ -121,7 +121,7 @@ class SpatialMap {
     SpatialEntry* insert(Boid* b);
     void remove(Boid* b);
     void update(Boid* b);// Update only if needed!
-    std::vector<Boid*> getNearby(Boid* b, float range);
+    std::unordered_set<Boid*> getNearby(Boid* b, float range);
     // SpatialSet getNearby(glm::vec3 src, float range);
 };
 

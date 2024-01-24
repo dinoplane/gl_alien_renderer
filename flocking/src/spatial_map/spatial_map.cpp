@@ -192,9 +192,9 @@ void SpatialMap::_update(SpatialEntry* e){
 
 }
 
-std::vector<Boid*> SpatialMap::getNearby(Boid* b, float range){
+std::unordered_set<Boid*> SpatialMap::getNearby(Boid* b, float range){
     glm::vec3 src = b->position;
-    std::vector<Boid*> ret;
+    std::unordered_set<Boid*> ret;
     glm::vec3 blb = src - range;
     glm::vec3 trt = src + range;
 
@@ -214,7 +214,7 @@ std::vector<Boid*> SpatialMap::getNearby(Boid* b, float range){
                         if (b->ID != (*bgn)->boid->ID &&
                             0.0f < dist &&
                             dist <= range)
-                            ret.push_back((*bgn)->boid);
+                            ret.emplace((*bgn)->boid);
                     }
                 }
             }

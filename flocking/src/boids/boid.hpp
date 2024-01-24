@@ -95,7 +95,7 @@ class Boid{
         }
 
     public:
-        static std::vector<Boid*> getAllBoidsInRange(Boid & b, float range);
+        static std::unordered_set<Boid*> getAllBoidsInRange(Boid & b, float range);
         // static std::unique_ptr<Boid> createBoid(glm::vec3 pos, glm::vec3 vel);
 
         static float calculateKineticEnergy();

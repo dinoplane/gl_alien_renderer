@@ -121,7 +121,7 @@ glm::vec3 Boid::cohesion(Boid& b){
     float neighborDist = 2.5*2.5; // Manual squaring
     glm::vec3 avgPos;   // Start with empty vector to accumulate all locations
     glm::vec3 steer = glm::vec3(0.0f);
-    std::vector<Boid*> flock = Boid::getAllBoidsInRange(b, neighborDist);
+    std::unordered_set<Boid*> flock = Boid::getAllBoidsInRange(b, neighborDist);
 
     for (Boid* d : flock){
         avgPos += d->position;
@@ -141,7 +141,7 @@ glm::vec3 Boid::cohesion(Boid& b){
 glm::vec3 Boid::separation(Boid& b){
     float desiredSeparation = 1.2 *1.2;
     glm::vec3 steer = glm::vec3(0.0);
-    std::vector<Boid*> flock = Boid::getAllBoidsInRange(b, desiredSeparation);
+    std::unordered_set<Boid*> flock = Boid::getAllBoidsInRange(b, desiredSeparation);
     glm::vec3 diff;
 
     for (Boid* d : flock){
@@ -171,7 +171,7 @@ glm::vec3 Boid::separation(Boid& b){
 glm::vec3 Boid::alignment(Boid& b){
     float neighborDist = 2.0 * 2.0;
     glm::vec3 steer = glm::vec3(0.0);
-    std::vector<Boid*> flock = Boid::getAllBoidsInRange(b, neighborDist);
+    std::unordered_set<Boid*> flock = Boid::getAllBoidsInRange(b, neighborDist);
 
     for (Boid* d : flock){
         steer += d->velocity;
@@ -193,8 +193,8 @@ void Boid::render(){
     this->model.render();
 }
 
-std::vector<Boid*> Boid::getAllBoidsInRange(Boid& b, float range){
-    std::vector<Boid*> rset = Boid::boid_map.getNearby(&b, range);
+std::unordered_set<Boid*> Boid::getAllBoidsInRange(Boid& b, float range){
+    std::unordered_set<Boid*> rset = Boid::boid_map.getNearby(&b, range);
 
     return rset;
 }
