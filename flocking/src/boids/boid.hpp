@@ -51,7 +51,7 @@ class Boid{
 
         Pyramid model;
 
-        std::shared_ptr<SpatialEntry> entry;
+        // SpatialEntry* entry = nullptr;
 
     // private:
 

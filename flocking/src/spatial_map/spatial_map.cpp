@@ -52,10 +52,10 @@ void SpatialMap::printMap(glm::ivec3 blb_ind, glm::ivec3 trt_ind){
             std::printf("%03d  ", k);
             for (int i = blb_ind.x; i <= trt_ind.x; i++){
                 glm::ivec3 key = glm::ivec3(i, j, k);
-                std::printf(" %03lu ", spatial_map[key].s_set.size());
+                std::printf(" %03lu ", spatial_map[key].spatial_set.size());
                 // std::unordered_map<glm::vec3, int> spatial_set;
                 // spatial_set[key] = 1;
-                layer_count += spatial_map[key].s_set.size();
+                layer_count += spatial_map[key].spatial_set.size();
                 // std::cout << glm::to_string(key) << std::endl;
             }
             std::cout << std::endl;
@@ -90,7 +90,7 @@ void SpatialMap::displayContents(glm::ivec3 blb_ind, glm::ivec3 trt_ind){
                 std::cout << glm::to_string(key) << std::endl;
                 std::cout << "---------------------------------------------" << std::endl;
 
-                for (std::shared_ptr<SpatialEntry> e : spatial_map[key].s_set){
+                for (SpatialEntry* e : spatial_map[key].spatial_set){
                     std::cout << "entry pos: " << glm::to_string(e->position) << std::endl;
                     std::cout << "dimension: " << glm::to_string(e->dimensions) << std::endl;
                     std::cout << "BLB indic: " << glm::to_string(e->blb_ind) << std::endl;
@@ -104,14 +104,13 @@ void SpatialMap::displayContents(glm::ivec3 blb_ind, glm::ivec3 trt_ind){
 }
 
 
-std::shared_ptr<SpatialEntry> SpatialMap::insert(Boid* b){
-    // Everything below can be private?
-    auto entry = std::make_shared<SpatialEntry>(b, b->position, b->dimensions);
+SpatialEntry* SpatialMap::insert(Boid* b){
+    boid_entries.emplace(b, std::make_unique<SpatialEntry>(b, b->position, b->dimensions));
 
-    return _insert(entry);
+    return _insert(boid_entries.at(b).get());
 }
 
-std::shared_ptr<SpatialEntry> SpatialMap::_insert(std::shared_ptr<SpatialEntry> e){
+SpatialEntry* SpatialMap::_insert(SpatialEntry* e){
     glm::vec3 blb = e->position - e->dimensions/2.0f;
     glm::vec3 trt = e->position + e->dimensions/2.0f;
 
@@ -128,7 +127,7 @@ std::shared_ptr<SpatialEntry> SpatialMap::_insert(std::shared_ptr<SpatialEntry> 
                 while (true){
                     try {
                         const std::lock_guard<std::mutex> set_lock_guard(spatial_map.at(key).set_lock);
-                        spatial_map.at(key).s_set.emplace(e);
+                        spatial_map.at(key).spatial_set.emplace(e);
                         break;
                     } catch (const std::out_of_range &error) {
                         const std::lock_guard<std::mutex> map_lock_guard(map_lock);
@@ -142,8 +141,12 @@ std::shared_ptr<SpatialEntry> SpatialMap::_insert(std::shared_ptr<SpatialEntry> 
     return e;
 }
 
+void SpatialMap::remove(Boid* b){
+    _remove(boid_entries.at(b).get());
+}
 
-void SpatialMap::remove(std::shared_ptr<SpatialEntry> e){
+
+void SpatialMap::_remove(SpatialEntry* e){
     glm::ivec3 blb_ind = e->blb_ind;
     glm::ivec3 trt_ind = e->trt_ind;
 
@@ -155,7 +158,7 @@ void SpatialMap::remove(std::shared_ptr<SpatialEntry> e){
                 while (true){
                     try {
                         const std::lock_guard<std::mutex> set_lock_guard(spatial_map.at(key).set_lock);
-                        spatial_map.at(key).s_set.erase(e);
+                        spatial_map.at(key).spatial_set.erase(e);
                         break;
                     } catch (const std::out_of_range &error) {
                         const std::lock_guard<std::mutex> map_lock_guard(map_lock);
@@ -165,10 +168,13 @@ void SpatialMap::remove(std::shared_ptr<SpatialEntry> e){
             }
         }
     }
-
 }
 
-void SpatialMap::update(std::shared_ptr<SpatialEntry>e){
+void SpatialMap::update(Boid* b){
+    _update(boid_entries.at(b).get());
+}
+
+void SpatialMap::_update(SpatialEntry* e){
     glm::vec3 blb = e->boid->position - e->boid->dimensions/2.0f;
     glm::vec3 trt = e->boid->position + e->boid->dimensions/2.0f;
 
@@ -176,7 +182,7 @@ void SpatialMap::update(std::shared_ptr<SpatialEntry>e){
     glm::ivec3 trt_ind = _key(trt);
 
     if (blb_ind != e->blb_ind || trt_ind != e->trt_ind){
-        remove(e);
+        _remove(e);
         e->position = e->boid->position;
         _insert(e);
     } else {
@@ -201,8 +207,8 @@ std::vector<Boid*> SpatialMap::getNearby(Boid* b, float range){
                 glm::vec3 key = glm::vec3(i, j, k);
 
                 if (spatial_map.contains(key)){
-                    auto bgn = spatial_map[key].s_set.begin();
-                    auto end = spatial_map[key].s_set.end();
+                    auto bgn = spatial_map[key].spatial_set.begin();
+                    auto end = spatial_map[key].spatial_set.end();
                     for (; bgn != end; bgn++){
                         float dist = glm::length2((*bgn)->position - src);
                         if (b->ID != (*bgn)->boid->ID &&

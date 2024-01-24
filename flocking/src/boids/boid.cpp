@@ -65,8 +65,7 @@ void Boid::updatePosition(){
 }
 
 void Boid::updateMapEntry(){
-    // Update Entry
-    Boid::boid_map.update(entry);
+    Boid::boid_map.update(this);
 }
 
 // Not called cuz multithreading
@@ -191,101 +190,11 @@ glm::vec3 Boid::alignment(Boid& b){
 }
 
 void Boid::render(){
-
     this->model.render();
-
 }
 
 std::vector<Boid*> Boid::getAllBoidsInRange(Boid& b, float range){
-    /*
-    std::cout << "\nCalled" << std::endl;
-    std::vector<Boid*> ret;
-
-    for(auto d = Boid::boids.begin(); d != Boid::boids.end(); d++){
-        float dist = glm::length(b.position - (*d)->position) ;
-
-        if ((b.ID != (*d)->ID) && 0.0f < dist && dist <= range){
-            ret.push_back(*d);
-            // std::cout << glm::to_string((*d)->position) << " ";
-        }
-    }
-    std::cout << std::endl << std::endl;
-    */
-
     std::vector<Boid*> rset = Boid::boid_map.getNearby(&b, range);
-    /*
-    if (ret.size() != rset.size()){
-
-        std::cout << "CLOSEST TO: " << glm::to_string(b.position) << std::endl;
-        std::cout << "Vec Size = " << ret.size() << std::endl;
-        std::cout << "Set Size = " << rset.size() << std::endl;
-
-        std::cout << "\nVEC" << std::endl;
-        for (Boid* d : ret){
-            std::cout << glm::to_string(d->position);
-
-            if (!rset.contains(d)){
-                std::cout << "<---- THIS ONE" << std::endl;
-                // std::cout << "Indiceses: " << glm::to_string(Boid::boid_map._key(d->position));
-                std::cout << "entry pos: " << glm::to_string(d->entry->position) << std::endl;
-                std::cout << "BLB indic: " << glm::to_string(d->entry->blb_ind) << std::endl;
-                std::cout << "TRT indic: " << glm::to_string(d->entry->trt_ind) << std::endl;
-                // for (auto s: boid_map.spatial_map){
-                //     for (std::shared_ptr<SpatialEntry> e : s.first.s_set){
-                //         if (e->boid->ID == d->ID){
-                //             std::cout << "Position: " << glm::to_string(e->position) << std::endl;
-                //             std::cout << "BLB: " << glm::to_string(e->blb_ind )<< std::endl;
-                //             std::cout << "TLB: " << glm::to_string(e->trt_ind )<< std::endl;
-                //         }
-                //     }
-                // }
-                Boid::boid_map.printMap();
-                Boid::boid_map.displayContents();
-
-                Boid::boid_map.printMap(d->entry->blb_ind, d->entry->trt_ind);
-                Boid::boid_map.displayContents(d->entry->blb_ind, d->entry->trt_ind);
-
-                auto bgn = Boid::boid_map.spatial_map[d->entry->blb_ind].s_set.begin();
-                auto end = Boid::boid_map.spatial_map[d->entry->blb_ind].s_set.end();
-                for (; bgn != end; bgn++){
-                    std::cout << glm::to_string((*bgn)->position) <<
-                    " vs " <<
-                     glm::to_string((*bgn)->boid->position);
-
-                    if ((*bgn)->boid->ID == d->ID){
-                        std::cout << "<------------- THIS ONE! <--------- ";
-                    }
-                    std::cout << std::endl;
-
-                    float dist = glm::length((*bgn)->position - b.position);
-                    std::cout  << range << "?" << dist << std::endl ;
-                    std::cout << "(b.ID != (*bgn)->boid->ID): " << (b.ID != (*bgn)->boid->ID)  << std::endl;
-                    std::cout << "0.0f < dist " << (0.0f < dist ) << std::endl;
-                    std::cout << "dist < range" << (dist < range) << std::endl;
-
-                        // std::cout << glm::to_string((*bgn)->position) << " ";
-                }
-            }
-            std::cout << std::endl;
-        }
-
-        std::cout << "\nSET" << std::endl;
-
-        for (Boid* d : rset){
-            std::cout << glm::to_string(d->position);
-            if (std::find(ret.begin(), ret.end(), d) == ret.end()){
-                std::cout << "<--- This One "<< std::endl;
-                std::cout << glm::to_string(Boid::boid_map._key(d->position));
-            }
-
-            std::cout << std::endl;
-        }
-        std::cout << std::endl;
-        assert(false);
-
-        // glfwSetWindowShouldClose(window, true);
-    }
-    */
 
     return rset;
 }
