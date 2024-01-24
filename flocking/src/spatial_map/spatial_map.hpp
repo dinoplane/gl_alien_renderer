@@ -199,7 +199,7 @@ class SpatialMap {
     std::shared_ptr<SpatialEntry> insert(Boid* b);
     void remove(std::shared_ptr<SpatialEntry> e);
     void update(std::shared_ptr<SpatialEntry> e);// Update only if needed!
-    std::unordered_set<Boid*> getNearby(Boid* b, float range);
+    std::vector<Boid*> getNearby(Boid* b, float range);
     // SpatialSet getNearby(glm::vec3 src, float range);
 
 };

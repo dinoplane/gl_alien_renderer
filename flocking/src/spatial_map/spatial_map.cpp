@@ -125,45 +125,6 @@ std::shared_ptr<SpatialEntry> SpatialMap::_insert(std::shared_ptr<SpatialEntry> 
     e->blb_ind = blb_ind;
     e->trt_ind = trt_ind;
 
-    // std::cout  << "Bottom Left Back: " << glm::to_string(blb_ind) << std::endl;
-    // std::cout << "Top Right Top: " << glm::to_string(trt_ind) << std::endl;
-
-    /*
-    map_lock.lock();
-    bool blb_out = glm::any(glm::lessThanEqual(blb_ind, minbound));
-    bool trt_out =glm::any(glm::greaterThanEqual(trt_ind, maxbound));
-    glm::ivec3 newbound;
-    if (blb_out){
-        newbound = glm::ivec3(glm::lessThanEqual(blb_ind, minbound)) * blb_ind +
-            glm::ivec3(glm::greaterThanEqual(blb_ind, minbound)) * minbound;
-        for (int i = newbound.x; i < minbound.x; i++){
-            for (int j = newbound.y; j < minbound.y; j++){
-                for (int k = newbound.z; k < minbound.z; k++){
-                    glm::ivec3 key = glm::ivec3(i, j, k);
-                    spatial_map[key];
-                }
-            }
-        }
-        minbound = newbound;
-    }
-
-    if (trt_out){
-        newbound = glm::ivec3(glm::greaterThanEqual(trt_ind, maxbound)) * trt_ind +
-            glm::ivec3(glm::lessThan(trt_ind, maxbound)) * maxbound;
-
-        for (int i = maxbound.x + 1; i <= newbound.x; i++){
-            for (int j = maxbound.y + 1; j <= newbound.y; j++){
-                for (int k = maxbound.z + 1; k <= newbound.z; k++){
-                    glm::ivec3 key = glm::ivec3(i, j, k);
-                    spatial_map[key];
-                }
-            }
-        }
-        maxbound = newbound;
-    }
-    map_lock.unlock();
-    */
-
     for (int i = blb_ind.x; i <= trt_ind.x; i++){
         for (int j = blb_ind.y; j <= trt_ind.y; j++){
             for (int k = blb_ind.z; k <= trt_ind.z; k++){
@@ -178,18 +139,6 @@ std::shared_ptr<SpatialEntry> SpatialMap::_insert(std::shared_ptr<SpatialEntry> 
                         spatial_map[key];
                     }
                 }
-                // map_lock.lock(); // Naive solution...
-
-
-                // spatial_map[key].set_lock.lock();
-                // spatial_map[key].s_set.emplace(e);
-                // spatial_map[key].set_lock.unlock();
-
-
-
-                // map_lock.unlock();
-
-
             }
         }
     }
@@ -202,30 +151,11 @@ void SpatialMap::remove(std::shared_ptr<SpatialEntry> e){
     glm::ivec3 blb_ind = e->blb_ind;
     glm::ivec3 trt_ind = e->trt_ind;
 
-
-    // bool blb_out = glm::any(glm::lessThanEqual(blb_ind, glm::vec3(0.0f)));
-    // bool trt_out =glm::any(glm::greaterThanEqual(trt_ind, grid_dims));
-
-    // if (blb_out && trt_out){
-    //     spatial_map[glm::vec3(-1.0f)].erase(b);
-    //     blb_ind = glm::vec3(0.0f);
-    //     trt_ind = (glm::length(trt - blb) > glm::length(unit_dims)) ? grid_dims - glm::vec3(1.0f); : glm::vec3(0.0f);
-    // } else if (blb_out){
-    //     spatial_map[glm::vec3(-1.0f)].erase(b);
-    //     blb_ind = glm::vec3(0.0f);
-    // } else if (trt_out){
-    //     spatial_map[glm::vec3(-1.0f)].erase(b);
-    //     trt_ind = grid_dims - glm::vec3(1.0f);
-    // }
-
-
     for (int i = blb_ind.x; i <= trt_ind.x; i++){
         for (int j = blb_ind.y; j <= trt_ind.y; j++){
             for (int k = blb_ind.z; k <= trt_ind.z; k++){
                 glm::ivec3 key = glm::ivec3(i, j, k);
 
-                // map_lock.lock();
-                // const std::lock_guard<std::mutex> lock(spatial_map[key].set_lock);
                 while (true){
                     try {
                         const std::lock_guard<std::mutex> set_lock_guard(spatial_map.at(key).set_lock);
@@ -236,13 +166,6 @@ void SpatialMap::remove(std::shared_ptr<SpatialEntry> e){
                         spatial_map[key];
                     }
                 }
-                // spatial_map[key].set_lock.lock();
-                // spatial_map[key].s_set.erase(e);
-                // spatial_map[key].set_lock.unlock();
-                // spatial_map.at(key).set_lock.lock();
-                // spatial_map.at(key).s_set.erase(e);
-                // spatial_map.at(key).set_lock.unlock();
-                // map_lock.unlock();
             }
         }
     }
@@ -267,9 +190,9 @@ void SpatialMap::update(std::shared_ptr<SpatialEntry>e){
 
 }
 
-std::unordered_set<Boid*> SpatialMap::getNearby(Boid* b, float range){
+std::vector<Boid*> SpatialMap::getNearby(Boid* b, float range){
     glm::vec3 src = b->position;
-    std::unordered_set<Boid*> ret;
+    std::vector<Boid*> ret;
     glm::vec3 blb = src - range;
     glm::vec3 trt = src + range;
 
@@ -296,7 +219,7 @@ std::unordered_set<Boid*> SpatialMap::getNearby(Boid* b, float range){
                         if (b->ID != (*bgn)->boid->ID &&
                             0.0f < dist &&
                             dist <= range)
-                            ret.emplace((*bgn)->boid);
+                            ret.push_back((*bgn)->boid);
                     }
                 }
             }
