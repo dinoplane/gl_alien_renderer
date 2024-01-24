@@ -149,41 +149,22 @@ class SpatialMap {
             it->second.s_set.clear();
         }
         spatial_map.clear();
-
-        // glm::ivec3 blb_ind = minbound;
-        // glm::ivec3 trt_ind = maxbound;
-        // for (int i = blb_ind.x; i <= trt_ind.x; i++){
-        //     for (int j = blb_ind.y; j <= trt_ind.y; j++){
-        //         for (int k = blb_ind.z; k <= trt_ind.z; k++){
-        //             glm::ivec3 key = glm::ivec3(i, j, k);
-
-        //             if (!spatial_map.contains(key)){
-        //                 spatial_map[key].s_set.clear();
-        //             }
-        //         }
-        //     }
-        // }
-
     }
 
 
     SpatialMap(const SpatialMap& other){
-        // bound_dims = other.bound_dims;
         grid_dims = other.grid_dims;
 
     }
     SpatialMap(SpatialMap&& other){
-        // bound_dims = other.bound_dims;
         grid_dims = other.grid_dims;
     }
 
     SpatialMap& operator=(const SpatialMap& other){
-        // bound_dims = other.bound_dims;
         grid_dims = other.grid_dims;
         return *this;
     }
     SpatialMap& operator=(SpatialMap&& other){
-        // bound_dims = std::move(other.bound_dims);
         grid_dims = std::move(other.grid_dims);
         return *this;
     }
@@ -197,8 +178,8 @@ class SpatialMap {
 
 
     std::shared_ptr<SpatialEntry> insert(Boid* b);
-    void remove(std::shared_ptr<SpatialEntry> e);
-    void update(std::shared_ptr<SpatialEntry> e);// Update only if needed!
+    void remove(Boid* b);
+    void update(Boid* b);// Update only if needed!
     std::vector<Boid*> getNearby(Boid* b, float range);
     // SpatialSet getNearby(glm::vec3 src, float range);
 

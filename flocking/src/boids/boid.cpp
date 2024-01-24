@@ -197,18 +197,20 @@ void Boid::render(){
 }
 
 std::vector<Boid*> Boid::getAllBoidsInRange(Boid& b, float range){
-    // std::cout << "\nCalled" << std::endl;
-    // std::vector<Boid*> ret;
+    /*
+    std::cout << "\nCalled" << std::endl;
+    std::vector<Boid*> ret;
 
-    // for(auto d = Boid::boids.begin(); d != Boid::boids.end(); d++){
-    //     float dist = glm::length(b.position - (*d)->position) ;
+    for(auto d = Boid::boids.begin(); d != Boid::boids.end(); d++){
+        float dist = glm::length(b.position - (*d)->position) ;
 
-    //     if ((b.ID != (*d)->ID) && 0.0f < dist && dist <= range){
-    //         ret.push_back(*d);
-    //         // std::cout << glm::to_string((*d)->position) << " ";
-    //     }
-    // }
-    // std::cout << std::endl << std::endl;
+        if ((b.ID != (*d)->ID) && 0.0f < dist && dist <= range){
+            ret.push_back(*d);
+            // std::cout << glm::to_string((*d)->position) << " ";
+        }
+    }
+    std::cout << std::endl << std::endl;
+    */
 
     std::vector<Boid*> rset = Boid::boid_map.getNearby(&b, range);
     /*

@@ -26,7 +26,6 @@
 
 /*
     Returns the index of the cell the position is in.
-
 */
 glm::ivec3 SpatialMap::_key(glm::vec3 pos){
     return  glm::sign(pos)*glm::floor(glm::abs(pos /(unit_dims)));
@@ -77,7 +76,6 @@ void SpatialMap::displayContents(){
 }
 
 void SpatialMap::displayContents(glm::ivec3 blb_ind, glm::ivec3 trt_ind){
-
     std::cout << "------------------------------------------------------------------------" << std::endl;
     std::cout << "------------------------------------------------------------------------" << std::endl;
 
@@ -98,8 +96,6 @@ void SpatialMap::displayContents(glm::ivec3 blb_ind, glm::ivec3 trt_ind){
                     std::cout << "BLB indic: " << glm::to_string(e->blb_ind) << std::endl;
                     std::cout << "TRT indic: " << glm::to_string(e->trt_ind) << std::endl;
                 }
-
-                // std::cout << glm::to_string(key) << std::endl;
             }
             std::cout << std::endl;
         }
@@ -199,10 +195,6 @@ std::vector<Boid*> SpatialMap::getNearby(Boid* b, float range){
     glm::ivec3 blb_ind = _key(blb);
     glm::ivec3 trt_ind = _key(trt);
 
-
-    // std::cout  << "Bottom Left Back: " << glm::to_string(blb_ind) << std::endl;
-    // std::cout << "Top Right Top: " << glm::to_string(trt_ind) << std::endl;
-
     for (int i = blb_ind.x; i <= trt_ind.x; i++){
         for (int j = blb_ind.y; j <= trt_ind.y; j++){
             for (int k = blb_ind.z; k <= trt_ind.z; k++){
@@ -212,9 +204,6 @@ std::vector<Boid*> SpatialMap::getNearby(Boid* b, float range){
                     auto bgn = spatial_map[key].s_set.begin();
                     auto end = spatial_map[key].s_set.end();
                     for (; bgn != end; bgn++){
-                        // std::cout << glm::to_string((*bgn)->position) <<
-                        // " vs " <<
-                        //  glm::to_string((*bgn)->boid->position) << std::endl ;
                         float dist = glm::length2((*bgn)->position - src);
                         if (b->ID != (*bgn)->boid->ID &&
                             0.0f < dist &&
@@ -227,7 +216,4 @@ std::vector<Boid*> SpatialMap::getNearby(Boid* b, float range){
     }
     return ret;
 }
-
-// std::unordered_set<std::shared_ptr<SpatialEntry>> getNearby(glm::vec3 src, float range){
-//     std::unordered_set<std::shared_ptr<SpatialEntry>> ret;
 

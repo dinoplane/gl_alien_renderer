@@ -91,7 +91,7 @@ class Boid{
 
         void addToBoidList(){
             Boid::boids.push_back(this);
-            entry = Boid::boid_map.insert(this);
+            Boid::boid_map.insert(this);
         }
 
     public:
@@ -105,7 +105,7 @@ class Boid{
             Boid::boids.erase(
                 std::find(Boid::boids.begin(),
                 Boid::boids.end(), this));
-            Boid::boid_map.remove(entry);
+            Boid::boid_map.remove(this);
         }
 
         Boid& operator=(const Boid &other){
