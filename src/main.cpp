@@ -279,9 +279,9 @@ void updateBoidsEntry(std::vector<std::shared_ptr<Boid>> *boids,
 // Add load texture function
 int main(int argc, char **argv)
 {
+
     setupCmdArgs(argc,argv);
 
-    std::barrier<std::function<void()>> sync_point(NUM_THREADS, []() noexcept {});
 
 	GLFWwindow* window;
 
@@ -304,19 +304,26 @@ int main(int argc, char **argv)
 
     // build and compile our shader program
     // ------------------------------------
-    Shader ourShader("./shader/exv.vs", "./shader/exf.fs");
-    Shader boidShader("./shader/boid.vs", "./shader/boid.fs");
-    Shader seaShader("./shader/sea.vs", "./shader/sea.fs");
-    Shader seafloorShader("./shader/seafloor.vs", "./shader/seafloor.fs");
-    Shader normalsShader("./shader/sea.vs", "./shader/normals.fs", "./shader/normals.gs");
-    Shader skyboxShader("./shader/skybox.vs", "./shader/skybox.fs");
+    Shader ourShader("./resources/shader/exv.vert", "./resources/shader/exf.frag");
+    Shader boidShader("./resources/shader/boid.vert", "./resources/shader/boid.frag");
+    Shader seaShader("./resources/shader/sea.vert", "./resources/shader/sea.frag");
+    Shader seafloorShader("./resources/shader/seafloor.vert", "./resources/shader/seafloor.frag");
+    Shader normalsShader("./resources/shader/sea.vert", "./resources/shader/normals.frag", "./resources/shader/normals.geom");
+    Shader skyboxShader("./resources/shader/skybox.vert", "./resources/shader/skybox.frag");
     // assert(false);
 
     // uncomment this call to draw in wireframe polygons.
 //    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    std::vector<unsigned int> textureID = loadAllTextures("sky.png", "awesomeface.png", "noise.png");
-    unsigned int skyBoxID = loadCubeMap("bluecloud_rt.jpg", "bluecloud_lf.jpg", "bluecloud_up.jpg", "bluecloud_dn.jpg", "bluecloud_bk.jpg", "bluecloud_ft.jpg");
+    std::vector<unsigned int> textureID = loadAllTextures("./resources/assets/sky.png", "./resources/assets/awesomeface.png", "./resources/assets/noise.png");
+    unsigned int skyBoxID = loadCubeMap(
+                            "./resources/assets/bluecloud_rt.jpg",
+                            "./resources/assets/bluecloud_lf.jpg",
+                            "./resources/assets/bluecloud_up.jpg",
+                            "./resources/assets/bluecloud_dn.jpg",
+                            "./resources/assets/bluecloud_bk.jpg",
+                            "./resources/assets/bluecloud_ft.jpg"
+                        );
     // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
     // -------------------------------------------------------------------------------------------
     ourShader.use();
@@ -336,12 +343,7 @@ int main(int argc, char **argv)
     normalsShader.setInt("texture1", 0);
     normalsShader.setInt("texture2", 1);
 
-
-    // pass projection matrix to shader (as projection matrix rarely changes there's no need to do this per frame)
-    // -----------------------------------------------------------------------------------------------------------
-    // ourShader.use();
-    // glm::mat4 projection    = glm::mat4(1.0f);
-
+    skyboxShader
 
     // projection = glm::perspective(glm::radians(60.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 2000.0f);
     glm::mat4 view = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
@@ -387,26 +389,12 @@ int main(int argc, char **argv)
     // assert(false);
 
 
-    // AHAHAHA Smart pointers
-    std::vector<std::shared_ptr<Boid>> boids;
-
-    for (int i = 0; i < NUM_BOIDS; i++){
-        boids.push_back( std::make_shared<Boid>(
-                            glm::linearRand(
-                                glm::vec3(-7.1f, 0.0f, -7.1f),
-                                glm::vec3(7.1, 0.0f, 7.1)),
-                            0.15f*glm::normalize(glm::linearRand(
-                                glm::vec3(-0.15f, -0.15f, -0.15f),
-                                glm::vec3(0.15f, 0.15f, 0.15f)))));
-    }
-    // for (auto p = Boid::boids.begin(); p != Boid::boids.end(); p++){
-    //     std::cout  << "ID" << (*p)->ID  << ": "<< glm::to_string((*p)->position) << std::endl;
-    // }
 
     // std::cout << glm::to_string(b.model.modelMat) << std::endl;
     glEnable(GL_DEPTH_TEST);
     glfwSetCursorPosCallback(window, mouse_callback);
 
+    /*
 
     // timing variables
     auto begin = std::chrono::high_resolution_clock::now();
@@ -420,12 +408,14 @@ int main(int argc, char **argv)
     unsigned int accum = 0;
     // render loop
     // -----------
+    */
     while (!glfwWindowShouldClose(window))
     {
-        start = std::chrono::high_resolution_clock::now();
         // input
         // -----
         processInput(window);
+
+
         light.reset();
         light.translate(lightPos);
         // render
@@ -452,6 +442,7 @@ int main(int argc, char **argv)
         skyboxShader.setMat4("projection", projection);
         skyboxShader.setMat4("view", view);
         skybox.render();
+
         glDepthMask(GL_TRUE);
 
         // Setup markers and area
@@ -515,146 +506,15 @@ int main(int argc, char **argv)
         // normalsShader.setVec3("uViewPos", camera.position);
         // sea.render();
 
+        // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
+        // -------------------------------------------------------------------------------
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+        deltaTime = glfwGetTime() - lastFrame;
+        lastFrame = glfwGetTime();
 
-        std::thread *thread_array = new std::thread[NUM_THREADS];
-
-        { // Force Calculation
-            chkpt = std::chrono::high_resolution_clock::now();
-            for (unsigned int tid = 0; tid < NUM_THREADS; tid++){
-                unsigned int start = CHUNK_SIZE * tid;
-                // unsigned int end = start + CHUNK_SIZE;
-                unsigned int end = std::min(start + CHUNK_SIZE, NUM_BOIDS);
-
-                thread_array[tid] =
-                    std::thread(updateBoidsForce, &boids, start, end, tid, std::ref(sync_point));
-            }
-
-            for (unsigned int tid = 0; tid < NUM_THREADS; tid++){
-                thread_array[tid].join();
-            }
-
-            stop = std::chrono::high_resolution_clock::now();
-            duration = std::chrono::duration_cast<
-                        std::chrono::microseconds>(stop - chkpt);
-
-            std::cout << "Time taken by Update Force: "
-                << duration.count() << " microseconds" << std::endl;
-        }
-
-        { // Position Update
-            chkpt = std::chrono::high_resolution_clock::now();
-            for (unsigned int tid = 0; tid < NUM_THREADS; tid++){
-                unsigned int start = CHUNK_SIZE * tid;
-                unsigned int end = std::min(start + CHUNK_SIZE, NUM_BOIDS);
-
-                thread_array[tid] =
-                    std::thread(updateBoidsPos, &boids, start, end, tid, std::ref(sync_point));
-            }
-
-            for (unsigned int tid = 0; tid < NUM_THREADS; tid++){
-                thread_array[tid].join();
-            }
-
-            stop = std::chrono::high_resolution_clock::now();
-            duration = std::chrono::duration_cast<
-                        std::chrono::microseconds>(stop - chkpt);
-
-            std::cout << "Time taken by Update Position: "
-                << duration.count() << " microseconds" << std::endl;
-        }
-
-        { // Map Entry Update
-            chkpt = std::chrono::high_resolution_clock::now();
-            for (unsigned int tid = 0; tid < NUM_THREADS; tid++){
-                unsigned int start = CHUNK_SIZE * tid;
-                unsigned int end = std::min(start + CHUNK_SIZE, NUM_BOIDS);
-
-                thread_array[tid] =
-                    std::thread(updateBoidsEntry, &boids, start, end, tid, std::ref(sync_point));
-            }
-
-            for (unsigned int tid = 0; tid < NUM_THREADS; tid++){
-                thread_array[tid].join();
-            }
-
-            stop = std::chrono::high_resolution_clock::now();
-            duration = std::chrono::duration_cast<
-                        std::chrono::microseconds>(stop - chkpt);
-
-            std::cout << "Time taken by Update Entry: "
-                << duration.count() << " microseconds" << std::endl;
-        }
-
-        /*
-
-        { // All calculation
-            chkpt = std::chrono::high_resolution_clock::now();
-            for (unsigned int tid = 0; tid < NUM_THREADS; tid++){
-                unsigned int start = CHUNK_SIZE * tid;
-                // unsigned int end = start + CHUNK_SIZE;
-                unsigned int end = std::min(start + CHUNK_SIZE, NUM_BOIDS);
-
-                // if (start < end)
-                // std::cout << start << " "  << end << std::endl;
-                thread_array[tid] =
-                    std::thread(updateBoids, &boids, start, end, tid, std::ref(sync_point));
-            }
-
-            for (unsigned int tid = 0; tid < NUM_THREADS; tid++){
-                thread_array[tid].join();
-            }
-
-            stop = std::chrono::high_resolution_clock::now();
-            duration = std::chrono::duration_cast<
-                        std::chrono::microseconds>(stop - chkpt);
-
-            std::cout << "Time taken by Update Boids: "
-                << duration.count() << " microseconds" << std::endl;
-        }*/
-
-        { // Rendering
-            chkpt = std::chrono::high_resolution_clock::now();
-            boidShader.use();
-            boidShader.setMat4("projection", projection);
-            boidShader.setInt("selected", 1);
-            boidShader.setMat4("view", view);
-
-            for (int i = 0; i < NUM_BOIDS; i++){
-                // boids[i]->updatePosition();
-                boidShader.use();
-                boidShader.setMat4("model", boids[i]->model.modelMat);
-                boids[i]->render();
-            }
-
-            // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
-            // -------------------------------------------------------------------------------
-            glfwSwapBuffers(window);
-            glfwPollEvents();
-            deltaTime = glfwGetTime() - lastFrame;
-            lastFrame = glfwGetTime();
-
-            stop = std::chrono::high_resolution_clock::now();
-
-            duration = std::chrono::duration_cast<
-                        std::chrono::microseconds>(stop - chkpt);
-
-            std::cout << "Time taken by Rendering: "
-                << duration.count() << " microseconds" << std::endl;
-        }
-
-
-        duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-
-        std::cout << "Time taken by function: "
-            << duration.count() << " microseconds" << std::endl;
-        counter++;
-        accum += duration.count();
-
-        // assert(false);
     }
 
-    std::cout << "Average Time taken by function: "
-        << (accum/counter) << " microseconds" << std::endl;
 
 
     // optional: de-allocate all resources once they've outlived their purpose:
@@ -665,10 +525,12 @@ int main(int argc, char **argv)
     seaShader.deleteProgram();
 
 
+
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
     glfwTerminate();
-    return 0;
+
+   return 0;
 }
 
 
@@ -698,7 +560,7 @@ void processInput(GLFWwindow *window)
     }
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS){
-        // std::cout << "PRESSED " << deltaTime << std::endl;
+        std::cout << "PRESSED " << deltaTime << std::endl;
         camera.moveForward(deltaTime);
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS){

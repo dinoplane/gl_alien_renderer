@@ -23,7 +23,7 @@ void Plane::calculateVertices(){
     vertices.clear();
     indices.clear();
     // std::cout << "Hello" << std::endl;
-    printVertices();
+
     //  point of each (g+1)^2 vertices
     float vx = -0.5f;
     float vy = -0.5f;
@@ -57,4 +57,15 @@ void Plane::calculateVertices(){
             indices.insert(indices.end(), std::begin(b), std::end(b));     // C++11
         }
     }
+
+    // printVertices();
 }
+
+
+void Plane::setTiles(glm::ivec2 gdims)
+{
+    grid_dims = gdims;
+    unit_dims = glm::vec2(1.0f) / glm::vec2(grid_dims);
+    // std::cout << glm::to_string(grid_dims) << std::endl;
+    // std::cout << glm::to_string(unit_dims) << std::endl;
+};

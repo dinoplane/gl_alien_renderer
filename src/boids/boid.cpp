@@ -8,7 +8,7 @@
 
 #include<boid.hpp>
 #include <pyramid.hpp>
-// #include <spatial_map.hpp>
+#include <spatial_map.hpp>
 
 #include <string>
 #include <fstream>

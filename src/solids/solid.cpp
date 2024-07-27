@@ -20,18 +20,21 @@ Solid::Solid(){
     glGenBuffers(1, &EBO);
 
     modelMat = glm::mat4(1.0f);
+    calculateVertices();
+    initializeBuffers();
+
 }
 
 void Solid::deleteBuffers(){
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
+
 }
 
 
 void Solid::init(){
-    calculateVertices();
-    initializeBuffers();
+
 }
 
 // void Solid::drawTriangle3D(){
