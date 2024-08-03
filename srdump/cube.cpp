@@ -10,11 +10,6 @@
 #include <sstream>
 #include <iostream>
 
-void Cube::init(){
-    calculateVertices();
-    initializeBuffers();
-}
-
 void Cube::calculateVertices(){
     // std::cout << "Hello" << std::endl;
     vertices = {

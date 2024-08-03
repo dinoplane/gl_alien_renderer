@@ -5,7 +5,7 @@
 
 #include <glm/gtx/string_cast.hpp>
 
-#include<solid.hpp>
+#include<mesh.hpp>
 
 #include <string>
 #include <fstream>
@@ -13,11 +13,8 @@
 #include <iostream>
 
 
-Solid::Solid(){
+Mesh::Mesh(){
 
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
 
     modelMat = glm::mat4(1.0f);
     calculateVertices();
@@ -25,27 +22,38 @@ Solid::Solid(){
 
 }
 
-void Solid::deleteBuffers(){
+Mesh::~Mesh(){
+    deleteBuffers();
+}
+
+Mesh::Mesh(Mesh&& other) : VBO(other.VBO), VAO(other.VAO), EBO(other.EBO), vertices(std::move(other.vertices)), indices(std::move(other.indices)){
+
+    other.VBO = other.VAO = other.EBO = 0;
+}
+
+Mesh& Mesh::operator=(Mesh&& other){
+    if (this != &other){
+        deleteBuffers();
+        std::swap(VBO, other.VBO);
+        std::swap(VAO, other.VAO);
+        std::swap(EBO, other.EBO);
+        std::swap(vertices, other.vertices);
+        std::swap(indices, other.indices);
+    }
+    return *this;
+}
+
+// 800 622 1147
+void Mesh::deleteBuffers(){
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
-
+    VBO = VAO = EBO = 0;
+    vertices.clear();
+    indices.clear();
 }
 
-
-void Solid::init(){
-
-}
-
-// void Solid::drawTriangle3D(){
-
-// }
-
-// void Solid::pushTriangle3D(float verts[]){
-
-// }
-
-void Solid::calculateVertices(){
+void Mesh::calculateVertices(){
     vertices = {
         // positions         // colors          // texcoords
 
@@ -62,8 +70,13 @@ void Solid::calculateVertices(){
 
 }
 
-void Solid::initializeBuffers(){
+void Mesh::initializeBuffers(){
     // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
+
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
+
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -86,14 +99,14 @@ void Solid::initializeBuffers(){
 
 }
 
-void Solid::render(){
-    glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
+void Mesh::render(){ // shouldnt be here?
+    // glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
     // glDrawArrays(GL_TRIANGLES, 0, 3);
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 }
 
 
-void Solid::printVertices(){
+void Mesh::printVertices(){
     std::cout << "      Position                 Color                   TexCoord" << std::endl;
     for (int i = 0; i < vertices.size();){
         std::printf("%3d  ", i/8);
@@ -113,3 +126,4 @@ void Solid::printVertices(){
     }
 
 }
+

@@ -143,6 +143,31 @@ public:
             glDeleteShader(geometry);
 
     }
+
+    ~Shader(){
+        // deleteProgram();
+    }
+
+    Shader(const Shader& other) = delete;
+    Shader& operator=(const Shader& other) = delete;
+
+    Shader(Shader&& other) noexcept
+        : ID(other.ID)
+    {
+        other.ID = 0;
+    }
+
+    Shader& operator=(Shader&& other) noexcept
+    {
+        if (this != &other)
+        {
+            deleteProgram();
+            ID = other.ID;
+            other.ID = 0;
+        }
+        return *this;
+    }
+
     // activate the shader
     // ------------------------------------------------------------------------
     void use() const

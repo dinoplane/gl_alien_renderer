@@ -13,7 +13,7 @@ set (CMAKE_SUPPRESS_REGENERATION TRUE) # Suppresses ZERO_CHECK
 if(MSVC)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
 else()
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -std=c++11")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -std=c++20")
   if(NOT WIN32)
     set(GLAD_LIBRARIES dl)
   endif()
@@ -31,8 +31,9 @@ find_package(glfw3 REQUIRED)
 
 
 #fmt
-add_subdirectory(${VENDOR_DIR}/fmt EXCLUDE_FROM_ALL)
-
+# add_subdirectory(${VENDOR_DIR}/fmt EXCLUDE_FROM_ALL)
+add_library (fmt INTERFACE)
+target_include_directories(fmt INTERFACE ${VENDOR_DIR}/fmt/include)
 
 # Glad - Installed via: git submodule add git@github.com:Dav1dde/glad.git videogame/vendor/glad
 add_library(glad
@@ -75,9 +76,8 @@ include_directories(
    ${VENDOR_DIR}/glm/
    ${VENDOR_DIR}/glad/include/
    ${VENDOR_DIR}/stb/
-   ${SRC_DIR}/solids/
-   ${SRC_DIR}/boids/
-   ${SRC_DIR}/spatial_map/
+   ${VENDOR_DIR}/fmt/include
+
    ${SRC_DIR}/
 )
 
@@ -128,7 +128,7 @@ target_link_libraries(${PROJECT_NAME}
 set_target_properties(${PROJECT_NAME}
   PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    COMPILE_OPTIONS -Wpedantic #-Werror
+    COMPILE_OPTIONS -g
     CXX_STANDARD 20
     CXX_STANDARD_REQUIRED ON
     CXX_EXTENSIONS OFF

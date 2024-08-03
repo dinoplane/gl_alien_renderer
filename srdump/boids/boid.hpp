@@ -53,7 +53,6 @@ class Boid{
 
             acceleration = glm::vec3(0.0f);
             force = glm::vec3(0.0f);
-            model.init();
             behaviors.push_back(std::make_pair(1.0f, borders));
             behaviors.push_back(std::make_pair(3.0f, separation));
             behaviors.push_back(std::make_pair(1.5f, alignment));

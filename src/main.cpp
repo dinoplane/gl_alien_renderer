@@ -5,14 +5,11 @@
 #include <glm/gtc/random.hpp>
 
 #include <shader_s.hpp>
-#include <cube.hpp>
-#include <pyramid.hpp>
-#include <plane.hpp>
-#include <boid.hpp>
 #include <camera.hpp>
+#include <mesh.hpp>
 
-#include <spatial_map.hpp>
-
+#include <scene.hpp>
+#include <renderer.hpp>
 
 #include <cstdlib>
 #include <thread>
@@ -25,57 +22,57 @@
 #include "stb_image.h"
 
 #include <iostream>
+// #include <fmt/core.h>
+// #include <fmt/printf.h>
+
+
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow *window);
+void processInput(GLFWwindow *window, Camera *camera);
 
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-unsigned int NUM_BOIDS = 100;
-unsigned int NUM_THREADS = 16;
-int CHUNK_SIZE = std::max((NUM_BOIDS + (NUM_THREADS - 1)) / NUM_THREADS, (unsigned int) 1);
-// std::barrier sync_point(NUM_THREADS);
+// int CHUNK_SIZE = std::max((NUM_BOIDS + (NUM_THREADS - 1)) / NUM_THREADS, (unsigned int) 1);
+// // std::barrier sync_point(NUM_THREADS);
 
-// timing
+// // timing
 float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
 
 bool firstMouse = true;
 
-float yaw   = -90.0f;	// yaw is initialized to -90.0 degrees since a yaw of 0.0 results in a direction vector pointing to the right so we initially rotate a bit to the left.
-float pitch =  0.0f;
+// float yaw   = -90.0f;	// yaw is initialized to -90.0 degrees since a yaw of 0.0 results in a direction vector pointing to the right so we initially rotate a bit to the left.
+// float pitch =  0.0f;
 float lastX =  800.0f / 2.0;
 float lastY =  600.0 / 2.0;
 
-float lightSpeed = 10.0;
+// float lightSpeed = 10.0;
+Scene scene;
 
-Camera camera((float) SCR_WIDTH, (float) SCR_HEIGHT);
-
-
-glm::vec3 lightPos = glm::vec3(0.0, 15.0, 5.0);
+// glm::vec3 lightPos = glm::vec3(0.0, 15.0, 5.0);
 
 void setupCmdArgs(int argc, char **argv){
-    int i = 1;
-    while (i < argc){
-        if (argv[i][0] != '-') {
-            std::cout << "Usage: flocking -b NUM_BOUNDS -t NUM_THREADS\n";
-            exit(EXIT_FAILURE);
-        }
-        switch (argv[i][1]){
-            case 'b':
-                i++;
-                NUM_BOIDS = std::stoi(argv[i]);
-                break;
-            case 't':
-                i++;
-                NUM_THREADS = std::stoi(argv[i]);
-                break;
-        }
-        i++;
-    }
-    CHUNK_SIZE = std::max((NUM_BOIDS + (NUM_THREADS - 1)) / NUM_THREADS, (unsigned int) 1);
+    // int i = 1;
+    // while (i < argc){
+    //     if (argv[i][0] != '-') {
+    //         std::cout << "Usage: flocking -b NUM_BOUNDS -t NUM_THREADS\n";
+    //         exit(EXIT_FAILURE);
+    //     }
+    //     switch (argv[i][1]){
+    //         case 'b':
+    //             i++;
+    //             NUM_BOIDS = std::stoi(argv[i]);
+    //             break;
+    //         case 't':
+    //             i++;
+    //             NUM_THREADS = std::stoi(argv[i]);
+    //             break;
+    //     }
+    //     i++;
+    // }
+    // CHUNK_SIZE = std::max((NUM_BOIDS + (NUM_THREADS - 1)) / NUM_THREADS, (unsigned int) 1);
 
 }
 
@@ -203,78 +200,31 @@ unsigned int loadCubeMap(std::convertible_to<std::string_view> auto&& ...s){
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
-    if (glfwGetInputMode(window, GLFW_CURSOR) != GLFW_CURSOR_DISABLED){
-        return;
-    }
-    if (firstMouse)
-    {
+        if (glfwGetInputMode(window, GLFW_CURSOR) != GLFW_CURSOR_DISABLED){
+            return;
+        }
+        if (firstMouse)
+        {
+            lastX = xpos;
+            lastY = ypos;
+            firstMouse = false;
+        }
+
+        float xoffset = xpos - lastX;
+        float yoffset = lastY - ypos;
         lastX = xpos;
         lastY = ypos;
-        firstMouse = false;
-    }
 
-    float xoffset = xpos - lastX;
-    float yoffset = lastY - ypos;
-    lastX = xpos;
-    lastY = ypos;
-
-    camera.processMouseMovement(xoffset, yoffset);
+        scene.cameras[0].processMouseMovement(xoffset, yoffset);
 }
-
-
-void updateBoids(std::vector<std::shared_ptr<Boid>> *boids,
-        unsigned int start, unsigned int end, unsigned int tid,
-        std::barrier<std::function<void()>>& sync_point){
-    for (int i = start; i < end; i++){
-        (*boids)[i]->calculateForce();
-        // std::string msg = std::to_string(tid) + "  Completed force!\n";
+template<typename T>
+void printVector(const std::vector<T>& vec) {
+    std::cout << "Elements of the vector:" << std::endl;
+    for (const T& elem : vec) {
+        std::cout << elem << " ";
     }
-        // std::cout << msg;
-    sync_point.arrive_and_wait();
-    for (int i = start; i < end; i++){
-            (*boids)[i]->updatePosition();
-            (*boids)[i]->updateMapEntry();
-
-        // msg = std::to_string(tid) + "  Completed position!\n";
-        // std::cout << msg;
-
-    }
-    sync_point.arrive_and_wait();
+    std::cout << std::endl;
 }
-
-void updateBoidsForce(std::vector<std::shared_ptr<Boid>> *boids,
-        unsigned int start, unsigned int end, unsigned int tid, std::barrier<std::function<void()>>& sync_point){
-    for (int i = start; i < end; i++){
-        if (i < NUM_BOIDS)
-            (*boids)[i]->calculateForce();
-        // std::string msg = std::to_string(tid) + "  Completed force!\n";
-        // std::cout << msg;
-    }
-    sync_point.arrive_and_wait();
-}
-
-void updateBoidsPos(std::vector<std::shared_ptr<Boid>> *boids,
-        unsigned int start, unsigned int end, unsigned int tid, std::barrier<std::function<void()>>& sync_point){
-    for (int i = start; i < end; i++){
-        if (i < NUM_BOIDS)
-           (*boids)[i]->updatePosition();
-        // msg = std::to_string(tid) + "  Completed position!\n";
-        // std::cout << msg;
-    }
-    sync_point.arrive_and_wait();
-}
-
-void updateBoidsEntry(std::vector<std::shared_ptr<Boid>> *boids,
-        unsigned int start, unsigned int end, unsigned int tid, std::barrier<std::function<void()>>& sync_point){
-    for (int i = start; i < end; i++){
-        if (i < NUM_BOIDS)
-           (*boids)[i]->updateMapEntry();
-        // msg = std::to_string(tid) + "  Completed position!\n";
-        // std::cout << msg;
-    }
-    sync_point.arrive_and_wait();
-}
-
 
 // Add load texture function
 int main(int argc, char **argv)
@@ -296,103 +246,51 @@ int main(int argc, char **argv)
 		return -1;
 	}
 
-    // glEnable(GL_DEPTH_TEST);
-
-    // testMap();
-    // assert(false);
-
 
     // build and compile our shader program
     // ------------------------------------
-    Shader ourShader("./resources/shader/exv.vert", "./resources/shader/exf.frag");
-    Shader boidShader("./resources/shader/boid.vert", "./resources/shader/boid.frag");
-    Shader seaShader("./resources/shader/sea.vert", "./resources/shader/sea.frag");
-    Shader seafloorShader("./resources/shader/seafloor.vert", "./resources/shader/seafloor.frag");
-    Shader normalsShader("./resources/shader/sea.vert", "./resources/shader/normals.frag", "./resources/shader/normals.geom");
-    Shader skyboxShader("./resources/shader/skybox.vert", "./resources/shader/skybox.frag");
-    // assert(false);
+
 
     // uncomment this call to draw in wireframe polygons.
 //    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    std::vector<unsigned int> textureID = loadAllTextures("./resources/assets/sky.png", "./resources/assets/awesomeface.png", "./resources/assets/noise.png");
-    unsigned int skyBoxID = loadCubeMap(
-                            "./resources/assets/bluecloud_rt.jpg",
-                            "./resources/assets/bluecloud_lf.jpg",
-                            "./resources/assets/bluecloud_up.jpg",
-                            "./resources/assets/bluecloud_dn.jpg",
-                            "./resources/assets/bluecloud_bk.jpg",
-                            "./resources/assets/bluecloud_ft.jpg"
-                        );
+    // std::vector<unsigned int> textureID = loadAllTextures("./resources/assets/sky.png", "./resources/assets/awesomeface.png", "./resources/assets/noise.png");
+    // unsigned int skyBoxID = loadCubeMap(
+    //                         "./resources/assets/bluecloud_rt.jpg",
+    //                         "./resources/assets/bluecloud_lf.jpg",
+    //                         "./resources/assets/bluecloud_up.jpg",
+    //                         "./resources/assets/bluecloud_dn.jpg",
+    //                         "./resources/assets/bluecloud_bk.jpg",
+    //                         "./resources/assets/bluecloud_ft.jpg"
+    //                     );
     // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
     // -------------------------------------------------------------------------------------------
-    ourShader.use();
-    ourShader.setInt("texture1", 0);
-    ourShader.setInt("texture2", 1);
 
-    boidShader.use();
-    boidShader.setInt("texture1", 0);
-    boidShader.setInt("texture2", 1);
-    boidShader.setInt("noise1", 2);
+    scene = Scene::GenerateDefaultScene();
 
-    seaShader.use();
-    seaShader.setInt("texture1", 0);
-    seaShader.setInt("texture2", 1);
+    // printVector(scene.meshes);
+    // fmt::printf("Scene generated %u\n", scene.meshes.size());
 
-    normalsShader.use();
-    normalsShader.setInt("texture1", 0);
-    normalsShader.setInt("texture2", 1);
 
-    skyboxShader
+    // assert(false);
+    Renderer renderer = Renderer();
 
     // projection = glm::perspective(glm::radians(60.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 2000.0f);
-    glm::mat4 view = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-    glm::mat4 projection = camera.getProjMatrix();
-
-    // // camera/view transformation
-    Cube skybox;
-    skybox.init();
-    skybox.scale(glm::vec3(100.0));
-
-    Cube xcoord;
-    xcoord.init();
-    xcoord.translate(glm::vec3(10.0, 0.0, 0.0));
-
-    Cube ycoord;
-    ycoord.init();
-    ycoord.translate(glm::vec3(0.0, 10.0, 0.0));
-
-    Cube zcoord;
-    zcoord.init();
-    zcoord.translate(glm::vec3(0.0, 0.0, 10.0));
-
-
-    Cube light;
-    light.init();
-    lightPos = glm::vec3(0.0, 15.0, 5.0);
-    light.translate(lightPos);
-
-
-
-    Plane sea;
-    sea.setTiles(glm::ivec2(1024));
-    sea.init();
-    sea.scale(glm::vec3(100.0));
-
-    Plane floor;
-    floor.setTiles(glm::ivec2(1024));
-    floor.init();
-    floor.scale(glm::vec3(100.0, 50.0, 100.0));
-    floor.translate(glm::vec3(0.0, -0.5, 0.0));
 
     // sea.printVertices();
     // assert(false);
+    glEnable(GL_DEPTH_TEST);
 
+    // auto mouseCallback = [&](GLFWwindow* window, double xpos, double ypos) -> void {
+
+    // };
+
+    glfwSetCursorPosCallback(window, mouse_callback);
 
 
     // std::cout << glm::to_string(b.model.modelMat) << std::endl;
-    glEnable(GL_DEPTH_TEST);
-    glfwSetCursorPosCallback(window, mouse_callback);
+    // glEnable(GL_DEPTH_TEST);
+    // glfwSetCursorPosCallback(window, mouse_callback);
 
     /*
 
@@ -413,98 +311,42 @@ int main(int argc, char **argv)
     {
         // input
         // -----
-        processInput(window);
+        processInput(window, &scene.cameras[0]);
 
+        renderer.Render(&scene);
 
-        light.reset();
-        light.translate(lightPos);
+        // light.reset();
+        // light.translate(lightPos);
         // render
         // ------
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        // glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // bind textures on corresponding texture units
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, textureID[0]);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, textureID[1]);
-        glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, textureID[2]);
-        glDepthMask(GL_FALSE);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, skyBoxID);
+        // // bind textures on corresponding texture units
+        // glActiveTexture(GL_TEXTURE0);
+        // glBindTexture(GL_TEXTURE_2D, textureID[0]);
+        // glActiveTexture(GL_TEXTURE1);
+        // glBindTexture(GL_TEXTURE_2D, textureID[1]);
+        // glActiveTexture(GL_TEXTURE2);
+        // glBindTexture(GL_TEXTURE_2D, textureID[2]);
+        // glDepthMask(GL_FALSE);
+        // glBindTexture(GL_TEXTURE_CUBE_MAP, skyBoxID);
 
 
         // Set up projection and view matrix
-        projection = camera.getProjMatrix();
-        view = camera.getViewMatrix();
+        // projection = camera.getProjMatrix();
+        // view = camera.getViewMatrix();
 
-        skyboxShader.use();
-        skyboxShader.setMat4("projection", projection);
-        skyboxShader.setMat4("view", view);
-        skybox.render();
+        // skyboxShader.use();
+        // skyboxShader.setMat4("projection", projection);
+        // skyboxShader.setMat4("view", view);
+        // skybox.render();
 
         glDepthMask(GL_TRUE);
 
         // Setup markers and area
 
-        ourShader.use();
-        ourShader.setMat4("projection", projection);
-        ourShader.setMat4("view", view);
 
-        ourShader.setInt("selected", 1);
-        ourShader.setMat4("model", floor.modelMat);
-        // seaShader.setInt("uIsFloor", 0);
-
-        seafloorShader.use();
-        seafloorShader.setMat4("projection", projection);
-        seafloorShader.setMat4("view", view);
-        seafloorShader.setInt("selected", 0);
-        seafloorShader.setFloat("uTime", glfwGetTime());
-        seafloorShader.setMat4("model", floor.modelMat);
-        seafloorShader.setVec3("uLightPos", lightPos);
-        seafloorShader.setVec3("uViewPos", camera.position);
-        floor.render();
-
-
-        // assert(false);
-        // test.render();
-
-        // ourShader.use();
-        // ourShader.setMat4("model", xcoord.modelMat);
-        // xcoord.render();
-
-        // ourShader.use();
-        // ourShader.setMat4("model", ycoord.modelMat);
-        // ycoord.render();
-
-        // ourShader.use();
-        // ourShader.setMat4("model", zcoord.modelMat);
-        // zcoord.render();
-
-        ourShader.use();
-        ourShader.setMat4("model", light.modelMat);
-        light.render();
-
-        seaShader.use();
-        seaShader.setMat4("projection", projection);
-        seaShader.setMat4("view", view);
-        seaShader.setInt("selected", 0);
-        seaShader.setFloat("uTime", glfwGetTime());
-        seaShader.setMat4("model", sea.modelMat);
-        seaShader.setVec3("uLightPos", lightPos);
-        seaShader.setVec3("uViewPos", camera.position);
-        // seaShader.setInt("uIsFloor", 0);
-        sea.render();
-
-        // normalsShader.use();
-        // normalsShader.setMat4("projection", projection);
-        // normalsShader.setMat4("view", view);
-        // normalsShader.setInt("selected", 0);
-        // normalsShader.setFloat("uTime", glfwGetTime());
-        // normalsShader.setMat4("model", sea.modelMat);
-        // normalsShader.setVec3("uLightPos", lightPos);
-        // normalsShader.setVec3("uViewPos", camera.position);
-        // sea.render();
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
@@ -520,9 +362,10 @@ int main(int argc, char **argv)
     // optional: de-allocate all resources once they've outlived their purpose:
     // ------------------------------------------------------------------------
     // test.deleteBuffers();
-    ourShader.deleteProgram();
-    boidShader.deleteProgram();
-    seaShader.deleteProgram();
+    // ourShader.deleteProgram();
+    // boidShader.deleteProgram();
+    // // baseShader.deleteProgram();
+    // seaShader.deleteProgram();
 
 
 
@@ -537,9 +380,13 @@ int main(int argc, char **argv)
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
 
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height){
+    //
+}
+
 float SPEED_MULTIPLIER = 10;
-void processInput(GLFWwindow *window)
-{
+void processInput(GLFWwindow *window, Camera *camera){
     double mWidth = (double) SCR_WIDTH;
     double mHeight = (double) SCR_HEIGHT;
 
@@ -551,27 +398,32 @@ void processInput(GLFWwindow *window)
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     }
 
-
-    // std::cout << mWidth << " " << mHeight << std::endl;
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
-        Boid::boid_map.printMap();
         glfwSetWindowShouldClose(window, true);
 
     }
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS){
         std::cout << "PRESSED " << deltaTime << std::endl;
-        camera.moveForward(deltaTime);
+        camera->moveForward(deltaTime);
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS){
-        camera.moveBackward(deltaTime);
+        camera->moveBackward(deltaTime);
     }
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS){
-        camera.moveLeft(deltaTime);
+        camera->moveLeft(deltaTime);
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS){
-        camera.moveRight(deltaTime);
+        camera->moveRight(deltaTime);
     }
+}
+
+
+/*
+{
+
+    // std::cout << mWidth << " " << mHeight << std::endl;
+
 
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS){
         // std::cout << "PRESSED " << deltaTime << std::endl;
@@ -596,14 +448,5 @@ void processInput(GLFWwindow *window)
 
 
 }
-
-// glfw: whenever the window size changed (by OS or user resize) this callback function executes
-// ---------------------------------------------------------------------------------------------
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-    // make sure the viewport matches the new window dimensions; note that width and
-    // height will be significantly larger than specified on retina displays.
-    glViewport(0, 0, width, height);
-    camera.setPerspectiveSize(width, height);
-}
+*/
 

@@ -1,18 +1,14 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 
 #include <string>
-#include <vector>
 
-#include <fstream>
-#include <sstream>
-#include <iostream>
+
 
 const float YAW         = -135.0f;
 const float PITCH       =  -45.0f;
@@ -53,7 +49,7 @@ class Camera {
                 glm::vec3 pos = glm::vec3(20.0, 20.0f, 20.0),
                 glm::vec3 upv = glm::vec3(0.0, 1.0, 0.0),
                 float yaw_val = YAW, float pitch_val = PITCH
-            ) : front(glm::vec3(0.0f, 0.0f, -1.0f)), speed(SPEED), sensitivity(SENSITIVITY){
+            ) : speed(SPEED), sensitivity(SENSITIVITY){
             // viewMat = glm::mat4(1.0);
             position = pos;
             worldUp = upv;

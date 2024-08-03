@@ -10,11 +10,6 @@
 #include <sstream>
 #include <iostream>
 
-void Pyramid::init(){
-    calculateVertices();
-    initializeBuffers();
-}
-
 void Pyramid::calculateVertices(){
     // std::cout << "Hello" << std::endl;
     vertices = {

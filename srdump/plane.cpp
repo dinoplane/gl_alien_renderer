@@ -14,9 +14,11 @@
 #include <sstream>
 #include <iostream>
 
-void Plane::init(){
+Plane::Plane(glm::ivec2 gdims) {
+    setTiles(gdims);
     calculateVertices();
     initializeBuffers();
+
 }
 
 void Plane::calculateVertices(){

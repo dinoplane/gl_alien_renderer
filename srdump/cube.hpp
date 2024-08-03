@@ -1,11 +1,10 @@
 #ifndef CUBE_H
 #define CUBE_H
 
-#include<solid.hpp>
+#include<mesh.hpp>
 
-class Cube : public Solid {
+class Cube : public Mesh {
     public:
-        virtual void init();
         virtual void calculateVertices();
 };
 #endif

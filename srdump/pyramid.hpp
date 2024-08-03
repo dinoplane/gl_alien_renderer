@@ -1,11 +1,10 @@
 #ifndef PYRAMID_H
 #define PYRAMID_H
 
-#include<solid.hpp>
+#include<mesh.hpp>
 
-class Pyramid : public Solid {
+class Pyramid : public Mesh {
     public:
-        virtual void init();
         virtual void calculateVertices();
 };
 #endif
