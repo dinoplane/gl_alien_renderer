@@ -2,10 +2,12 @@
 
 #include <shader_s.hpp>
 #include <mesh.hpp>
+#include <transform.hpp>
+#include <entity.hpp>
 #include <camera.hpp>
 
 Scene::Scene(){
-    meshes = std::vector<Mesh>();
+    entities = std::vector<Entity>();
     shaders = std::vector<Shader>();
     cameras = std::vector<Camera>();
 }
@@ -15,13 +17,13 @@ Scene::~Scene(){
 }
 
 void Scene::DeleteSceneObjects(){
-    meshes.clear();
+    entities.clear();
     shaders.clear();
     cameras.clear();
 }
 
-Scene::Scene(Scene&& other) : meshes(std::move(other.meshes)), shaders(std::move(other.shaders)), cameras(std::move(other.cameras)){
-    other.meshes.clear();
+Scene::Scene(Scene&& other) : entities(std::move(other.entities)), shaders(std::move(other.shaders)), cameras(std::move(other.cameras)){
+    other.entities.clear();
     other.shaders.clear();
     other.cameras.clear();
 }
@@ -29,18 +31,18 @@ Scene::Scene(Scene&& other) : meshes(std::move(other.meshes)), shaders(std::move
 Scene& Scene::operator=(Scene&& other){
     if (this != &other){
         DeleteSceneObjects();
-        meshes = std::move(other.meshes);
+        entities = std::move(other.entities);
         shaders = std::move(other.shaders);
         cameras = std::move(other.cameras);
-        other.meshes.clear();
+        other.entities.clear();
         other.shaders.clear();
         other.cameras.clear();
     }
     return *this;
 }
 
-// bool Scene::RegisterEntity(Mesh* mesh, Shader* shader){
-//     this->meshes.push_back(mesh);
+// bool Scene::RegisterEntity(Entity* entity, Shader* shader){
+//     this->entities.push_back(entity);
 //     this->shaders.push_back(shader);
 
 //     return true;
@@ -56,7 +58,13 @@ Scene& Scene::operator=(Scene&& other){
 Scene Scene::GenerateDefaultScene(){
     Scene retScene;
 
-    retScene.meshes.push_back(Mesh::CreateCube());
+    Transform transform;
+    transform.SetPosition(glm::vec3(0.0, 0.0, 0.0));
+    transform.SetRotation(glm::vec3(0.0, 0.0, 0.0));
+    transform.SetScale(glm::vec3(1.0, 1.0, 10.0));
+    transform.GetModelMatrix();
+
+    retScene.entities.push_back({Mesh::CreateCube(), transform});
     retScene.shaders.push_back(Shader("./resources/shader/base.vert", "./resources/shader/base.frag"));
     retScene.cameras.push_back(Camera(800.0, 600.0));
     // Camera camera((float) SCR_WIDTH, (float) SCR_HEIGHT);
@@ -107,7 +115,7 @@ Scene Scene::GenerateDefaultScene(){
     // floor.scale(glm::vec3(100.0, 50.0, 100.0));
     // floor.translate(glm::vec3(0.0, -0.5, 0.0));
 
-    // retScene.meshes.push_back({skybox, xcoord, ycoord, zcoord, light, sea, floor}); // uses move semantics
+    // retScene.entities.push_back({skybox, xcoord, ycoord, zcoord, light, sea, floor}); // uses move semantics
     // retScene.cameras.push_back(camera); // literally just data
     // retScene.shaders.push_back(ourShader);
 

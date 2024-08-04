@@ -3,8 +3,15 @@
 #include <scene.hpp>
 #include <shader_s.hpp>
 #include <mesh.hpp>
+#include <entity.hpp>
 
 #include <glad/glad.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/string_cast.hpp>
+
+#include <iostream>
 
 void Renderer::Init(){
 
@@ -32,11 +39,17 @@ void Renderer::Render(Scene* scene){ // really bad, we are modifying the scene s
         scene->shaders[0].use();
         scene->shaders[0].setMat4("projection", scene->cameras[0].getProjMatrix()); // TODO : Profile this
         scene->shaders[0].setMat4("view", scene->cameras[0].getViewMatrix());
+        scene->shaders[0].setMat4("model", scene->entities[0].transform.GetModelMatrix());
+
+        // std::cout << "Model Matrix : " << glm::to_string(scene->entities[0].transform.GetModelMatrix()) << std::endl;
         // scene->shaders[0].setMat4("projection", glm::identity<glm::mat4>()); // TODO : Profile this
         // scene->shaders[0].setMat4("view", glm::identity<glm::mat4>());
-        scene->shaders[0].setMat4("model", glm::identity<glm::mat4>());
-        glBindVertexArray(scene->meshes[0].VAO);
-        glDrawElements(GL_TRIANGLES, scene->meshes[0].indexCount, GL_UNSIGNED_INT, 0);
+        // scene->shaders[0].setMat4("model", glm::identity<glm::mat4>());
+        glBindVertexArray(scene->entities[0].mesh.VAO);
+        glDrawElements(GL_TRIANGLES, scene->entities[0].mesh.indexCount, GL_UNSIGNED_INT, 0);
+
+        // Another gl draw elements for the camera debug
+
         // ourShader.use();
         // ourShader.setMat4("projection", projection);
         // ourShader.setMat4("view", view);

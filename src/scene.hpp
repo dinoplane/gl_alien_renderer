@@ -4,7 +4,7 @@
 #include <vector>
 // #include <memory>
 
-class Mesh;
+class Entity;
 class Shader; // Change this to only use move semantics
 class Camera;
 // class Light;
@@ -18,7 +18,7 @@ class Scene {
     // static void LoadShaders();
     // static void LoadCameras();
 
-    std::vector<Mesh> meshes;
+    std::vector<Entity> entities;
     std::vector<Shader> shaders;
     std::vector<Camera> cameras;
 

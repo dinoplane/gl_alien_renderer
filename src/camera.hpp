@@ -42,11 +42,13 @@ class Camera {
         float width;
         float height;
 
+        float near;
+        float far;
 
     public:
         Camera(
                 float w, float h,
-                glm::vec3 pos = glm::vec3(20.0, 20.0f, 20.0),
+                glm::vec3 pos = glm::vec3(5.0, 5.0f, 5.0),
                 glm::vec3 upv = glm::vec3(0.0, 1.0, 0.0),
                 float yaw_val = YAW, float pitch_val = PITCH
             ) : speed(SPEED), sensitivity(SENSITIVITY){
