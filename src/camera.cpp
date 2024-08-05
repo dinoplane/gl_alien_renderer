@@ -17,8 +17,8 @@
 
 // Camera::Camera(float width, float height,
 //                 glm::vec3 pos = glm::vec3(0.0, 0.0, 0.0), glm::vec3 upv = glm::vec3(0.0, 1.0, 0.0),
-//                 float yaw_val = YAW, float pitch_val = PITCH) :
-//                 front(glm::vec3(0.0f, 0.0f, -1.0f)), speed(SPEED), sensitivity(SENSITIVITY){
+//                 float yaw_val = DEFAULT_YAW, float pitch_val = DEFAULT_PITCH) :
+//                 front(glm::vec3(0.0f, 0.0f, -1.0f)), speed(DEFAULT_SPEED), sensitivity(DEFAULT_SENSITIVITY){
 //     // viewMat = glm::mat4(1.0);
 //     position = pos;
 //     worldUp = upv;
@@ -30,20 +30,30 @@
 // }
 
 void Camera::moveLeft(float deltaTime){
-    position -= right * deltaTime * SPEED;
+    position -= right * deltaTime * speed;
 }
 
 void Camera::moveRight(float deltaTime){
-    position += right * deltaTime * SPEED;
+    position += right * deltaTime * speed;
 }
 
 void Camera::moveForward(float deltaTime){
-    position += front * deltaTime * SPEED;
+    position += front * deltaTime * speed;
 }
 
 void Camera::moveBackward(float deltaTime){
-    position -= front * deltaTime * SPEED;
+    position -= front * deltaTime * speed;
 }
+
+
+void Camera::moveUp(float deltaTime){
+    position += glm::vec3(0.0, 1.0, 0.0) * deltaTime * speed;
+}
+void Camera::moveDown(float deltaTime){
+    position -= glm::vec3(0.0, 1.0, 0.0) * deltaTime * speed;
+}
+
+
 
 void Camera::processMouseMovement(float xoffset, float yoffset){
     float sensitivity = 0.1f;
@@ -59,6 +69,8 @@ void Camera::processMouseMovement(float xoffset, float yoffset){
         pitch = -89.0f;
 
     updateCameraVectors();
+
+    std::cout << "Yaw: " << yaw << " Pitch: " << pitch << std::endl;
 }
 
 
@@ -70,4 +82,31 @@ void Camera::updateCameraVectors(){
     front = glm::normalize(direction);
     right = glm::normalize(glm::cross(front, worldUp));
     up = glm::normalize(glm::cross(right, front));
+}
+
+Frustum Camera::createFrustumFromCamera(const Camera& cam)
+{
+    const float aspect = cam.width / cam.height;
+    const float halfVSide = cam.zFar * tanf(cam.fovY * .5f);
+    const float halfHSide = halfVSide * aspect;
+    const glm::vec3 frontMultFar = cam.zFar * cam.front;
+
+
+
+    Frustum     frustum{
+    /*topFace*/ {cam.position,
+                            glm::cross(cam.right, frontMultFar - cam.up * halfVSide) },
+    /*bottomFace*/ {cam.position,
+                            glm::cross(frontMultFar + cam.up * halfVSide, cam.right) },
+
+    /*rightFace*/ {cam.position,
+                            glm::cross(frontMultFar - cam.right * halfHSide, cam.up) },
+    /*leftFace*/ {cam.position,
+                            glm::cross(cam.up, frontMultFar + cam.right * halfHSide) },
+
+    /*farFace*/ {cam.position + frontMultFar, -cam.front },
+    /*nearFace*/ {cam.position + cam.zNear * cam.front, cam.front },
+    };
+
+    return frustum;
 }

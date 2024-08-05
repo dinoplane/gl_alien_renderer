@@ -9,13 +9,50 @@
 #include <string>
 
 
+struct Plane
+{
+    // unit vector
+    glm::vec3 normal = { 0.f, 1.f, 0.f };
 
-const float YAW         = -135.0f;
-const float PITCH       =  -45.0f;
-const float SPEED       =  10.0f;
-const float SENSITIVITY =  0.1f;
-const float ZOOM        =  45.0f;
+    // distance from origin to the nearest point in the plane
+    float     distance = 0.f;
 
+
+
+	Plane() = default;
+
+	Plane(const glm::vec3& p1, const glm::vec3& norm)
+		: normal(glm::normalize(norm)),
+		distance(glm::dot(normal, p1))
+	{}
+
+	float getSignedDistanceToPlane(const glm::vec3& point) const
+	{
+		return glm::dot(normal, point) - distance;
+	}
+
+};
+
+struct Frustum
+{
+    Plane topFace;
+    Plane bottomFace;
+
+    Plane rightFace;
+    Plane leftFace;
+
+    Plane farFace;
+    Plane nearFace;
+};
+
+
+const float DEFAULT_YAW         = -135.0f;
+const float DEFAULT_PITCH       =  -45.0f;
+const float DEFAULT_SPEED       =  10.0f;
+const float DEFAULT_SENSITIVITY =  0.1f;
+const float DEFAULT_FOVY        =  45.0f;
+const float DEFAULT_NEAR        =  0.1f;
+const float DEFAULT_FAR         =  1000.0f;
 
 class Camera {
     // float fov;
@@ -42,21 +79,28 @@ class Camera {
         float width;
         float height;
 
-        float near;
-        float far;
+        float fovY;
+        float zNear;
+        float zFar;
+
 
     public:
         Camera(
                 float w, float h,
                 glm::vec3 pos = glm::vec3(5.0, 5.0f, 5.0),
                 glm::vec3 upv = glm::vec3(0.0, 1.0, 0.0),
-                float yaw_val = YAW, float pitch_val = PITCH
-            ) : speed(SPEED), sensitivity(SENSITIVITY){
+                float yaw_val = DEFAULT_YAW, float pitch_val = DEFAULT_PITCH,
+                float fovY_val = DEFAULT_FOVY, float zNear_val = DEFAULT_NEAR, float zFar_val = DEFAULT_FAR
+            ) : speed(DEFAULT_SPEED), sensitivity(DEFAULT_SENSITIVITY){
             // viewMat = glm::mat4(1.0);
             position = pos;
             worldUp = upv;
             yaw = yaw_val;
             pitch = pitch_val;
+
+            fovY = fovY_val;
+            zNear = zNear_val;
+            zFar = zFar_val;
 
             setPerspectiveSize(w, h);
             updateCameraVectors();
@@ -66,6 +110,9 @@ class Camera {
         void moveRight(float deltaTime);
         void moveForward(float deltaTime);
         void moveBackward(float deltaTime);
+        void moveUp(float deltaTime);
+        void moveDown(float deltaTime);
+
 
         void processMouseMovement(float xoffset, float yoffset);
 
@@ -79,8 +126,10 @@ class Camera {
         }
 
         glm::mat4 getProjMatrix(){
-            return glm::perspective(glm::radians(60.0f), width / height, 0.1f, 2000.0f);
+            return glm::perspective(glm::radians(fovY), width / height, zNear, zFar);
         }
+
+        static Frustum createFrustumFromCamera(const Camera& cam);
 
     private:
         void updateCameraVectors();

@@ -6,6 +6,12 @@
 #include <entity.hpp>
 #include <camera.hpp>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <iostream>
+#include <glm/gtx/string_cast.hpp>
+
 Scene::Scene(){
     entities = std::vector<Entity>();
     shaders = std::vector<Shader>();
@@ -59,17 +65,44 @@ Scene Scene::GenerateDefaultScene(){
     Scene retScene;
 
     Transform transform;
-    transform.SetPosition(glm::vec3(0.0, 0.0, 0.0));
-    transform.SetRotation(glm::vec3(0.0, 0.0, 0.0));
-    transform.SetScale(glm::vec3(1.0, 1.0, 10.0));
-    transform.GetModelMatrix();
 
-    retScene.entities.push_back({Mesh::CreateCube(), transform});
+    for (int i = 0; i < 5; ++i){
+        for (int j = 0; j < 5; ++j){
+            for (int k = 0; k < 5; ++k){
+                transform.SetPosition(glm::vec3(i * 2.0, j * 2.0, k * 2.0));
+                transform.SetRotation(glm::vec3(0.0, 0.0, 0.0));
+                transform.SetScale(glm::vec3(1.0, 1.0, 1.0));
+                retScene.entities.push_back({Mesh::CreateCube(), transform});
+            }
+        }
+    }
+
+    // transform.SetPosition(glm::vec3(0.0, 0.0, 0.0));
+    // transform.SetRotation(glm::vec3(0.0, 0.0, 0.0));
+    // transform.SetScale(glm::vec3(1.0, 1.0, 10.0));
+    // // transform.GetModelMatrix();
+    // retScene.entities.push_back({Mesh::CreateCube(), transform});
+
+
+    // transform.SetPosition(glm::vec3(0.0, 0.0, 0.0));
+    // transform.SetRotation(glm::vec3(0.0, 90.0, 0.0));
+    // transform.SetScale(glm::vec3(1.0, 10.0, 1.0));
+    // retScene.entities.push_back({Mesh::CreateCube(), transform});
+
     retScene.shaders.push_back(Shader("./resources/shader/base.vert", "./resources/shader/base.frag"));
+
+    retScene.cameras.push_back(Camera(800.0, 600.0, glm::vec3(0.0, 20.0, 0.0), glm::vec3(0.0, 1.0, 0.0), -315.0f, -60.0f));
     retScene.cameras.push_back(Camera(800.0, 600.0));
+
+
+
+    for ( Entity& entity : retScene.entities) {
+        // Print entity information
+        // Example: std::cout << "Entity: " << entity << std::endl;
+        std::cout << "transform: " << glm::to_string(entity.transform.GetModelMatrix()) << std::endl;
+    }
+
     // Camera camera((float) SCR_WIDTH, (float) SCR_HEIGHT);
-
-
     // // Need to make these RAII and figure out how to provide inputs
     // Shader ourShader("./resources/shader/exv.vert", "./resources/shader/exf.frag");
     // // Shader baseShader("./resources/shader/base.vert", "./resources/shader/base.frag");

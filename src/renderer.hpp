@@ -23,9 +23,11 @@ class Renderer {
     void Update(const Scene& scene);
     void Render(Scene* scene);
 
+    void SwitchCamera(const Scene& scene);
 
     public:
     uint mainCameraIdx {0};
+
 };
 
 #endif

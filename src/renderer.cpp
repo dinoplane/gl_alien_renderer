@@ -36,18 +36,31 @@ void Renderer::Render(Scene* scene){ // really bad, we are modifying the scene s
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        // scene->shaders[0].use();
+        // scene->shaders[0].setMat4("projection", scene->cameras[0].getProjMatrix()); // TODO : Profile this
+        // scene->shaders[0].setMat4("view", scene->cameras[0].getViewMatrix());
+        // scene->shaders[0].setMat4("model", scene->entities[0].transform.GetModelMatrix());
+
+        // // std::cout << "Model Matrix : " << glm::to_string(scene->entities[0].transform.GetModelMatrix()) << std::endl;
+        // // scene->shaders[0].setMat4("projection", glm::identity<glm::mat4>()); // TODO : Profile this
+        // // scene->shaders[0].setMat4("view", glm::identity<glm::mat4>());
+        // // scene->shaders[0].setMat4("model", glm::identity<glm::mat4>());
+        // glBindVertexArray(scene->entities[0].mesh.VAO);
+        // glDrawElements(GL_TRIANGLES, scene->entities[0].mesh.indexCount, GL_UNSIGNED_INT, 0);
+
         scene->shaders[0].use();
-        scene->shaders[0].setMat4("projection", scene->cameras[0].getProjMatrix()); // TODO : Profile this
-        scene->shaders[0].setMat4("view", scene->cameras[0].getViewMatrix());
-        scene->shaders[0].setMat4("model", scene->entities[0].transform.GetModelMatrix());
+        scene->shaders[0].setMat4("projection", scene->cameras[mainCameraIdx].getProjMatrix()); // TODO : Profile this
+        scene->shaders[0].setMat4("view", scene->cameras[mainCameraIdx].getViewMatrix());
+        // std::cout << "Shader Size: " << scene->shaders.size() << std::endl;
 
-        // std::cout << "Model Matrix : " << glm::to_string(scene->entities[0].transform.GetModelMatrix()) << std::endl;
-        // scene->shaders[0].setMat4("projection", glm::identity<glm::mat4>()); // TODO : Profile this
-        // scene->shaders[0].setMat4("view", glm::identity<glm::mat4>());
-        // scene->shaders[0].setMat4("model", glm::identity<glm::mat4>());
-        glBindVertexArray(scene->entities[0].mesh.VAO);
-        glDrawElements(GL_TRIANGLES, scene->entities[0].mesh.indexCount, GL_UNSIGNED_INT, 0);
+        for (uint entityIdx = 0; entityIdx < scene->entities.size(); ++entityIdx){
+            scene->shaders.at(0).setMat4("model", scene->entities[entityIdx].transform.GetModelMatrix());
+            // std::cout << "EntityIndex " << entityIdx << std::endl;
 
+            // std::cout << "Model Matrix : " << glm::to_string(scene->entities[entityIdx].transform.GetModelMatrix()) << std::endl;
+            glBindVertexArray(scene->entities[entityIdx].mesh.VAO);
+            glDrawElements(GL_TRIANGLES, scene->entities[entityIdx].mesh.indexCount, GL_UNSIGNED_INT, 0);
+        }
         // Another gl draw elements for the camera debug
 
         // ourShader.use();
@@ -97,4 +110,9 @@ void Renderer::Render(Scene* scene){ // really bad, we are modifying the scene s
 
 }
 
+void Renderer::SwitchCamera(const Scene& scene){
+    mainCameraIdx = (mainCameraIdx + 1) % scene.cameras.size();
 
+
+    std::cout << "Now using Camera #" << mainCameraIdx << std::endl;
+}

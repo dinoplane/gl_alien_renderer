@@ -28,7 +28,7 @@
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow *window, Camera *camera);
+void processInput(GLFWwindow *window, Renderer* renderer, Scene* scene);
 
 // settings
 const unsigned int SCR_WIDTH = 800;
@@ -50,6 +50,7 @@ float lastY =  600.0 / 2.0;
 
 // float lightSpeed = 10.0;
 Scene scene;
+Renderer renderer;
 
 // glm::vec3 lightPos = glm::vec3(0.0, 15.0, 5.0);
 
@@ -215,7 +216,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
         lastX = xpos;
         lastY = ypos;
 
-        scene.cameras[0].processMouseMovement(xoffset, yoffset);
+        scene.cameras[renderer.mainCameraIdx].processMouseMovement(xoffset, yoffset);
 }
 template<typename T>
 void printVector(const std::vector<T>& vec) {
@@ -225,6 +226,15 @@ void printVector(const std::vector<T>& vec) {
     }
     std::cout << std::endl;
 }
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    if (key == GLFW_KEY_TAB && action == GLFW_PRESS){
+
+        renderer.SwitchCamera(scene);
+    }
+}
+
 
 // Add load texture function
 int main(int argc, char **argv)
@@ -273,7 +283,7 @@ int main(int argc, char **argv)
 
 
     // assert(false);
-    Renderer renderer = Renderer();
+    renderer = Renderer();
 
     // projection = glm::perspective(glm::radians(60.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 2000.0f);
 
@@ -286,7 +296,7 @@ int main(int argc, char **argv)
     // };
 
     glfwSetCursorPosCallback(window, mouse_callback);
-
+    glfwSetKeyCallback(window, key_callback);
 
     // std::cout << glm::to_string(b.model.modelMat) << std::endl;
     // glEnable(GL_DEPTH_TEST);
@@ -311,7 +321,7 @@ int main(int argc, char **argv)
     {
         // input
         // -----
-        processInput(window, &scene.cameras[0]);
+        processInput(window, &renderer, &scene);
 
         renderer.Render(&scene);
 
@@ -386,7 +396,8 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height){
 }
 
 float SPEED_MULTIPLIER = 10;
-void processInput(GLFWwindow *window, Camera *camera){
+void processInput(GLFWwindow *window, Renderer* renderer, Scene* scene){ // abhorrent should only pass in renderer.
+    // std::cout << "Frame Time: " << deltaTime <<  " ms" << std::endl;
     double mWidth = (double) SCR_WIDTH;
     double mHeight = (double) SCR_HEIGHT;
 
@@ -403,19 +414,28 @@ void processInput(GLFWwindow *window, Camera *camera){
 
     }
 
+
+
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS){
-        std::cout << "PRESSED " << deltaTime << std::endl;
-        camera->moveForward(deltaTime);
+        scene->cameras[renderer->mainCameraIdx].moveForward(deltaTime);
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS){
-        camera->moveBackward(deltaTime);
+        scene->cameras[renderer->mainCameraIdx].moveBackward(deltaTime);
     }
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS){
-        camera->moveLeft(deltaTime);
+        scene->cameras[renderer->mainCameraIdx].moveLeft(deltaTime);
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS){
-        camera->moveRight(deltaTime);
+        scene->cameras[renderer->mainCameraIdx].moveRight(deltaTime);
     }
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS){
+        scene->cameras[renderer->mainCameraIdx].moveUp(deltaTime);
+    }
+    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS){
+        scene->cameras[renderer->mainCameraIdx].moveDown(deltaTime);
+    }
+
+
 }
 
 
