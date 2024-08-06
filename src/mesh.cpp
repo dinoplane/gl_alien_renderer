@@ -1,5 +1,6 @@
 #include <macros.h>
 #include <mesh.hpp>
+#include <camera.hpp>
 
 #include <iostream>
 void Mesh::GenerateBuffers(Mesh* mesh, const std::vector<Vertex> &vertices, const std::vector<uint> &indices){
@@ -34,29 +35,63 @@ void Mesh::GenerateBuffers(Mesh* mesh, const std::vector<Vertex> &vertices, cons
     // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     // glEnableVertexAttribArray(0);
 
-    std::cout << "Position offset: " << offsetof(Vertex, position) << std::endl;
+    // std::cout << "Position offset: " << offsetof(Vertex, position) << std::endl;
     // normal attribute
     glVertexArrayAttribFormat(mesh->VAO, 1, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, normal));
     glVertexArrayAttribBinding(mesh->VAO, 1, 0);
 
-    std::cout << "Normal offset: " << offsetof(Vertex, normal) << std::endl;
+    // std::cout << "Normal offset: " << offsetof(Vertex, normal) << std::endl;
     // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
     // glEnableVertexAttribArray(1);
 
     // texcoord attribute
     glVertexArrayAttribFormat(mesh->VAO, 2, 2, GL_FLOAT, GL_FALSE, offsetof(Vertex, texcoords));
     glVertexArrayAttribBinding(mesh->VAO, 2, 0);
-    std::cout << "Texcoords offset: " << offsetof(Vertex, texcoords) << std::endl;
+    // std::cout << "Texcoords offset: " << offsetof(Vertex, texcoords) << std::endl;
     // glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
     // glEnableVertexAttribArray(2);
 
-    std::cout << "sizeof(Vertex) " << sizeof(Vertex) << std::endl;
-    std::cout << "sizeof(vertices.data()) " << sizeof(vertices.data()) << std::endl;
-    std::cout << "sizeof(vertices.data[0]) " << sizeof(vertices.data()[0]) << std::endl;
+    // std::cout << "sizeof(Vertex) " << sizeof(Vertex) << std::endl;
+    // std::cout << "sizeof(vertices.data()) " << sizeof(vertices.data()) << std::endl;
+    // std::cout << "sizeof(vertices.data[0]) " << sizeof(vertices.data()[0]) << std::endl;
 }
 
+void Mesh::GenerateDebugBuffers(Mesh* mesh, const std::vector<glm::vec3> &vertices, const std::vector<uint> &indices){
+    // Flexible because I can actually use this to batch the buffer creation!
+
+    glCreateVertexArrays(1, &mesh->VAO);
+    // glGenVertexArrays(1, &VAO);
+    // glBindVertexArray(VAO);
+
+    glCreateBuffers(1, &mesh->VBO);
+    // glGenBuffers(1, &VBO);
+    // glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glNamedBufferStorage(mesh->VBO, vertices.size() * sizeof(glm::vec3), vertices.data(), GL_DYNAMIC_STORAGE_BIT);
+    // glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(),  GL_STATIC_DRAW);
+
+    glCreateBuffers(1, &mesh->EBO);
+    // glGenBuffers(1, &EBO);
+    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glNamedBufferStorage(mesh->EBO, indices.size() * sizeof(uint), indices.data(), GL_DYNAMIC_STORAGE_BIT);
+    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(),  GL_STATIC_DRAW);
+
+    glVertexArrayVertexBuffer(mesh->VAO, 0, mesh->VBO, 0, sizeof(glm::vec3));
+    glVertexArrayElementBuffer(mesh->VAO, mesh->EBO);
+
+    glEnableVertexArrayAttrib(mesh->VAO, 0);
+
+    // position attribute
+    glVertexArrayAttribFormat(mesh->VAO, 0, 3, GL_FLOAT, GL_FALSE, 0);
+    glVertexArrayAttribBinding(mesh->VAO, 0, 0);
+    // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+    // glEnableVertexAttribArray(0);
+
+
+}
+
+
 Mesh Mesh::CreateCube(){
-    const std::vector<Vertex> vertices ({
+    const std::vector<Vertex> vertices ({ // counterclockwise
         // positions                   // normals                     // texcoords
 
         // top face
@@ -95,7 +130,7 @@ Mesh Mesh::CreateCube(){
         {{ 0.5f, -0.5f,  0.5f},        { 0.0f, -1.0f,  0.0f},         {1.0f, 1.0f}},
         {{-0.5f, -0.5f,  0.5f},        { 0.0f, -1.0f,  0.0f},         {0.0f, 1.0f}},
     });
-std::vector<Vertex> verticesVec (vertices);
+    std::vector<Vertex> verticesVec (vertices);
     const std::vector<uint> indices {  // note that we start from 0!
         // top
             0, 1, 2, 2, 3, 0,
@@ -113,6 +148,127 @@ std::vector<Vertex> verticesVec (vertices);
 
     Mesh mesh;
     GenerateBuffers(&mesh, verticesVec, indices);
+    mesh.indexCount = indices.size();
+    return mesh;
+}
+
+
+
+Mesh Mesh::CreateFrustum(const Camera& cam){
+
+    const float aspect = cam.width / cam.height;
+    const float halfVSide = cam.zFar * tanf(cam.fovY * .5f);
+    const float halfHSide = halfVSide * aspect;
+    const float nearToFarRatio = cam.zNear / cam.zFar;
+    // std::vector<glm::vec3> vertices({
+    //     { halfHSide,  halfVSide, cam.zNear},
+    //     {-halfHSide,  halfVSide, cam.zNear},
+    //     {-halfHSide, -halfVSide, cam.zNear},
+    //     { halfHSide, -halfVSide, cam.zNear},
+
+    //     { halfHSide,  halfVSide, cam.zFar*0.1},
+    //     {-halfHSide,  halfVSide, cam.zFar*0.1},
+    //     {-halfHSide, -halfVSide, cam.zFar*0.1},
+    //     { halfHSide, -halfVSide, cam.zFar*0.1},
+    // });
+
+
+
+    // std::vector<glm::vec3> vertices({
+    //     { 0.5,  0.5, -0.5},
+    //     {-0.5,  0.5, -0.5},
+    //     {-0.5, -0.5, -0.5},
+    //     { 0.5, -0.5, -0.5},
+
+    //     { 0.5,  0.5, 0.5},
+    //     {-0.5,  0.5, 0.5},
+    //     {-0.5, -0.5, 0.5},
+    //     { 0.5, -0.5, 0.5},
+    // });
+
+
+    // std::vector<glm::vec3> vertices({
+    //     { 0.0,  0.0,  0.0},
+    //     { halfHSide,  halfVSide, cam.zFar},
+    //     {-halfHSide,  halfVSide, cam.zFar},
+    //     {-halfHSide, -halfVSide, cam.zFar},
+    //     { halfHSide, -halfVSide, cam.zFar},
+    // });
+
+    std::vector<glm::vec3> vertices({
+        { 0.0,  0.0,  0.0},
+        {5.0,  1.5,   1.5},
+        {5.0,  1.5,  -1.5},
+        {5.0, -1.5,  -1.5},
+        {5.0, -1.5,   1.5},
+    });
+
+
+    std::cout << halfHSide << " " << halfVSide << " " << cam.zNear << " " << cam.zFar << std::endl;
+    /*
+    // for (int i = 0; i < 4; ++i){
+    //     vertices.push_back({halfHSide, halfVSide, cam.zNear});
+
+    //     currMult = currMult >> 1;
+    // }
+
+    // uint currMult = 12;
+    // for (int i = 0; i < 4; ++i){
+    //     vertices.push_back({halfHSide, halfVSide, cam.zNear});
+
+    //     currMult = currMult >> 1;
+    // }
+    */
+    /*
+        std::vector<uint> indices({
+            // Front face (near plane)
+            0, 1, 2,  // First triangle
+            0, 2, 3,  // Second triangle
+
+            // Back face (far plane)
+            5, 4, 7,  // First triangle
+            5, 7, 6,  // Second triangle
+
+            // Left face
+            1, 5, 6,  // First triangle
+            1, 6, 2,  // Second triangle
+
+            // Right face
+            4, 0, 3,  // First triangle
+            4, 3, 7,  // Second triangle
+
+            // Top face
+            4, 5, 1,  // First triangle
+            4, 1, 0,  // Second triangle
+
+            // Bottom face
+            3, 6, 2,  // First triangle
+            3, 7, 6   // Second triangle
+        });
+
+        std::vector<uint> indices({
+            // Front face (near plane)
+            0, 1, 1, 2, 2, 3, 3, 0,  // First square
+            1, 5, 5, 6, 6, 2, 2, 1,  // Second square
+            5, 4, 4, 7, 7, 6, 6, 5,  // Third square
+            4, 0, 0, 3, 3, 7, 7, 4,  // Fourth square
+            4, 5, 5, 1, 1, 0, 0, 4,  // Fifth square
+            3, 2, 2, 6, 6, 7, 7, 3   // Sixth square
+        });
+    */
+
+
+    std::vector<uint> indices({
+        // Front face (near plane)
+        1, 4, 4, 3, 3, 2, 2, 1,  // First square
+        1, 3, 2, 4, // Second square
+        0, 2, 2, 3, 3, 0,        // Left face
+        0, 4, 4, 1, 1, 0,        // Right face
+        0, 1, 1, 2, 2, 0,        // Top face
+        0, 3, 3, 4, 4, 0         // Bottom face
+        });
+    Mesh mesh;
+    GenerateDebugBuffers(&mesh, vertices, indices);
     mesh.indexCount = indices.size();
     return mesh;
 }

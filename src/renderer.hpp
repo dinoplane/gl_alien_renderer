@@ -27,7 +27,7 @@ class Renderer {
 
     public:
     uint mainCameraIdx {0};
-
+    bool debugOn {true};
 };
 
 #endif

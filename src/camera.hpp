@@ -8,6 +8,26 @@
 
 #include <string>
 
+/*
+
+
+		double elapsedTime = 0.0;
+		LARGE_INTEGER timeStart, timeEnd;
+		LARGE_INTEGER Frequency;
+
+		QueryPerformanceFrequency(&Frequency);
+		QueryPerformanceCounter(&timeStart);
+
+		// Activity to be timed
+		lightMapCheckboxMask = FindAllLightMapFlags();
+		staticModelCheckboxMask = FindAllStaticModelFlags();
+
+		QueryPerformanceCounter(&timeEnd);
+		elapsedTime = (double)( timeEnd.QuadPart - timeStart.QuadPart ) * 1000000 / timeFreq.QuadPart;
+
+		printf("LightMap and static model check : %f microseconds\n", elapsedTime);
+*/
+
 
 struct Plane
 {
@@ -50,7 +70,7 @@ const float DEFAULT_YAW         = -135.0f;
 const float DEFAULT_PITCH       =  -45.0f;
 const float DEFAULT_SPEED       =  10.0f;
 const float DEFAULT_SENSITIVITY =  0.1f;
-const float DEFAULT_FOVY        =  45.0f;
+const float DEFAULT_FOVY        =  20.0f;
 const float DEFAULT_NEAR        =  0.1f;
 const float DEFAULT_FAR         =  1000.0f;
 
@@ -59,7 +79,6 @@ class Camera {
     public:
         glm::vec3 position;
 
-    private:
         float speed;
         float sensitivity;
 
@@ -127,6 +146,18 @@ class Camera {
 
         glm::mat4 getProjMatrix(){
             return glm::perspective(glm::radians(fovY), width / height, zNear, zFar);
+        }
+
+        glm::mat4 GetModelMatrix(){ // We use quaternions omg this is actual brainrot
+            glm::mat4 tmpModelMat = glm::identity<glm::mat4>();
+
+            tmpModelMat = glm::translate(tmpModelMat, position);
+            tmpModelMat = glm::rotate(tmpModelMat, glm::radians(-yaw), glm::vec3(0.0, 1.0, 0.0));
+            tmpModelMat = glm::rotate(tmpModelMat, glm::radians(pitch), glm::vec3(0.0, 0.0, 1.0));
+            // // tmpModelMat = glm::rotate(tmpModelMat, glm::radians(roll), glm::vec3(0.0, 0.0, 1.0));
+
+            return tmpModelMat;
+            // return getProjMatrix() * getViewMatrix();
         }
 
         static Frustum createFrustumFromCamera(const Camera& cam);

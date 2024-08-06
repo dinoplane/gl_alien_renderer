@@ -26,12 +26,14 @@ void Scene::DeleteSceneObjects(){
     entities.clear();
     shaders.clear();
     cameras.clear();
+    debugMeshes.clear();
 }
 
 Scene::Scene(Scene&& other) : entities(std::move(other.entities)), shaders(std::move(other.shaders)), cameras(std::move(other.cameras)){
     other.entities.clear();
     other.shaders.clear();
     other.cameras.clear();
+    other.debugMeshes.clear();
 }
 
 Scene& Scene::operator=(Scene&& other){
@@ -40,9 +42,11 @@ Scene& Scene::operator=(Scene&& other){
         entities = std::move(other.entities);
         shaders = std::move(other.shaders);
         cameras = std::move(other.cameras);
+        debugMeshes = std::move(other.debugMeshes);
         other.entities.clear();
         other.shaders.clear();
         other.cameras.clear();
+        other.debugMeshes.clear();
     }
     return *this;
 }
@@ -90,17 +94,17 @@ Scene Scene::GenerateDefaultScene(){
     // retScene.entities.push_back({Mesh::CreateCube(), transform});
 
     retScene.shaders.push_back(Shader("./resources/shader/base.vert", "./resources/shader/base.frag"));
+    retScene.shaders.push_back(Shader("./resources/shader/debug.vert", "./resources/shader/debug.frag"));
+
 
     retScene.cameras.push_back(Camera(800.0, 600.0, glm::vec3(0.0, 20.0, 0.0), glm::vec3(0.0, 1.0, 0.0), -315.0f, -60.0f));
     retScene.cameras.push_back(Camera(800.0, 600.0));
 
-
-
-    for ( Entity& entity : retScene.entities) {
-        // Print entity information
-        // Example: std::cout << "Entity: " << entity << std::endl;
-        std::cout << "transform: " << glm::to_string(entity.transform.GetModelMatrix()) << std::endl;
+    for ( Camera& camera : retScene.cameras) {
+        retScene.debugMeshes.push_back(Mesh::CreateFrustum(camera));
     }
+
+
 
     // Camera camera((float) SCR_WIDTH, (float) SCR_HEIGHT);
     // // Need to make these RAII and figure out how to provide inputs

@@ -216,7 +216,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
         lastX = xpos;
         lastY = ypos;
 
-        scene.cameras[renderer.mainCameraIdx].processMouseMovement(xoffset, yoffset);
+        scene.cameras[(renderer.mainCameraIdx + 1) % 2].processMouseMovement(xoffset, yoffset);
 }
 template<typename T>
 void printVector(const std::vector<T>& vec) {
@@ -291,6 +291,9 @@ int main(int argc, char **argv)
     // assert(false);
     glEnable(GL_DEPTH_TEST);
 
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     // auto mouseCallback = [&](GLFWwindow* window, double xpos, double ypos) -> void {
 
     // };
@@ -417,22 +420,22 @@ void processInput(GLFWwindow *window, Renderer* renderer, Scene* scene){ // abho
 
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS){
-        scene->cameras[renderer->mainCameraIdx].moveForward(deltaTime);
+        scene->cameras[(renderer->mainCameraIdx + 1) % 2].moveForward(deltaTime);
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS){
-        scene->cameras[renderer->mainCameraIdx].moveBackward(deltaTime);
+        scene->cameras[(renderer->mainCameraIdx + 1) % 2].moveBackward(deltaTime);
     }
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS){
-        scene->cameras[renderer->mainCameraIdx].moveLeft(deltaTime);
+        scene->cameras[(renderer->mainCameraIdx + 1) % 2].moveLeft(deltaTime);
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS){
-        scene->cameras[renderer->mainCameraIdx].moveRight(deltaTime);
+        scene->cameras[(renderer->mainCameraIdx + 1) % 2].moveRight(deltaTime);
     }
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS){
-        scene->cameras[renderer->mainCameraIdx].moveUp(deltaTime);
+        scene->cameras[(renderer->mainCameraIdx + 1) % 2].moveUp(deltaTime);
     }
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS){
-        scene->cameras[renderer->mainCameraIdx].moveDown(deltaTime);
+        scene->cameras[(renderer->mainCameraIdx + 1) % 2].moveDown(deltaTime);
     }
 
 

@@ -93,6 +93,7 @@ Frustum Camera::createFrustumFromCamera(const Camera& cam)
 
 
 
+
     Frustum     frustum{
     /*topFace*/ {cam.position,
                             glm::cross(cam.right, frontMultFar - cam.up * halfVSide) },

@@ -61,6 +61,22 @@ void Renderer::Render(Scene* scene){ // really bad, we are modifying the scene s
             glBindVertexArray(scene->entities[entityIdx].mesh.VAO);
             glDrawElements(GL_TRIANGLES, scene->entities[entityIdx].mesh.indexCount, GL_UNSIGNED_INT, 0);
         }
+
+        scene->shaders[1].use();
+        scene->shaders[1].setMat4("projection", scene->cameras[mainCameraIdx].getProjMatrix()); // TODO : Profile this
+        scene->shaders[1].setMat4("view", scene->cameras[mainCameraIdx].getViewMatrix());
+
+        for (uint cameraIdx = 0; cameraIdx < scene->cameras.size(); ++cameraIdx){
+            if (cameraIdx == mainCameraIdx){
+                continue;
+            }
+            scene->shaders.at(1).setMat4("model", scene->cameras[cameraIdx].GetModelMatrix());
+            // std::cout << "EntityIndex " << entityIdx << std::endl;
+
+            // std::cout << "Model Matrix : " << glm::to_string(scene->entities[entityIdx].transform.GetModelMatrix()) << std::endl;
+            glBindVertexArray(scene->debugMeshes[cameraIdx].VAO);
+            glDrawElements(GL_LINES, scene->debugMeshes[cameraIdx].indexCount, GL_UNSIGNED_INT, 0);
+        }
         // Another gl draw elements for the camera debug
 
         // ourShader.use();

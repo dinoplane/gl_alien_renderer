@@ -12,6 +12,8 @@
 
 // https://www.wikihow.com/Linux-How-to-Mount-Drive#:~:text=To%20mount%20a%20drive%20on,to%20mount%20and%20unmount%20drives.
 
+class Camera;
+
 struct Vertex{
     glm::vec3 position;
     glm::vec3 normal;
@@ -25,10 +27,12 @@ struct Mesh {
 
         GLuint VBO, VAO, EBO;
         static void GenerateBuffers(Mesh* mesh, const std::vector<Vertex> &vertices, const std::vector<uint>& indices);
+        static void GenerateDebugBuffers(Mesh* mesh, const std::vector<glm::vec3> &vertices, const std::vector<uint>& indices);
 
         GLsizei indexCount;
 
         static Mesh CreateCube();
+        static Mesh CreateFrustum(const Camera& camera);
         // static Mesh CreatePyramid();
 
     //     std::vector<float> vertices;
