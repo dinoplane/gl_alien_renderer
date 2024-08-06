@@ -40,6 +40,8 @@ class Scene {
 
     static Scene GenerateDefaultScene();
 
+    void RebindAllMeshes();
+
 };
 
 #endif

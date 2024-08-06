@@ -17,10 +17,10 @@ class Renderer {
     // static void LoadShaders();
     // static void LoadCameras();
 
-
+    // Scene* scene;
     void Init();
     void Resize(const Camera& camera);
-    void Update(const Scene& scene);
+    // void Update(const Scene& scene);
     void Render(Scene* scene);
 
     void SwitchCamera(const Scene& scene);

@@ -64,6 +64,15 @@ Scene& Scene::operator=(Scene&& other){
 //     return true;
 // }
 
+void Scene::RebindAllMeshes(){
+    for (Entity& entity : entities){
+        Mesh::Rebind(&entity.mesh);
+    }
+
+    for (Mesh& mesh : debugMeshes){
+        Mesh::RebindDebug(&mesh);
+    }
+}
 
 Scene Scene::GenerateDefaultScene(){
     Scene retScene;
@@ -100,9 +109,9 @@ Scene Scene::GenerateDefaultScene(){
     retScene.cameras.push_back(Camera(800.0, 600.0, glm::vec3(0.0, 20.0, 0.0), glm::vec3(0.0, 1.0, 0.0), -315.0f, -60.0f));
     retScene.cameras.push_back(Camera(800.0, 600.0));
 
-    for ( Camera& camera : retScene.cameras) {
-        retScene.debugMeshes.push_back(Mesh::CreateFrustum(camera));
-    }
+    // for ( Camera& camera : retScene.cameras) {
+    //     retScene.debugMeshes.push_back(Mesh::CreateFrustum(camera));
+    // }
 
 
 

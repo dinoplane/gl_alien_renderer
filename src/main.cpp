@@ -9,6 +9,7 @@
 #include <mesh.hpp>
 
 #include <scene.hpp>
+#include <scenedata.hpp>
 #include <renderer.hpp>
 
 #include <cstdlib>
@@ -24,6 +25,44 @@
 #include <iostream>
 // #include <fmt/core.h>
 // #include <fmt/printf.h>
+
+
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "linmath.h"
+
+static const char* vertex_shader_text =
+"#version 110\n"
+"uniform mat4 MVP;\n"
+"attribute vec2 vPos;\n"
+"varying vec2 texcoord;\n"
+"void main()\n"
+"{\n"
+"    gl_Position = MVP * vec4(vPos, 0.0, 1.0);\n"
+"    texcoord = vPos;\n"
+"}\n";
+
+static const char* fragment_shader_text =
+"#version 110\n"
+"uniform sampler2D texture;\n"
+"uniform vec3 color;\n"
+"varying vec2 texcoord;\n"
+"void main()\n"
+"{\n"
+"    gl_FragColor = vec4(color * texture2D(texture, texcoord).rgb, 1.0);\n"
+"}\n";
+
+static const vec2 vertices[4] =
+{
+    { 0.f, 0.f },
+    { 1.f, 0.f },
+    { 1.f, 1.f },
+    { 0.f, 1.f }
+};
+
 
 
 
@@ -49,8 +88,11 @@ float lastX =  800.0f / 2.0;
 float lastY =  600.0 / 2.0;
 
 // float lightSpeed = 10.0;
+
+SceneData sceneData;
 Scene scene;
-Renderer renderer;
+// Renderer renderer;
+std::vector<Renderer> renderers;
 
 // glm::vec3 lightPos = glm::vec3(0.0, 15.0, 5.0);
 
@@ -76,10 +118,33 @@ void setupCmdArgs(int argc, char **argv){
     // CHUNK_SIZE = std::max((NUM_BOIDS + (NUM_THREADS - 1)) / NUM_THREADS, (unsigned int) 1);
 
 }
+int createGLFWwindow(GLFWwindow* &window, const char* windowName, GLFWwindow* share = NULL){
+    // glfw window creation
+    // --------------------
 
-int setupGLFW(GLFWwindow* &window){
+    window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, windowName, NULL, share);
+    if (window == NULL)
+    {
+        std::cout << "Failed to create GLFW window" << std::endl;
+        glfwTerminate();
+        return -1;
+    }
+    // glfwMakeContextCurrent(window);
+    // glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+	return 0;
+}
+
+static void error_callback(int error, const char* description)
+{
+    fprintf(stderr, "Error: %s\n", description);
+}
+
+int setupGLFW(){
 	// glfw: initialize and configure
     // ------------------------------
+
+    glfwSetErrorCallback(error_callback);
+
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -89,18 +154,7 @@ int setupGLFW(GLFWwindow* &window){
 		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	#endif
 
-    // glfw window creation
-    // --------------------
-    window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
-    if (window == NULL)
-    {
-        std::cout << "Failed to create GLFW window" << std::endl;
-        glfwTerminate();
-        return -1;
-    }
-    glfwMakeContextCurrent(window);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-	return 0;
+    return 1;
 }
 
 int setupGLAD(){
@@ -216,7 +270,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
         lastX = xpos;
         lastY = ypos;
 
-        scene.cameras[(renderer.mainCameraIdx + 1) % 2].processMouseMovement(xoffset, yoffset);
+        scene.cameras[renderers[0].mainCameraIdx].processMouseMovement(xoffset, yoffset);
 }
 template<typename T>
 void printVector(const std::vector<T>& vec) {
@@ -231,143 +285,282 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 {
     if (key == GLFW_KEY_TAB && action == GLFW_PRESS){
 
-        renderer.SwitchCamera(scene);
+        renderers[0].SwitchCamera(scene);
     }
+
+    // if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
+    //     glfwSetWindowShouldClose(window, true);
+    // }
+
 }
 
 
+int main(int argc, char** argv)
+{
+    std::vector<GLFWwindow*> windows;
+    windows.resize(2);
+    GLuint texture, program, vertex_buffer;
+    GLint mvp_location, vpos_location, color_location, texture_location;
+
+    glfwSetErrorCallback(error_callback);
+
+    if (!glfwInit())
+        exit(EXIT_FAILURE);
+
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+
+    windows[0] = glfwCreateWindow(400, 400, "First", NULL, NULL);
+    if (!windows[0])
+    {
+        glfwTerminate();
+        exit(EXIT_FAILURE);
+    }
+
+    glfwSetKeyCallback(windows[0], key_callback);
+
+    glfwMakeContextCurrent(windows[0]);
+
+    // Only enable vsync for the first of the windows to be swapped to
+    // avoid waiting out the interval for each window
+    glfwSwapInterval(1);
+
+    // The contexts are created with the same APIs so the function
+    // pointers should be re-usable between them
+    gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+
+    // Create the OpenGL objects inside the first context, created above
+    // All objects will be shared with the second context, created below
+    {
+        int x, y;
+        char pixels[16 * 16];
+        GLuint vertex_shader, fragment_shader;
+
+        glGenTextures(1, &texture);
+        glBindTexture(GL_TEXTURE_2D, texture);
+
+        srand((unsigned int) glfwGetTimerValue());
+
+        for (y = 0;  y < 16;  y++)
+        {
+            for (x = 0;  x < 16;  x++)
+                pixels[y * 16 + x] = rand() % 256;
+        }
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, 16, 16, 0, GL_RED, GL_UNSIGNED_BYTE, pixels);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+        vertex_shader = glCreateShader(GL_VERTEX_SHADER);
+        glShaderSource(vertex_shader, 1, &vertex_shader_text, NULL);
+        glCompileShader(vertex_shader);
+
+        fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
+        glShaderSource(fragment_shader, 1, &fragment_shader_text, NULL);
+        glCompileShader(fragment_shader);
+
+        program = glCreateProgram();
+        glAttachShader(program, vertex_shader);
+        glAttachShader(program, fragment_shader);
+        glLinkProgram(program);
+
+        mvp_location = glGetUniformLocation(program, "MVP");
+        color_location = glGetUniformLocation(program, "color");
+        texture_location = glGetUniformLocation(program, "texture");
+        vpos_location = glGetAttribLocation(program, "vPos");
+
+        glGenBuffers(1, &vertex_buffer);
+        glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    }
+
+    glUseProgram(program);
+    glUniform1i(texture_location, 0);
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, texture);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
+    glEnableVertexAttribArray(vpos_location);
+    glVertexAttribPointer(vpos_location, 2, GL_FLOAT, GL_FALSE,
+                          sizeof(vertices[0]), (void*) 0);
+
+    windows[1] = glfwCreateWindow(400, 400, "Second", NULL, windows[0]);
+    if (!windows[1])
+    {
+        glfwTerminate();
+        exit(EXIT_FAILURE);
+    }
+
+    // Place the second window to the right of the first
+    {
+        int xpos, ypos, left, right, width;
+
+        glfwGetWindowSize(windows[0], &width, NULL);
+        glfwGetWindowFrameSize(windows[0], &left, NULL, &right, NULL);
+        glfwGetWindowPos(windows[0], &xpos, &ypos);
+
+        glfwSetWindowPos(windows[1], xpos + width + left + right, ypos);
+    }
+
+    glfwSetKeyCallback(windows[1], key_callback);
+
+    glfwMakeContextCurrent(windows[1]);
+
+    // While objects are shared, the global context state is not and will
+    // need to be set up for each context
+
+    glUseProgram(program);
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, texture);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
+    glEnableVertexAttribArray(vpos_location);
+    glVertexAttribPointer(vpos_location, 2, GL_FLOAT, GL_FALSE,
+                          sizeof(vertices[0]), (void*) 0);
+
+    while (!glfwWindowShouldClose(windows[0]) &&
+           !glfwWindowShouldClose(windows[1]))
+    {
+        int i;
+        const vec3 colors[2] =
+        {
+            { 0.8f, 0.4f, 1.f },
+            { 0.3f, 0.4f, 1.f }
+        };
+
+        for (i = 0;  i < 2;  i++)
+        {
+            int width, height;
+            mat4x4 mvp;
+
+            glfwGetFramebufferSize(windows[i], &width, &height);
+            glfwMakeContextCurrent(windows[i]);
+
+            glViewport(0, 0, width, height);
+
+            mat4x4_ortho(mvp, 0.f, 1.f, 0.f, 1.f, 0.f, 1.f);
+            glUniformMatrix4fv(mvp_location, 1, GL_FALSE, (const GLfloat*) mvp);
+            glUniform3fv(color_location, 1, colors[i]);
+            glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+
+            glfwSwapBuffers(windows[i]);
+        }
+
+        glfwWaitEvents();
+    }
+
+    glfwTerminate();
+    exit(EXIT_SUCCESS);
+}
+/*
 // Add load texture function
 int main(int argc, char **argv)
 {
+    sceneData = SceneData::GenerateDefaultScene();
+    // setupCmdArgs(argc,argv);
 
-    setupCmdArgs(argc,argv);
+    std::vector<GLFWwindow*> windows;
+
+    const size_t RENDERER_COUNT = sceneData.cameraData.size();
+
+    windows.resize(RENDERER_COUNT);
+
+	// GLFWwindow* window;
 
 
-	GLFWwindow* window;
 
-    // i = std::make_shared<Boid>();
-
-
-	if (setupGLFW(window) < 0){
+	if (setupGLFW() < 0){
 		return -1;
 	}
 
+    if (createGLFWwindow(windows[0], "Flocking") < 0){
+        return -1;
+    }
+
+    glfwSetKeyCallback(windows[0], key_callback);
+    // glfwSetCursorPosCallback(windows[0], mouse_callback);
+
+    glfwMakeContextCurrent(windows[0]);
+
+    // Only enable vsync for the first of the windows to be swapped to
+    // avoid waiting out the interval for each window
+    glfwSwapInterval(1);
+
+    // The contexts are created with the same APIs so the function
+    // pointers should be re-usable between them
 	if (setupGLAD() < 0){
 		return -1;
 	}
 
+    { // Initialize the scene here
+        scene = Scene::GenerateDefaultScene(); // ground truth
+        scene.RebindAllMeshes();
+    }
 
-    // build and compile our shader program
-    // ------------------------------------
-
-
-    // uncomment this call to draw in wireframe polygons.
-//    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-    // std::vector<unsigned int> textureID = loadAllTextures("./resources/assets/sky.png", "./resources/assets/awesomeface.png", "./resources/assets/noise.png");
-    // unsigned int skyBoxID = loadCubeMap(
-    //                         "./resources/assets/bluecloud_rt.jpg",
-    //                         "./resources/assets/bluecloud_lf.jpg",
-    //                         "./resources/assets/bluecloud_up.jpg",
-    //                         "./resources/assets/bluecloud_dn.jpg",
-    //                         "./resources/assets/bluecloud_bk.jpg",
-    //                         "./resources/assets/bluecloud_ft.jpg"
-    //                     );
-    // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
-    // -------------------------------------------------------------------------------------------
-
-    scene = Scene::GenerateDefaultScene();
-
-    // printVector(scene.meshes);
-    // fmt::printf("Scene generated %u\n", scene.meshes.size());
-
-
-    // assert(false);
-    renderer = Renderer();
-
-    // projection = glm::perspective(glm::radians(60.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 2000.0f);
-
-    // sea.printVertices();
-    // assert(false);
     glEnable(GL_DEPTH_TEST);
-
-
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    // auto mouseCallback = [&](GLFWwindow* window, double xpos, double ypos) -> void {
 
-    // };
 
-    glfwSetCursorPosCallback(window, mouse_callback);
-    glfwSetKeyCallback(window, key_callback);
+    for (size_t windowIdx = 1; windowIdx < windows.size(); ++windowIdx){
+        if (createGLFWwindow(windows[windowIdx], "Child", windows[0]) < 0){
+            return -1;
+        }
 
-    // std::cout << glm::to_string(b.model.modelMat) << std::endl;
-    // glEnable(GL_DEPTH_TEST);
-    // glfwSetCursorPosCallback(window, mouse_callback);
+        // Place the second window to the right of the first
+        {
+            int xpos, ypos, left, right, width;
 
-    /*
+            glfwGetWindowSize(windows[windowIdx - 1], &width, NULL);
+            glfwGetWindowFrameSize(windows[windowIdx - 1], &left, NULL, &right, NULL);
+            glfwGetWindowPos(windows[windowIdx - 1], &xpos, &ypos);
 
-    // timing variables
-    auto begin = std::chrono::high_resolution_clock::now();
-    auto start = std::chrono::high_resolution_clock::now();
-    auto chkpt = std::chrono::high_resolution_clock::now();
-    auto stop = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-    std::cout << "Time taken by function: "
-         << duration.count() << " microseconds" << std::endl;
-    double counter = 0;
-    unsigned int accum = 0;
-    // render loop
-    // -----------
-    */
-    while (!glfwWindowShouldClose(window))
+            glfwSetWindowPos(windows[windowIdx], xpos + width + left + right, ypos);
+        }
+
+        glfwSetKeyCallback(windows[windowIdx], key_callback);
+        glfwMakeContextCurrent(windows[windowIdx]);
+        scene.RebindAllMeshes();
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    }
+
+    for (size_t rendererIdx = 0; rendererIdx < RENDERER_COUNT; ++rendererIdx){
+        renderers.push_back(Renderer());
+
+        // renderers[rendererIdx].mainCameraIdx = rendererIdx;
+    }
+
+    bool closingTime = false;
+
+    while (!closingTime)
     {
-        // input
-        // -----
-        processInput(window, &renderer, &scene);
+        for (size_t windowIdx = 0; windowIdx < RENDERER_COUNT; ++windowIdx){
+            int width, height;
 
-        renderer.Render(&scene);
+            glfwGetFramebufferSize(windows[windowIdx], &width, &height);
+            glfwMakeContextCurrent(windows[windowIdx]);
 
-        // light.reset();
-        // light.translate(lightPos);
-        // render
-        // ------
-        // glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glViewport(0, 0, width, height);
 
-        // // bind textures on corresponding texture units
-        // glActiveTexture(GL_TEXTURE0);
-        // glBindTexture(GL_TEXTURE_2D, textureID[0]);
-        // glActiveTexture(GL_TEXTURE1);
-        // glBindTexture(GL_TEXTURE_2D, textureID[1]);
-        // glActiveTexture(GL_TEXTURE2);
-        // glBindTexture(GL_TEXTURE_2D, textureID[2]);
-        // glDepthMask(GL_FALSE);
-        // glBindTexture(GL_TEXTURE_CUBE_MAP, skyBoxID);
+            // input
+            // -----
+            // processInput(windows[windowIdx], &renderer, &scene);
+            renderers[windowIdx].Render(&scene);
+            glfwSwapBuffers(windows[windowIdx]);
+        }
 
+        glfwWaitEvents();
+        for (size_t windowIdx = 0; windowIdx < windows.size(); ++windowIdx){
+            closingTime = closingTime || glfwWindowShouldClose(windows[windowIdx]);
+        }
 
-        // Set up projection and view matrix
-        // projection = camera.getProjMatrix();
-        // view = camera.getViewMatrix();
-
-        // skyboxShader.use();
-        // skyboxShader.setMat4("projection", projection);
-        // skyboxShader.setMat4("view", view);
-        // skybox.render();
-
-        glDepthMask(GL_TRUE);
-
-        // Setup markers and area
-
-
-
-        // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
-        // -------------------------------------------------------------------------------
-        glfwSwapBuffers(window);
-        glfwPollEvents();
         deltaTime = glfwGetTime() - lastFrame;
         lastFrame = glfwGetTime();
-
     }
 
 
@@ -389,7 +582,7 @@ int main(int argc, char **argv)
    return 0;
 }
 
-
+*/
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
 
@@ -412,10 +605,7 @@ void processInput(GLFWwindow *window, Renderer* renderer, Scene* scene){ // abho
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     }
 
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
-        glfwSetWindowShouldClose(window, true);
 
-    }
 
 
 

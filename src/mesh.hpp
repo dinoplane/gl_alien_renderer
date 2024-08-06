@@ -5,20 +5,15 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <util.h>
 #include <vector>
 #include <string>
 
-#define ARRAY_COUNT(x) (sizeof(x) / sizeof((x)[0]))
+
 
 // https://www.wikihow.com/Linux-How-to-Mount-Drive#:~:text=To%20mount%20a%20drive%20on,to%20mount%20and%20unmount%20drives.
 
 class Camera;
-
-struct Vertex{
-    glm::vec3 position;
-    glm::vec3 normal;
-    glm::vec2 texcoords;
-};
 
 
 struct Mesh {
@@ -27,7 +22,11 @@ struct Mesh {
 
         GLuint VBO, VAO, EBO;
         static void GenerateBuffers(Mesh* mesh, const std::vector<Vertex> &vertices, const std::vector<uint>& indices);
+        static void Rebind(Mesh*mesh);
         static void GenerateDebugBuffers(Mesh* mesh, const std::vector<glm::vec3> &vertices, const std::vector<uint>& indices);
+        static void RebindDebug(Mesh*mesh);
+
+
 
         GLsizei indexCount;
 
