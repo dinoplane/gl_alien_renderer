@@ -7,6 +7,7 @@
 
 
 #include <string>
+#include <iostream>
 
 /*
 
@@ -72,7 +73,7 @@ const float DEFAULT_SPEED       =  10.0f;
 const float DEFAULT_SENSITIVITY =  0.1f;
 const float DEFAULT_FOVY        =  20.0f;
 const float DEFAULT_NEAR        =  0.1f;
-const float DEFAULT_FAR         =  1000.0f;
+const float DEFAULT_FAR         =  10.0f;
 
 class Camera {
     // float fov;
@@ -120,6 +121,7 @@ class Camera {
             fovY = fovY_val;
             zNear = zNear_val;
             zFar = zFar_val;
+            std::cout << "Far: " << zFar << std::endl;
 
             setPerspectiveSize(w, h);
             updateCameraVectors();

@@ -21,7 +21,7 @@ class Scene {
     std::vector<Entity> entities;
     std::vector<Mesh> debugMeshes;
     std::vector<Shader> shaders;
-    std::vector<Camera> cameras;
+    std::vector<Camera> initCamConfigs;
 
     Scene();
     ~Scene();
@@ -39,6 +39,7 @@ class Scene {
     // bool RegisterCamera(Camera * camera);
 
     static Scene GenerateDefaultScene();
+    static Scene GenerateBasicScene();
 
     void RebindAllMeshes();
 

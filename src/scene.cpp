@@ -15,7 +15,7 @@
 Scene::Scene(){
     entities = std::vector<Entity>();
     shaders = std::vector<Shader>();
-    cameras = std::vector<Camera>();
+    initCamConfigs = std::vector<Camera>();
 }
 
 Scene::~Scene(){
@@ -25,14 +25,14 @@ Scene::~Scene(){
 void Scene::DeleteSceneObjects(){
     entities.clear();
     shaders.clear();
-    cameras.clear();
+    initCamConfigs.clear();
     debugMeshes.clear();
 }
 
-Scene::Scene(Scene&& other) : entities(std::move(other.entities)), shaders(std::move(other.shaders)), cameras(std::move(other.cameras)){
+Scene::Scene(Scene&& other) : entities(std::move(other.entities)), shaders(std::move(other.shaders)), initCamConfigs(std::move(other.initCamConfigs)){
     other.entities.clear();
     other.shaders.clear();
-    other.cameras.clear();
+    other.initCamConfigs.clear();
     other.debugMeshes.clear();
 }
 
@@ -41,11 +41,11 @@ Scene& Scene::operator=(Scene&& other){
         DeleteSceneObjects();
         entities = std::move(other.entities);
         shaders = std::move(other.shaders);
-        cameras = std::move(other.cameras);
+        initCamConfigs = std::move(other.initCamConfigs);
         debugMeshes = std::move(other.debugMeshes);
         other.entities.clear();
         other.shaders.clear();
-        other.cameras.clear();
+        other.initCamConfigs.clear();
         other.debugMeshes.clear();
     }
     return *this;
@@ -60,18 +60,35 @@ Scene& Scene::operator=(Scene&& other){
 
 
 // bool Scene::RegisterCamera(Camera * camera){
-//     this->cameras.push_back(camera);
+//     this->initCamConfigs.push_back(camera);
 //     return true;
 // }
 
 void Scene::RebindAllMeshes(){
     for (Entity& entity : entities){
-        Mesh::Rebind(&entity.mesh);
+        // Mesh::Rebind(&entity.mesh);
     }
 
-    for (Mesh& mesh : debugMeshes){
-        Mesh::RebindDebug(&mesh);
-    }
+    // for (Mesh& mesh : debugMeshes){
+    //     Mesh::RebindDebug(&mesh);
+    // }
+}
+
+Scene Scene::GenerateBasicScene(){
+    Scene retScene;
+    Transform transform;
+    transform.SetPosition(glm::vec3(0.0, 0.0, 0.0));
+    transform.SetRotation(glm::vec3(0.0, 0.0, 0.0));
+    transform.SetScale(glm::vec3(1.0, 1.0, 1.0));
+
+    retScene.entities.push_back({Mesh::CreateCube(), transform});
+
+    retScene.shaders.push_back(Shader("./resources/shader/base.vert", "./resources/shader/base.frag"));
+
+    // retScene.initCamConfigs.push_back(Camera(400.0, 400.0, glm::vec3(0.0, 2.0, 0.0), glm::vec3(0.0, 1.0, 0.0), -320.0f, -70.0f));
+    // retScene.initCamConfigs.push_back(Camera(400.0, 400.0, glm::vec3(0.0, 2.0, 0.0), glm::vec3(0.0, 1.0, 0.0), -315.0f, -60.0f));
+
+    return retScene;
 }
 
 Scene Scene::GenerateDefaultScene(){
@@ -79,12 +96,12 @@ Scene Scene::GenerateDefaultScene(){
 
     Transform transform;
 
-    for (int i = 0; i < 5; ++i){
+    transform.SetRotation(glm::vec3(0.0, 0.0, 0.0));
+    transform.SetScale(glm::vec3(1.0, 1.0, 1.0));
+    for (int i = 0; i < 6; ++i){
         for (int j = 0; j < 5; ++j){
             for (int k = 0; k < 5; ++k){
                 transform.SetPosition(glm::vec3(i * 2.0, j * 2.0, k * 2.0));
-                transform.SetRotation(glm::vec3(0.0, 0.0, 0.0));
-                transform.SetScale(glm::vec3(1.0, 1.0, 1.0));
                 retScene.entities.push_back({Mesh::CreateCube(), transform});
             }
         }
@@ -103,13 +120,14 @@ Scene Scene::GenerateDefaultScene(){
     // retScene.entities.push_back({Mesh::CreateCube(), transform});
 
     retScene.shaders.push_back(Shader("./resources/shader/base.vert", "./resources/shader/base.frag"));
-    retScene.shaders.push_back(Shader("./resources/shader/debug.vert", "./resources/shader/debug.frag"));
+    // retScene.shaders.push_back(Shader("./resources/shader/debug.vert", "./resources/shader/debug.frag"));
 
 
-    retScene.cameras.push_back(Camera(800.0, 600.0, glm::vec3(0.0, 20.0, 0.0), glm::vec3(0.0, 1.0, 0.0), -315.0f, -60.0f));
-    retScene.cameras.push_back(Camera(800.0, 600.0));
 
-    // for ( Camera& camera : retScene.cameras) {
+    // retScene.initCamConfigs.push_back(Camera(800.0, 600.0, glm::vec3(0.0, 20.0, 0.0), glm::vec3(0.0, 1.0, 0.0), -315.0f, -60.0f));
+    // retScene.initCamConfigs.push_back(Camera(800.0, 600.0));
+
+    // for ( Camera& camera : retScene.initCamConfigs) {
     //     retScene.debugMeshes.push_back(Mesh::CreateFrustum(camera));
     // }
 
@@ -162,7 +180,7 @@ Scene Scene::GenerateDefaultScene(){
     // floor.translate(glm::vec3(0.0, -0.5, 0.0));
 
     // retScene.entities.push_back({skybox, xcoord, ycoord, zcoord, light, sea, floor}); // uses move semantics
-    // retScene.cameras.push_back(camera); // literally just data
+    // retScene.initCamConfigs.push_back(camera); // literally just data
     // retScene.shaders.push_back(ourShader);
 
 

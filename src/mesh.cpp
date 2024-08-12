@@ -4,114 +4,44 @@
 
 #include <iostream>
 void Mesh::GenerateBuffers(Mesh* mesh, const std::vector<Vertex> &vertices, const std::vector<uint> &indices){
-    // Flexible because I can actually use this to batch the buffer creation!
-    // mesh->vertices = vertices;
-    // mesh->indices = indices;
+    glCreateBuffers(1, &mesh->VBO);
+    // glGenBuffers(1, &mesh->VBO);
+    // glBindBuffer(GL_ARRAY_BUFFER, mesh->VBO);
+    glNamedBufferStorage(mesh->VBO, vertices.size() * sizeof(Vertex), vertices.data(), GL_DYNAMIC_STORAGE_BIT);
+    // glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(),  GL_STATIC_DRAW);
 
-
-    // glCreateVertexArrays(1, &mesh->VAO);
-    glGenVertexArrays(1, &mesh->VAO);
-    glBindVertexArray(mesh->VAO);
-
-    // glCreateBuffers(1, &mesh->VBO);
-    glGenBuffers(1, &mesh->VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, mesh->VBO);
-    // glNamedBufferStorage(mesh->VBO, vertices.size() * sizeof(Vertex), vertices.data(), GL_DYNAMIC_STORAGE_BIT);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(),  GL_STATIC_DRAW);
-
-    // glCreateBuffers(1, &mesh->EBO);
-    glGenBuffers(1, &mesh->EBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->EBO);
-    // glNamedBufferStorage(mesh->EBO, indices.size() * sizeof(uint), indices.data(), GL_DYNAMIC_STORAGE_BIT);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(),  GL_STATIC_DRAW);
-
-
-
-
-
-
-
-
-    // std::cout << "sizeof(Vertex) " << sizeof(Vertex) << std::endl;
-    // std::cout << "sizeof(vertices.data()) " << sizeof(vertices.data()) << std::endl;
-    // std::cout << "sizeof(vertices.data[0]) " << sizeof(vertices.data()[0]) << std::endl;
-}
-
-void Mesh::Rebind(Mesh* mesh){
-    glBindVertexArray(mesh->VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, mesh->VBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->EBO);
-
-    glVertexArrayVertexBuffer(mesh->VAO, 0, mesh->VBO, 0, sizeof(Vertex));
-    glVertexArrayElementBuffer(mesh->VAO, mesh->EBO);
-
-    glEnableVertexArrayAttrib(mesh->VAO, 0);
-    glEnableVertexArrayAttrib(mesh->VAO, 1);
-    glEnableVertexArrayAttrib(mesh->VAO, 2);
-
-    // position attribute
-    // glVertexArrayAttribFormat(mesh->VAO, 0, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, position));
-    // glVertexArrayAttribBinding(mesh->VAO, 0, 0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Vertex, position));
-    glEnableVertexAttribArray(0);
-    // std::cout << "Position offset: " << offsetof(Vertex, position) << std::endl;
-
-    // normal attribute
-    // glVertexArrayAttribFormat(mesh->VAO, 1, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, normal));
-    // glVertexArrayAttribBinding(mesh->VAO, 1, 0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Vertex, normal));
-    glEnableVertexAttribArray(1);
-    // std::cout << "Normal offset: " << offsetof(Vertex, normal) << std::endl;
-
-    // texcoord attribute
-    // glVertexArrayAttribFormat(mesh->VAO, 2, 2, GL_FLOAT, GL_FALSE, offsetof(Vertex, texcoords));
-    // glVertexArrayAttribBinding(mesh->VAO, 2, 0);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Vertex, texcoords));
-    glEnableVertexAttribArray(2);
-    // std::cout << "Texcoords offset: " << offsetof(Vertex, texcoords) << std::endl;
-
+    glCreateBuffers(1, &mesh->EBO);
+    // glGenBuffers(1, &mesh->EBO);
+    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->EBO);
+    glNamedBufferStorage(mesh->EBO, indices.size() * sizeof(uint), indices.data(), GL_DYNAMIC_STORAGE_BIT);
+    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(),  GL_STATIC_DRAW);
 }
 
 void Mesh::GenerateDebugBuffers(Mesh* mesh, const std::vector<glm::vec3> &vertices, const std::vector<uint> &indices){
-    // Flexible because I can actually use this to batch the buffer creation!
-
-    glCreateVertexArrays(1, &mesh->VAO);
-    // glGenVertexArrays(1, &VAO);
-    // glBindVertexArray(VAO);
-
     glCreateBuffers(1, &mesh->VBO);
-    // glGenBuffers(1, &VBO);
-    // glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    // glGenBuffers(1, &mesh->VBO);
+    // glBindBuffer(GL_ARRAY_BUFFER, mesh->VBO);
     glNamedBufferStorage(mesh->VBO, vertices.size() * sizeof(glm::vec3), vertices.data(), GL_DYNAMIC_STORAGE_BIT);
     // glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(),  GL_STATIC_DRAW);
 
     glCreateBuffers(1, &mesh->EBO);
-    // glGenBuffers(1, &EBO);
-    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    // glGenBuffers(1, &mesh->EBO);
+    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->EBO);
     glNamedBufferStorage(mesh->EBO, indices.size() * sizeof(uint), indices.data(), GL_DYNAMIC_STORAGE_BIT);
     // glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(),  GL_STATIC_DRAW);
-
-    glVertexArrayVertexBuffer(mesh->VAO, 0, mesh->VBO, 0, sizeof(glm::vec3));
-    glVertexArrayElementBuffer(mesh->VAO, mesh->EBO);
-
-
-    // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-    // glEnableVertexAttribArray(0);
-
-
 }
 
-void Mesh::RebindDebug(Mesh* mesh){
-    glBindVertexArray(mesh->VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, mesh->VBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->EBO);
+// void Mesh::RebindDebug(Mesh* mesh){
+//     glBindVertexArray(mesh->VAO);
+//     glBindBuffer(GL_ARRAY_BUFFER, mesh->VBO);
+//     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->EBO);
 
-    glEnableVertexArrayAttrib(mesh->VAO, 0);
+//     glEnableVertexArrayAttrib(mesh->VAO, 0);
 
-    // position attribute
-    glVertexArrayAttribFormat(mesh->VAO, 0, 3, GL_FLOAT, GL_FALSE, 0);
-    glVertexArrayAttribBinding(mesh->VAO, 0, 0);
-}
+//     // position attribute
+//     glVertexArrayAttribFormat(mesh->VAO, 0, 3, GL_FLOAT, GL_FALSE, 0);
+//     glVertexArrayAttribBinding(mesh->VAO, 0, 0);
+// }
 
 Mesh Mesh::CreateCube(){
     const std::vector<Vertex> vertices ({ // counterclockwise
@@ -179,7 +109,7 @@ Mesh Mesh::CreateCube(){
 Mesh Mesh::CreateFrustum(const Camera& cam){
 
     const float aspect = cam.width / cam.height;
-    const float halfVSide = cam.zFar * tanf(cam.fovY * .5f);
+    const float halfVSide = cam.zFar * tanf(glm::radians(cam.fovY) * .5f);
     const float halfHSide = halfVSide * aspect;
     const float nearToFarRatio = cam.zNear / cam.zFar;
     // std::vector<glm::vec3> vertices({
@@ -280,15 +210,29 @@ Mesh Mesh::CreateFrustum(const Camera& cam){
     */
 
 
+    // std::vector<uint> indices({
+    //     // Front face (near plane)
+    //     1, 4, 4, 3, 3, 2, 2, 1,  // First square
+    //     1, 3, 2, 4, // Diagonals
+    //     0, 2, 2, 3, 3, 0,        // Left face
+    //     0, 4, 4, 1, 1, 0,        // Right face
+    //     0, 1, 1, 2, 2, 0,        // Top face
+    //     0, 3, 3, 4, 4, 0         // Bottom face
+    //     });
+
     std::vector<uint> indices({
         // Front face (near plane)
-        1, 4, 4, 3, 3, 2, 2, 1,  // First square
-        1, 3, 2, 4, // Second square
-        0, 2, 2, 3, 3, 0,        // Left face
-        0, 4, 4, 1, 1, 0,        // Right face
-        0, 1, 1, 2, 2, 0,        // Top face
-        0, 3, 3, 4, 4, 0         // Bottom face
+        1,  3, 4,
+        3,  1, 2,  // First square
+        // 1, 3, 2, 4, // Diagonals
+        0,  3, 2,        // Left face
+        0,  1, 4,        // Right face
+        0,  2, 1,        // Top face
+        0,  4, 3,         // Bottom face
         });
+
+
+
     Mesh mesh;
     GenerateDebugBuffers(&mesh, vertices, indices);
     mesh.indexCount = indices.size();

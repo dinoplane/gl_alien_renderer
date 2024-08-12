@@ -29,6 +29,44 @@
 
 
 
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "linmath.h"
+
+static const char* vertex_shader_text =
+"#version 110\n"
+"uniform mat4 MVP;\n"
+"attribute vec2 vPos;\n"
+"varying vec2 texcoord;\n"
+"void main()\n"
+"{\n"
+"    gl_Position = MVP * vec4(vPos, 0.0, 1.0);\n"
+"    texcoord = vPos;\n"
+"}\n";
+
+static const char* fragment_shader_text =
+"#version 110\n"
+"uniform sampler2D texture;\n"
+"uniform vec3 color;\n"
+"varying vec2 texcoord;\n"
+"void main()\n"
+"{\n"
+"    gl_FragColor = vec4(color * texture2D(texture, texcoord).rgb, 1.0);\n"
+"}\n";
+
+static const vec2 vertices[4] =
+{
+    { 0.f, 0.f },
+    { 1.f, 0.f },
+    { 1.f, 1.f },
+    { 0.f, 1.f }
+};
+
+
+
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window, Renderer* renderer, Scene* scene);
 
@@ -56,7 +94,6 @@ SceneData sceneData;
 Scene scene;
 // Renderer renderer;
 std::vector<Renderer> renderers;
-uint currRendererIdx = 1;
 
 // glm::vec3 lightPos = glm::vec3(0.0, 15.0, 5.0);
 
@@ -82,19 +119,19 @@ void setupCmdArgs(int argc, char **argv){
     // CHUNK_SIZE = std::max((NUM_BOIDS + (NUM_THREADS - 1)) / NUM_THREADS, (unsigned int) 1);
 
 }
-int createGLFWwindow(GLFWwindow* &window, const char* windowName){
+int createGLFWwindow(GLFWwindow* &window, const char* windowName, GLFWwindow* share = NULL){
     // glfw window creation
     // --------------------
 
-    window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, windowName, NULL, NULL);
+    window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, windowName, NULL, share);
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
         return -1;
     }
-    glfwMakeContextCurrent(window);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    // glfwMakeContextCurrent(window);
+    // glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 	return 0;
 }
 
@@ -234,7 +271,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
         lastX = xpos;
         lastY = ypos;
 
-        Renderer::allCameras[currRendererIdx].processMouseMovement(xoffset, yoffset);
+        scene.cameras[renderers[0].mainCameraIdx].processMouseMovement(xoffset, yoffset);
 }
 template<typename T>
 void printVector(const std::vector<T>& vec) {
@@ -249,85 +286,180 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 {
     if (key == GLFW_KEY_TAB && action == GLFW_PRESS){
 
-        currRendererIdx = (currRendererIdx + 1) % renderers.size();
-        std::cout << "Switching to renderer " << currRendererIdx << std::endl;
+        renderers[0].SwitchCamera(scene);
     }
 
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
-        glfwSetWindowShouldClose(window, true);
-    }
+    // if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
+    //     glfwSetWindowShouldClose(window, true);
+    // }
+
 }
 
-// Add load texture function
-int main(int argc, char **argv)
+
+int main(int argc, char** argv)
 {
-    const size_t RENDERER_COUNT = 2;
+    std::vector<GLFWwindow*> windows;
+    windows.resize(2);
+    GLuint texture, program, VAO, VBO;
+    GLint mvp_location, vpos_location, color_location, texture_location;
 
-	GLFWwindow* window;
-	if (setupGLFW() < 0){
-		return -1;
-	}
+    glfwSetErrorCallback(error_callback);
 
-    if (createGLFWwindow(window, "Flocking") < 0){
-        return -1;
-    }
+    if (!glfwInit())
+        exit(EXIT_FAILURE);
 
-	if (setupGLAD() < 0){
-		return -1;
-	}
-
-    glfwSetCursorPosCallback(window, mouse_callback);
-    glfwSetKeyCallback(window, key_callback);
-
-    glfwMakeContextCurrent(window);
-
-    { // Initialize the scene here
-        scene = Scene::GenerateDefaultScene();
-    }
-
-    for (size_t i = 0; i < RENDERER_COUNT; ++i){
-        renderers.push_back(Renderer());
-    }
-
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    while (!glfwWindowShouldClose(window))
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    windows[0] = glfwCreateWindow(400, 400, "First", NULL, NULL);
+    if (!windows[0])
     {
-
-        processInput(window, &renderers[currRendererIdx], &scene);
-        // for (Renderer& renderer : renderers){
-        //     renderer.Render(&scene);
-        // }
-        renderers[currRendererIdx].Render(&scene);
-        glfwSwapBuffers(window);
-
-        glfwPollEvents();
-
-        deltaTime = glfwGetTime() - lastFrame;
-        lastFrame = glfwGetTime();
+        glfwTerminate();
+        exit(EXIT_FAILURE);
     }
 
-    // glfw: terminate, clearing all previously allocated GLFW resources.
-    // ------------------------------------------------------------------
+    glfwSetKeyCallback(windows[0], key_callback);
+
+    glfwMakeContextCurrent(windows[0]);
+
+    glfwSwapInterval(1);
+
+    gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+
+    {
+        int x, y;
+        char pixels[16 * 16];
+        GLuint vertex_shader, fragment_shader;
+
+        glGenTextures(1, &texture);
+        glBindTexture(GL_TEXTURE_2D, texture);
+
+        srand((unsigned int) glfwGetTimerValue());
+
+        for (y = 0;  y < 16;  y++)
+        {
+            for (x = 0;  x < 16;  x++)
+                pixels[y * 16 + x] = rand() % 256;
+        }
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, 16, 16, 0, GL_RED, GL_UNSIGNED_BYTE, pixels);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+        vertex_shader = glCreateShader(GL_VERTEX_SHADER);
+        glShaderSource(vertex_shader, 1, &vertex_shader_text, NULL);
+        glCompileShader(vertex_shader);
+
+        fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
+        glShaderSource(fragment_shader, 1, &fragment_shader_text, NULL);
+        glCompileShader(fragment_shader);
+
+        program = glCreateProgram();
+        glAttachShader(program, vertex_shader);
+        glAttachShader(program, fragment_shader);
+        glLinkProgram(program);
+
+        mvp_location = glGetUniformLocation(program, "MVP");
+        color_location = glGetUniformLocation(program, "color");
+        texture_location = glGetUniformLocation(program, "texture");
+        vpos_location = glGetAttribLocation(program, "vPos");
+
+        glGenBuffers(1, &VBO);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    }
+
+    glUseProgram(program);
+    glUniform1i(texture_location, 0);
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, texture);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
+    glEnableVertexAttribArray(vpos_location);
+    glVertexAttribPointer(vpos_location, 2, GL_FLOAT, GL_FALSE,
+                          sizeof(vertices[0]), (void*) 0);
+
+
+    windows[1] = glfwCreateWindow(400, 400, "Second", NULL, windows[0]);
+    if (!windows[1])
+    {
+        glfwTerminate();
+        exit(EXIT_FAILURE);
+    }
+
+    // Place the second window to the right of the first
+    {
+        int xpos, ypos, left, right, width;
+
+        glfwGetWindowSize(windows[0], &width, NULL);
+        glfwGetWindowFrameSize(windows[0], &left, NULL, &right, NULL);
+        glfwGetWindowPos(windows[0], &xpos, &ypos);
+
+        glfwSetWindowPos(windows[1], xpos + width + left + right, ypos);
+    }
+
+    glfwSetKeyCallback(windows[1], key_callback);
+
+    glfwMakeContextCurrent(windows[1]);
+
+    glUseProgram(program);
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, texture);
+
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
+
+    glEnableVertexAttribArray(vpos_location);
+    glVertexAttribPointer(vpos_location, 2, GL_FLOAT, GL_FALSE,
+                          sizeof(vertices[0]), (void*) 0);
+
+
+    while (!glfwWindowShouldClose(windows[0]) &&
+           !glfwWindowShouldClose(windows[1]))
+    {
+        int i;
+        const vec3 colors[2] =
+        {
+            { 0.8f, 0.4f, 1.f },
+            { 0.3f, 0.4f, 1.f }
+        };
+
+        for (i = 0;  i < 2;  i++)
+        {
+            int width, height;
+            mat4x4 mvp;
+
+            glfwGetFramebufferSize(windows[i], &width, &height);
+            glfwMakeContextCurrent(windows[i]);
+
+            glViewport(0, 0, width, height);
+
+            mat4x4_ortho(mvp, 0.f, 1.f, 0.f, 1.f, 0.f, 1.f);
+            glUniformMatrix4fv(mvp_location, 1, GL_FALSE, (const GLfloat*) mvp);
+            glUniform3fv(color_location, 1, colors[i]);
+            glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+
+            glfwSwapBuffers(windows[i]);
+        }
+
+        glfwWaitEvents();
+    }
+
     glfwTerminate();
-
-   return 0;
+    exit(EXIT_SUCCESS);
 }
-
-// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
-// ---------------------------------------------------------------------------------------------------------
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height){
-    // make sure the viewport matches the new window dimensions; note that width and
-    // height will be significantly larger than specified on retina displays.
-    glViewport(0, 0, width, height);
-
-    for (Camera& camera : Renderer::allCameras){
-        camera.setPerspectiveSize(width, height);
-    }
+    //
 }
 
 float SPEED_MULTIPLIER = 10;
@@ -344,25 +476,61 @@ void processInput(GLFWwindow *window, Renderer* renderer, Scene* scene){ // abho
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     }
 
+
+
+
+
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS){
-        Renderer::allCameras[renderer->mainCameraIdx].moveForward(deltaTime);
+        scene->cameras[(renderer->mainCameraIdx + 1) % 2].moveForward(deltaTime);
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS){
-        Renderer::allCameras[renderer->mainCameraIdx].moveBackward(deltaTime);
+        scene->cameras[(renderer->mainCameraIdx + 1) % 2].moveBackward(deltaTime);
     }
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS){
-        Renderer::allCameras[renderer->mainCameraIdx].moveLeft(deltaTime);
+        scene->cameras[(renderer->mainCameraIdx + 1) % 2].moveLeft(deltaTime);
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS){
-        Renderer::allCameras[renderer->mainCameraIdx].moveRight(deltaTime);
+        scene->cameras[(renderer->mainCameraIdx + 1) % 2].moveRight(deltaTime);
     }
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS){
-        Renderer::allCameras[renderer->mainCameraIdx].moveUp(deltaTime);
+        scene->cameras[(renderer->mainCameraIdx + 1) % 2].moveUp(deltaTime);
     }
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS){
-        Renderer::allCameras[renderer->mainCameraIdx].moveDown(deltaTime);
+        scene->cameras[(renderer->mainCameraIdx + 1) % 2].moveDown(deltaTime);
     }
 
 
 }
+
+
+/*
+{
+
+    // std::cout << mWidth << " " << mHeight << std::endl;
+
+
+    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS){
+        // std::cout << "PRESSED " << deltaTime << std::endl;
+        lightPos += glm::vec3(0.0, 0.0, -1.0) * lightSpeed * deltaTime;
+    }
+    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS){
+        lightPos += glm::vec3(0.0, 0.0, 1.0) * lightSpeed * deltaTime;
+    }
+    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS){
+        lightPos += glm::vec3(-1.0, 0.0, 0.0) * lightSpeed * deltaTime;
+    }
+    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS){
+        lightPos += glm::vec3(1.0, 0.0, 0.0) * lightSpeed * deltaTime;
+    }
+    if (glfwGetKey(window, GLFW_KEY_SLASH) == GLFW_PRESS){
+        lightPos += glm::vec3(0.0, 1.0, 0.0) * lightSpeed * deltaTime;
+    }
+    if (glfwGetKey(window, GLFW_KEY_PERIOD) == GLFW_PRESS){
+        lightPos += glm::vec3(0.0, -1.0, 0.0) * lightSpeed * deltaTime;
+    }
+
+
+
+}
+*/
 

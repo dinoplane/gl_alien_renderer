@@ -14,17 +14,17 @@
 // https://www.wikihow.com/Linux-How-to-Mount-Drive#:~:text=To%20mount%20a%20drive%20on,to%20mount%20and%20unmount%20drives.
 
 class Camera;
-
+class Renderer;
 
 struct Mesh {
     // public:
     //     // Create a renderer class and compare times
 
-        GLuint VBO, VAO, EBO;
+        GLuint VBO, VAO, EBO; // keep the VAO in there, just in case.
         static void GenerateBuffers(Mesh* mesh, const std::vector<Vertex> &vertices, const std::vector<uint>& indices);
-        static void Rebind(Mesh*mesh);
+        // static void Rebind(Mesh*mesh, Renderer* renderer);
         static void GenerateDebugBuffers(Mesh* mesh, const std::vector<glm::vec3> &vertices, const std::vector<uint>& indices);
-        static void RebindDebug(Mesh*mesh);
+        // static void RebindDebug(Mesh*mesh);
 
 
 
