@@ -133,7 +133,7 @@ int setupGLAD(){
 	return 0;
 }
 
-void setupShaders(unsigned int &shaderProgram){
+void setupScreenShaders(){
 
 }
 
@@ -258,6 +258,96 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     }
 }
 
+
+void RenderToFrame (Renderer* renderer, Scene* scene, Shader* screenShader, GLuint quadVAO, GLuint quadVBO){
+
+    // First Pass
+    renderer->Render(scene);
+
+    // Second Pass
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+// glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+    screenShader->use();
+    glBindVertexArray(quadVAO);
+    glVertexArrayVertexBuffer(quadVAO, 0, quadVBO, 0, sizeof(float) * 4);
+    glDisable(GL_DEPTH_TEST);
+    glBindTexture(GL_TEXTURE_2D, renderer->FBOTexture);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+// glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+}
+
+constexpr float quadVertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
+    // positions   // texCoords
+    -1.0f,  1.0f,  0.0f, 1.0f,
+    -1.0f, -1.0f,  0.0f, 0.0f,
+     1.0f, -1.0f,  1.0f, 0.0f,
+
+    -1.0f,  1.0f,  0.0f, 1.0f,
+     1.0f, -1.0f,  1.0f, 0.0f,
+     1.0f,  1.0f,  1.0f, 1.0f
+};
+
+// screen quad VAO
+
+void SetUpScreenQuad(GLuint* quadVAO, GLuint *quadVBO){
+    glCreateVertexArrays(1, quadVAO);
+    glEnableVertexArrayAttrib(*quadVAO, 0);
+    glEnableVertexArrayAttrib(*quadVAO, 1);
+
+    // position attribute
+    glVertexArrayAttribFormat(*quadVAO, 0, 2, GL_FLOAT, GL_FALSE, 0);
+    glVertexArrayAttribBinding(*quadVAO, 0, 0);
+
+    // texcoord attribute
+    glVertexArrayAttribFormat(*quadVAO, 1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GL_FLOAT));
+    glVertexArrayAttribBinding(*quadVAO, 1, 0);
+
+
+    glCreateBuffers(1, quadVBO);
+    glNamedBufferStorage(*quadVBO, array_size(quadVertices) * sizeof(float) , &quadVertices, GL_DYNAMIC_STORAGE_BIT);
+
+}
+
+void message_callback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, GLchar const* message, void const* user_param)
+{
+	auto const src_str = [source]() {
+		switch (source)
+		{
+		case GL_DEBUG_SOURCE_API: return "API";
+		case GL_DEBUG_SOURCE_WINDOW_SYSTEM: return "WINDOW SYSTEM";
+		case GL_DEBUG_SOURCE_SHADER_COMPILER: return "SHADER COMPILER";
+		case GL_DEBUG_SOURCE_THIRD_PARTY: return "THIRD PARTY";
+		case GL_DEBUG_SOURCE_APPLICATION: return "APPLICATION";
+		case GL_DEBUG_SOURCE_OTHER: return "OTHER";
+		}
+	}();
+
+	auto const type_str = [type]() {
+		switch (type)
+		{
+		case GL_DEBUG_TYPE_ERROR: return "ERROR";
+		case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: return "DEPRECATED_BEHAVIOR";
+		case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR: return "UNDEFINED_BEHAVIOR";
+		case GL_DEBUG_TYPE_PORTABILITY: return "PORTABILITY";
+		case GL_DEBUG_TYPE_PERFORMANCE: return "PERFORMANCE";
+		case GL_DEBUG_TYPE_MARKER: return "MARKER";
+		case GL_DEBUG_TYPE_OTHER: return "OTHER";
+		}
+	}();
+
+	auto const severity_str = [severity]() {
+		switch (severity) {
+		case GL_DEBUG_SEVERITY_NOTIFICATION: return "NOTIFICATION";
+		case GL_DEBUG_SEVERITY_LOW: return "LOW";
+		case GL_DEBUG_SEVERITY_MEDIUM: return "MEDIUM";
+		case GL_DEBUG_SEVERITY_HIGH: return "HIGH";
+		}
+	}();
+	std::cout << src_str << ", " << type_str << ", " << severity_str << ", " << id << ": " << message << '\n';
+}
+
 // Add load texture function
 int main(int argc, char **argv)
 {
@@ -281,17 +371,22 @@ int main(int argc, char **argv)
 
     glfwMakeContextCurrent(window);
 
+glEnable(GL_DEBUG_OUTPUT);
+glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+glDebugMessageCallback(message_callback, nullptr);
+glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, nullptr, GL_FALSE);
     { // Initialize the scene here
         scene = Scene::GenerateDefaultScene();
     }
 
     for (size_t i = 0; i < RENDERER_COUNT; ++i){
-        renderers.push_back(Renderer());
+        renderers.push_back(Renderer(800, 600));
     }
+    Shader screenShader("./resources/shader/screen.vert", "./resources/shader/screen.frag");
+    screenShader.use();
 
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    uint quadVAO, quadVBO;
+    SetUpScreenQuad(&quadVAO, &quadVBO);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -300,7 +395,10 @@ int main(int argc, char **argv)
         // for (Renderer& renderer : renderers){
         //     renderer.Render(&scene);
         // }
-        renderers[currRendererIdx].Render(&scene);
+        // renderers[currRendererIdx].Render(&scene);
+        RenderToFrame(&renderers[currRendererIdx], &scene, &screenShader, quadVAO, quadVBO);
+
+
         glfwSwapBuffers(window);
 
         glfwPollEvents();

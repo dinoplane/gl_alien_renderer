@@ -27,16 +27,26 @@ class Renderer {
     GLuint VAO;
     GLuint debugVAO;
 
+    GLuint FBO;
+    GLuint FBOTexture; // texture to use dsa
+    GLuint RBO;
+
+    float width;
+    float height;
+
     // static void LoadMeshes();
     // static void LoadShaders();
     // static void LoadCameras();
 
     // Scene* scene;
-    Renderer();
+    Renderer(float w, float h);
 
     void Init();
-    void BindVAO();
-    void BindDebugVAO();
+    void CreateVAO();
+    void CreateDebugVAO();
+    void CreateFBO();
+    void CreateRBO();
+
     void Resize(int width, int height);
     // void Update(const Scene& scene);
 
