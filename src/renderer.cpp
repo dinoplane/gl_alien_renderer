@@ -21,7 +21,7 @@ Shader* Renderer::debugWireShader = nullptr;
 
 
 Renderer::Renderer(float w, float h) : width(w), height(h) {
-    Init();
+    Init(w, h);
     if (debugShader == nullptr){
         debugShader = new Shader("./resources/shader/debug.vert", "./resources/shader/debug.frag");
         debugWireShader = new Shader("./resources/shader/debug.vert", "./resources/shader/debugline.frag");
@@ -44,15 +44,12 @@ Renderer::Renderer(float w, float h) : width(w), height(h) {
 
 }
 
-void Renderer::Init(){
+void Renderer::Init(float w, float h){
 
     CreateVAO();
-
     CreateDebugVAO();
-
-    CreateFBO();
-
-    CreateRBO();
+    CreateFBO(w, h);
+    CreateRBO(w, h);
 
     if(glCheckNamedFramebufferStatus(FBO, GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE){
         std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
@@ -106,12 +103,18 @@ void Renderer::CreateDebugVAO(){
     // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * GL_FLOAT, (void*) 0);
 }
 
-void Renderer::CreateFBO(){
+void Renderer::CreateFBO(float w, float h){
+    if (FBO != 0){
+        glDeleteFramebuffers(1, &FBO);
+    }
     glCreateFramebuffers(1, &FBO);
     // glGenFramebuffers(1, &FBO);
     // glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 
     // create a color attachment texture
+    if (FBOTexture != 0){
+        glDeleteTextures(1, &FBOTexture);
+    }
 
     glCreateTextures(GL_TEXTURE_2D, 1, &FBOTexture);
     // glGenTextures(1, &FBOTexture);
@@ -121,19 +124,16 @@ void Renderer::CreateFBO(){
 
     glTextureParameteri(FBOTexture, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTextureParameteri(FBOTexture, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTextureParameteri(FBOTexture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTextureParameteri(FBOTexture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    glTextureStorage2D(FBOTexture, 1, GL_RGBA8, width, height);
-    // glTextureSubImage2D(FBOTexture, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-    // glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, width, height);
-    // glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+    glTextureStorage2D(FBOTexture, 1, GL_RGBA8, w, h); // Solution
 
     glNamedFramebufferTexture(FBO, GL_COLOR_ATTACHMENT0, FBOTexture, 0);
     // glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, FBOTexture, 0);
     // glNamedFramebufferTexture(fbo, GL_DEPTH_ATTACHMENT, depthTex, 0);
-
-
 
 
     // glBindFramebuffer(GL_FRAMEBUFFER, 0); // Reset back to default framebuffer
@@ -141,14 +141,12 @@ void Renderer::CreateFBO(){
 
 }
 
-void Renderer::CreateRBO(){
+void Renderer::CreateRBO(float w, float h){
+    if (RBO != 0){
+        glDeleteRenderbuffers(1, &RBO);
+    }
     glCreateRenderbuffers(1, &RBO);
-    // glGenRenderbuffers(1, &RBO);
-    // glBindRenderbuffer(GL_RENDERBUFFER, RBO);
-
-    glNamedRenderbufferStorage(RBO, GL_DEPTH24_STENCIL8, width, height);
-    // glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 800, 600);
-
+    glNamedRenderbufferStorage(RBO, GL_DEPTH24_STENCIL8, w, h);
     glNamedFramebufferRenderbuffer(FBO, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, RBO);
     // glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, RBO);
     // glBindRenderbuffer(GL_RENDERBUFFER, 0);
@@ -156,12 +154,14 @@ void Renderer::CreateRBO(){
     // glDeleteRenderbuffers(1, &RBO);
 }
 
-void Renderer::Resize(int w, int h){
+void Renderer::Resize(float w, float h){
     glViewport(0, 0, w, h);
     this->width = w;
     this->height = h;
 
     allCameras[mainCameraIdx].setPerspectiveSize(w, h);
+    CreateFBO(w, h);
+    CreateRBO(w, h);
 }
 
 

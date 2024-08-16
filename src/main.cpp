@@ -418,13 +418,13 @@ glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION
 // ---------------------------------------------------------------------------------------------------------
 
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height){
-    // make sure the viewport matches the new window dimensions; note that width and
-    // height will be significantly larger than specified on retina displays.
-    glViewport(0, 0, width, height);
+void framebuffer_size_callback(GLFWwindow* window, int w, int h){
+    // make sure the viewport matches the new window dimensions; note that w and
+    // h will be significantly larger than specified on retina displays.
+    glViewport(0, 0, w, h);
 
-    for (Camera& camera : Renderer::allCameras){
-        camera.setPerspectiveSize(width, height);
+    for (Renderer& renderer : renderers){
+        renderer.Resize(w, h);
     }
 }
 

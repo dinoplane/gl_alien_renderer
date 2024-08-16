@@ -41,13 +41,13 @@ class Renderer {
     // Scene* scene;
     Renderer(float w, float h);
 
-    void Init();
+    void Init(float w, float h);
     void CreateVAO();
     void CreateDebugVAO();
-    void CreateFBO();
-    void CreateRBO();
+    void CreateFBO(float w, float h);
+    void CreateRBO(float w, float h);
 
-    void Resize(int width, int height);
+    void Resize(float w, float h);
     // void Update(const Scene& scene);
 
     void BindMesh(Mesh* mesh);
