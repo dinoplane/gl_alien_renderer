@@ -2,8 +2,9 @@
 #define SCENE_H
 
 #include <vector>
+#include <unordered_map>
 // #include <memory>
-struct Mesh;
+#include <mesh.hpp>
 class Entity;
 class Shader; // Change this to only use move semantics
 class Camera;
@@ -11,14 +12,31 @@ class Camera;
 // class Material;
 // class Entity;
 
+struct EntityInstanceData
+{
+    Mesh instMesh;
+    uint instCount;
+    std::vector<glm::mat4> modelToWorldMat;
+    GLuint instArrVBO;
+
+    void GenerateInstanceBuffers();
+
+    // Material goes here
+    // material and mesh creates an id for
+};
+
 class Scene {
     public:
 
     // static void LoadMeshes();
     // static void LoadShaders();
     // static void LoadCameras();
+    std::unordered_map<uint, EntityInstanceData> entityInstanceMap;
+
+
 
     std::vector<Entity> entities;
+
     std::vector<Mesh> debugMeshes;
     std::vector<Shader> shaders;
     std::vector<Camera> initCamConfigs;

@@ -12,10 +12,19 @@
 #include <iostream>
 #include <glm/gtx/string_cast.hpp>
 
+
+void EntityInstanceData::GenerateInstanceBuffers(){
+    glCreateBuffers(1, &instArrVBO);
+
+    glNamedBufferStorage(instArrVBO, modelToWorldMat.size() * sizeof(glm::mat4), modelToWorldMat.data(), GL_DYNAMIC_STORAGE_BIT);
+    //
+}
+
 Scene::Scene(){
     entities = std::vector<Entity>();
     shaders = std::vector<Shader>();
     initCamConfigs = std::vector<Camera>();
+    entityInstanceMap = std::unordered_map<uint, EntityInstanceData>();
 }
 
 Scene::~Scene(){
@@ -27,13 +36,20 @@ void Scene::DeleteSceneObjects(){
     shaders.clear();
     initCamConfigs.clear();
     debugMeshes.clear();
+    entityInstanceMap.clear();
 }
 
-Scene::Scene(Scene&& other) : entities(std::move(other.entities)), shaders(std::move(other.shaders)), initCamConfigs(std::move(other.initCamConfigs)){
+Scene::Scene(Scene&& other) :
+            entities(std::move(other.entities)),
+            shaders(std::move(other.shaders)),
+            initCamConfigs(std::move(other.initCamConfigs)),
+            entityInstanceMap(std::move(other.entityInstanceMap))
+            {
     other.entities.clear();
     other.shaders.clear();
     other.initCamConfigs.clear();
     other.debugMeshes.clear();
+    other.entityInstanceMap.clear();
 }
 
 Scene& Scene::operator=(Scene&& other){
@@ -43,10 +59,12 @@ Scene& Scene::operator=(Scene&& other){
         shaders = std::move(other.shaders);
         initCamConfigs = std::move(other.initCamConfigs);
         debugMeshes = std::move(other.debugMeshes);
+        entityInstanceMap = std::move(other.entityInstanceMap);
         other.entities.clear();
         other.shaders.clear();
         other.initCamConfigs.clear();
         other.debugMeshes.clear();
+        other.entityInstanceMap.clear();
     }
     return *this;
 }
@@ -65,9 +83,9 @@ Scene& Scene::operator=(Scene&& other){
 // }
 
 void Scene::RebindAllMeshes(){
-    for (Entity& entity : entities){
-        // Mesh::Rebind(&entity.mesh);
-    }
+    // for (Entity& entity : entities){
+    //     // Mesh::Rebind(&entity.mesh);
+    // }
 
     // for (Mesh& mesh : debugMeshes){
     //     Mesh::RebindDebug(&mesh);
@@ -81,7 +99,14 @@ Scene Scene::GenerateBasicScene(){
     transform.SetRotation(glm::vec3(0.0, 0.0, 0.0));
     transform.SetScale(glm::vec3(1.0, 1.0, 1.0));
 
-    retScene.entities.push_back({Mesh::CreateCube(), transform});
+    EntityInstanceData entityInstanceData;
+    entityInstanceData.instMesh = Mesh::CreateCube();
+    entityInstanceData.instCount = 0;
+    retScene.entityInstanceMap[0] =  entityInstanceData;
+    retScene.entityInstanceMap[0].modelToWorldMat.push_back(transform.GetModelMatrix());
+    retScene.entityInstanceMap[0].instCount += 1;
+    retScene.entityInstanceMap[0].GenerateInstanceBuffers();
+
 
     retScene.shaders.push_back(Shader("./resources/shader/base.vert", "./resources/shader/base.frag"));
 
@@ -91,21 +116,33 @@ Scene Scene::GenerateBasicScene(){
     return retScene;
 }
 
+// void AddEntity(Entity entity){
+//     retScene.entities
+// }
+
 Scene Scene::GenerateDefaultScene(){
+    const int LATTICE_LENGTH = 40;
     Scene retScene;
 
     Transform transform;
+    EntityInstanceData entityInstanceData;
+    entityInstanceData.instMesh = Mesh::CreateCube();
+    entityInstanceData.instCount = 0;
+    retScene.entityInstanceMap[0] =  entityInstanceData;
 
     transform.SetRotation(glm::vec3(0.0, 0.0, 0.0));
     transform.SetScale(glm::vec3(1.0, 1.0, 1.0));
-    for (int i = 0; i < 6; ++i){
-        for (int j = 0; j < 5; ++j){
-            for (int k = 0; k < 5; ++k){
+    for (int i = 0; i < LATTICE_LENGTH; ++i){
+        for (int j = 0; j < LATTICE_LENGTH; ++j){
+            for (int k = 0; k < LATTICE_LENGTH; ++k){
                 transform.SetPosition(glm::vec3(i * 2.0, j * 2.0, k * 2.0));
-                retScene.entities.push_back({Mesh::CreateCube(), transform});
+                // retScene.entities.push_back({Mesh::CreateCube(), transform});
+                retScene.entityInstanceMap[0].modelToWorldMat.push_back(transform.GetModelMatrix());
+                retScene.entityInstanceMap[0].instCount += 1;
             }
         }
     }
+    retScene.entityInstanceMap[0].GenerateInstanceBuffers();
 
     // transform.SetPosition(glm::vec3(0.0, 0.0, 0.0));
     // transform.SetRotation(glm::vec3(0.0, 0.0, 0.0));
@@ -120,6 +157,7 @@ Scene Scene::GenerateDefaultScene(){
     // retScene.entities.push_back({Mesh::CreateCube(), transform});
 
     retScene.shaders.push_back(Shader("./resources/shader/base.vert", "./resources/shader/base.frag"));
+    retScene.shaders.push_back(Shader("./resources/shader/base_inst.vert", "./resources/shader/base_inst.frag"));
     // retScene.shaders.push_back(Shader("./resources/shader/debug.vert", "./resources/shader/debug.frag"));
 
 

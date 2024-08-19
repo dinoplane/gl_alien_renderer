@@ -3,6 +3,8 @@
 #include <camera.hpp>
 
 #include <iostream>
+
+
 void Mesh::GenerateBuffers(Mesh* mesh, const std::vector<Vertex> &vertices, const std::vector<uint> &indices){
     glCreateBuffers(1, &mesh->VBO);
     // glGenBuffers(1, &mesh->VBO);

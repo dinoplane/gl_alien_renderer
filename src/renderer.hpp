@@ -7,10 +7,11 @@
 #include <vector>
 // #include <memory>
 #include <shader_s.hpp>
-
+#include <unordered_map>
 class Scene;
 class Camera;
 struct Mesh;
+struct EntityInstanceData;
 // class Light;
 // class Material;
 // class Entity;
@@ -24,12 +25,45 @@ class Renderer {
     static Shader* debugWireShader;
 
 
+
+    static std::unordered_map<std::string, Shader*> allPostProcessShaders;
+    static Shader* postProcessShader;
+    static Shader* passthroughShader;
+
+    static constexpr float quadVertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
+        // positions   // texCoords
+        -1.0f,  1.0f,  0.0f, 1.0f,
+        -1.0f, -1.0f,  0.0f, 0.0f,
+        1.0f, -1.0f,  1.0f, 0.0f,
+
+        -1.0f,  1.0f,  0.0f, 1.0f,
+        1.0f, -1.0f,  1.0f, 0.0f,
+        1.0f,  1.0f,  1.0f, 1.0f
+    };
+
+
+
+    static void SetupScreenQuad();
+
+
+
     GLuint VAO;
     GLuint debugVAO;
+    GLuint instVAO;
 
+    static GLuint quadVAO;
+    static GLuint quadVBO;
+
+
+    // we can make a more elaborate system later when we want to make the canny edge detection
     GLuint FBO;
-    GLuint FBOTexture; // texture to use dsa
+    GLuint srcFBOTexture; // texture to use dsa
     GLuint RBO;
+
+    // GLuint FBO;
+    GLuint dstFBOTexture; // texture to use dsa
+    // GLuint RBO;
+
 
     float width;
     float height;
@@ -43,6 +77,7 @@ class Renderer {
 
     void Init(float w, float h);
     void CreateVAO();
+    void CreateInstanceVAO();
     void CreateDebugVAO();
     void CreateFBO(float w, float h);
     void CreateRBO(float w, float h);
@@ -51,9 +86,11 @@ class Renderer {
     // void Update(const Scene& scene);
 
     void BindMesh(Mesh* mesh);
+    void BindInstanceMesh(EntityInstanceData* entityInstanceData);
     void BindDebugMesh(Mesh* mesh);
 
     void Render(Scene* scene);
+    void RenderPostProcess(Scene* scene);
 
     void SwitchCamera(const Scene& scene);
 

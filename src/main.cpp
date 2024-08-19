@@ -56,7 +56,7 @@ SceneData sceneData;
 Scene scene;
 // Renderer renderer;
 std::vector<Renderer> renderers;
-uint currRendererIdx = 1;
+uint currRendererIdx = 0;
 
 // glm::vec3 lightPos = glm::vec3(0.0, 15.0, 5.0);
 
@@ -131,10 +131,6 @@ int setupGLAD(){
     }
 
 	return 0;
-}
-
-void setupScreenShaders(){
-
 }
 
 // Assume there are alpha channels... need to find way to support jpeg later
@@ -259,57 +255,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 }
 
 
-void RenderToFrame (Renderer* renderer, Scene* scene, Shader* screenShader, GLuint quadVAO, GLuint quadVBO){
-
-    // First Pass
-    renderer->Render(scene);
-
-    // Second Pass
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-// glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-    screenShader->use();
-    glBindVertexArray(quadVAO);
-    glVertexArrayVertexBuffer(quadVAO, 0, quadVBO, 0, sizeof(float) * 4);
-    glDisable(GL_DEPTH_TEST);
-    glBindTexture(GL_TEXTURE_2D, renderer->FBOTexture);
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-// glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-}
-
-constexpr float quadVertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
-    // positions   // texCoords
-    -1.0f,  1.0f,  0.0f, 1.0f,
-    -1.0f, -1.0f,  0.0f, 0.0f,
-     1.0f, -1.0f,  1.0f, 0.0f,
-
-    -1.0f,  1.0f,  0.0f, 1.0f,
-     1.0f, -1.0f,  1.0f, 0.0f,
-     1.0f,  1.0f,  1.0f, 1.0f
-};
-
-// screen quad VAO
-
-void SetUpScreenQuad(GLuint* quadVAO, GLuint *quadVBO){
-    glCreateVertexArrays(1, quadVAO);
-    glEnableVertexArrayAttrib(*quadVAO, 0);
-    glEnableVertexArrayAttrib(*quadVAO, 1);
-
-    // position attribute
-    glVertexArrayAttribFormat(*quadVAO, 0, 2, GL_FLOAT, GL_FALSE, 0);
-    glVertexArrayAttribBinding(*quadVAO, 0, 0);
-
-    // texcoord attribute
-    glVertexArrayAttribFormat(*quadVAO, 1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GL_FLOAT));
-    glVertexArrayAttribBinding(*quadVAO, 1, 0);
-
-
-    glCreateBuffers(1, quadVBO);
-    glNamedBufferStorage(*quadVBO, array_size(quadVertices) * sizeof(float) , &quadVertices, GL_DYNAMIC_STORAGE_BIT);
-
-}
-
 void message_callback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, GLchar const* message, void const* user_param)
 {
 	auto const src_str = [source]() {
@@ -348,6 +293,61 @@ void message_callback(GLenum source, GLenum type, GLuint id, GLenum severity, GL
 	std::cout << src_str << ", " << type_str << ", " << severity_str << ", " << id << ": " << message << '\n';
 }
 
+
+
+
+
+// screen quad VAO
+
+// void SetUpScreenQuad(GLuint* quadVAO, GLuint *quadVBO){
+//     glCreateVertexArrays(1, quadVAO);
+//     glEnableVertexArrayAttrib(*quadVAO, 0);
+//     glEnableVertexArrayAttrib(*quadVAO, 1);
+
+//     // position attribute
+//     glVertexArrayAttribFormat(*quadVAO, 0, 2, GL_FLOAT, GL_FALSE, 0);
+//     glVertexArrayAttribBinding(*quadVAO, 0, 0);
+
+//     // texcoord attribute
+//     glVertexArrayAttribFormat(*quadVAO, 1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GL_FLOAT));
+//     glVertexArrayAttribBinding(*quadVAO, 1, 0);
+
+
+//     glCreateBuffers(1, quadVBO);
+//     glNamedBufferStorage(*quadVBO, array_size(quadVertices) * sizeof(float) , &quadVertices, GL_DYNAMIC_STORAGE_BIT);
+
+// }
+
+
+void RenderToFrame (Scene* scene){
+
+    // First Pass
+    for (Renderer& renderer : renderers){
+        renderer.Render(scene);
+    }
+
+    // Second Pass
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    int startPixel = 0;
+    for (Renderer& renderer : renderers){
+
+        // cout << "Rendering to screen " << startPixel << " " << renderer.width  << " " << renderer.height << endl;
+        glBlitNamedFramebuffer(renderer.FBO, 0, 0, 0, renderer.width, renderer.height, startPixel, 0, startPixel + renderer.width, renderer.height, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+        startPixel += renderer.width;
+    }
+// glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+    // screenShader->use();
+    // glBindVertexArray(quadVAO);
+    // glVertexArrayVertexBuffer(quadVAO, 0, quadVBO, 0, sizeof(float) * 4);
+    // glDisable(GL_DEPTH_TEST);
+    // glBindTexture(GL_TEXTURE_2D, renderer->FBOTexture);
+    // glDrawArrays(GL_TRIANGLES, 0, 6);
+// glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+}
+
+
 // Add load texture function
 int main(int argc, char **argv)
 {
@@ -371,22 +371,18 @@ int main(int argc, char **argv)
 
     glfwMakeContextCurrent(window);
 
-glEnable(GL_DEBUG_OUTPUT);
-glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-glDebugMessageCallback(message_callback, nullptr);
-glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, nullptr, GL_FALSE);
+    glEnable(GL_DEBUG_OUTPUT);
+    glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+    glDebugMessageCallback(message_callback, nullptr);
+    glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, nullptr, GL_FALSE);
     { // Initialize the scene here
         scene = Scene::GenerateDefaultScene();
     }
 
     for (size_t i = 0; i < RENDERER_COUNT; ++i){
-        renderers.push_back(Renderer(800, 600));
+        renderers.push_back(Renderer(SCR_WIDTH / RENDERER_COUNT, SCR_HEIGHT ));
     }
-    Shader screenShader("./resources/shader/screen.vert", "./resources/shader/screen.frag");
-    screenShader.use();
 
-    uint quadVAO, quadVBO;
-    SetUpScreenQuad(&quadVAO, &quadVBO);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -396,7 +392,7 @@ glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION
         //     renderer.Render(&scene);
         // }
         // renderers[currRendererIdx].Render(&scene);
-        RenderToFrame(&renderers[currRendererIdx], &scene, &screenShader, quadVAO, quadVBO);
+        RenderToFrame( &scene );
 
 
         glfwSwapBuffers(window);
@@ -424,13 +420,13 @@ void framebuffer_size_callback(GLFWwindow* window, int w, int h){
     glViewport(0, 0, w, h);
 
     for (Renderer& renderer : renderers){
-        renderer.Resize(w, h);
+        renderer.Resize(w / renderers.size(), h);
     }
 }
 
 float SPEED_MULTIPLIER = 10;
 void processInput(GLFWwindow *window, Renderer* renderer, Scene* scene){ // abhorrent should only pass in renderer.
-    // std::cout << "Frame Time: " << deltaTime <<  " ms" << std::endl;
+    std::cout << "Frame Time: " << deltaTime <<  " ms" << std::endl;
     double mWidth = (double) SCR_WIDTH;
     double mHeight = (double) SCR_HEIGHT;
 

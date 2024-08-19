@@ -18,13 +18,55 @@ std::vector<Camera> Renderer::allCameras;
 std::vector<Mesh> Renderer::allDebugMeshes;
 Shader* Renderer::debugShader = nullptr;
 Shader* Renderer::debugWireShader = nullptr;
+Shader* Renderer::postProcessShader = nullptr;
+Shader* Renderer::passthroughShader = nullptr;
+GLuint Renderer::quadVAO = 0;
+GLuint Renderer::quadVBO = 0;
 
+
+void Renderer::SetupScreenQuad(){
+    glCreateVertexArrays(1, &Renderer::quadVAO);
+    glEnableVertexArrayAttrib(Renderer::quadVAO, 0);
+    glEnableVertexArrayAttrib(Renderer::quadVAO, 1);
+
+    // position attribute
+    glVertexArrayAttribFormat(Renderer::quadVAO, 0, 2, GL_FLOAT, GL_FALSE, 0);
+    glVertexArrayAttribBinding(Renderer::quadVAO, 0, 0);
+
+    // texcoord attribute
+    glVertexArrayAttribFormat(Renderer::quadVAO, 1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GL_FLOAT));
+    glVertexArrayAttribBinding(Renderer::quadVAO, 1, 0);
+
+
+    glCreateBuffers(1, &Renderer::quadVBO);
+    glNamedBufferStorage(Renderer::quadVBO, array_size(quadVertices) * sizeof(float) , &quadVertices, GL_DYNAMIC_STORAGE_BIT);
+
+}
+
+void Renderer::RenderPostProcess(Scene* scene){
+    // render
+    if (mainCameraIdx == 0){
+        passthroughShader->use();
+    } else postProcessShader->use();
+    glBindVertexArray(Renderer::quadVAO);
+    glVertexArrayVertexBuffer(Renderer::quadVAO, 0, Renderer::quadVBO, 0, sizeof(float) * 4);
+    glDisable(GL_DEPTH_TEST);
+    glBindTexture(GL_TEXTURE_2D, srcFBOTexture);
+
+    glNamedFramebufferTexture(FBO, GL_COLOR_ATTACHMENT0, dstFBOTexture, 0);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+
+}
 
 Renderer::Renderer(float w, float h) : width(w), height(h) {
     Init(w, h);
     if (debugShader == nullptr){
         debugShader = new Shader("./resources/shader/debug.vert", "./resources/shader/debug.frag");
         debugWireShader = new Shader("./resources/shader/debug.vert", "./resources/shader/debugline.frag");
+        postProcessShader = new Shader("./resources/shader/screen.vert", "./resources/shader/screen.frag");
+        passthroughShader = new Shader("./resources/shader/screen.vert", "./resources/shader/passthrough.frag");
+        postProcessShader->use();
+        Renderer::SetupScreenQuad();
     }
 
     mainCameraIdx = Renderer::allCameras.size();
@@ -39,14 +81,16 @@ Renderer::Renderer(float w, float h) : width(w), height(h) {
             Camera(w, h, glm::vec3(0.0, 20.0, 0.0), glm::vec3(0.0, 1.0, 0.0), -315.0f, -60.0f, 30.0f, 0.1f, pow( 10.0f, allCameras.size() + 1))
         );
     }
+    allCameras[mainCameraIdx].setPerspectiveSize(w, h);
 
     Renderer::allDebugMeshes.push_back(Mesh::CreateFrustum(Renderer::allCameras[mainCameraIdx]));
 
 }
 
 void Renderer::Init(float w, float h){
-
+    glViewport(0, 0, w, h);
     CreateVAO();
+    CreateInstanceVAO();
     CreateDebugVAO();
     CreateFBO(w, h);
     CreateRBO(w, h);
@@ -89,6 +133,48 @@ void Renderer::CreateVAO(){
     // glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Vertex, texcoords));
 }
 
+void Renderer::CreateInstanceVAO(){
+    glCreateVertexArrays(1, &instVAO);
+
+    glEnableVertexArrayAttrib(instVAO, 0);
+    glEnableVertexArrayAttrib(instVAO, 1);
+    glEnableVertexArrayAttrib(instVAO, 2);
+
+    glEnableVertexArrayAttrib(instVAO, 3);
+    glEnableVertexArrayAttrib(instVAO, 4);
+    glEnableVertexArrayAttrib(instVAO, 5);
+    glEnableVertexArrayAttrib(instVAO, 6);
+
+
+    // position attribute
+    glVertexArrayAttribFormat(instVAO, 0, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, position));
+    glVertexArrayAttribBinding(instVAO, 0, 0);
+
+    // normal attribute
+    glVertexArrayAttribFormat(instVAO, 1, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, normal));
+    glVertexArrayAttribBinding(instVAO, 1, 0);
+
+    // texcoord attribute
+    glVertexArrayAttribFormat(instVAO, 2, 2, GL_FLOAT, GL_FALSE, offsetof(Vertex, texcoords));
+    glVertexArrayAttribBinding(instVAO, 2, 0);
+
+    // modelmatrix attribute
+    glVertexArrayAttribFormat(instVAO, 3, 4, GL_FLOAT, GL_FALSE, 0 * sizeof(glm::vec4));
+    glVertexArrayAttribBinding(instVAO, 3, 1);
+    glVertexArrayAttribFormat(instVAO, 4, 4, GL_FLOAT, GL_FALSE, 1 * sizeof(glm::vec4));
+    glVertexArrayAttribBinding(instVAO, 4, 1);
+    glVertexArrayAttribFormat(instVAO, 5, 4, GL_FLOAT, GL_FALSE, 2 * sizeof(glm::vec4));
+    glVertexArrayAttribBinding(instVAO, 5, 1);
+    glVertexArrayAttribFormat(instVAO, 6, 4, GL_FLOAT, GL_FALSE, 3 * sizeof(glm::vec4));
+    glVertexArrayAttribBinding(instVAO, 6, 1);
+
+    glVertexArrayBindingDivisor(instVAO, 1, 1);
+    // glVertexArrayBindingDivisor(instVAO, 4, 1);
+    // glVertexArrayBindingDivisor(instVAO, 5, 1);
+    // glVertexArrayBindingDivisor(instVAO, 6, 1);
+
+}
+
 void Renderer::CreateDebugVAO(){
     glCreateVertexArrays(1, &debugVAO);
     // glGenVertexArrays(1, &debugVAO);
@@ -104,47 +190,55 @@ void Renderer::CreateDebugVAO(){
 }
 
 void Renderer::CreateFBO(float w, float h){
-    if (FBO != 0){
-        glDeleteFramebuffers(1, &FBO);
-    }
+    // if (FBO != 0){
+    //     glDeleteFramebuffers(1, &FBO);
+    // }
     glCreateFramebuffers(1, &FBO);
     // glGenFramebuffers(1, &FBO);
     // glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 
     // create a color attachment texture
-    if (FBOTexture != 0){
-        glDeleteTextures(1, &FBOTexture);
-    }
+    // if (FBOTexture != 0){
+    //     glDeleteTextures(1, &FBOTexture);
+    // }
 
-    glCreateTextures(GL_TEXTURE_2D, 1, &FBOTexture);
-    // glGenTextures(1, &FBOTexture);
-    // glBindTexture(GL_TEXTURE_2D, FBOTexture);
+    glCreateTextures(GL_TEXTURE_2D, 1, &srcFBOTexture);
+    // glGenTextures(1, &srcFBOTexture);
+    // glBindTexture(GL_TEXTURE_2D, srcFBOTexture);
 
     // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 800, 600, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 
-    glTextureParameteri(FBOTexture, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTextureParameteri(FBOTexture, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTextureParameteri(FBOTexture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTextureParameteri(FBOTexture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTextureParameteri(srcFBOTexture, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTextureParameteri(srcFBOTexture, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTextureParameteri(srcFBOTexture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTextureParameteri(srcFBOTexture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    glTextureStorage2D(FBOTexture, 1, GL_RGBA8, w, h); // Solution
+    glTextureStorage2D(srcFBOTexture, 1, GL_RGBA8, w, h); // Solution
 
-    glNamedFramebufferTexture(FBO, GL_COLOR_ATTACHMENT0, FBOTexture, 0);
-    // glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, FBOTexture, 0);
+    // glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, srcFBOTexture, 0);
     // glNamedFramebufferTexture(fbo, GL_DEPTH_ATTACHMENT, depthTex, 0);
 
 
     // glBindFramebuffer(GL_FRAMEBUFFER, 0); // Reset back to default framebuffer
     // glDeleteFramebuffers(1, &FBO); // delete the existing framebuffer
 
+    glCreateTextures(GL_TEXTURE_2D, 1, &dstFBOTexture);
+    glTextureParameteri(dstFBOTexture, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTextureParameteri(dstFBOTexture, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTextureParameteri(dstFBOTexture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTextureParameteri(dstFBOTexture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTextureStorage2D(dstFBOTexture, 1, GL_RGBA8, w, h); // Solution
+
+    // glNamedFramebufferTexture(FBO, GL_COLOR_ATTACHMENT0, dstFBOTexture, 0);
+
 }
 
 void Renderer::CreateRBO(float w, float h){
-    if (RBO != 0){
-        glDeleteRenderbuffers(1, &RBO);
-    }
+    // if (RBO != 0){
+    //     glDeleteRenderbuffers(1, &RBO);
+    // }
     glCreateRenderbuffers(1, &RBO);
     glNamedRenderbufferStorage(RBO, GL_DEPTH24_STENCIL8, w, h);
     glNamedFramebufferRenderbuffer(FBO, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, RBO);
@@ -160,6 +254,12 @@ void Renderer::Resize(float w, float h){
     this->height = h;
 
     allCameras[mainCameraIdx].setPerspectiveSize(w, h);
+
+    glDeleteFramebuffers(1, &FBO);
+    glDeleteTextures(1, &srcFBOTexture);
+    glDeleteTextures(1, &dstFBOTexture);
+    glDeleteRenderbuffers(1, &RBO);
+
     CreateFBO(w, h);
     CreateRBO(w, h);
 }
@@ -179,9 +279,18 @@ void Renderer::BindDebugMesh(Mesh * mesh){
     // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->EBO);
 }
 
+void Renderer::BindInstanceMesh(EntityInstanceData* entInstData){
+    glVertexArrayVertexBuffer(instVAO, 0, entInstData->instMesh.VBO, 0, sizeof(Vertex));
+    glVertexArrayElementBuffer(instVAO, entInstData->instMesh.EBO);
+
+    glVertexArrayVertexBuffer(instVAO, 1, entInstData->instArrVBO, 0, sizeof(glm::mat4));
+
+}
+
 void Renderer::Render(Scene* scene){ // really bad, we are modifying the scene state
     // render
         glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+        glNamedFramebufferTexture(FBO, GL_COLOR_ATTACHMENT0, srcFBOTexture, 0);
 
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LESS);
@@ -196,6 +305,17 @@ void Renderer::Render(Scene* scene){ // really bad, we are modifying the scene s
             scene->shaders.at(0).setMat4("model", scene->entities[entityIdx].transform.GetModelMatrix());
             BindMesh(&scene->entities[entityIdx].mesh);
             glDrawElements(GL_TRIANGLES, scene->entities[entityIdx].mesh.indexCount, GL_UNSIGNED_INT, 0);
+        }
+
+        scene->shaders[1].use();
+        scene->shaders[1].setMat4("projection", Renderer::allCameras[mainCameraIdx].getProjMatrix()); // TODO : Profile this
+        scene->shaders[1].setMat4("view", Renderer::allCameras[mainCameraIdx].getViewMatrix());
+
+        glBindVertexArray(instVAO);
+        for (uint entityIdx = 0; entityIdx < scene->entityInstanceMap.size(); ++entityIdx){
+            // scene->shaders.at(0).setMat4("model", scene->entityInstanceMap[entityIdx].transform.GetModelMatrix());
+            BindInstanceMesh(&scene->entityInstanceMap[entityIdx]);
+            glDrawElementsInstanced(GL_TRIANGLES, scene->entityInstanceMap[entityIdx].instMesh.indexCount, GL_UNSIGNED_INT, 0, scene->entityInstanceMap[entityIdx].instCount);
         }
 
 
@@ -236,6 +356,8 @@ void Renderer::Render(Scene* scene){ // really bad, we are modifying the scene s
 
             // glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
         }
+
+        RenderPostProcess(scene);
         // glBindVertexArray(0);
         // glUseProgram(0);
 }
