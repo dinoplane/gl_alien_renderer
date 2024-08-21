@@ -121,12 +121,12 @@ Scene Scene::GenerateBasicScene(){
 // }
 
 Scene Scene::GenerateDefaultScene(){
-    const int LATTICE_LENGTH = 40;
+    const int LATTICE_LENGTH = 10;
     Scene retScene;
 
     Transform transform;
     EntityInstanceData entityInstanceData;
-    entityInstanceData.instMesh = Mesh::CreateCube();
+    entityInstanceData.instMesh = Mesh::CreatePyramid();
     entityInstanceData.instCount = 0;
     retScene.entityInstanceMap[0] =  entityInstanceData;
 

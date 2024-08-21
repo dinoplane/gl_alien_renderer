@@ -24,8 +24,8 @@
 #include "stb_image.h"
 
 #include <iostream>
-// #include <fmt/core.h>
-// #include <fmt/printf.h>
+#include <fmt/core.h>
+#include <fmt/printf.h>
 
 
 

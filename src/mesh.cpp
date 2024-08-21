@@ -110,6 +110,7 @@ Mesh Mesh::CreateCube(){
 
 Mesh Mesh::CreateFrustum(const Camera& cam){
 
+
     const float aspect = cam.width / cam.height;
     const float halfVSide = cam.zFar * tanf(glm::radians(cam.fovY) * .5f);
     const float halfHSide = halfVSide * aspect;
@@ -222,7 +223,7 @@ Mesh Mesh::CreateFrustum(const Camera& cam){
     //     0, 3, 3, 4, 4, 0         // Bottom face
     //     });
 
-    std::vector<uint> indices({
+    const std::vector<uint> indices({
         // Front face (near plane)
         1,  3, 4,
         3,  1, 2,  // First square
@@ -237,6 +238,52 @@ Mesh Mesh::CreateFrustum(const Camera& cam){
 
     Mesh mesh;
     GenerateDebugBuffers(&mesh, vertices, indices);
+    mesh.indexCount = indices.size();
+    return mesh;
+}
+
+Mesh Mesh::CreatePyramid(){
+    const std::vector<Vertex>
+    vertices ({
+        // positions                // colors              // texcoords
+        {{ 0.5f, -0.5f,  0.5f},    { 0.0f, 1.0f,  1.0f},   {1.0f, 1.0f}},
+        {{-0.5f, -0.5f,  0.5f},    { 0.0f, 1.0f,  1.0f},   {0.0f, 1.0f}},
+        {{ 0.0f,  0.5f,  0.0f},    { 0.0f, 1.0f,  1.0f},   {0.5f, 0.0f}},
+
+        {{-0.5f, -0.5f,  0.5f},    {-1.0f, 1.0f,  0.0f},   {0.0f, 1.0f}},
+        {{-0.5f, -0.5f, -0.5f},    {-1.0f, 1.0f,  0.0f},   {1.0f, 1.0f}},
+        {{ 0.0f,  0.5f,  0.0f},    {-1.0f, 1.0f,  0.0f},   {0.5f, 0.0f}},
+
+        {{-0.5f, -0.5f, -0.5f},    { 0.0f, 1.0f, -1.0f},   {1.0f, 1.0f}},
+        {{ 0.5f, -0.5f, -0.5f},    { 0.0f, 1.0f, -1.0f},   {0.0f, 1.0f}},
+        {{ 0.0f,  0.5f,  0.0f},    { 0.0f, 1.0f, -1.0f},   {0.5f, 0.0f}},
+
+        {{ 0.5f, -0.5f, -0.5f},    { 1.0f, 1.0f,  0.0f},   {0.0f, 1.0f}},
+        {{ 0.5f, -0.5f,  0.5f},    { 1.0f, 1.0f,  0.0f},   {1.0f, 1.0f}},
+        {{ 0.0f,  0.5f,  0.0f},    { 1.0f, 1.0f,  0.0f},   {0.5f, 0.0f}},
+
+        {{ 0.5f, -0.5f,  0.5f},    {-1.0f, 0.0f,  0.0f},   {0.0f, 1.0f}},
+        {{-0.5f, -0.5f,  0.5f},    {-1.0f, 0.0f,  0.0f},   {1.0f, 1.0f}},
+        {{-0.5f, -0.5f, -0.5f},    {-1.0f, 0.0f,  0.0f},   {0.0f, 1.0f}},
+        {{ 0.5f, -0.5f, -0.5f},    {-1.0f, 0.0f,  0.0f},   {1.0f, 1.0f}},
+    });
+
+
+
+    const std::vector<uint> indices ({  // note that we start from 0!
+        0, 1, 2,  // front tr br tl
+
+        3, 4, 5,  // right tr br tl
+
+        6, 7, 8,  // back tr br tl
+
+        9, 10, 11,  // left tr br tl
+
+        12, 13, 14,  // bot tr br tl
+        14, 15, 12   // bot br bl tl
+    });
+    Mesh mesh;
+    GenerateBuffers(&mesh, vertices, indices);
     mesh.indexCount = indices.size();
     return mesh;
 }

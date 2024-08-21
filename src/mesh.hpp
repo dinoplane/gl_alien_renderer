@@ -32,6 +32,7 @@ struct Mesh {
 
         static Mesh CreateCube();
         static Mesh CreateFrustum(const Camera& camera);
+        static Mesh CreatePyramid();
         // static Mesh CreatePyramid();
 
     //     std::vector<float> vertices;
