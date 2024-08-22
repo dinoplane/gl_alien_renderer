@@ -73,12 +73,12 @@ Renderer::Renderer(float w, float h) : width(w), height(h) {
     std::cout << "Main Camera Index: " << mainCameraIdx << std::endl;
     if (allCameras.size() == 0){
         Renderer::allCameras.push_back(
-            Camera(w, h, glm::vec3(0.51, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0), 0.0f, 0.0f, 30.0f, 0.1f, 10.0f)
+            Camera(w, h, glm::vec3(-3, 3.0, -3.0), glm::vec3(0.0, 1.0, 0.0), -315.0f, -60.0f, 30.0f, 0.1f, 10.0f)
         );
     } else
     {
         Renderer::allCameras.push_back(
-            Camera(w, h, glm::vec3(0.0, 20.0, 0.0), glm::vec3(0.0, 1.0, 0.0), -315.0f, -60.0f, 30.0f, 0.1f, pow( 10.0f, allCameras.size() + 1))
+            Camera(w, h, glm::vec3(-10.0, 20.0, -10.0), glm::vec3(0.0, 1.0, 0.0), -315.0f, -60.0f, 30.0f, 0.1f, pow( 10.0f, allCameras.size() + 1))
         );
     }
     allCameras[mainCameraIdx].setPerspectiveSize(w, h);
@@ -302,9 +302,11 @@ void Renderer::Render(Scene* scene){ // really bad, we are modifying the scene s
         scene->shaders[0].setMat4("view", Renderer::allCameras[mainCameraIdx].getViewMatrix());
         glBindVertexArray(VAO);
         for (uint entityIdx = 0; entityIdx < scene->entities.size(); ++entityIdx){
-            scene->shaders.at(0).setMat4("model", scene->entities[entityIdx].transform.GetModelMatrix());
-            BindMesh(&scene->entities[entityIdx].mesh);
-            glDrawElements(GL_TRIANGLES, scene->entities[entityIdx].mesh.indexCount, GL_UNSIGNED_INT, 0);
+            if (scene->entities[entityIdx].mesh.boundingVolume->isOnFrustum(Camera::createFrustumFromCamera(Renderer::allCameras[0]), scene->entities[entityIdx].transform)){
+                scene->shaders.at(0).setMat4("model", scene->entities[entityIdx].transform.GetModelMatrix());
+                BindMesh(&scene->entities[entityIdx].mesh);
+                glDrawElements(GL_TRIANGLES, scene->entities[entityIdx].mesh.indexCount, GL_UNSIGNED_INT, 0);
+            }
         }
 
         scene->shaders[1].use();
@@ -314,6 +316,8 @@ void Renderer::Render(Scene* scene){ // really bad, we are modifying the scene s
         glBindVertexArray(instVAO);
         for (uint entityIdx = 0; entityIdx < scene->entityInstanceMap.size(); ++entityIdx){
             // scene->shaders.at(0).setMat4("model", scene->entityInstanceMap[entityIdx].transform.GetModelMatrix());
+            // What I'm about to do justifies the need to separate static state from dynamic state
+
             BindInstanceMesh(&scene->entityInstanceMap[entityIdx]);
             glDrawElementsInstanced(GL_TRIANGLES, scene->entityInstanceMap[entityIdx].instMesh.indexCount, GL_UNSIGNED_INT, 0, scene->entityInstanceMap[entityIdx].instCount);
         }
@@ -332,8 +336,6 @@ void Renderer::Render(Scene* scene){ // really bad, we are modifying the scene s
             BindDebugMesh(&Renderer::allDebugMeshes[cameraIdx]);
 
             glDrawElements(GL_TRIANGLES, Renderer::allDebugMeshes[cameraIdx].indexCount, GL_UNSIGNED_INT, 0);
-
-
         }
         glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 

@@ -239,6 +239,8 @@ Mesh Mesh::CreateFrustum(const Camera& cam){
     Mesh mesh;
     GenerateDebugBuffers(&mesh, vertices, indices);
     mesh.indexCount = indices.size();
+    mesh.boundingVolume = new Sphere(glm::vec3(0.f, 0.f, 0.f), 0.707f);
+    // mesh.boundingVolume =
     return mesh;
 }
 
@@ -285,5 +287,7 @@ Mesh Mesh::CreatePyramid(){
     Mesh mesh;
     GenerateBuffers(&mesh, vertices, indices);
     mesh.indexCount = indices.size();
+
+    mesh.boundingVolume = new Sphere(glm::vec3(0.f, 0.f, 0.f), 0.86f);
     return mesh;
 }

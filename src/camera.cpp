@@ -87,23 +87,21 @@ void Camera::updateCameraVectors(){
 Frustum Camera::createFrustumFromCamera(const Camera& cam)
 {
     const float aspect = cam.width / cam.height;
-    const float halfVSide = cam.zFar * tanf(cam.fovY * .5f);
+    const float halfVSide = cam.zFar * tanf(glm::radians(cam.fovY) * .5f);
     const float halfHSide = halfVSide * aspect;
     const glm::vec3 frontMultFar = cam.zFar * cam.front;
 
-
-
-
     Frustum     frustum{
-    /*topFace*/ {cam.position,
-                            glm::cross(cam.right, frontMultFar - cam.up * halfVSide) },
     /*bottomFace*/ {cam.position,
+                            glm::cross(cam.right, frontMultFar - cam.up * halfVSide) },
+    /*topFace*/ {cam.position,
                             glm::cross(frontMultFar + cam.up * halfVSide, cam.right) },
 
-    /*rightFace*/ {cam.position,
-                            glm::cross(frontMultFar - cam.right * halfHSide, cam.up) },
     /*leftFace*/ {cam.position,
+                            glm::cross(frontMultFar - cam.right * halfHSide, cam.up) },
+    /*rightFace*/ {cam.position,
                             glm::cross(cam.up, frontMultFar + cam.right * halfHSide) },
+
 
     /*farFace*/ {cam.position + frontMultFar, -cam.front },
     /*nearFace*/ {cam.position + cam.zNear * cam.front, cam.front },

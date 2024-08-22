@@ -6,6 +6,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <util.h>
+#include <volume.hpp>
+
 #include <vector>
 #include <string>
 
@@ -29,6 +31,8 @@ struct Mesh {
 
 
         GLsizei indexCount;
+
+        Sphere* boundingVolume;
 
         static Mesh CreateCube();
         static Mesh CreateFrustum(const Camera& camera);

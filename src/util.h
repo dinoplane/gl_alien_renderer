@@ -18,4 +18,43 @@ struct Vertex{
 };
 
 
+
+
+struct Plane
+{
+    // unit vector
+    glm::vec3 normal = { 0.f, 1.f, 0.f };
+
+    // distance from origin to the nearest point in the plane
+    float     distance = 0.f;
+
+	Plane() = default;
+
+	Plane(const glm::vec3& p1, const glm::vec3& norm)
+		: normal(glm::normalize(norm)),
+		distance(glm::dot(normal, p1))
+        // the normal is parallel to the vector from the nearest point to the origin
+        // u dot v is measures the component of u in the v direction (where the projection equation comes from)
+	{}
+
+	float getSignedDistanceToPlane(const glm::vec3& point) const
+	{
+		return glm::dot(normal, point) - distance;
+	}
+
+};
+
+struct Frustum
+{
+    Plane topFace;
+    Plane bottomFace;
+
+    Plane rightFace;
+    Plane leftFace;
+
+    Plane farFace;
+    Plane nearFace;
+};
+
+
 #endif

@@ -126,7 +126,7 @@ Scene Scene::GenerateDefaultScene(){
 
     Transform transform;
     EntityInstanceData entityInstanceData;
-    entityInstanceData.instMesh = Mesh::CreatePyramid();
+    entityInstanceData.instMesh = Mesh::CreateCube();
     entityInstanceData.instCount = 0;
     retScene.entityInstanceMap[0] =  entityInstanceData;
 
@@ -143,6 +143,18 @@ Scene Scene::GenerateDefaultScene(){
         }
     }
     retScene.entityInstanceMap[0].GenerateInstanceBuffers();
+
+
+    transform.SetRotation(glm::vec3(0.0, 0.0, 0.0));
+    transform.SetScale(glm::vec3(1.0, 1.0, 1.0));
+    for (int i = 0; i < LATTICE_LENGTH; ++i){
+        for (int j = 0; j < LATTICE_LENGTH; ++j){
+            for (int k = 0; k < LATTICE_LENGTH; ++k){
+                transform.SetPosition(glm::vec3(i * -2.0, j * -2.0, k * -2.0));
+                retScene.entities.push_back({Mesh::CreatePyramid(), transform});
+            }
+        }
+    }
 
     // transform.SetPosition(glm::vec3(0.0, 0.0, 0.0));
     // transform.SetRotation(glm::vec3(0.0, 0.0, 0.0));
