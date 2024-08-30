@@ -14,9 +14,9 @@
 
 
 void EntityInstanceData::GenerateInstanceBuffers(){
-    glCreateBuffers(1, &instArrVBO);
+    glCreateBuffers(1, &instModelMatrixBuffer);
 
-    glNamedBufferStorage(instArrVBO, modelToWorldMat.size() * sizeof(glm::mat4), modelToWorldMat.data(), GL_DYNAMIC_STORAGE_BIT);
+    glNamedBufferStorage(instModelMatrixBuffer, modelToWorldMat.size() * sizeof(glm::mat4), (const void *) modelToWorldMat.data(), GL_DYNAMIC_STORAGE_BIT);
     //
 }
 

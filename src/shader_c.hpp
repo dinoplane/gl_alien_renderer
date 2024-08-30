@@ -1,5 +1,5 @@
-#ifndef SHADER_H
-#define SHADER_H
+#ifndef COMP_SHADER_H
+#define COMP_SHADER_H
 
 // Source: https://github.com/JoeyDeVries/LearnOpenGL/blob/master/includes/learnopengl/shader_m.h
 
@@ -15,9 +15,9 @@ class ComputeShader
 {
 public:
     unsigned int ID;
-    // constructor generates the shader on the fly
+    // constructor generates the ComputeShader on the fly
     // ------------------------------------------------------------------------
-    Shader(const char* computePath)
+    ComputeShader(const char* computePath)
     {
         // 1. retrieve the vertex/fragment source code from filePath
         std::string computeCode;
@@ -38,20 +38,20 @@ public:
         }
         catch (std::ifstream::failure& e)
         {
-            std::cout << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ: " << vertexPath << " | " << fragmentPath << " : "
+            std::cout << "ERROR::ComputeShader::FILE_NOT_SUCCESSFULLY_READ: " << computePath << " : "
                 << e.what() << std::endl;
             assert(false);
         }
         const char* cShaderCode = computeCode.c_str();
         // 2. compile shaders
         unsigned int compute;
-        // compute shader
+        // compute ComputeShader
         compute = glCreateShader(GL_COMPUTE_SHADER);
         glShaderSource(compute, 1, &cShaderCode, NULL);
         glCompileShader(compute);
         checkCompileErrors(compute, "COMPUTE");
 
-        // shader Program
+        // ComputeShader Program
         ID = glCreateProgram();
         glAttachShader(ID, compute);
         glLinkProgram(ID);
@@ -60,20 +60,20 @@ public:
         glDeleteShader(compute);
     }
 
-    ~Shader(){
+    ~ComputeShader(){
         // deleteProgram();
     }
 
-    Shader(const Shader& other) = delete;
-    Shader& operator=(const Shader& other) = delete;
+    ComputeShader(const ComputeShader& other) = delete;
+    ComputeShader& operator=(const ComputeShader& other) = delete;
 
-    Shader(Shader&& other) noexcept
+    ComputeShader(ComputeShader&& other) noexcept
         : ID(other.ID)
     {
         other.ID = 0;
     }
 
-    Shader& operator=(Shader&& other) noexcept
+    ComputeShader& operator=(ComputeShader&& other) noexcept
     {
         if (this != &other)
         {
@@ -84,7 +84,7 @@ public:
         return *this;
     }
 
-    // activate the shader
+    // activate the ComputeShader
     // ------------------------------------------------------------------------
     void use() const
     {
@@ -156,27 +156,27 @@ public:
     }
 
 private:
-    // utility function for checking shader compilation/linking errors.
+    // utility function for checking ComputeShader compilation/linking errors.
     // ------------------------------------------------------------------------
-    void checkCompileErrors(GLuint shader, std::string type)
+    void checkCompileErrors(GLuint ComputeShader, std::string type)
     {
         GLint success;
         GLchar infoLog[1024];
         if (type != "PROGRAM")
         {
-            glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+            glGetShaderiv(ComputeShader, GL_COMPILE_STATUS, &success);
             if (!success)
             {
-                glGetShaderInfoLog(shader, 1024, NULL, infoLog);
+                glGetShaderInfoLog(ComputeShader, 1024, NULL, infoLog);
                 std::cout << "ERROR::SHADER_COMPILATION_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
             }
         }
         else
         {
-            glGetProgramiv(shader, GL_LINK_STATUS, &success);
+            glGetProgramiv(ComputeShader, GL_LINK_STATUS, &success);
             if (!success)
             {
-                glGetProgramInfoLog(shader, 1024, NULL, infoLog);
+                glGetProgramInfoLog(ComputeShader, 1024, NULL, infoLog);
                 std::cout << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
             }
         }

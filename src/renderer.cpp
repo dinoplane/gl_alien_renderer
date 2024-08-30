@@ -43,7 +43,7 @@ void Renderer::SetupScreenQuad(){
 
 }
 
-void Renderer::RenderPostProcess(Scene* scene){
+void Renderer::RenderPostProcess(){
     // render
     if (mainCameraIdx == 0){
         passthroughShader->use();
@@ -140,10 +140,10 @@ void Renderer::CreateInstanceVAO(){
     glEnableVertexArrayAttrib(instVAO, 1);
     glEnableVertexArrayAttrib(instVAO, 2);
 
-    glEnableVertexArrayAttrib(instVAO, 3);
-    glEnableVertexArrayAttrib(instVAO, 4);
-    glEnableVertexArrayAttrib(instVAO, 5);
-    glEnableVertexArrayAttrib(instVAO, 6);
+    // glEnableVertexArrayAttrib(instVAO, 3);
+    // glEnableVertexArrayAttrib(instVAO, 4);
+    // glEnableVertexArrayAttrib(instVAO, 5);
+    // glEnableVertexArrayAttrib(instVAO, 6);
 
 
     // position attribute
@@ -159,16 +159,16 @@ void Renderer::CreateInstanceVAO(){
     glVertexArrayAttribBinding(instVAO, 2, 0);
 
     // modelmatrix attribute
-    glVertexArrayAttribFormat(instVAO, 3, 4, GL_FLOAT, GL_FALSE, 0 * sizeof(glm::vec4));
-    glVertexArrayAttribBinding(instVAO, 3, 1);
-    glVertexArrayAttribFormat(instVAO, 4, 4, GL_FLOAT, GL_FALSE, 1 * sizeof(glm::vec4));
-    glVertexArrayAttribBinding(instVAO, 4, 1);
-    glVertexArrayAttribFormat(instVAO, 5, 4, GL_FLOAT, GL_FALSE, 2 * sizeof(glm::vec4));
-    glVertexArrayAttribBinding(instVAO, 5, 1);
-    glVertexArrayAttribFormat(instVAO, 6, 4, GL_FLOAT, GL_FALSE, 3 * sizeof(glm::vec4));
-    glVertexArrayAttribBinding(instVAO, 6, 1);
+    // glVertexArrayAttribFormat(instVAO, 3, 4, GL_FLOAT, GL_FALSE, 0 * sizeof(glm::vec4));
+    // glVertexArrayAttribBinding(instVAO, 3, 1);
+    // glVertexArrayAttribFormat(instVAO, 4, 4, GL_FLOAT, GL_FALSE, 1 * sizeof(glm::vec4));
+    // glVertexArrayAttribBinding(instVAO, 4, 1);
+    // glVertexArrayAttribFormat(instVAO, 5, 4, GL_FLOAT, GL_FALSE, 2 * sizeof(glm::vec4));
+    // glVertexArrayAttribBinding(instVAO, 5, 1);
+    // glVertexArrayAttribFormat(instVAO, 6, 4, GL_FLOAT, GL_FALSE, 3 * sizeof(glm::vec4));
+    // glVertexArrayAttribBinding(instVAO, 6, 1);
 
-    glVertexArrayBindingDivisor(instVAO, 1, 1);
+    // glVertexArrayBindingDivisor(instVAO, 1, 1);
     // glVertexArrayBindingDivisor(instVAO, 4, 1);
     // glVertexArrayBindingDivisor(instVAO, 5, 1);
     // glVertexArrayBindingDivisor(instVAO, 6, 1);
@@ -283,8 +283,8 @@ void Renderer::BindInstanceMesh(EntityInstanceData* entInstData){
     glVertexArrayVertexBuffer(instVAO, 0, entInstData->instMesh.VBO, 0, sizeof(Vertex));
     glVertexArrayElementBuffer(instVAO, entInstData->instMesh.EBO);
 
-    glVertexArrayVertexBuffer(instVAO, 1, entInstData->instArrVBO, 0, sizeof(glm::mat4));
-
+    // glVertexArrayVertexBuffer(instVAO, 1, entInstData->instArrVBO, 0, sizeof(glm::mat4));
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, entInstData->instModelMatrixBuffer);
 }
 
 void Renderer::Render(Scene* scene){ // really bad, we are modifying the scene state
@@ -308,6 +308,9 @@ void Renderer::Render(Scene* scene){ // really bad, we are modifying the scene s
                 glDrawElements(GL_TRIANGLES, scene->entities[entityIdx].mesh.indexCount, GL_UNSIGNED_INT, 0);
             }
         }
+
+
+
 
         scene->shaders[1].use();
         scene->shaders[1].setMat4("projection", Renderer::allCameras[mainCameraIdx].getProjMatrix()); // TODO : Profile this
@@ -359,7 +362,7 @@ void Renderer::Render(Scene* scene){ // really bad, we are modifying the scene s
             // glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
         }
 
-        RenderPostProcess(scene);
+        RenderPostProcess();
         // glBindVertexArray(0);
         // glUseProgram(0);
 }

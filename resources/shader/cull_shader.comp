@@ -1,0 +1,77 @@
+#version 460 core
+layout (local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
+
+struct Plane
+{
+    vec3 normal;
+    float distance;
+};
+
+struct Frustum
+{
+    Plane near;
+    Plane far;
+    Plane left;
+    Plane right;
+    Plane top;
+    Plane bottom;
+};
+
+struct SphereAABB
+{
+    vec4 center;
+    float radius;
+};
+
+
+// Input --------------------------------------
+// bounding volumes
+layout(binding = 0, std430) readonly buffer ssbo0 {
+    SphereAABB boundingVolumes[];
+};
+
+// bounding volumes matrices
+layout(binding = 1, std430) readonly buffer ssbo1 {
+    mat4 worldFromModel[];
+};
+
+uniform Frustum frustum;
+
+// Output -------------------------------------
+layout(binding = 2, std430) writeonly buffer ssbo2 {
+    bool meshIsRendered[];
+};
+
+
+// Helper functions ----------------------------
+float GetSignedDistanceToPlane(vec3 point, Plane plane)
+{
+    return dot(plane.normal, point) + plane.distance;
+}
+
+bool isSphereOnOrForwardPlane( SphereAABB sphere, Plane plane )
+{
+
+    return GetSignedDistanceToPlane(sphere.center, plane) > -sphere.radius;
+}
+
+
+// This can definitely be optimized
+bool isSphereOnFrustum ( SphereAABB sphere, Frustum frustum )
+{
+
+
+    return isSphereOnOrForwardPlane(sphere, frustum.near) &&
+           isSphereOnOrForwardPlane(sphere, frustum.far) &&
+           isSphereOnOrForwardPlane(sphere, frustum.left) &&
+           isSphereOnOrForwardPlane(sphere, frustum.right) &&
+           isSphereOnOrForwardPlane(sphere, frustum.top) &&
+           isSphereOnOrForwardPlane(sphere, frustum.bottom);
+}
+
+void main()
+{
+    uint index = gl_GlobalInvocationID.x;
+    SphereAABB sphere = boundingVolumes[index];
+    meshIsRendered[index] = isSphereOnFrustum(sphere, frustum);
+}

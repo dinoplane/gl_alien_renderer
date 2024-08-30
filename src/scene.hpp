@@ -17,7 +17,7 @@ struct EntityInstanceData
     Mesh instMesh;
     uint instCount;
     std::vector<glm::mat4> modelToWorldMat;
-    GLuint instArrVBO;
+    GLuint instModelMatrixBuffer;
 
     void GenerateInstanceBuffers();
 

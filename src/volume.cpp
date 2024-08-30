@@ -20,7 +20,6 @@ bool Sphere::isOnFrustum(const Frustum& camFrustum,
     const float maxScale = std::max(std::max(globalScale.x, globalScale.y), globalScale.z);
 
     Sphere globalSphere(globalCenter, radius * maxScale);
-    std::cout << "Radius " << globalSphere.radius << std::endl;
 
     //Check Firstly the result that have the most chance
     //to faillure to avoid to call all functions.

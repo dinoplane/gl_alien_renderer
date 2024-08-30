@@ -12,6 +12,8 @@
 #include <entity.hpp>
 #include <scenedata.hpp>
 #include <renderer.hpp>
+#include <comp_renderer.hpp>
+
 
 #include <cstdlib>
 #include <thread>
@@ -28,6 +30,10 @@
 #include <fmt/printf.h>
 
 
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window, Renderer* renderer, Scene* scene);
@@ -40,6 +46,7 @@ const unsigned int SCR_HEIGHT = 600;
 // // std::barrier sync_point(NUM_THREADS);
 
 // // timing
+float currentFrame = 0.0f;
 float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
 
@@ -56,6 +63,8 @@ SceneData sceneData;
 Scene scene;
 // Renderer renderer;
 std::vector<Renderer> renderers;
+std::vector<ComputeRenderer> computeRenderers;
+
 uint currRendererIdx = 0;
 
 // glm::vec3 lightPos = glm::vec3(0.0, 15.0, 5.0);
@@ -95,6 +104,7 @@ int createGLFWwindow(GLFWwindow* &window, const char* windowName){
     }
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    // glfwSwapInterval(1); // Enable vsync
 	return 0;
 }
 
@@ -290,7 +300,7 @@ void message_callback(GLenum source, GLenum type, GLuint id, GLenum severity, GL
 		case GL_DEBUG_SEVERITY_HIGH: return "HIGH";
 		}
 	}();
-	std::cout << src_str << ", " << type_str << ", " << severity_str << ", " << id << ": " << message << '\n';
+	// std::cout << src_str << ", " << type_str << ", " << severity_str << ", " << id << ": " << message << '\n';
 }
 
 
@@ -348,6 +358,26 @@ void RenderToFrame (Scene* scene){
 }
 
 
+void RenderCompute (){
+
+    // First Pass
+    for (ComputeRenderer& renderer : computeRenderers){
+        renderer.Render(currentFrame);
+    }
+
+    // Second Pass
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    int startPixel = 0;
+    for (Renderer& renderer : computeRenderers){
+        glBlitNamedFramebuffer(renderer.FBO, 0, 0, 0, renderer.width, renderer.height, startPixel, 0, startPixel + renderer.width, renderer.height, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+        startPixel += renderer.width;
+    }
+}
+
+
+
 // Add load texture function
 int main(int argc, char **argv)
 {
@@ -375,15 +405,37 @@ int main(int argc, char **argv)
     glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
     glDebugMessageCallback(message_callback, nullptr);
     glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, nullptr, GL_FALSE);
-    { // Initialize the scene here
-        scene = Scene::GenerateDefaultScene();
-    }
 
+    // Setup Dear ImGui context
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+    // Setup Dear ImGui style
+    ImGui::StyleColorsDark();
+    //ImGui::StyleColorsLight();
+
+    // Setup Platform/Renderer backends
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    const char* glsl_version = "#version 130";
+    ImGui_ImplOpenGL3_Init(glsl_version);
+
+
+    bool show_demo_window = true;
+    bool show_another_window = false;
+    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
+    currentFrame = glfwGetTime();
+    deltaTime = currentFrame - lastFrame;
+    lastFrame = currentFrame;
+#define COMPUTE_DEMO 0
+#if COMPUTE_DEMO == 0
+    scene = Scene::GenerateDefaultScene();
     for (size_t i = 0; i < RENDERER_COUNT; ++i){
         renderers.push_back(Renderer(SCR_WIDTH / RENDERER_COUNT, SCR_HEIGHT ));
     }
-
-
     while (!glfwWindowShouldClose(window))
     {
 
@@ -395,16 +447,111 @@ int main(int argc, char **argv)
         RenderToFrame( &scene );
 
 
+    {
+    // Start the Dear ImGui frame
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
+        if (show_demo_window)
+            ImGui::ShowDemoWindow(&show_demo_window);
+
+        // 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
+        {
+            ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", deltaTime * 1000.0f, 1.0f / deltaTime);
+            ImGui::End();
+        }
+
+        // 3. Show another simple window.
+        if (show_another_window)
+        {
+            ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+            ImGui::Text("Hello from another window!");
+            if (ImGui::Button("Close Me"))
+                show_another_window = false;
+            ImGui::End();
+        }
+
+        // Rendering
+        ImGui::Render();
+        int display_w, display_h;
+        glfwGetFramebufferSize(window, &display_w, &display_h);
+        // glViewport(0, 0, display_w, display_h);
+        // glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
+        // glClear(GL_COLOR_BUFFER_BIT);
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        currentFrame = glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+    }
         glfwSwapBuffers(window);
-
         glfwPollEvents();
-
-        deltaTime = glfwGetTime() - lastFrame;
-        lastFrame = glfwGetTime();
     }
 
+#else
+    computeRenderers.push_back(ComputeRenderer(SCR_WIDTH , SCR_HEIGHT ));
+    while (!glfwWindowShouldClose(window))
+    {
+        RenderCompute();
+
+
+
+
+    {
+    // Start the Dear ImGui frame
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
+        if (show_demo_window)
+            ImGui::ShowDemoWindow(&show_demo_window);
+
+        // 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
+        {
+            ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", deltaTime * 1000.0f, 1.0f / deltaTime);
+            ImGui::End();
+        }
+
+        // 3. Show another simple window.
+        if (show_another_window)
+        {
+            ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+            ImGui::Text("Hello from another window!");
+            if (ImGui::Button("Close Me"))
+                show_another_window = false;
+            ImGui::End();
+        }
+
+        // Rendering
+        ImGui::Render();
+        int display_w, display_h;
+        glfwGetFramebufferSize(window, &display_w, &display_h);
+        // glViewport(0, 0, display_w, display_h);
+        // glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
+        // glClear(GL_COLOR_BUFFER_BIT);
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        currentFrame = glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+    }
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
+
+#endif
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
+
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+
+    glfwDestroyWindow(window);
+
     glfwTerminate();
 
    return 0;
@@ -426,7 +573,7 @@ void framebuffer_size_callback(GLFWwindow* window, int w, int h){
 
 float SPEED_MULTIPLIER = 10;
 void processInput(GLFWwindow *window, Renderer* renderer, Scene* scene){ // abhorrent should only pass in renderer.
-    std::cout << "Frame Time: " << deltaTime <<  " ms" << std::endl;
+    // std::cout << "Frame Time: " << deltaTime <<  " ms" << std::endl;
     double mWidth = (double) SCR_WIDTH;
     double mHeight = (double) SCR_HEIGHT;
 

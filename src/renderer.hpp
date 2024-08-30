@@ -12,6 +12,7 @@ class Scene;
 class Camera;
 struct Mesh;
 struct EntityInstanceData;
+struct ComputeShader;
 // class Light;
 // class Material;
 // class Entity;
@@ -90,7 +91,17 @@ class Renderer {
     void BindDebugMesh(Mesh* mesh);
 
     void Render(Scene* scene);
-    void RenderPostProcess(Scene* scene);
+    void RenderPostProcess();
+
+
+    ComputeShader* frustumCullShader;
+    // frustum is uniform
+
+    // model transform buffer inside scene
+
+
+    void SetupCullStructures();
+
 
     void SwitchCamera(const Scene& scene);
 
