@@ -302,7 +302,7 @@ void Renderer::Render(Scene* scene){ // really bad, we are modifying the scene s
         scene->shaders[0].setMat4("view", Renderer::allCameras[mainCameraIdx].getViewMatrix());
         glBindVertexArray(VAO);
         for (uint entityIdx = 0; entityIdx < scene->entities.size(); ++entityIdx){
-            if (scene->entities[entityIdx].mesh.boundingVolume->isOnFrustum(Camera::createFrustumFromCamera(Renderer::allCameras[0]), scene->entities[entityIdx].transform)){
+            if (scene->entities[entityIdx].mesh.boundingVolume->IsOnFrustum(Camera::createFrustumFromCamera(Renderer::allCameras[0]), scene->entities[entityIdx].transform)){
                 scene->shaders.at(0).setMat4("model", scene->entities[entityIdx].transform.GetModelMatrix());
                 BindMesh(&scene->entities[entityIdx].mesh);
                 glDrawElements(GL_TRIANGLES, scene->entities[entityIdx].mesh.indexCount, GL_UNSIGNED_INT, 0);

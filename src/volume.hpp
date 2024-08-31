@@ -11,12 +11,13 @@
 
 #include <string>
 #include <iostream>
+#include <gpu_structs.hpp>
 
 
 struct Volume
 {
 
-    virtual bool isOnFrustum(const Frustum& camFrustum,
+    virtual bool IsOnFrustum(const Frustum& camFrustum,
                                             const Transform& modelTransform) const = 0;
 };
 
@@ -29,18 +30,18 @@ struct Sphere : public Volume
         : center{ inCenter }, radius{ inRadius }
     {}
 
-    bool isOnOrForwardPlane(const Plane& plane) const
+    bool IsOnOrForwardPlane(const Plane& plane) const
     {
-        return plane.getSignedDistanceToPlane(center) > -radius;
+        return plane.GetSignedDistanceToPlane(center) > -radius;
     }
 
-    bool isOnFrustum(const Frustum& camFrustum,
+    bool IsOnFrustum(const Frustum& camFrustum,
                                             const Transform& modelTransform) const final;
 
-
-
-
-
+    GPUSphere ToGPUSphere() const
+    {
+        return { center.x, center.y, center.z, radius };
+    }
 };
 /*
 struct AABB : public BoundingVolume

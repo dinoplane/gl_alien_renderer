@@ -6,7 +6,7 @@
 #include <iostream>
 
 
-bool Sphere::isOnFrustum(const Frustum& camFrustum,
+bool Sphere::IsOnFrustum(const Frustum& camFrustum,
                                             const Transform& modelTransform) const
 {
     //Get global scale is computed by doing the magnitude of
@@ -23,10 +23,10 @@ bool Sphere::isOnFrustum(const Frustum& camFrustum,
 
     //Check Firstly the result that have the most chance
     //to faillure to avoid to call all functions.
-    return (globalSphere.isOnOrForwardPlane(camFrustum.leftFace) &&
-        globalSphere.isOnOrForwardPlane(camFrustum.rightFace) &&
-        globalSphere.isOnOrForwardPlane(camFrustum.farFace) &&
-        globalSphere.isOnOrForwardPlane(camFrustum.nearFace) &&
-        globalSphere.isOnOrForwardPlane(camFrustum.topFace) &&
-        globalSphere.isOnOrForwardPlane(camFrustum.bottomFace));
+    return (globalSphere.IsOnOrForwardPlane(camFrustum.leftFace) &&
+        globalSphere.IsOnOrForwardPlane(camFrustum.rightFace) &&
+        globalSphere.IsOnOrForwardPlane(camFrustum.farFace) &&
+        globalSphere.IsOnOrForwardPlane(camFrustum.nearFace) &&
+        globalSphere.IsOnOrForwardPlane(camFrustum.topFace) &&
+        globalSphere.IsOnOrForwardPlane(camFrustum.bottomFace));
 };

@@ -3,24 +3,24 @@ layout (local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 
 struct Plane
 {
-    vec3 normal;
-    float distance;
+    vec4 normalAndDistance;
 };
 
 struct Frustum
 {
-    Plane near;
-    Plane far;
-    Plane left;
-    Plane right;
     Plane top;
     Plane bottom;
+
+    Plane right;
+    Plane left;
+
+    Plane far;
+    Plane near;
 };
 
 struct SphereAABB
 {
-    vec4 center;
-    float radius;
+    vec4 centerAndRadius;
 };
 
 
@@ -46,32 +46,39 @@ layout(binding = 2, std430) writeonly buffer ssbo2 {
 // Helper functions ----------------------------
 float GetSignedDistanceToPlane(vec3 point, Plane plane)
 {
-    return dot(plane.normal, point) + plane.distance;
+    return dot(normalAndDistance.xyz, point) - normalAndDistance.w;
 }
 
-bool isSphereOnOrForwardPlane( SphereAABB sphere, Plane plane )
+bool IsSphereOnOrForwardPlane( SphereAABB sphere, Plane plane )
 {
-
-    return GetSignedDistanceToPlane(sphere.center, plane) > -sphere.radius;
+    return GetSignedDistanceToPlane( sphere.centerAndRadius.xyz, plane ) > -sphere.centerAndRadius.w;
 }
 
 
 // This can definitely be optimized
-bool isSphereOnFrustum ( SphereAABB sphere, Frustum frustum )
+bool IsSphereOnFrustum ( SphereAABB sphere, Frustum frustum )
 {
+    const vec4 center = vec4( sphere.centerAndRadius.xyz, 1.0 );
+    const vec4 surfacePoint =  center + vec4( sphere.centerAndRadius.w, 0.0, 0.0, 0.0 );
 
+    // Transform sphere to world space
+    const vec4 newCenter = worldFromModel[gl_GlobalInvocationID.x] * center;
+    const vec4 newSurfacePoint = worldFromModel[gl_GlobalInvocationID.x] * surfacePoint;
+    const float newRadius = length( newSurfacePoint - newCenter );
 
-    return isSphereOnOrForwardPlane(sphere, frustum.near) &&
-           isSphereOnOrForwardPlane(sphere, frustum.far) &&
-           isSphereOnOrForwardPlane(sphere, frustum.left) &&
-           isSphereOnOrForwardPlane(sphere, frustum.right) &&
-           isSphereOnOrForwardPlane(sphere, frustum.top) &&
-           isSphereOnOrForwardPlane(sphere, frustum.bottom);
+    const SphereAABB newSphere = SphereAABB( newCenter, newRadius );
+
+    return IsSphereOnOrForwardPlane( newSphere, frustum.near ) &&
+           IsSphereOnOrForwardPlane( newSphere, frustum.far ) &&
+           IsSphereOnOrForwardPlane( newSphere, frustum.left ) &&
+           IsSphereOnOrForwardPlane( newSphere, frustum.right ) &&
+           IsSphereOnOrForwardPlane( newSphere, frustum.top ) &&
+           IsSphereOnOrForwardPlane( newSphere, frustum.bottom );
 }
 
 void main()
 {
     uint index = gl_GlobalInvocationID.x;
     SphereAABB sphere = boundingVolumes[index];
-    meshIsRendered[index] = isSphereOnFrustum(sphere, frustum);
+    meshIsRendered[index] = IsSphereOnFrustum(sphere, frustum);
 }

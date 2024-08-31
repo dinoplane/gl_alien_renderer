@@ -2,6 +2,7 @@
 #define UTIL_H
 
 #include <glm/glm.hpp>
+#include <gpu_structs.hpp>
 
 #define ARRAY_COUNT(x) (sizeof(x) / sizeof((x)[0]))
 
@@ -37,11 +38,15 @@ struct Plane
         // u dot v is measures the component of u in the v direction (where the projection equation comes from)
 	{}
 
-	float getSignedDistanceToPlane(const glm::vec3& point) const
+	float GetSignedDistanceToPlane(const glm::vec3& point) const
 	{
 		return glm::dot(normal, point) - distance;
 	}
 
+    GPUPlane ToGPUPlane() const
+    {
+        return { normal.x, normal.y, normal.z, distance };
+    }
 };
 
 struct Frustum
@@ -54,6 +59,13 @@ struct Frustum
 
     Plane farFace;
     Plane nearFace;
+
+    GPUFrustum ToGPUFrustum() const
+    {
+        return { topFace.ToGPUPlane(), bottomFace.ToGPUPlane(),
+            rightFace.ToGPUPlane(), leftFace.ToGPUPlane(),
+            farFace.ToGPUPlane(), nearFace.ToGPUPlane() };
+    }
 };
 
 
