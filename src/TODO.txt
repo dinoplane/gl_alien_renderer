@@ -8,8 +8,8 @@ TODO Abstract organize the logic better
 - GPU Frustum Culling + instancing
 - lighting
 - baked lighting + instancing... damn im gonna regret this aint i
-
-
+- connect to profiler shareef mentioned
+- add the shit to the todos
 
 DONE
 - Multiple Cameras
@@ -18,6 +18,7 @@ DONE
 - Instancing with vertex attributes
 - Instancing with SSBO
 - CPU Frustum Culling
+- Adding IMGUI
 
 TAROT
 0. FOOL:            Load a model.
