@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.17)
-project(flocking)
+project(alien_gl_renderer)
 
 # Variables
 set(VENDOR_DIR "${CMAKE_CURRENT_SOURCE_DIR}/vendor")
@@ -31,9 +31,9 @@ find_package(glfw3 REQUIRED)
 
 
 #fmt
-# add_subdirectory(${VENDOR_DIR}/fmt EXCLUDE_FROM_ALL)
-add_library (fmt INTERFACE)
-target_include_directories(fmt INTERFACE ${VENDOR_DIR}/fmt/include)
+add_subdirectory(${VENDOR_DIR}/fmt EXCLUDE_FROM_ALL)
+
+
 
 # Glad - Installed via: git submodule add git@github.com:Dav1dde/glad.git videogame/vendor/glad
 add_library(glad
@@ -76,7 +76,6 @@ include_directories(
    ${VENDOR_DIR}/glm/
    ${VENDOR_DIR}/glad/include/
    ${VENDOR_DIR}/stb/
-   ${VENDOR_DIR}/fmt/include
 
    ${SRC_DIR}/
 )
@@ -120,6 +119,7 @@ target_link_libraries(${PROJECT_NAME}
     glfw
     glad
     imgui
+    fmt::fmt
     ${CMAKE_DL_LIBS} # Needed for glad - https://stackoverflow.com/a/56842079/2394163
 )
 

@@ -388,7 +388,7 @@ int main(int argc, char **argv)
 		return -1;
 	}
 
-    if (createGLFWwindow(window, "Flocking") < 0){
+    if (createGLFWwindow(window, "AlienGLRenderer") < 0){
         return -1;
     }
 
@@ -419,7 +419,7 @@ int main(int argc, char **argv)
 
     // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(window, true);
-    const char* glsl_version = "#version 130";
+    const char* glsl_version = "#version 460";
     ImGui_ImplOpenGL3_Init(glsl_version);
 
 
@@ -436,6 +436,8 @@ int main(int argc, char **argv)
     for (size_t i = 0; i < RENDERER_COUNT; ++i){
         renderers.push_back(Renderer(SCR_WIDTH / RENDERER_COUNT, SCR_HEIGHT ));
     }
+
+    fmt::print("Number of renderers: {}\n", renderers.size());
     while (!glfwWindowShouldClose(window))
     {
 
