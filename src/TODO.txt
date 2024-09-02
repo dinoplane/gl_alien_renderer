@@ -1,0 +1,44 @@
+TODO Abstract organize the logic better
+- A scene data vs a scene
+- a renderer takes in a const Scene&, a const Framebuffer& and a const cameraIndex
+- A renderpass system
+- GPU frustum Culling
+- Loading models
+- GPU Frustum Culling + standalone models
+- GPU Frustum Culling + instancing
+- lighting
+- baked lighting + instancing... damn im gonna regret this aint i
+
+
+
+DONE
+- Multiple Cameras
+- Multiple Renderers
+- Post processing logic
+- Instancing with vertex attributes
+- Instancing with SSBO
+- CPU Frustum Culling
+
+TAROT
+0. FOOL:            Load a model.
+1. MAGICIAN:        Flames
+2. PRIESTESS:
+3. EMPRESS:
+4. EMPEROR:
+5. HIEROPHANT:
+6. LOVERS:
+7. CHARIOT:
+8. JUSTICE:
+9. HERMIT:
+10. FORTUNE:
+11. STRENGTH:
+12. HANGED_MAN:
+13. DEATH:
+14. TEMPERANCE:
+15. DEVIL:
+16. TOWER:
+17. STAR:
+18. MOON:
+19. SUN:
+20. JUDGEMENT:
+21. WORLD:

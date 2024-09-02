@@ -3,8 +3,10 @@
 #include <scene.hpp>
 #include <shader_s.hpp>
 #include <mesh.hpp>
+#include <shader_c.hpp>
 #include <entity.hpp>
 #include <util.h>
+
 
 #include <glad/glad.h>
 #include <glm/glm.hpp>
@@ -63,6 +65,10 @@ Renderer::Renderer(float w, float h) : width(w), height(h) {
     if (debugShader == nullptr){
         debugShader = new Shader("./resources/shader/debug.vert", "./resources/shader/debug.frag");
         debugWireShader = new Shader("./resources/shader/debug.vert", "./resources/shader/debugline.frag");
+
+        cullShader = new ComputeShader("./resources/shader/comp_shader.comp");
+
+
         postProcessShader = new Shader("./resources/shader/screen.vert", "./resources/shader/screen.frag");
         passthroughShader = new Shader("./resources/shader/screen.vert", "./resources/shader/passthrough.frag");
         postProcessShader->use();

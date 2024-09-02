@@ -7,6 +7,8 @@
 #include <vector>
 // #include <memory>
 #include <shader_s.hpp>
+#include <shader_c.hpp>
+
 #include <unordered_map>
 class Scene;
 class Camera;
@@ -25,7 +27,7 @@ class Renderer {
     static Shader* debugShader;
     static Shader* debugWireShader;
 
-
+    static ComputeShader* cullShader;
 
     static std::unordered_map<std::string, Shader*> allPostProcessShaders;
     static Shader* postProcessShader;
