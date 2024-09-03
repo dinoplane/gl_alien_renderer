@@ -68,6 +68,12 @@ class Renderer {
     // GLuint RBO;
 
 
+    GLuint cameraUBO;
+    struct CameraUBOBlock {
+        glm::mat4 projection;
+        glm::mat4 view;
+    } cameraUBOBlock;
+
     float width;
     float height;
 

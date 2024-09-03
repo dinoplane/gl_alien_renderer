@@ -11,13 +11,19 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 #include <glm/gtx/string_cast.hpp>
+#include <gpu_structs.hpp>
 
 
-void EntityInstanceData::GenerateInstanceBuffers(){
+void EntityInstanceData::GenerateInstanceBuffers(){ // TODO honestly i could make this function take in the vectors. 
     glCreateBuffers(1, &instModelMatrixBuffer);
-
     glNamedBufferStorage(instModelMatrixBuffer, modelToWorldMat.size() * sizeof(glm::mat4), (const void *) modelToWorldMat.data(), GL_DYNAMIC_STORAGE_BIT);
-    //
+    
+    glCreateBuffers(1, &instBoundingVolumeBuffer);
+    glNamedBufferStorage(instBoundingVolumeBuffer, boundingVolumes.size() * sizeof(GPUSphere), (const void *) boundingVolumes.data(), GL_DYNAMIC_STORAGE_BIT);
+
+    std::vector<uint> tmpInstMeshRendered(instCount, 1); // TODO theres gotta be a way to initialize this on the GPU
+    glCreateBuffers(1, &instMeshRenderedBuffer);
+    glNamedBufferStorage(instMeshRenderedBuffer, instCount * sizeof(GLboolean), (const void *) tmpInstMeshRendered.data(), GL_DYNAMIC_STORAGE_BIT);
 }
 
 Scene::Scene(){
@@ -138,6 +144,7 @@ Scene Scene::GenerateDefaultScene(){
                 transform.SetPosition(glm::vec3(i * 2.0, j * 2.0, k * 2.0));
                 // retScene.entities.push_back({Mesh::CreateCube(), transform});
                 retScene.entityInstanceMap[0].modelToWorldMat.push_back(transform.GetModelMatrix());
+                retScene.entityInstanceMap[0].boundingVolumes.push_back(entityInstanceData.instMesh.boundingVolume->ToGPUSphere());
                 retScene.entityInstanceMap[0].instCount += 1;
             }
         }

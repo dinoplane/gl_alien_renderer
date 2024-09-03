@@ -7,8 +7,11 @@ in VS_OUT {
 } gs_in[];
 
 const float MAGNITUDE = 0.4;
-uniform mat4 view;
-uniform mat4 projection;
+layout (std430, binding=3) uniform Matrices
+{
+    mat4 projection;
+    mat4 view;
+};
 
 void GenerateLine(int index)
 {

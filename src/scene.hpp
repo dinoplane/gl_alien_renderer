@@ -8,6 +8,7 @@
 class Entity;
 class Shader; // Change this to only use move semantics
 class Camera;
+struct GPUSphere;
 // class Light;
 // class Material;
 // class Entity;
@@ -18,6 +19,10 @@ struct EntityInstanceData
     uint instCount;
     std::vector<glm::mat4> modelToWorldMat;
     GLuint instModelMatrixBuffer;
+    std::vector<GPUSphere> boundingVolumes;
+    GLuint instBoundingVolumeBuffer;
+    GLuint instMeshRenderedBuffer;
+
 
     void GenerateInstanceBuffers();
 

@@ -11,8 +11,11 @@ layout (location = 2) in vec2 aTexCoord;
 #define K_C 4.5
 
 uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
+layout (std430, binding=3) uniform Matrices
+{
+    mat4 projection;
+    mat4 view;
+};
 uniform int selected;
 uniform float uTime;
 

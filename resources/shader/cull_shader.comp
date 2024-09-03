@@ -35,10 +35,12 @@ layout(binding = 1, std430) readonly buffer ssbo1 {
     mat4 worldFromModel[];
 };
 
-uniform Frustum frustum;
+layout (binding = 2, std430) uniform cameraFrustum {
+    Frustum frustum;
+}
 
 // Output -------------------------------------
-layout(binding = 2, std430) writeonly buffer ssbo2 {
+layout(binding = 3, std430) writeonly buffer ssbo2 {
     bool meshIsRendered[];
 };
 
@@ -46,7 +48,7 @@ layout(binding = 2, std430) writeonly buffer ssbo2 {
 // Helper functions ----------------------------
 float GetSignedDistanceToPlane(vec3 point, Plane plane)
 {
-    return dot(normalAndDistance.xyz, point) - normalAndDistance.w;
+    return dot(plane.normalAndDistance.xyz, point) - plane.normalAndDistance.w;
 }
 
 bool IsSphereOnOrForwardPlane( SphereAABB sphere, Plane plane )
@@ -66,7 +68,7 @@ bool IsSphereOnFrustum ( SphereAABB sphere, Frustum frustum )
     const vec4 newSurfacePoint = worldFromModel[gl_GlobalInvocationID.x] * surfacePoint;
     const float newRadius = length( newSurfacePoint - newCenter );
 
-    const SphereAABB newSphere = SphereAABB( newCenter, newRadius );
+    const SphereAABB newSphere = SphereAABB( vec4(newCenter.xyz, newRadius) );
 
     return IsSphereOnOrForwardPlane( newSphere, frustum.near ) &&
            IsSphereOnOrForwardPlane( newSphere, frustum.far ) &&

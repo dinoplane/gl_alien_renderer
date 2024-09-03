@@ -1,15 +1,16 @@
 TODO Abstract organize the logic better
 - A scene data vs a scene
-- a renderer takes in a const Scene&, a const Framebuffer& and a const cameraIndex
+    - Honestly, the scene data could be a file, and the scene could have a load from file method.  
+a renderer takes in a const Scene&, a const Framebuffer& and a const cameraIndex
 - A renderpass system
-- GPU frustum Culling
 - Loading models
-- GPU Frustum Culling + standalone models
-- GPU Frustum Culling + instancing
+- *GPU Frustum Culling + standalone models
+- *GPU Frustum Culling + instancing
 - lighting
 - baked lighting + instancing... damn im gonna regret this aint i
 - connect to profiler shareef mentioned
 - add the shit to the todos
+- add tracy to the app
 
 DONE
 - Multiple Cameras
@@ -23,23 +24,23 @@ DONE
 TAROT
 0. FOOL:            Load a model.
 1. MAGICIAN:        Flames
-2. PRIESTESS:
-3. EMPRESS:
-4. EMPEROR:
-5. HIEROPHANT:
-6. LOVERS:
-7. CHARIOT:
-8. JUSTICE:
-9. HERMIT:
-10. FORTUNE:
-11. STRENGTH:
-12. HANGED_MAN:
-13. DEATH:
-14. TEMPERANCE:
-15. DEVIL:
-16. TOWER:
-17. STAR:
-18. MOON:
-19. SUN:
-20. JUDGEMENT:
-21. WORLD:
+2. PRIESTESS:       edge detection and more filters
+3. EMPRESS:         orbs (deferred shading)
+4. EMPEROR:         army boids
+5. HIEROPHANT:      culling
+6. LOVERS:          angel of love/death (rendering blood!)
+7. CHARIOT:         fur (NOT SHELL TECTURING!)
+8. JUSTICE:         mirrors
+9. HERMIT:          bokeh blurs
+10. FORTUNE:        a gleaming coin! pbr
+11. STRENGTH:       ray tracing? dithering???
+12. HANGED_MAN:     shadows
+13. DEATH:          ????
+14. TEMPERANCE:     grass
+15. DEVIL:          volcano???
+16. TOWER:          destruction!!!!
+17. STAR:           DDR
+18. MOON:           ocean santa cruz
+19. SUN:            god rays and volumetric clouds
+20. JUDGEMENT:      Heaven
+21. WORLD:          ????
