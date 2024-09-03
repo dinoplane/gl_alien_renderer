@@ -14,9 +14,13 @@ layout (std140, binding=3) uniform Matrices
 
 
 // SSBO containing the instanced model matrices
-layout(binding = 4, std430) readonly buffer ssbo1 {
+layout(binding = 4, std430) readonly buffer instModelMatBuf {
     mat4 worldFromModel[];
 };
+
+layout(binding = 5, std430) writeonly buffer instMeshRenderedBuf {
+    bool meshIsRendered[];
+}; // THIS DOES NOT SAVE COMPUTE!!!
 
 
 out vec3 Normal;
@@ -24,7 +28,11 @@ out vec2 TexCoord;
 
 void main()
 {
-    gl_Position = projection * view * worldFromModel[gl_InstanceID] * vec4(aPos, 1.0);
-    Normal = aNormal;
-    TexCoord = vec2(aPos.x, 1.0 - aPos.y);
+    if ( meshIsRendered[gl_InstanceID] )
+    {
+        gl_Position = projection * view * worldFromModel[gl_InstanceID] * vec4(aPos, 1.0);
+        Normal = aNormal;
+        TexCoord = vec2(aPos.x, 1.0 - aPos.y);
+    }
+
 }

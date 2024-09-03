@@ -26,21 +26,21 @@ struct SphereAABB
 
 // Input --------------------------------------
 // bounding volumes
-layout(binding = 0, std430) readonly buffer ssbo0 {
+layout(binding = 0, std430) readonly buffer boundingVolBuf {
     SphereAABB boundingVolumes[];
 };
 
 // bounding volumes matrices
-layout(binding = 1, std430) readonly buffer ssbo1 {
+layout(binding = 4, std430) readonly buffer instModelMatBuf {
     mat4 worldFromModel[];
 };
 
-layout (binding = 2, std430) uniform cameraFrustum {
+layout (binding = 1, std430) uniform cameraFrustum {
     Frustum frustum;
 }
 
 // Output -------------------------------------
-layout(binding = 3, std430) writeonly buffer ssbo2 {
+layout(binding = 5, std430) writeonly buffer instMeshRenderedBuf {
     bool meshIsRendered[];
 };
 

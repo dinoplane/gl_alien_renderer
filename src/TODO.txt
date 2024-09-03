@@ -12,6 +12,8 @@ a renderer takes in a const Scene&, a const Framebuffer& and a const cameraIndex
 - add the shit to the todos
 - add tracy to the app
 
+- Make sure to delete all buffers after exiting
+
 DONE
 - Multiple Cameras
 - Multiple Renderers

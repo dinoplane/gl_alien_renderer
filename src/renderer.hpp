@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
+#include <gpu_structs.hpp>
 // #include <memory>
 #include <shader_s.hpp>
 #include <shader_c.hpp>
@@ -68,11 +69,17 @@ class Renderer {
     // GLuint RBO;
 
 
-    GLuint cameraUBO;
-    struct CameraUBOBlock {
+    GLuint cameraMatricesUBO;
+    struct CameraMatricesUBOBlock {
         glm::mat4 projection;
         glm::mat4 view;
-    } cameraUBOBlock;
+    } cameraMatricesUBOBlock;
+
+    GLuint cameraFrustumUBO;
+    struct CameraFrustumUBOBlock {
+        GPUFrustum frustum;
+    } cameraFrustumUBOBlock;
+
 
     float width;
     float height;
@@ -107,8 +114,7 @@ class Renderer {
 
     // model transform buffer inside scene
 
-
-    void SetupCullStructures();
+    void BindInstanceCullingBuffers(EntityInstanceData* entityInstanceData);
 
 
     void SwitchCamera(const Scene& scene);

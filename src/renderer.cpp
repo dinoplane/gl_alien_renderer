@@ -92,9 +92,11 @@ Renderer::Renderer(float w, float h) : width(w), height(h) {
 
     Renderer::allDebugMeshes.push_back(Mesh::CreateFrustum(Renderer::allCameras[mainCameraIdx]));
 
-    glCreateBuffers(1, &cameraUBO);
-    glNamedBufferStorage(cameraUBO, 2 * sizeof(glm::mat4), NULL, GL_DYNAMIC_STORAGE_BIT);
+    glCreateBuffers(1, &cameraMatricesUBO);
+    glNamedBufferStorage(cameraMatricesUBO, 2 * sizeof(glm::mat4), NULL, GL_DYNAMIC_STORAGE_BIT);
     
+    // glCreateBuffers(1, &cameraFrustum)
+
 }
 
 void Renderer::Init(float w, float h){
@@ -289,21 +291,24 @@ void Renderer::BindDebugMesh(Mesh * mesh){
     // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->EBO);
 }
 
-// void Renderer::BindInstanceMesh(EntityInstanceData* entInstData){
-//     // Input --------------------------------------
-//     // Bind the bounding volumes
-//     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, entInstData->instModelMatrixBuffer);
+void Renderer::BindInstanceCullingBuffers(EntityInstanceData* entInstData){
+    // Input --------------------------------------
+    // Bind the bounding volumes
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, entInstData->instBoundingVolumeBuffer);
 
-//     // bind the model matrices
-//     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, entInstData->instModelMatrixBuffer);
+    // bind the model matrices
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, entInstData->instModelMatrixBuffer);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 1, cameraFrustumUBO);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, entInstData->instMeshRenderedBuffer);
+    
 
-//     cullShader->use()
+    // cullShader->use()
 
 
-//     // Input --------------------------------------
+    // Input --------------------------------------
 
 
-// }
+}
 
 
 void Renderer::BindInstanceMesh(EntityInstanceData* entInstData){
@@ -312,7 +317,8 @@ void Renderer::BindInstanceMesh(EntityInstanceData* entInstData){
 
     // glVertexArrayVertexBuffer(instVAO, 1, entInstData->instArrVBO, 0, sizeof(glm::mat4));
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, entInstData->instModelMatrixBuffer);
-
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, entInstData->instMeshRenderedBuffer);
+    
 }
 
 void Renderer::Render(Scene* scene){ // really bad, we are modifying the scene state
@@ -326,11 +332,11 @@ void Renderer::Render(Scene* scene){ // really bad, we are modifying the scene s
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Set up
-        cameraUBOBlock.projection = Renderer::allCameras[mainCameraIdx].getProjMatrix();
-        cameraUBOBlock.view = Renderer::allCameras[mainCameraIdx].getViewMatrix();
+        cameraMatricesUBOBlock.projection = Renderer::allCameras[mainCameraIdx].getProjMatrix();
+        cameraMatricesUBOBlock.view = Renderer::allCameras[mainCameraIdx].getViewMatrix();
         
-        glNamedBufferSubData(cameraUBO, 0, 2 * sizeof(glm::mat4), &cameraUBOBlock);
-        glBindBufferBase(GL_UNIFORM_BUFFER, 3, cameraUBO); 
+        glNamedBufferSubData(cameraMatricesUBO, 0, 2 * sizeof(glm::mat4), &cameraMatricesUBOBlock);
+        glBindBufferBase(GL_UNIFORM_BUFFER, 3, cameraMatricesUBO); 
         
         scene->shaders[0].use();
         // scene->shaders[0].setMat4("projection", Renderer::allCameras[mainCameraIdx].getProjMatrix()); // TODO : Profile this
@@ -345,7 +351,6 @@ void Renderer::Render(Scene* scene){ // really bad, we are modifying the scene s
             }
         }
 
-        // cullShader->use();
         // cullShader->
 
         // glBindVertexArray(instVAO);
@@ -358,15 +363,24 @@ void Renderer::Render(Scene* scene){ // really bad, we are modifying the scene s
         // }
 
 
-        scene->shaders[1].use();
-        
         // scene->shaders[1].setMat4("projection", Renderer::allCameras[mainCameraIdx].getProjMatrix()); // TODO : Profile this
         // scene->shaders[1].setMat4("view", Renderer::allCameras[mainCameraIdx].getViewMatrix());
 
-        glBindVertexArray(instVAO);
         for (uint entityIdx = 0; entityIdx < scene->entityInstanceMap.size(); ++entityIdx){
             // scene->shaders.at(0).setMat4("model", scene->entityInstanceMap[entityIdx].transform.GetModelMatrix());
             // What I'm about to do justifies the need to separate static state from dynamic state
+            cullShader->use();
+            BindInstanceCullingBuffers(&scene->entityInstanceMap[entityIdx]);
+            glDispatchCompute(scene->entityInstanceMap[entityIdx].instCount, 1u, 1u);
+
+            glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+
+
+            scene->shaders[1].use();
+            glBindBufferBase(GL_UNIFORM_BUFFER, 3, cameraMatricesUBO); 
+            
+            glBindVertexArray(instVAO);
+        
 
             BindInstanceMesh(&scene->entityInstanceMap[entityIdx]);
             glDrawElementsInstanced(GL_TRIANGLES, scene->entityInstanceMap[entityIdx].instMesh.indexCount, GL_UNSIGNED_INT, 0, scene->entityInstanceMap[entityIdx].instCount);
