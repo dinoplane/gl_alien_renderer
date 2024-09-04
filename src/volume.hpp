@@ -38,9 +38,9 @@ struct Sphere : public Volume
     bool IsOnFrustum(const Frustum& camFrustum,
                                             const Transform& modelTransform) const final;
 
-    GPUSphere ToGPUSphere() const
+    GPUSphere ToGPUSphere()
     {
-        return { center.x, center.y, center.z, radius };
+        return { {center.x, center.y, center.z, radius} };
     }
 };
 /*

@@ -43,9 +43,9 @@ struct Plane
 		return glm::dot(normal, point) - distance;
 	}
 
-    GPUPlane ToGPUPlane() const
+    GPUPlane ToGPUPlane()
     {
-        return { normal.x, normal.y, normal.z, distance };
+        return { {normal.x, normal.y, normal.z, distance} };
     }
 };
 
@@ -60,7 +60,7 @@ struct Frustum
     Plane farFace;
     Plane nearFace;
 
-    GPUFrustum ToGPUFrustum() const
+    GPUFrustum ToGPUFrustum()
     {
         return { topFace.ToGPUPlane(), bottomFace.ToGPUPlane(),
             rightFace.ToGPUPlane(), leftFace.ToGPUPlane(),

@@ -1,6 +1,6 @@
 TODO Abstract organize the logic better
 - A scene data vs a scene
-    - Honestly, the scene data could be a file, and the scene could have a load from file method.  
+    - Honestly, the scene data could be a file, and the scene could have a load from file method.
 a renderer takes in a const Scene&, a const Framebuffer& and a const cameraIndex
 - A renderpass system
 - Loading models
@@ -13,6 +13,7 @@ a renderer takes in a const Scene&, a const Framebuffer& and a const cameraIndex
 - add tracy to the app
 
 - Make sure to delete all buffers after exiting
+- need to add
 
 DONE
 - Multiple Cameras
@@ -28,11 +29,11 @@ TAROT
 1. MAGICIAN:        Flames
 2. PRIESTESS:       edge detection and more filters
 3. EMPRESS:         orbs (deferred shading)
-4. EMPEROR:         army boids
+4. EMPEROR:         army boids (of words!) RENDERING TEXT!
 5. HIEROPHANT:      culling
 6. LOVERS:          angel of love/death (rendering blood!)
 7. CHARIOT:         fur (NOT SHELL TECTURING!)
-8. JUSTICE:         mirrors
+8. JUSTICE:         mirrors (Let karma do its work. )
 9. HERMIT:          bokeh blurs
 10. FORTUNE:        a gleaming coin! pbr
 11. STRENGTH:       ray tracing? dithering???

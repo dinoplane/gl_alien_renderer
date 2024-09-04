@@ -94,8 +94,9 @@ Renderer::Renderer(float w, float h) : width(w), height(h) {
 
     glCreateBuffers(1, &cameraMatricesUBO);
     glNamedBufferStorage(cameraMatricesUBO, 2 * sizeof(glm::mat4), NULL, GL_DYNAMIC_STORAGE_BIT);
-    
-    // glCreateBuffers(1, &cameraFrustum)
+
+    glCreateBuffers(1, &cameraFrustumUBO);
+    glNamedBufferStorage(cameraFrustumUBO, sizeof(GPUFrustum), NULL, GL_DYNAMIC_STORAGE_BIT);
 
 }
 
@@ -298,9 +299,10 @@ void Renderer::BindInstanceCullingBuffers(EntityInstanceData* entInstData){
 
     // bind the model matrices
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, entInstData->instModelMatrixBuffer);
-    glBindBufferBase(GL_UNIFORM_BUFFER, 1, cameraFrustumUBO);
+
+
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, entInstData->instMeshRenderedBuffer);
-    
+
 
     // cullShader->use()
 
@@ -318,7 +320,7 @@ void Renderer::BindInstanceMesh(EntityInstanceData* entInstData){
     // glVertexArrayVertexBuffer(instVAO, 1, entInstData->instArrVBO, 0, sizeof(glm::mat4));
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, entInstData->instModelMatrixBuffer);
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, entInstData->instMeshRenderedBuffer);
-    
+
 }
 
 void Renderer::Render(Scene* scene){ // really bad, we are modifying the scene state
@@ -334,14 +336,14 @@ void Renderer::Render(Scene* scene){ // really bad, we are modifying the scene s
         // Set up
         cameraMatricesUBOBlock.projection = Renderer::allCameras[mainCameraIdx].getProjMatrix();
         cameraMatricesUBOBlock.view = Renderer::allCameras[mainCameraIdx].getViewMatrix();
-        
+
         glNamedBufferSubData(cameraMatricesUBO, 0, 2 * sizeof(glm::mat4), &cameraMatricesUBOBlock);
-        glBindBufferBase(GL_UNIFORM_BUFFER, 3, cameraMatricesUBO); 
-        
+        glBindBufferBase(GL_UNIFORM_BUFFER, 3, cameraMatricesUBO);
+
         scene->shaders[0].use();
         // scene->shaders[0].setMat4("projection", Renderer::allCameras[mainCameraIdx].getProjMatrix()); // TODO : Profile this
         // scene->shaders[0].setMat4("view", Renderer::allCameras[mainCameraIdx].getViewMatrix());
-        
+
         glBindVertexArray(VAO);
         for (uint entityIdx = 0; entityIdx < scene->entities.size(); ++entityIdx){
             if (scene->entities[entityIdx].mesh.boundingVolume->IsOnFrustum(Camera::createFrustumFromCamera(Renderer::allCameras[0]), scene->entities[entityIdx].transform)){
@@ -366,6 +368,10 @@ void Renderer::Render(Scene* scene){ // really bad, we are modifying the scene s
         // scene->shaders[1].setMat4("projection", Renderer::allCameras[mainCameraIdx].getProjMatrix()); // TODO : Profile this
         // scene->shaders[1].setMat4("view", Renderer::allCameras[mainCameraIdx].getViewMatrix());
 
+        cameraFrustumUBOBlock.frustum = Camera::createFrustumFromCamera(Renderer::allCameras[mainCameraIdx]).ToGPUFrustum();
+        glNamedBufferSubData(cameraFrustumUBO, 0, sizeof(GPUFrustum), &cameraFrustumUBOBlock);
+        glBindBufferBase(GL_UNIFORM_BUFFER, 6, cameraFrustumUBO);
+
         for (uint entityIdx = 0; entityIdx < scene->entityInstanceMap.size(); ++entityIdx){
             // scene->shaders.at(0).setMat4("model", scene->entityInstanceMap[entityIdx].transform.GetModelMatrix());
             // What I'm about to do justifies the need to separate static state from dynamic state
@@ -377,10 +383,10 @@ void Renderer::Render(Scene* scene){ // really bad, we are modifying the scene s
 
 
             scene->shaders[1].use();
-            glBindBufferBase(GL_UNIFORM_BUFFER, 3, cameraMatricesUBO); 
-            
+            glBindBufferBase(GL_UNIFORM_BUFFER, 3, cameraMatricesUBO);
+
             glBindVertexArray(instVAO);
-        
+
 
             BindInstanceMesh(&scene->entityInstanceMap[entityIdx]);
             glDrawElementsInstanced(GL_TRIANGLES, scene->entityInstanceMap[entityIdx].instMesh.indexCount, GL_UNSIGNED_INT, 0, scene->entityInstanceMap[entityIdx].instCount);
@@ -389,7 +395,7 @@ void Renderer::Render(Scene* scene){ // really bad, we are modifying the scene s
 
         glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
         debugWireShader->use();
-        
+
         // debugWireShader->setMat4("projection", Renderer::allCameras[mainCameraIdx].getProjMatrix()); // TODO : Profile this
         // debugWireShader->setMat4("view", Renderer::allCameras[mainCameraIdx].getViewMatrix());
         glBindVertexArray(debugVAO);
@@ -408,7 +414,7 @@ void Renderer::Render(Scene* scene){ // really bad, we are modifying the scene s
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         debugShader->use();
-        
+
         // debugShader->setMat4("projection", Renderer::allCameras[mainCameraIdx].getProjMatrix()); // TODO : Profile this
         // debugShader->setMat4("view", Renderer::allCameras[mainCameraIdx].getViewMatrix());
         glBindVertexArray(debugVAO);

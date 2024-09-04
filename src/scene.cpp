@@ -14,10 +14,10 @@
 #include <gpu_structs.hpp>
 
 
-void EntityInstanceData::GenerateInstanceBuffers(){ // TODO honestly i could make this function take in the vectors. 
+void EntityInstanceData::GenerateInstanceBuffers(){ // TODO honestly i could make this function take in the vectors.
     glCreateBuffers(1, &instModelMatrixBuffer);
     glNamedBufferStorage(instModelMatrixBuffer, modelToWorldMat.size() * sizeof(glm::mat4), (const void *) modelToWorldMat.data(), GL_DYNAMIC_STORAGE_BIT);
-    
+
     glCreateBuffers(1, &instBoundingVolumeBuffer);
     glNamedBufferStorage(instBoundingVolumeBuffer, boundingVolumes.size() * sizeof(GPUSphere), (const void *) boundingVolumes.data(), GL_DYNAMIC_STORAGE_BIT);
 
@@ -134,6 +134,7 @@ Scene Scene::GenerateDefaultScene(){
     EntityInstanceData entityInstanceData;
     entityInstanceData.instMesh = Mesh::CreateCube();
     entityInstanceData.instCount = 0;
+    std::cout << (entityInstanceData.instMesh.boundingVolume == nullptr) << std::endl;
     retScene.entityInstanceMap[0] =  entityInstanceData;
 
     transform.SetRotation(glm::vec3(0.0, 0.0, 0.0));
