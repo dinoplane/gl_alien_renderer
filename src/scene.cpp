@@ -134,7 +134,7 @@ Scene Scene::GenerateDefaultScene(){
     EntityInstanceData entityInstanceData;
     entityInstanceData.instMesh = Mesh::CreateCube();
     entityInstanceData.instCount = 0;
-    std::cout << (entityInstanceData.instMesh.boundingVolume == nullptr) << std::endl;
+    std::cout << (entityInstanceData.instMesh.boundingVolume->center.x) << std::endl;
     retScene.entityInstanceMap[0] =  entityInstanceData;
 
     transform.SetRotation(glm::vec3(0.0, 0.0, 0.0));

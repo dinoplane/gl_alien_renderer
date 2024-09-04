@@ -18,7 +18,7 @@ layout(binding = 4, std430) readonly buffer instModelMatBuf {
     mat4 worldFromModel[];
 };
 
-layout(binding = 5, std430) writeonly buffer instMeshRenderedBuf {
+layout(binding = 5, std430) readonly buffer instMeshRenderedBuf {
     bool meshIsRendered[];
 }; // THIS DOES NOT SAVE COMPUTE!!!
 

@@ -103,44 +103,17 @@ Mesh Mesh::CreateCube(){
     Mesh mesh;
     GenerateBuffers(&mesh, vertices, indices);
     mesh.indexCount = indices.size();
+    mesh.boundingVolume = new Sphere(glm::vec3(0.f, 0.f, 0.f), 0.866f);
     return mesh;
 }
 
 
 
 Mesh Mesh::CreateFrustum(const Camera& cam){
-
-
     const float aspect = cam.width / cam.height;
     const float halfVSide = cam.zFar * tanf(glm::radians(cam.fovY) * .5f);
     const float halfHSide = halfVSide * aspect;
     const float nearToFarRatio = cam.zNear / cam.zFar;
-    // std::vector<glm::vec3> vertices({
-    //     { halfHSide,  halfVSide, cam.zNear},
-    //     {-halfHSide,  halfVSide, cam.zNear},
-    //     {-halfHSide, -halfVSide, cam.zNear},
-    //     { halfHSide, -halfVSide, cam.zNear},
-
-    //     { halfHSide,  halfVSide, cam.zFar*0.1},
-    //     {-halfHSide,  halfVSide, cam.zFar*0.1},
-    //     {-halfHSide, -halfVSide, cam.zFar*0.1},
-    //     { halfHSide, -halfVSide, cam.zFar*0.1},
-    // });
-
-
-
-    // std::vector<glm::vec3> vertices({
-    //     { 0.5,  0.5, -0.5},
-    //     {-0.5,  0.5, -0.5},
-    //     {-0.5, -0.5, -0.5},
-    //     { 0.5, -0.5, -0.5},
-
-    //     { 0.5,  0.5, 0.5},
-    //     {-0.5,  0.5, 0.5},
-    //     {-0.5, -0.5, 0.5},
-    //     { 0.5, -0.5, 0.5},
-    // });
-
 
     std::vector<glm::vec3> vertices({
         { 0.0,  0.0,  0.0},
@@ -149,79 +122,6 @@ Mesh Mesh::CreateFrustum(const Camera& cam){
         {cam.zFar, -halfVSide, -halfHSide},
         {cam.zFar, -halfVSide,  halfHSide},
     });
-
-    // std::vector<glm::vec3> vertices({
-    //     { 0.0,  0.0,  0.0},
-    //     {5.0,  1.5,   1.5},
-    //     {5.0,  1.5,  -1.5},
-    //     {5.0, -1.5,  -1.5},
-    //     {5.0, -1.5,   1.5},
-    // });
-
-
-    std::cout << halfHSide << " " << halfVSide << " " << cam.zNear << " " << cam.zFar << std::endl;
-    /*
-    // for (int i = 0; i < 4; ++i){
-    //     vertices.push_back({halfHSide, halfVSide, cam.zNear});
-
-    //     currMult = currMult >> 1;
-    // }
-
-    // uint currMult = 12;
-    // for (int i = 0; i < 4; ++i){
-    //     vertices.push_back({halfHSide, halfVSide, cam.zNear});
-
-    //     currMult = currMult >> 1;
-    // }
-    */
-    /*
-        std::vector<uint> indices({
-            // Front face (near plane)
-            0, 1, 2,  // First triangle
-            0, 2, 3,  // Second triangle
-
-            // Back face (far plane)
-            5, 4, 7,  // First triangle
-            5, 7, 6,  // Second triangle
-
-            // Left face
-            1, 5, 6,  // First triangle
-            1, 6, 2,  // Second triangle
-
-            // Right face
-            4, 0, 3,  // First triangle
-            4, 3, 7,  // Second triangle
-
-            // Top face
-            4, 5, 1,  // First triangle
-            4, 1, 0,  // Second triangle
-
-            // Bottom face
-            3, 6, 2,  // First triangle
-            3, 7, 6   // Second triangle
-        });
-
-        std::vector<uint> indices({
-            // Front face (near plane)
-            0, 1, 1, 2, 2, 3, 3, 0,  // First square
-            1, 5, 5, 6, 6, 2, 2, 1,  // Second square
-            5, 4, 4, 7, 7, 6, 6, 5,  // Third square
-            4, 0, 0, 3, 3, 7, 7, 4,  // Fourth square
-            4, 5, 5, 1, 1, 0, 0, 4,  // Fifth square
-            3, 2, 2, 6, 6, 7, 7, 3   // Sixth square
-        });
-    */
-
-
-    // std::vector<uint> indices({
-    //     // Front face (near plane)
-    //     1, 4, 4, 3, 3, 2, 2, 1,  // First square
-    //     1, 3, 2, 4, // Diagonals
-    //     0, 2, 2, 3, 3, 0,        // Left face
-    //     0, 4, 4, 1, 1, 0,        // Right face
-    //     0, 1, 1, 2, 2, 0,        // Top face
-    //     0, 3, 3, 4, 4, 0         // Bottom face
-    //     });
 
     const std::vector<uint> indices({
         // Front face (near plane)
@@ -234,13 +134,10 @@ Mesh Mesh::CreateFrustum(const Camera& cam){
         0,  4, 3,         // Bottom face
         });
 
-
-
     Mesh mesh;
     GenerateDebugBuffers(&mesh, vertices, indices);
     mesh.indexCount = indices.size();
     mesh.boundingVolume = new Sphere(glm::vec3(0.f, 0.f, 0.f), 0.707f);
-    // mesh.boundingVolume =
     return mesh;
 }
 
@@ -269,8 +166,6 @@ Mesh Mesh::CreatePyramid(){
         {{-0.5f, -0.5f, -0.5f},    {-1.0f, 0.0f,  0.0f},   {0.0f, 1.0f}},
         {{ 0.5f, -0.5f, -0.5f},    {-1.0f, 0.0f,  0.0f},   {1.0f, 1.0f}},
     });
-
-
 
     const std::vector<uint> indices ({  // note that we start from 0!
         0, 1, 2,  // front tr br tl
