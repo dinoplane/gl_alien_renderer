@@ -379,7 +379,8 @@ void Renderer::Render(Scene* scene){ // really bad, we are modifying the scene s
             BindInstanceCullingBuffers(&scene->entityInstanceMap[entityIdx]);
             glDispatchCompute(scene->entityInstanceMap[entityIdx].instCount, 1u, 1u);
 
-            glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+            glMemoryBarrier( GL_ALL_BARRIER_BITS );
+            glFinish();
 
 
             scene->shaders[1].use();

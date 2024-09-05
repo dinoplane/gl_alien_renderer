@@ -21,9 +21,16 @@ void EntityInstanceData::GenerateInstanceBuffers(){ // TODO honestly i could mak
     glCreateBuffers(1, &instBoundingVolumeBuffer);
     glNamedBufferStorage(instBoundingVolumeBuffer, boundingVolumes.size() * sizeof(GPUSphere), (const void *) boundingVolumes.data(), GL_DYNAMIC_STORAGE_BIT);
 
-    std::vector<uint> tmpInstMeshRendered(instCount, 1); // TODO theres gotta be a way to initialize this on the GPU
+    isInstMeshRendered.resize(instCount, 1); // TODO theres gotta be a way to initialize this on the GPU
+    // fmt::print("Size of isInstMeshRendered: {}\n", sizeof(GLboolean) * );
+    fmt::print("Size of Glboolean: {}\n", sizeof(GLboolean));
+
     glCreateBuffers(1, &instMeshRenderedBuffer);
-    glNamedBufferStorage(instMeshRenderedBuffer, instCount * sizeof(GLboolean), (const void *) tmpInstMeshRendered.data(), GL_DYNAMIC_STORAGE_BIT);
+    glNamedBufferStorage(instMeshRenderedBuffer, isInstMeshRendered.size() * sizeof(int), (const void *) isInstMeshRendered.data(), GL_DYNAMIC_STORAGE_BIT);
+
+    GLint maxComputeWorkGroupCount;
+    glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 0, &maxComputeWorkGroupCount);
+    fmt::print("Max Compute Work Group Count x: {}\n", maxComputeWorkGroupCount);
 }
 
 Scene::Scene(){

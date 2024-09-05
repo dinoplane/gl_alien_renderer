@@ -21,6 +21,7 @@ struct EntityInstanceData
     GLuint instModelMatrixBuffer;
     std::vector<GPUSphere> boundingVolumes;
     GLuint instBoundingVolumeBuffer;
+    std::vector<int> isInstMeshRendered;
     GLuint instMeshRenderedBuffer;
 
 

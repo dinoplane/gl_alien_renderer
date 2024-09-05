@@ -26,8 +26,6 @@
 #include "stb_image.h"
 
 #include <iostream>
-#include <fmt/core.h>
-#include <fmt/printf.h>
 
 
 #include "imgui.h"

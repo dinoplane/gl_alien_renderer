@@ -3,6 +3,9 @@
 
 #include <glm/glm.hpp>
 #include <gpu_structs.hpp>
+#include <fmt/core.h>
+#include <fmt/printf.h>
+
 
 #define ARRAY_COUNT(x) (sizeof(x) / sizeof((x)[0]))
 
