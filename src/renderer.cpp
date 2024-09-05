@@ -95,8 +95,8 @@ Renderer::Renderer(float w, float h) : width(w), height(h) {
     glCreateBuffers(1, &cameraMatricesUBO);
     glNamedBufferStorage(cameraMatricesUBO, 2 * sizeof(glm::mat4), NULL, GL_DYNAMIC_STORAGE_BIT);
 
-    glCreateBuffers(1, &cameraFrustumUBO);
-    glNamedBufferStorage(cameraFrustumUBO, sizeof(GPUFrustum), NULL, GL_DYNAMIC_STORAGE_BIT);
+    glCreateBuffers(1, &frustumCullDataUBO);
+    glNamedBufferStorage(frustumCullDataUBO, sizeof(FrustumCullDataUBOBlock), NULL, GL_DYNAMIC_STORAGE_BIT);
 
 }
 
@@ -368,13 +368,16 @@ void Renderer::Render(Scene* scene){ // really bad, we are modifying the scene s
         // scene->shaders[1].setMat4("projection", Renderer::allCameras[mainCameraIdx].getProjMatrix()); // TODO : Profile this
         // scene->shaders[1].setMat4("view", Renderer::allCameras[mainCameraIdx].getViewMatrix());
 
-        cameraFrustumUBOBlock.frustum = Camera::createFrustumFromCamera(Renderer::allCameras[0]).ToGPUFrustum();
-        glNamedBufferSubData(cameraFrustumUBO, 0, sizeof(GPUFrustum), &cameraFrustumUBOBlock);
-        glBindBufferBase(GL_UNIFORM_BUFFER, 6, cameraFrustumUBO);
-
+        frustumCullDataUBOBlock.frustum = Camera::createFrustumFromCamera(Renderer::allCameras[0]).ToGPUFrustum();
+        
         for (uint entityIdx = 0; entityIdx < scene->entityInstanceMap.size(); ++entityIdx){
             // scene->shaders.at(0).setMat4("model", scene->entityInstanceMap[entityIdx].transform.GetModelMatrix());
             // What I'm about to do justifies the need to separate static state from dynamic state
+            frustumCullDataUBOBlock.instCount = scene->entityInstanceMap[entityIdx].instCount;
+            //fmt::print("Instance Count: {}\n", scene->entityInstanceMap[entityIdx].instCount);
+            glNamedBufferSubData(frustumCullDataUBO, 0, sizeof(FrustumCullDataUBOBlock), &frustumCullDataUBOBlock);
+            glBindBufferBase(GL_UNIFORM_BUFFER, 6, frustumCullDataUBO);
+
             cullShader->use();
             BindInstanceCullingBuffers(&scene->entityInstanceMap[entityIdx]);
             glDispatchCompute(scene->entityInstanceMap[entityIdx].instCount, 1u, 1u);

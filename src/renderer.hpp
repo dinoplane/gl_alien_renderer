@@ -75,10 +75,11 @@ class Renderer {
         glm::mat4 view;
     } cameraMatricesUBOBlock;
 
-    GLuint cameraFrustumUBO;
-    struct CameraFrustumUBOBlock {
+    GLuint frustumCullDataUBO;
+    struct FrustumCullDataUBOBlock {
         GPUFrustum frustum;
-    } cameraFrustumUBOBlock;
+        uint instCount;
+    } frustumCullDataUBOBlock;
 
 
     float width;

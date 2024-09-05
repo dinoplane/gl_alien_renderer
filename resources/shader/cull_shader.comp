@@ -1,5 +1,5 @@
 #version 460 core
-layout (local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
+layout (local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 
 struct Plane
 {
@@ -35,8 +35,9 @@ layout(binding = 4, std430) readonly buffer instModelMatBuf {
     mat4 worldFromModel[];
 };
 
-layout (binding = 6, std140) uniform cameraFrustum {
+layout (binding = 6, std140) uniform frustumCullData {
     Frustum frustum;
+    uint instCount; // This is the number of instances
 };
 
 // Output -------------------------------------
@@ -81,6 +82,11 @@ bool IsSphereOnFrustum ( SphereAABB sphere, Frustum frustum )
 void main()
 {
     uint index = gl_GlobalInvocationID.x;
-    SphereAABB sphere = boundingVolumes[index];
-    meshIsRendered[index] = IsSphereOnFrustum(sphere, frustum);
+    if (index < instCount)
+    {
+        SphereAABB sphere = boundingVolumes[index];
+        meshIsRendered[index] = IsSphereOnFrustum(sphere, frustum);
+    }else {
+        meshIsRendered[index] = false;
+    }
 }
