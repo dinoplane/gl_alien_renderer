@@ -8,12 +8,14 @@ a renderer takes in a const Scene&, a const Framebuffer& and a const cameraIndex
 - *GPU Frustum Culling + instancing
 - lighting
 - baked lighting + instancing... damn im gonna regret this aint i
-- connect to profiler shareef mentioned
-- add the shit to the todos
-- add tracy to the app
+- *add tracy to the app
+- Use git submodules? Debatable
+- * add a fumo
+- Make sure to delete all buffers after exiting // eeeeeeehhh?
+    There's no point if memory is not in demand in the lifetime.
+    The program will release all its resources upon exit anyway!
+    My excuse for allowing memory leaks lol!
 
-- Make sure to delete all buffers after exiting
-- need to add
 
 DONE
 - Multiple Cameras
