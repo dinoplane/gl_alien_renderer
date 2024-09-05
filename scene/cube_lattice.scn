@@ -1,0 +1,30 @@
+{
+    "classname" "cube"
+    "origin" "0 0 0"
+    "angles" "0 0 0"
+}
+
+{
+    "classname" "cube"
+    "origin" "0 2 0"
+    "angles" "0 0 0"
+}
+
+{
+    "classname" "camera"
+    "origin" "-3 3 -3"
+    "angles" "-315 -60 0"
+    "fovY" "30"
+    "near" "0.1"
+    "far" "10.0"
+}
+
+{
+    "classname" "camera"
+    "origin" "-10 20 -10"
+    "angles" "-315 -60 0"
+    "fovY" "30"
+    "near" "0.1"
+    "far" "100.0"
+}
+

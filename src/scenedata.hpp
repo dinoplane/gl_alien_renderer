@@ -23,7 +23,7 @@ struct EntityData {
 
 struct SceneData {
     std::vector<EntityData> entitiesData;
-    std::vector<std::pair<std::string, std::string>> shaderPaths;
+    // std::vector<std::pair<std::string, std::string>> shaderPaths;
     std::vector<Camera> cameraData;
 
 
