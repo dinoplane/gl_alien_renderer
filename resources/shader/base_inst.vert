@@ -33,6 +33,10 @@ void main()
         gl_Position = projection * view * worldFromModel[gl_InstanceID] * vec4(aPos, 1.0);
         Normal = aNormal;
         TexCoord = vec2(aPos.x, 1.0 - aPos.y);
+    } else {
+        gl_Position = vec4(0.0, 0.0, 0.0, 0.0);
+        Normal = vec3(0.0, 0.0, 0.0);
+        TexCoord = vec2(0.0, 0.0);
     }
 
 }

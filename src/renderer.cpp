@@ -368,7 +368,7 @@ void Renderer::Render(Scene* scene){ // really bad, we are modifying the scene s
         // scene->shaders[1].setMat4("projection", Renderer::allCameras[mainCameraIdx].getProjMatrix()); // TODO : Profile this
         // scene->shaders[1].setMat4("view", Renderer::allCameras[mainCameraIdx].getViewMatrix());
 
-        cameraFrustumUBOBlock.frustum = Camera::createFrustumFromCamera(Renderer::allCameras[mainCameraIdx]).ToGPUFrustum();
+        cameraFrustumUBOBlock.frustum = Camera::createFrustumFromCamera(Renderer::allCameras[0]).ToGPUFrustum();
         glNamedBufferSubData(cameraFrustumUBO, 0, sizeof(GPUFrustum), &cameraFrustumUBOBlock);
         glBindBufferBase(GL_UNIFORM_BUFFER, 6, cameraFrustumUBO);
 
