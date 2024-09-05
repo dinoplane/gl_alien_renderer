@@ -79,8 +79,9 @@ class Renderer {
     struct FrustumCullDataUBOBlock {
         GPUFrustum frustum;
         uint instCount;
+        uint doCull;
     } frustumCullDataUBOBlock;
-
+    static uint doCull;
 
     float width;
     float height;

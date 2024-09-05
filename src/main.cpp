@@ -260,6 +260,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
         glfwSetWindowShouldClose(window, true);
     }
+
+    if (key == GLFW_KEY_H && action == GLFW_PRESS){
+        Renderer::doCull = ~Renderer::doCull;
+        fmt::print("Culling: {}\n", Renderer::doCull);
+    }
 }
 
 

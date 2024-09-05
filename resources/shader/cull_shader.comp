@@ -38,6 +38,7 @@ layout(binding = 4, std430) readonly buffer instModelMatBuf {
 layout (binding = 6, std140) uniform frustumCullData {
     Frustum frustum;
     uint instCount; // This is the number of instances
+    bool doCull;
 };
 
 // Output -------------------------------------
@@ -84,8 +85,14 @@ void main()
     uint index = gl_GlobalInvocationID.x;
     if (index < instCount)
     {
-        SphereAABB sphere = boundingVolumes[index];
-        meshIsRendered[index] = IsSphereOnFrustum(sphere, frustum);
+        if (doCull){
+            SphereAABB sphere = boundingVolumes[index];
+            meshIsRendered[index] = IsSphereOnFrustum(sphere, frustum);  
+        } else {
+            meshIsRendered[index] = true;
+        }
+
+
     }else {
         meshIsRendered[index] = false;
     }

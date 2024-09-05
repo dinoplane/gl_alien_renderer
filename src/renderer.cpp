@@ -25,6 +25,7 @@ Shader* Renderer::passthroughShader = nullptr;
 ComputeShader* Renderer::cullShader = nullptr;
 GLuint Renderer::quadVAO = 0;
 GLuint Renderer::quadVBO = 0;
+uint Renderer::doCull = 0;
 
 
 void Renderer::SetupScreenQuad(){
@@ -369,6 +370,7 @@ void Renderer::Render(Scene* scene){ // really bad, we are modifying the scene s
         // scene->shaders[1].setMat4("view", Renderer::allCameras[mainCameraIdx].getViewMatrix());
 
         frustumCullDataUBOBlock.frustum = Camera::createFrustumFromCamera(Renderer::allCameras[0]).ToGPUFrustum();
+        frustumCullDataUBOBlock.doCull = doCull;
         
         for (uint entityIdx = 0; entityIdx < scene->entityInstanceMap.size(); ++entityIdx){
             // scene->shaders.at(0).setMat4("model", scene->entityInstanceMap[entityIdx].transform.GetModelMatrix());
