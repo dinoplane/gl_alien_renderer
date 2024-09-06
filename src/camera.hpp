@@ -70,9 +70,9 @@ class Camera {
 
     public:
         Camera(
-                float w, float h,
-                glm::vec3 pos = glm::vec3(5.0, 5.0f, 5.0),
-                glm::vec3 upv = glm::vec3(0.0, 1.0, 0.0),
+                float w=800, float h=600,
+                glm::vec3 pos = glm::vec3(5.0f, 5.0f, 5.0f),
+                glm::vec3 upv = glm::vec3(0.0f, 1.0f, 0.0f),
                 float yaw_val = DEFAULT_YAW, float pitch_val = DEFAULT_PITCH,
                 float fovY_val = DEFAULT_FOVY, float zNear_val = DEFAULT_NEAR, float zFar_val = DEFAULT_FAR
             ) : speed(DEFAULT_SPEED), sensitivity(DEFAULT_SENSITIVITY){

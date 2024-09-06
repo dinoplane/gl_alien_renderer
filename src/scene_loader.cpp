@@ -2,7 +2,10 @@
 #include <fstream>
 #include <sstream>
 #include <iomanip>
+#include <glm/gtc/type_ptr.hpp>
 
+
+#include <glm/gtx/string_cast.hpp>
 Scene SceneLoader::LoadScene(const SceneData& sceneData)
 {
     Scene scene;
@@ -22,8 +25,17 @@ Scene SceneLoader::LoadScene(const SceneData& sceneData)
     return scene;
 }
 
+static glm::vec3 ParseVec3(const std::string& vec3Str)
+{
+    glm::vec3 vec;
+    std::istringstream iss(vec3Str);
+    iss >> vec.x >> vec.y >> vec.z;
+    return vec;
+}
+
 SceneData SceneLoader::LoadSceneData(const std::string& scenePath)
 {
+    // HONESTLY RETURN BY REFERENCE :SKULL:
     SceneData sceneData;
     // Load scene data from file
     // Here I could do a couple of things:
@@ -40,19 +52,45 @@ SceneData SceneLoader::LoadSceneData(const std::string& scenePath)
     }
 
     std::string line;
-    void* data;
+    EntityData data;
+    Camera cameraData;
     while (std::getline(sceneFile, line))
     {
+        if (line.empty())
+        {
+            continue;
+        } else if (line[0] == '{')
+        {
+            // Start of a new entity
+            data = EntityData();
+            continue;
+
+        } else if (line[0] == '}')
+        {
+            // End of entity
+            sceneData.entitiesData.push_back(data);
+            continue;
+        } else {
         std::istringstream iss(line);
         std::string key;
         std::string value;
         while (iss >> std::quoted(key))
         {
-            iss >> std::quoted(value)
+            // TODO These should be done by type not key name
+            iss >> std::quoted(value);
             if (key == "classname")
             {
-                EntityData entityData;
+                data.className = value;
+            } else if (key == "origin")
+            {
+                data.transform.SetPosition(ParseVec3(value));
+            } else if (key == "angles")
+            {
+                data.transform.SetRotation(ParseVec3(value));
+            } else {
+
             }
+            data.kvps.push_back({key, value});
         // if (token == "entity")
         // {
         //     EntityData entityData;
@@ -75,10 +113,14 @@ SceneData SceneLoader::LoadSceneData(const std::string& scenePath)
         //     sceneData.cameraData.push_back(camera);
         // }
         }
+
+        }
+
+
     }
     
 
 
-
+    PrintSceneData(sceneData);
     return sceneData;
 }

@@ -1,0 +1,15 @@
+
+{
+    "classname": {
+        "type" : "string",
+        "default" : ""
+    },
+    "origin" : {
+        "type" : "vec3",
+        "default" : "0 0 0"
+    },
+    "angles" : {
+        "type" : "vec3",
+        "default" : "0 0 0"
+    }
+}

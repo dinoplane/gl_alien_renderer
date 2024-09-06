@@ -17,22 +17,29 @@ struct MeshData {
 };
 
 struct EntityData {
+    std::string className;
     MeshData meshData;
     Transform transform;
+    std::vector<std::pair<std::string, std::string>> kvps;
 };
 
 struct SceneData {
+    // std::set<std::string> entityKeys; // so i could conserve space here but uh... save for another day 
     std::vector<EntityData> entitiesData;
     std::vector<std::pair<std::string, std::string>> shaderPaths;
     std::vector<Camera> cameraData;
 
     bool errFlag = false;
-    static SceneData GenerateDefaultScene();
 
     // at this point its becoming an engine LMAO
     // static SceneData GenerateSceneFromConfig(const std::string& configPath);
     // If I process the file multithreadedly, TECHNICALLY, i can guarantee a random bvh insertion...
     // Wait thats lk troll and funny.
 };
+
+
+SceneData GenerateDefaultScene();
+
+void PrintSceneData(const SceneData& sceneData);
 
 #endif

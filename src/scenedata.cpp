@@ -72,7 +72,7 @@ MeshData MeshData::CreateCube(){ // Need to change this later
             };
 }
 
-SceneData SceneData::GenerateDefaultScene(){
+SceneData GenerateDefaultScene(){
     SceneData retSceneData;
 
     Transform transform;
@@ -83,7 +83,7 @@ SceneData SceneData::GenerateDefaultScene(){
                 transform.SetPosition(glm::vec3(i * 2.0, j * 2.0, k * 2.0));
                 transform.SetRotation(glm::vec3(0.0, 0.0, 0.0));
                 transform.SetScale(glm::vec3(1.0, 1.0, 1.0));
-                retSceneData.entitiesData.push_back({MeshData::CreateCube(), transform}); // TODO Im pushing back a lot of data...
+                retSceneData.entitiesData.push_back({ "cube", MeshData::CreateCube(), transform}); // TODO Im pushing back a lot of data...
             }
         }
     }
@@ -107,4 +107,17 @@ SceneData SceneData::GenerateDefaultScene(){
     retSceneData.cameraData.push_back(Camera(800.0, 600.0, glm::vec3(0.0, 20.0, 0.0), glm::vec3(0.0, 1.0, 0.0), -315.0f, -60.0f));
     retSceneData.cameraData.push_back(Camera(800.0, 600.0));
     return retSceneData;
+}
+
+void PrintSceneData(const SceneData& sceneData)
+{
+    for ( const EntityData& entitydata : sceneData.entitiesData){
+        fmt::print("------------------------------------\n");
+        fmt::print("Entity: {}\n", entitydata.className);
+        fmt::print("Transform: {}\n", glm::to_string(entitydata.transform.GetModelMatrix()));
+        for (const auto& kvp : entitydata.kvps){
+            fmt::print("{}: {}\n", kvp.first, kvp.second);
+        }
+
+    }
 }
