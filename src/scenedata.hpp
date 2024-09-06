@@ -4,10 +4,10 @@
 #include <util.h>
 #include <vector>
 #include <string>
+
 #include <transform.hpp>
 
-
-class Camera;
+#include <camera.hpp>
 
 struct MeshData {
     std::vector<Vertex> vertices;
@@ -23,10 +23,10 @@ struct EntityData {
 
 struct SceneData {
     std::vector<EntityData> entitiesData;
-    // std::vector<std::pair<std::string, std::string>> shaderPaths;
+    std::vector<std::pair<std::string, std::string>> shaderPaths;
     std::vector<Camera> cameraData;
 
-
+    bool errFlag = false;
     static SceneData GenerateDefaultScene();
 
     // at this point its becoming an engine LMAO

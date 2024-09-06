@@ -4,20 +4,17 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
-
-class Scene;
-class SceneData;
-class Entity;
-class Mesh;
-class Shader;
-class Camera;
+#include <scene.hpp>
+#include <scenedata.hpp>
 
 
 class SceneLoader {
+    public: 
+    static Scene LoadScene(const SceneData& sceneData);
+    static SceneData LoadSceneData(const std::string& scenePath);
 
 
-
-}
+};
 
 
 

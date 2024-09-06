@@ -15,7 +15,7 @@ a renderer takes in a const Scene&, a const Framebuffer& and a const cameraIndex
     There's no point if memory is not in demand in the lifetime.
     The program will release all its resources upon exit anyway!
     My excuse for allowing memory leaks lol!
-
+- Get rid of include clutter
 
 DONE
 - Multiple Cameras

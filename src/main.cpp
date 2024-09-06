@@ -8,11 +8,12 @@
 #include <camera.hpp>
 #include <mesh.hpp>
 
-#include <scene.hpp>
 #include <entity.hpp>
 #include <scenedata.hpp>
+#include <scene.hpp>
 #include <renderer.hpp>
 #include <comp_renderer.hpp>
+#include <scene_loader.hpp>
 
 
 #include <cstdlib>
@@ -433,6 +434,11 @@ int main(int argc, char **argv)
     currentFrame = glfwGetTime();
     deltaTime = currentFrame - lastFrame;
     lastFrame = currentFrame;
+
+    // Setup Scene
+    SceneLoader::LoadSceneData("./scene/simple.scn");
+
+
 #define COMPUTE_DEMO 0
 #if COMPUTE_DEMO == 0
     scene = Scene::GenerateDefaultScene();
