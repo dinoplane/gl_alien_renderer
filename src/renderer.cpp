@@ -296,7 +296,7 @@ void Renderer::BindDebugMesh(const Mesh * mesh){
 void Renderer::BindInstanceCullingBuffers(const EntityInstanceData* entInstData){
     // Input --------------------------------------
     // Bind the bounding volumes
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, entInstData->instBoundingVolumeBuffer);
+    // glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, entInstData->instBoundingVolumeBuffer);
 
     // bind the model matrices
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, entInstData->instModelMatrixBuffer);
@@ -375,6 +375,7 @@ void Renderer::Render(const Scene* scene){ // really bad, we are modifying the s
         for ( const auto& [classname, entInstData] : scene->entityInstanceMap ){
             // scene->shaders.at(0).setMat4("model", scene->entityInstanceMap[entityIdx].transform.GetModelMatrix());
             // What I'm about to do justifies the need to separate static state from dynamic state
+            frustumCullDataUBOBlock.boundingVolume = entInstData.instMesh.boundingVolume->ToGPUSphere();
             frustumCullDataUBOBlock.instCount = entInstData.instCount;
             //fmt::print("Instance Count: {}\n", entInstData.instCount);
             glNamedBufferSubData(frustumCullDataUBO, 0, sizeof(FrustumCullDataUBOBlock), &frustumCullDataUBOBlock);

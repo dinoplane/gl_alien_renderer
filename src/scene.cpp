@@ -18,8 +18,8 @@ void EntityInstanceData::GenerateInstanceBuffers(){ // TODO honestly i could mak
     glCreateBuffers(1, &instModelMatrixBuffer);
     glNamedBufferStorage(instModelMatrixBuffer, modelToWorldMat.size() * sizeof(glm::mat4), (const void *) modelToWorldMat.data(), GL_DYNAMIC_STORAGE_BIT);
 
-    glCreateBuffers(1, &instBoundingVolumeBuffer);
-    glNamedBufferStorage(instBoundingVolumeBuffer, boundingVolumes.size() * sizeof(GPUSphere), (const void *) boundingVolumes.data(), GL_DYNAMIC_STORAGE_BIT);
+    // glCreateBuffers(1, &instBoundingVolumeBuffer);
+    // glNamedBufferStorage(instBoundingVolumeBuffer, boundingVolumes.size() * sizeof(GPUSphere), (const void *) boundingVolumes.data(), GL_DYNAMIC_STORAGE_BIT);
 
     isInstMeshRendered.resize(instCount, 1); // TODO theres gotta be a way to initialize this on the GPU
     // fmt::print("Size of isInstMeshRendered: {}\n", sizeof(GLboolean) * );
@@ -152,7 +152,7 @@ Scene Scene::GenerateDefaultScene(){
                 transform.SetPosition(glm::vec3(i * 2.0, j * 2.0, k * 2.0));
                 // retScene.entities.push_back({Mesh::CreateCube(), transform});
                 retScene.entityInstanceMap["hi"].modelToWorldMat.push_back(transform.GetModelMatrix());
-                retScene.entityInstanceMap["hi"].boundingVolumes.push_back(entityInstanceData.instMesh.boundingVolume->ToGPUSphere());
+                // retScene.entityInstanceMap["hi"].boundingVolumes.push_back(entityInstanceData.instMesh.boundingVolume->ToGPUSphere());
                 retScene.entityInstanceMap["hi"].instCount += 1;
             }
         }

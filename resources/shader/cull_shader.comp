@@ -26,9 +26,7 @@ struct SphereAABB
 
 // Input --------------------------------------
 // bounding volumes
-layout(binding = 0, std430) readonly buffer boundingVolBuf {
-    SphereAABB boundingVolumes[];
-};
+
 
 // bounding volumes matrices
 layout(binding = 4, std430) readonly buffer instModelMatBuf {
@@ -37,6 +35,7 @@ layout(binding = 4, std430) readonly buffer instModelMatBuf {
 
 layout (binding = 6, std140) uniform frustumCullData {
     Frustum frustum;
+    SphereAABB boundingVolume;
     uint instCount; // This is the number of instances
     bool doCull;
 };
@@ -86,8 +85,7 @@ void main()
     if (index < instCount)
     {
         if (doCull){
-            SphereAABB sphere = boundingVolumes[index];
-            meshIsRendered[index] = IsSphereOnFrustum(sphere, frustum);  
+            meshIsRendered[index] = IsSphereOnFrustum(boundingVolume, frustum);  
         } else {
             meshIsRendered[index] = true;
         }

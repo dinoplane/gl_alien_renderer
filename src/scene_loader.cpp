@@ -49,8 +49,7 @@ Scene SceneLoader::LoadScene(const SceneData& sceneData)
             //     // Add instance
             sceneEntity->second.modelToWorldMat.push_back(entityData.transform.GetModelMatrix());
             
-
-            sceneEntity->second.boundingVolumes.push_back(sceneEntity->second.instMesh.boundingVolume->ToGPUSphere()); // This does not spark joy, the bounding volume should just be part of the mesh :skull: 
+            // sceneEntity->second.boundingVolumes.push_back(sceneEntity->second.instMesh.boundingVolume->ToGPUSphere()); // This does not spark joy, the bounding volume should just be part of the mesh :skull: 
             sceneEntity->second.isInstMeshRendered.push_back(1);
             sceneEntity->second.instCount += 1;
 
@@ -155,7 +154,7 @@ SceneData SceneLoader::LoadSceneData(const std::string& scenePath)
         //     iss >> fov >> aspect >> near >> far;
         //     iss >> pos.x >> pos.y >> pos.z;
         //     iss >> up.x >> up.y >> up.z;
-        //     iss >> front.x >> front.y >> front.z;
+        //     iss >> front.x >> front.y >> front .z;
         //     camera = Camera(fov, aspect, near, far, pos, up, front);
         //     sceneData.cameraData.push_back(camera);
         // }
@@ -168,6 +167,6 @@ SceneData SceneLoader::LoadSceneData(const std::string& scenePath)
     
 
 
-    PrintSceneData(sceneData);
+    // PrintSceneData(sceneData);
     return sceneData;
 }

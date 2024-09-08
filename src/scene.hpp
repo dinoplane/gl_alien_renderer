@@ -5,10 +5,11 @@
 #include <unordered_map>
 // #include <memory>
 #include <mesh.hpp>
+
+#include <gpu_structs.hpp>
 class Entity;
 class Shader; // Change this to only use move semantics
 class Camera;
-struct GPUSphere;
 // class Light;
 // class Material;
 // class Entity;
@@ -18,9 +19,7 @@ struct EntityInstanceData
     Mesh instMesh; // essentially the bounding volumes and the mesh only need one of...
     uint instCount;
     std::vector<glm::mat4> modelToWorldMat;
-    GLuint instModelMatrixBuffer;
-    std::vector<GPUSphere> boundingVolumes;
-    GLuint instBoundingVolumeBuffer;
+    GLuint instModelMatrixBuffer; 
     std::vector<int> isInstMeshRendered;
     GLuint instMeshRenderedBuffer;
 

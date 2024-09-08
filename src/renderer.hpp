@@ -78,6 +78,7 @@ class Renderer {
     GLuint frustumCullDataUBO;
     struct FrustumCullDataUBOBlock {
         GPUFrustum frustum;
+        GPUSphere boundingVolume;
         uint instCount;
         uint doCull;
     } frustumCullDataUBOBlock;
