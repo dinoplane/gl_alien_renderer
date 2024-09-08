@@ -2,20 +2,60 @@
 #include <fstream>
 #include <sstream>
 #include <iomanip>
+
 #include <glm/gtc/type_ptr.hpp>
-
-
 #include <glm/gtx/string_cast.hpp>
+
+#include <camera.hpp>
+#include <volume.hpp>
+
+static glm::vec3 ParseVec3(const std::string& vec3Str)
+{
+    glm::vec3 vec;
+    std::istringstream iss(vec3Str);
+    iss >> vec.x >> vec.y >> vec.z;
+    return vec;
+}
+
 Scene SceneLoader::LoadScene(const SceneData& sceneData)
 {
     Scene scene;
-    // for (const EntityData& entityData : sceneData.entitiesData)
-    // {
+    // Add entities as instances. 
+    for (const EntityData& entityData : sceneData.entitiesData)
+    {
+        std::string classname = entityData.className;
+        if ( classname == "camera" ){
+            Camera camera;
+            glm::vec3 cameraAngles = Pa
+            camera.fovY = std::stof(entityData.kvps.at("fovy"));
+            camera.zNear = std::stof(entityData.kvps.at("near"));
+            camera.zFar = std::stof(entityData.kvps.at("far"));
+            camera.position = ParseVec3(entityData.kvps.at("origin"));
+            rseVec3(entityData.kvps.at("angles"));
+            camera.pitch = cameraAngles.x;
+            camera.yaw = cameraAngles.y;
+            scene.initCamConfigs.push_back(camera);
+
+        } else {
+            EntityInstanceDatax sceneEntity = scene.entityInstanceMap[];
+            // if (entityData != scene.entityInstanceMap.end()){
+            //     // Add instance
+            sceneEntity.modelToWorldMat.push_back(entityData.transform.GetModelMatrix());
+            sceneEntity.instMesh = Mesh::CreateCube();
+
+            sceneEntity.boundingVolumes.push_back(sceneEntity.instMesh.boundingVolume->ToGPUSphere()); // This does not spark joy, the bounding volume should just be part of the mesh :skull: 
+            sceneEntity.isInstMeshRendered.push_back(1);
+            sceneEntity.instCount += 1;
+
+            
+            
+            // }
+        }
     //     Entity entity;
     //     entity.mesh = new Mesh(entityData.meshData.vertices, entityData.meshData.indices);
     //     entity.transform = entityData.transform;
     //     scene.entities.push_back(entity);
-    // }
+    }
 
     // for (const Camera& camera : sceneData.cameraData)
     // {
@@ -25,13 +65,6 @@ Scene SceneLoader::LoadScene(const SceneData& sceneData)
     return scene;
 }
 
-static glm::vec3 ParseVec3(const std::string& vec3Str)
-{
-    glm::vec3 vec;
-    std::istringstream iss(vec3Str);
-    iss >> vec.x >> vec.y >> vec.z;
-    return vec;
-}
 
 SceneData SceneLoader::LoadSceneData(const std::string& scenePath)
 {
@@ -90,7 +123,7 @@ SceneData SceneLoader::LoadSceneData(const std::string& scenePath)
             } else {
 
             }
-            data.kvps.push_back({key, value});
+            data.kvps[key] = value;
         // if (token == "entity")
         // {
         //     EntityData entityData;

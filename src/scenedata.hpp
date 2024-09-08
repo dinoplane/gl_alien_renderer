@@ -4,6 +4,7 @@
 #include <util.h>
 #include <vector>
 #include <string>
+#include <unordered_map>
 
 #include <transform.hpp>
 
@@ -20,7 +21,7 @@ struct EntityData {
     std::string className;
     MeshData meshData;
     Transform transform;
-    std::vector<std::pair<std::string, std::string>> kvps;
+    std::unordered_map<std::string, std::string> kvps;
 };
 
 struct SceneData {

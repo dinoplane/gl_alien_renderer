@@ -107,7 +107,10 @@ class Renderer {
     void BindInstanceMesh(EntityInstanceData* entityInstanceData);
     void BindDebugMesh(Mesh* mesh);
 
-    void Render(Scene* scene);
+    // void Render(Scene* scene);
+
+
+    void Render(const Scene* scene);
     void RenderPostProcess();
 
 

@@ -15,7 +15,7 @@ struct GPUSphere;
 
 struct EntityInstanceData
 {
-    Mesh instMesh;
+    Mesh instMesh; // essentially the bounding volumes and the mesh only need one of...
     uint instCount;
     std::vector<glm::mat4> modelToWorldMat;
     GLuint instModelMatrixBuffer;
@@ -31,13 +31,15 @@ struct EntityInstanceData
     // material and mesh creates an id for
 };
 
+
+
 class Scene {
     public:
 
     // static void LoadMeshes();
     // static void LoadShaders();
     // static void LoadCameras();
-    std::unordered_map<uint, EntityInstanceData> entityInstanceMap;
+    std::unordered_map<std::string, EntityInstanceData> entityInstanceMap;
 
 
 
@@ -45,6 +47,7 @@ class Scene {
 
     std::vector<Mesh> debugMeshes;
     std::vector<Shader> shaders;
+    std::vector<Mesh> meshes;
     std::vector<Camera> initCamConfigs;
 
     Scene();

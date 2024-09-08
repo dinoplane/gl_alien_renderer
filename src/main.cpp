@@ -436,12 +436,12 @@ int main(int argc, char **argv)
     lastFrame = currentFrame;
 
     // Setup Scene
-    SceneLoader::LoadSceneData("./scene/simple.scn");
+    
 
 
 #define COMPUTE_DEMO 0
 #if COMPUTE_DEMO == 0
-    scene = Scene::GenerateDefaultScene();
+    scene = SceneLoader::LoadScene(SceneLoader::LoadSceneData("./scene/simple.scn"));//Scene::GenerateDefaultScene();
     for (size_t i = 0; i < RENDERER_COUNT; ++i){
         renderers.push_back(Renderer(SCR_WIDTH / RENDERER_COUNT, SCR_HEIGHT ));
     }

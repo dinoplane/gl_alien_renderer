@@ -324,7 +324,7 @@ void Renderer::BindInstanceMesh(EntityInstanceData* entInstData){
 
 }
 
-void Renderer::Render(Scene* scene){ // really bad, we are modifying the scene state
+void Renderer::Render(const Scene* scene){ // really bad, we are modifying the scene state
     // render
         glBindFramebuffer(GL_FRAMEBUFFER, FBO);
         glNamedFramebufferTexture(FBO, GL_COLOR_ATTACHMENT0, srcFBOTexture, 0);
@@ -372,17 +372,17 @@ void Renderer::Render(Scene* scene){ // really bad, we are modifying the scene s
         frustumCullDataUBOBlock.frustum = Camera::createFrustumFromCamera(Renderer::allCameras[0]).ToGPUFrustum();
         frustumCullDataUBOBlock.doCull = doCull;
         
-        for (uint entityIdx = 0; entityIdx < scene->entityInstanceMap.size(); ++entityIdx){
+        for ( const auto& [classname, entInstData] : scene->entityInstanceMap ){
             // scene->shaders.at(0).setMat4("model", scene->entityInstanceMap[entityIdx].transform.GetModelMatrix());
             // What I'm about to do justifies the need to separate static state from dynamic state
-            frustumCullDataUBOBlock.instCount = scene->entityInstanceMap[entityIdx].instCount;
-            //fmt::print("Instance Count: {}\n", scene->entityInstanceMap[entityIdx].instCount);
+            frustumCullDataUBOBlock.instCount = entInstData.instCount;
+            //fmt::print("Instance Count: {}\n", entInstData.instCount);
             glNamedBufferSubData(frustumCullDataUBO, 0, sizeof(FrustumCullDataUBOBlock), &frustumCullDataUBOBlock);
             glBindBufferBase(GL_UNIFORM_BUFFER, 6, frustumCullDataUBO);
 
             cullShader->use();
-            BindInstanceCullingBuffers(&scene->entityInstanceMap[entityIdx]);
-            glDispatchCompute(scene->entityInstanceMap[entityIdx].instCount, 1u, 1u);
+            BindInstanceCullingBuffers(&entInstData);
+            glDispatchCompute(entInstData.instCount, 1u, 1u);
 
             glMemoryBarrier( GL_ALL_BARRIER_BITS );
             glFinish();
@@ -394,8 +394,8 @@ void Renderer::Render(Scene* scene){ // really bad, we are modifying the scene s
             glBindVertexArray(instVAO);
 
 
-            BindInstanceMesh(&scene->entityInstanceMap[entityIdx]);
-            glDrawElementsInstanced(GL_TRIANGLES, scene->entityInstanceMap[entityIdx].instMesh.indexCount, GL_UNSIGNED_INT, 0, scene->entityInstanceMap[entityIdx].instCount);
+            BindInstanceMesh(&entInstData);
+            glDrawElementsInstanced(GL_TRIANGLES, entInstData.instMesh.indexCount, GL_UNSIGNED_INT, 0, entInstData.instCount);
         }
 
 

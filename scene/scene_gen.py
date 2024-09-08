@@ -20,15 +20,17 @@ def main():
                 for k in range(depth):
                     entData = {
                         "classname": "cube",
-                        "origin": "{} {} {}".format(2*i, 2*j, 2*k)
+                        "origin": "{} {} {}".format(2*i, 2*j, 2*k),
+                        "mesh" : "cube.gltf",
+                        "shaders": "base_inst.shader"
                     }
                     dump_entity_data(f, entData)
 
         dump_entity_data(f, {
             "classname" : "camera",
             "origin" : "-3 3 -3",
-            "angles" : "-315 -60 0",
-            "fovY" : "30",
+            "angles" : "-60 -315 0",
+            "fovy" : "30",
             "near" : "0.1",
             "far" : "10.0",
         })
@@ -36,8 +38,8 @@ def main():
         dump_entity_data(f, {
             "classname" : "camera",
             "origin" : "-10 20 -10",
-            "angles" : "-315 -60 0",
-            "fovY" : "30",
+            "angles" : "-60 -315 0",
+            "fovy" : "30",
             "near" : "0.1",
             "far" : "100.0",
         })

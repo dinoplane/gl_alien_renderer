@@ -37,7 +37,7 @@ Scene::Scene(){
     entities = std::vector<Entity>();
     shaders = std::vector<Shader>();
     initCamConfigs = std::vector<Camera>();
-    entityInstanceMap = std::unordered_map<uint, EntityInstanceData>();
+    entityInstanceMap = std::unordered_map<std::string, EntityInstanceData>();
 }
 
 Scene::~Scene(){
@@ -115,10 +115,10 @@ Scene Scene::GenerateBasicScene(){
     EntityInstanceData entityInstanceData;
     entityInstanceData.instMesh = Mesh::CreateCube();
     entityInstanceData.instCount = 0;
-    retScene.entityInstanceMap[0] =  entityInstanceData;
-    retScene.entityInstanceMap[0].modelToWorldMat.push_back(transform.GetModelMatrix());
-    retScene.entityInstanceMap[0].instCount += 1;
-    retScene.entityInstanceMap[0].GenerateInstanceBuffers();
+    retScene.entityInstanceMap["hi"] =  entityInstanceData;
+    retScene.entityInstanceMap["hi"].modelToWorldMat.push_back(transform.GetModelMatrix());
+    retScene.entityInstanceMap["hi"].instCount += 1;
+    retScene.entityInstanceMap["hi"].GenerateInstanceBuffers();
 
 
     retScene.shaders.push_back(Shader("./resources/shader/base.vert", "./resources/shader/base.frag"));
@@ -142,7 +142,7 @@ Scene Scene::GenerateDefaultScene(){
     entityInstanceData.instMesh = Mesh::CreateCube();
     entityInstanceData.instCount = 0;
     std::cout << (entityInstanceData.instMesh.boundingVolume->center.x) << std::endl;
-    retScene.entityInstanceMap[0] =  entityInstanceData;
+    retScene.entityInstanceMap["hi"] =  entityInstanceData;
 
     transform.SetRotation(glm::vec3(0.0, 0.0, 0.0));
     transform.SetScale(glm::vec3(1.0, 1.0, 1.0));
@@ -151,25 +151,25 @@ Scene Scene::GenerateDefaultScene(){
             for (int k = 0; k < LATTICE_LENGTH; ++k){
                 transform.SetPosition(glm::vec3(i * 2.0, j * 2.0, k * 2.0));
                 // retScene.entities.push_back({Mesh::CreateCube(), transform});
-                retScene.entityInstanceMap[0].modelToWorldMat.push_back(transform.GetModelMatrix());
-                retScene.entityInstanceMap[0].boundingVolumes.push_back(entityInstanceData.instMesh.boundingVolume->ToGPUSphere());
-                retScene.entityInstanceMap[0].instCount += 1;
+                retScene.entityInstanceMap["hi"].modelToWorldMat.push_back(transform.GetModelMatrix());
+                retScene.entityInstanceMap["hi"].boundingVolumes.push_back(entityInstanceData.instMesh.boundingVolume->ToGPUSphere());
+                retScene.entityInstanceMap["hi"].instCount += 1;
             }
         }
     }
-    retScene.entityInstanceMap[0].GenerateInstanceBuffers();
+    retScene.entityInstanceMap["hi"].GenerateInstanceBuffers();
 
 
-    transform.SetRotation(glm::vec3(0.0, 0.0, 0.0));
-    transform.SetScale(glm::vec3(1.0, 1.0, 1.0));
-    for (int i = 0; i < LATTICE_LENGTH; ++i){
-        for (int j = 0; j < LATTICE_LENGTH; ++j){
-            for (int k = 0; k < LATTICE_LENGTH; ++k){
-                transform.SetPosition(glm::vec3(i * -2.0, j * -2.0, k * -2.0));
-                retScene.entities.push_back({Mesh::CreatePyramid(), transform});
-            }
-        }
-    }
+    // transform.SetRotation(glm::vec3(0.0, 0.0, 0.0));
+    // transform.SetScale(glm::vec3(1.0, 1.0, 1.0));
+    // for (int i = 0; i < LATTICE_LENGTH; ++i){
+    //     for (int j = 0; j < LATTICE_LENGTH; ++j){
+    //         for (int k = 0; k < LATTICE_LENGTH; ++k){
+    //             transform.SetPosition(glm::vec3(i * -2.0, j * -2.0, k * -2.0));
+    //             retScene.entities.push_back({Mesh::CreatePyramid(), transform});
+    //         }
+    //     }
+    // }
 
     // transform.SetPosition(glm::vec3(0.0, 0.0, 0.0));
     // transform.SetRotation(glm::vec3(0.0, 0.0, 0.0));
