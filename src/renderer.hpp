@@ -103,9 +103,9 @@ class Renderer {
     void Resize(float w, float h);
     // void Update(const Scene& scene);
 
-    void BindMesh(Mesh* mesh);
-    void BindInstanceMesh(EntityInstanceData* entityInstanceData);
-    void BindDebugMesh(Mesh* mesh);
+    void BindMesh(const Mesh* mesh) ;
+    void BindInstanceMesh(const EntityInstanceData* entityInstanceData);
+    void BindDebugMesh(const Mesh* mesh);
 
     // void Render(Scene* scene);
 
@@ -119,7 +119,7 @@ class Renderer {
 
     // model transform buffer inside scene
 
-    void BindInstanceCullingBuffers(EntityInstanceData* entityInstanceData);
+    void BindInstanceCullingBuffers(const EntityInstanceData* entityInstanceData);
 
 
     void SwitchCamera(const Scene& scene);

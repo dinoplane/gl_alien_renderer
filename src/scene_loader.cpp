@@ -6,6 +6,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
 
+#include <shader_s.hpp>
 #include <camera.hpp>
 #include <volume.hpp>
 
@@ -26,28 +27,33 @@ Scene SceneLoader::LoadScene(const SceneData& sceneData)
         std::string classname = entityData.className;
         if ( classname == "camera" ){
             Camera camera;
-            glm::vec3 cameraAngles = Pa
+            glm::vec3 cameraAngles = ParseVec3(entityData.kvps.at("angles"));
             camera.fovY = std::stof(entityData.kvps.at("fovy"));
             camera.zNear = std::stof(entityData.kvps.at("near"));
             camera.zFar = std::stof(entityData.kvps.at("far"));
             camera.position = ParseVec3(entityData.kvps.at("origin"));
-            rseVec3(entityData.kvps.at("angles"));
             camera.pitch = cameraAngles.x;
             camera.yaw = cameraAngles.y;
             scene.initCamConfigs.push_back(camera);
 
         } else {
-            EntityInstanceDatax sceneEntity = scene.entityInstanceMap[];
+            const std::string meshMatKey = entityData.kvps.at("mesh") + entityData.kvps.at("material");
+            auto sceneEntity = scene.entityInstanceMap.find(meshMatKey);
+
+            if (sceneEntity == scene.entityInstanceMap.end())
+            {
+                sceneEntity = scene.entityInstanceMap.insert({meshMatKey, EntityInstanceData()}).first;
+                sceneEntity->second.instMesh = Mesh::CreateCube();
+            }
             // if (entityData != scene.entityInstanceMap.end()){
             //     // Add instance
-            sceneEntity.modelToWorldMat.push_back(entityData.transform.GetModelMatrix());
-            sceneEntity.instMesh = Mesh::CreateCube();
-
-            sceneEntity.boundingVolumes.push_back(sceneEntity.instMesh.boundingVolume->ToGPUSphere()); // This does not spark joy, the bounding volume should just be part of the mesh :skull: 
-            sceneEntity.isInstMeshRendered.push_back(1);
-            sceneEntity.instCount += 1;
-
+            sceneEntity->second.modelToWorldMat.push_back(entityData.transform.GetModelMatrix());
             
+
+            sceneEntity->second.boundingVolumes.push_back(sceneEntity->second.instMesh.boundingVolume->ToGPUSphere()); // This does not spark joy, the bounding volume should just be part of the mesh :skull: 
+            sceneEntity->second.isInstMeshRendered.push_back(1);
+            sceneEntity->second.instCount += 1;
+
             
             // }
         }
@@ -57,10 +63,18 @@ Scene SceneLoader::LoadScene(const SceneData& sceneData)
     //     scene.entities.push_back(entity);
     }
 
+    for (auto& [meshMatKey, entityInstanceData] : scene.entityInstanceMap){
+        entityInstanceData.GenerateInstanceBuffers();
+    }
+
     // for (const Camera& camera : sceneData.cameraData)
     // {
     //     scene.initCamConfigs.push_back(camera);
     // }
+
+    scene.shaders.push_back(Shader("./resources/shader/base.vert", "./resources/shader/base.frag"));
+    scene.shaders.push_back(Shader("./resources/shader/base_inst.vert", "./resources/shader/base_inst.frag"));
+
 
     return scene;
 }

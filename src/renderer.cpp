@@ -279,21 +279,21 @@ void Renderer::Resize(float w, float h){
 }
 
 
-void Renderer::BindMesh(Mesh * mesh){
+void Renderer::BindMesh(const Mesh * mesh){
     glVertexArrayVertexBuffer(VAO, 0, mesh->VBO, 0, sizeof(Vertex));
     glVertexArrayElementBuffer(VAO, mesh->EBO);
     // glBindBuffer(GL_ARRAY_BUFFER, mesh->VBO);
     // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->EBO);
 }
 
-void Renderer::BindDebugMesh(Mesh * mesh){
+void Renderer::BindDebugMesh(const Mesh * mesh){
     glVertexArrayVertexBuffer(debugVAO, 0, mesh->VBO, 0, sizeof(glm::vec3));
     glVertexArrayElementBuffer(debugVAO, mesh->EBO);
     // glBindBuffer(GL_ARRAY_BUFFER, mesh->VBO);
     // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->EBO);
 }
 
-void Renderer::BindInstanceCullingBuffers(EntityInstanceData* entInstData){
+void Renderer::BindInstanceCullingBuffers(const EntityInstanceData* entInstData){
     // Input --------------------------------------
     // Bind the bounding volumes
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, entInstData->instBoundingVolumeBuffer);
@@ -314,7 +314,7 @@ void Renderer::BindInstanceCullingBuffers(EntityInstanceData* entInstData){
 }
 
 
-void Renderer::BindInstanceMesh(EntityInstanceData* entInstData){
+void Renderer::BindInstanceMesh(const EntityInstanceData* entInstData){
     glVertexArrayVertexBuffer(instVAO, 0, entInstData->instMesh.VBO, 0, sizeof(Vertex));
     glVertexArrayElementBuffer(instVAO, entInstData->instMesh.EBO);
 

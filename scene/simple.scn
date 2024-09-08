@@ -1,34 +1,98 @@
 {
 "classname" "cube"
 "origin" "0 0 0"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
 }
 {
 "classname" "cube"
 "origin" "0 0 2"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+}
+{
+"classname" "cube"
+"origin" "0 0 4"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+}
+{
+"classname" "cube"
+"origin" "0 0 6"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
 }
 {
 "classname" "cube"
 "origin" "0 2 0"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
 }
 {
 "classname" "cube"
 "origin" "0 2 2"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+}
+{
+"classname" "cube"
+"origin" "0 2 4"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+}
+{
+"classname" "cube"
+"origin" "0 2 6"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
 }
 {
 "classname" "cube"
 "origin" "2 0 0"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
 }
 {
 "classname" "cube"
 "origin" "2 0 2"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+}
+{
+"classname" "cube"
+"origin" "2 0 4"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+}
+{
+"classname" "cube"
+"origin" "2 0 6"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
 }
 {
 "classname" "cube"
 "origin" "2 2 0"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
 }
 {
 "classname" "cube"
 "origin" "2 2 2"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+}
+{
+"classname" "cube"
+"origin" "2 2 4"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+}
+{
+"classname" "cube"
+"origin" "2 2 6"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
 }
 {
 "classname" "camera"

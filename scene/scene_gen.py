@@ -22,7 +22,7 @@ def main():
                         "classname": "cube",
                         "origin": "{} {} {}".format(2*i, 2*j, 2*k),
                         "mesh" : "cube.gltf",
-                        "shaders": "base_inst.shader"
+                        "material": "base_inst.shader"
                     }
                     dump_entity_data(f, entData)
 
