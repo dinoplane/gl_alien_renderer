@@ -6,6 +6,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
 
+#include <entity.hpp>
 #include <shader_s.hpp>
 #include <camera.hpp>
 #include <volume.hpp>
@@ -38,20 +39,24 @@ Scene SceneLoader::LoadScene(const SceneData& sceneData)
 
         } else {
             const std::string meshMatKey = entityData.kvps.at("mesh") + entityData.kvps.at("material");
-            auto sceneEntity = scene.entityInstanceMap.find(meshMatKey);
+            if (std::stoi(entityData.kvps.at("is_instanced"))){
+                auto sceneEntity = scene.entityInstanceMap.find(meshMatKey);
 
-            if (sceneEntity == scene.entityInstanceMap.end())
-            {
-                sceneEntity = scene.entityInstanceMap.insert({meshMatKey, EntityInstanceData()}).first;
-                sceneEntity->second.instMesh = Mesh::CreateCube();
+                if (sceneEntity == scene.entityInstanceMap.end())
+                {
+                    sceneEntity = scene.entityInstanceMap.insert({meshMatKey, EntityInstanceData()}).first;
+                    sceneEntity->second.instMesh = Mesh::CreateCube();
+                }
+                // if (entityData != scene.entityInstanceMap.end()){
+                //     // Add instance
+                sceneEntity->second.modelToWorldMat.push_back(entityData.transform.GetModelMatrix());
+                
+                // sceneEntity->second.boundingVolumes.push_back(sceneEntity->second.instMesh.boundingVolume->ToGPUSphere()); // This does not spark joy, the bounding volume should just be part of the mesh :skull: 
+                sceneEntity->second.isInstMeshRendered.push_back(1);
+                sceneEntity->second.instCount += 1;
+            } else {
+            scene.entities.push_back({Mesh::CreateCube(), entityData.transform});
             }
-            // if (entityData != scene.entityInstanceMap.end()){
-            //     // Add instance
-            sceneEntity->second.modelToWorldMat.push_back(entityData.transform.GetModelMatrix());
-            
-            // sceneEntity->second.boundingVolumes.push_back(sceneEntity->second.instMesh.boundingVolume->ToGPUSphere()); // This does not spark joy, the bounding volume should just be part of the mesh :skull: 
-            sceneEntity->second.isInstMeshRendered.push_back(1);
-            sceneEntity->second.instCount += 1;
 
             
             // }

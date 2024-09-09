@@ -32,7 +32,7 @@
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
-
+#include <Tracy.hpp>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window, Renderer* renderer, Scene* scene);
@@ -65,10 +65,14 @@ std::vector<Renderer> renderers;
 std::vector<ComputeRenderer> computeRenderers;
 
 uint currRendererIdx = 0;
-
+std::string scenePath; 
 // glm::vec3 lightPos = glm::vec3(0.0, 15.0, 5.0);
 
 void setupCmdArgs(int argc, char **argv){
+    if (argc == 2){
+        scenePath = argv[1];
+    }
+
     // int i = 1;
     // while (i < argc){
     //     if (argv[i][0] != '-') {
@@ -334,7 +338,7 @@ void message_callback(GLenum source, GLenum type, GLuint id, GLenum severity, GL
 
 
 void RenderToFrame (Scene* scene){
-
+    ZoneScoped;
     // First Pass
     for (Renderer& renderer : renderers){
         renderer.Render(scene);
@@ -400,6 +404,8 @@ int main(int argc, char **argv)
 		return -1;
 	}
 
+    setupCmdArgs(argc, argv);
+
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetKeyCallback(window, key_callback);
 
@@ -441,7 +447,7 @@ int main(int argc, char **argv)
 
 #define COMPUTE_DEMO 0
 #if COMPUTE_DEMO == 0
-    scene = SceneLoader::LoadScene(SceneLoader::LoadSceneData("./scene/simple.scn"));//Scene::GenerateDefaultScene();
+    scene = SceneLoader::LoadScene(SceneLoader::LoadSceneData(scenePath));//Scene::GenerateDefaultScene();
     for (size_t i = 0; i < RENDERER_COUNT; ++i){
         renderers.push_back(Renderer(SCR_WIDTH / RENDERER_COUNT, SCR_HEIGHT ));
     }
@@ -449,6 +455,7 @@ int main(int argc, char **argv)
     fmt::print("Number of renderers: {}\n", renderers.size());
     while (!glfwWindowShouldClose(window))
     {
+        ZoneScoped;
 
         processInput(window, &renderers[currRendererIdx], &scene);
         // for (Renderer& renderer : renderers){

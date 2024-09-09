@@ -5,7 +5,7 @@
 #include <gpu_structs.hpp>
 #include <fmt/core.h>
 #include <fmt/printf.h>
-
+#include <Tracy.hpp>
 
 #define ARRAY_COUNT(x) (sizeof(x) / sizeof((x)[0]))
 

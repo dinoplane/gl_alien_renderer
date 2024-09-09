@@ -326,6 +326,7 @@ void Renderer::BindInstanceMesh(const EntityInstanceData* entInstData){
 
 void Renderer::Render(const Scene* scene){ // really bad, we are modifying the scene state
     // render
+    ZoneScoped;
         glBindFramebuffer(GL_FRAMEBUFFER, FBO);
         glNamedFramebufferTexture(FBO, GL_COLOR_ATTACHMENT0, srcFBOTexture, 0);
 
@@ -347,7 +348,7 @@ void Renderer::Render(const Scene* scene){ // really bad, we are modifying the s
 
         glBindVertexArray(VAO);
         for (uint entityIdx = 0; entityIdx < scene->entities.size(); ++entityIdx){
-            if (scene->entities[entityIdx].mesh.boundingVolume->IsOnFrustum(Camera::createFrustumFromCamera(Renderer::allCameras[0]), scene->entities[entityIdx].transform)){
+            if (!Renderer::doCull || (Renderer::doCull && scene->entities[entityIdx].mesh.boundingVolume->IsOnFrustum(Camera::createFrustumFromCamera(Renderer::allCameras[0]), scene->entities[entityIdx].transform))){
                 scene->shaders.at(0).setMat4("model", scene->entities[entityIdx].transform.GetModelMatrix());
                 BindMesh(&scene->entities[entityIdx].mesh);
                 glDrawElements(GL_TRIANGLES, scene->entities[entityIdx].mesh.indexCount, GL_UNSIGNED_INT, 0);
@@ -370,9 +371,10 @@ void Renderer::Render(const Scene* scene){ // really bad, we are modifying the s
         // scene->shaders[1].setMat4("view", Renderer::allCameras[mainCameraIdx].getViewMatrix());
 
         frustumCullDataUBOBlock.frustum = Camera::createFrustumFromCamera(Renderer::allCameras[0]).ToGPUFrustum();
-        frustumCullDataUBOBlock.doCull = doCull;
+        frustumCullDataUBOBlock.doCull = Renderer::doCull;
         
         for ( const auto& [classname, entInstData] : scene->entityInstanceMap ){
+            ZoneScoped;
             // scene->shaders.at(0).setMat4("model", scene->entityInstanceMap[entityIdx].transform.GetModelMatrix());
             // What I'm about to do justifies the need to separate static state from dynamic state
             frustumCullDataUBOBlock.boundingVolume = entInstData.instMesh.boundingVolume->ToGPUSphere();

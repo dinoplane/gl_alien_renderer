@@ -10,17 +10,12 @@
 
 #include <camera.hpp>
 
-struct MeshData {
-    std::vector<Vertex> vertices;
-    std::vector<unsigned int> indices;
-
-    static MeshData CreateCube();
-};
-
 struct EntityData {
+    
     std::string className;
-    MeshData meshData;
+    //MeshData meshData;
     Transform transform;
+    bool isInstance;
     std::unordered_map<std::string, std::string> kvps;
 };
 
@@ -38,8 +33,6 @@ struct SceneData {
     // Wait thats lk troll and funny.
 };
 
-
-SceneData GenerateDefaultScene();
 
 void PrintSceneData(const SceneData& sceneData);
 

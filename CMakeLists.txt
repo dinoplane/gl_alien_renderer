@@ -71,12 +71,18 @@ target_sources(imgui PRIVATE
 add_library (stb INTERFACE)
 target_include_directories(stb INTERFACE ${VENDOR_DIR}/stb)
 
+#tracy
+option ( TRACY_ENABLE " " ON )
+option ( TRACY_ON_DEMAND " " ON )
+add_subdirectory ( ${VENDOR_DIR}/tracy ) 
+
+
 # Organize files
 include_directories(
    ${VENDOR_DIR}/glm/
    ${VENDOR_DIR}/glad/include/
    ${VENDOR_DIR}/stb/
-
+   ${VENDOR_DIR}/tracy/public/tracy
    ${SRC_DIR}/
 )
 
@@ -120,6 +126,7 @@ target_link_libraries(${PROJECT_NAME}
     glad
     imgui
     fmt::fmt
+    Tracy::TracyClient 
     ${CMAKE_DL_LIBS} # Needed for glad - https://stackoverflow.com/a/56842079/2394163
 )
 
