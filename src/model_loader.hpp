@@ -13,7 +13,7 @@ class ModelLoader {
     public: 
     static bool LoadGLTF(const std::filesystem::path path, fastgltf::Asset* retAsset);
 
-    static bool LoadMesh(const fastgltf::Asset& asset, const fastgltf::Mesh& mesh, Mesh* outMesh);
+    static bool LoadMesh(const fastgltf::Asset& asset, const fastgltf::Mesh& mesh, Primitive* outMesh);
 };
 
 #endif

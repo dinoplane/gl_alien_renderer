@@ -10,6 +10,7 @@
 #include <shader_s.hpp>
 #include <camera.hpp>
 #include <volume.hpp>
+#include <model_loader.hpp>
 
 static glm::vec3 ParseVec3(const std::string& vec3Str)
 {

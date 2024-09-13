@@ -51,10 +51,9 @@ bool ModelLoader::LoadGLTF(const std::filesystem::path path, fastgltf::Asset* re
 }
 
 bool ModelLoader::LoadMesh(const fastgltf::Asset& asset, const fastgltf::Mesh& mesh, 
-Mesh* outMesh) {
+Primitive* outMesh) {
     // Mesh outMesh = {};
 	std::vector<Vertex> vertices;
-	vertices.resize()
     for (auto it = mesh.primitives.begin(); it != mesh.primitives.end(); ++it) {
 		auto* positionIt = it->findAttribute("POSITION");
 		assert(positionIt != it->attributes.end()); // A mesh primitive is required to hold the POSITION attribute.
@@ -209,7 +208,7 @@ Mesh* outMesh) {
 		fastgltf::copyFromAccessor<uint>(asset, indexAccessor, indexPtr);
 		std::vector<uint> indices (indexPtr, indexPtr + indexAccessor.count);
 
-	Mesh::GenerateBuffers(outMesh, vertices, indices);
+	Primitive::GenerateBuffers(outMesh, vertices, indices);
         // glVertexArrayElementBuffer(vao, primitive.indexBuffer);
     }
 

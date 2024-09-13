@@ -18,25 +18,35 @@
 class Camera;
 class Renderer;
 
+struct Primitive;
+
 struct Mesh {
+    std::vector<Primitive> primitives;
+    Sphere* boundingVolume;
+
+    // Sphere* boundingVolume;
+    static Mesh CreateCube();
+    static Mesh CreateFrustum(const Camera& camera);
+    static Mesh CreatePyramid();
+};
+
+struct Primitive {
     // public:
     //     // Create a renderer class and compare times
 
         GLuint VBO, VAO, EBO; // keep the VAO in there, just in case.
-        static void GenerateBuffers(Mesh* mesh, const std::vector<Vertex> &vertices, const std::vector<uint>& indices);
+        static void GenerateBuffers(Primitive* mesh, const std::vector<Vertex> &vertices, const std::vector<uint>& indices);
         // static void Rebind(Mesh*mesh, Renderer* renderer);
-        static void GenerateDebugBuffers(Mesh* mesh, const std::vector<glm::vec3> &vertices, const std::vector<uint>& indices);
+        static void GenerateDebugBuffers(Primitive* mesh, const std::vector<glm::vec3> &vertices, const std::vector<uint>& indices);
         // static void RebindDebug(Mesh*mesh);
 
 
 
         GLsizei indexCount;
 
-        Sphere* boundingVolume;
-
-        static Mesh CreateCube();
-        static Mesh CreateFrustum(const Camera& camera);
-        static Mesh CreatePyramid();
+        static Primitive CreateCube();
+        static Primitive CreateFrustum(const Camera& camera);
+        static Primitive CreatePyramid();
         // static Mesh CreatePyramid();
 
     //     std::vector<float> vertices;

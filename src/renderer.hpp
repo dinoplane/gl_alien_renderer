@@ -13,7 +13,7 @@
 #include <unordered_map>
 class Scene;
 class Camera;
-struct Mesh;
+struct Primitive;
 struct EntityInstanceData;
 struct ComputeShader;
 // class Light;
@@ -24,7 +24,7 @@ class Renderer {
     public:
 
     static std::vector<Camera> allCameras;
-    static std::vector<Mesh> allDebugMeshes;
+    static std::vector<Primitive> allDebugMeshes;
     static Shader* debugShader;
     static Shader* debugWireShader;
 
@@ -104,14 +104,19 @@ class Renderer {
     void Resize(float w, float h);
     // void Update(const Scene& scene);
 
-    void BindMesh(const Mesh* mesh) ;
-    void BindInstanceMesh(const EntityInstanceData* entityInstanceData);
-    void BindDebugMesh(const Mesh* mesh);
+    // void BindMesh(const Primitive& mesh);
+    void BindPrimitive(const Primitive& mesh);
+
+    void BindInstanceData(const EntityInstanceData& entityInstanceData);
+    void BindInstancePrimitive(const Primitive& primitive);
+
+    
+    void BindDebugMesh(const Primitive& mesh);
 
     // void Render(Scene* scene);
 
 
-    void Render(const Scene* scene);
+    void Render(const Scene& scene);
     void RenderPostProcess();
 
 
@@ -120,7 +125,7 @@ class Renderer {
 
     // model transform buffer inside scene
 
-    void BindInstanceCullingBuffers(const EntityInstanceData* entityInstanceData);
+    void BindInstanceCullingBuffers(const EntityInstanceData& entityInstanceData);
 
 
     void SwitchCamera(const Scene& scene);

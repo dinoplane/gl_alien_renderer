@@ -79,7 +79,7 @@ fastgltf::Asset asset;
 void setupCmdArgs(int argc, char **argv){
     if (argc == 2){
         scenePath = argv[1];
-    }
+    } else scenePath = "./resources/assets/scene/scene.scn";
 
     // int i = 1;
     // while (i < argc){
@@ -345,7 +345,7 @@ void message_callback(GLenum source, GLenum type, GLuint id, GLenum severity, GL
 // }
 
 
-void RenderToFrame (Scene* scene){
+static void RenderToFrame (const Scene& scene){
     ZoneScoped;
     // First Pass
     for (Renderer& renderer : renderers){
@@ -450,19 +450,19 @@ int main(int argc, char **argv)
     lastFrame = currentFrame;
 
     // Setup Scene
-    fastgltf::Asset asset;
-    if (!ModelLoader::LoadGLTF("./resources/assets/models/teapot.gltf", &asset))
-    {
-        assert(false);
-    }
+    // fastgltf::Asset asset;
+    // if (!ModelLoader::LoadGLTF("./resources/assets/models/teapot.gltf", &asset))
+    // {
+    //     assert(false);
+    // }
 
-    for (auto& mesh : asset.meshes) {
-        Mesh* teapot;
+    // for (auto& mesh : asset.meshes) {
+    //     Primitive* teapot;
 
-        if (!ModelLoader::LoadMesh(asset, mesh, teapot)) {
-            assert(false);
-        }
-    }
+    //     if (!ModelLoader::LoadMesh(asset, mesh, teapot)) {
+    //         assert(false);
+    //     }
+    // }
 
 #define COMPUTE_DEMO 0
 #if COMPUTE_DEMO == 0
@@ -481,7 +481,7 @@ int main(int argc, char **argv)
         //     renderer.Render(&scene);
         // }
         // renderers[currRendererIdx].Render(&scene);
-        RenderToFrame( &scene );
+        RenderToFrame( scene );
 
 
     {

@@ -1,0 +1,891 @@
+{
+"classname" "cube"
+"origin" "0 0 0"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "0 0 2"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "0 0 4"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "0 0 6"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "0 0 8"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "0 2 0"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "0 2 2"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "0 2 4"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "0 2 6"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "0 2 8"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "0 4 0"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "0 4 2"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "0 4 4"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "0 4 6"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "0 4 8"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "0 6 0"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "0 6 2"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "0 6 4"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "0 6 6"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "0 6 8"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "0 8 0"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "0 8 2"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "0 8 4"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "0 8 6"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "0 8 8"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "2 0 0"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "2 0 2"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "2 0 4"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "2 0 6"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "2 0 8"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "2 2 0"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "2 2 2"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "2 2 4"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "2 2 6"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "2 2 8"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "2 4 0"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "2 4 2"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "2 4 4"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "2 4 6"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "2 4 8"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "2 6 0"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "2 6 2"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "2 6 4"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "2 6 6"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "2 6 8"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "2 8 0"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "2 8 2"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "2 8 4"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "2 8 6"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "2 8 8"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "4 0 0"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "4 0 2"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "4 0 4"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "4 0 6"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "4 0 8"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "4 2 0"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "4 2 2"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "4 2 4"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "4 2 6"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "4 2 8"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "4 4 0"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "4 4 2"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "4 4 4"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "4 4 6"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "4 4 8"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "4 6 0"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "4 6 2"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "4 6 4"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "4 6 6"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "4 6 8"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "4 8 0"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "4 8 2"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "4 8 4"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "4 8 6"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "4 8 8"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "6 0 0"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "6 0 2"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "6 0 4"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "6 0 6"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "6 0 8"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "6 2 0"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "6 2 2"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "6 2 4"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "6 2 6"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "6 2 8"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "6 4 0"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "6 4 2"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "6 4 4"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "6 4 6"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "6 4 8"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "6 6 0"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "6 6 2"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "6 6 4"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "6 6 6"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "6 6 8"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "6 8 0"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "6 8 2"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "6 8 4"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "6 8 6"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "6 8 8"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "8 0 0"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "8 0 2"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "8 0 4"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "8 0 6"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "8 0 8"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "8 2 0"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "8 2 2"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "8 2 4"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "8 2 6"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "8 2 8"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "8 4 0"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "8 4 2"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "8 4 4"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "8 4 6"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "8 4 8"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "8 6 0"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "8 6 2"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "8 6 4"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "8 6 6"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "8 6 8"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "8 8 0"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "8 8 2"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "8 8 4"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "8 8 6"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "8 8 8"
+"mesh" "cube.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "camera"
+"origin" "-3 3 -3"
+"angles" "-60 -315 0"
+"fovy" "30"
+"near" "0.1"
+"far" "10.0"
+}
+{
+"classname" "camera"
+"origin" "-10 20 -10"
+"angles" "-60 -315 0"
+"fovy" "30"
+"near" "0.1"
+"far" "100.0"
+}

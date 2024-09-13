@@ -4,8 +4,30 @@
 
 #include <iostream>
 
+Mesh Mesh::CreateCube(){
+    Mesh mesh;
+    mesh.primitives.push_back(Primitive::CreateCube());
+    mesh.boundingVolume = new Sphere(glm::vec3(0.f, 0.f, 0.f), 0.866f);
+    return mesh;
+}
 
-void Mesh::GenerateBuffers(Mesh* mesh, const std::vector<Vertex> &vertices, const std::vector<uint> &indices){
+Mesh Mesh::CreateFrustum(const Camera& cam){
+    Mesh mesh;
+    mesh.primitives.push_back(Primitive::CreateFrustum(cam));
+    mesh.boundingVolume = new Sphere(glm::vec3(0.f, 0.f, 0.f), 0.866f);
+    
+    return mesh;
+}
+
+Mesh Mesh::CreatePyramid(){
+    Mesh mesh;
+    mesh.primitives.push_back(Primitive::CreatePyramid());
+    mesh.boundingVolume = new Sphere(glm::vec3(0.f, 0.f, 0.f), 0.707f);
+    return mesh;
+}
+
+
+void Primitive::GenerateBuffers(Primitive* mesh, const std::vector<Vertex> &vertices, const std::vector<uint> &indices){
     glCreateBuffers(1, &mesh->VBO);
     // glGenBuffers(1, &mesh->VBO);
     // glBindBuffer(GL_ARRAY_BUFFER, mesh->VBO);
@@ -19,7 +41,7 @@ void Mesh::GenerateBuffers(Mesh* mesh, const std::vector<Vertex> &vertices, cons
     // glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(),  GL_STATIC_DRAW);
 }
 
-void Mesh::GenerateDebugBuffers(Mesh* mesh, const std::vector<glm::vec3> &vertices, const std::vector<uint> &indices){
+void Primitive::GenerateDebugBuffers(Primitive* mesh, const std::vector<glm::vec3> &vertices, const std::vector<uint> &indices){
     glCreateBuffers(1, &mesh->VBO);
     // glGenBuffers(1, &mesh->VBO);
     // glBindBuffer(GL_ARRAY_BUFFER, mesh->VBO);
@@ -45,7 +67,7 @@ void Mesh::GenerateDebugBuffers(Mesh* mesh, const std::vector<glm::vec3> &vertic
 //     glVertexArrayAttribBinding(mesh->VAO, 0, 0);
 // }
 
-Mesh Mesh::CreateCube(){
+Primitive Primitive::CreateCube(){
     const std::vector<Vertex> vertices ({ // counterclockwise
         // positions                   // normals                     // texcoords
 
@@ -100,16 +122,15 @@ Mesh Mesh::CreateCube(){
             20, 21, 22, 22, 23, 20
     };
 
-    Mesh mesh;
+    Primitive mesh;
     GenerateBuffers(&mesh, vertices, indices);
     mesh.indexCount = indices.size();
-    mesh.boundingVolume = new Sphere(glm::vec3(0.f, 0.f, 0.f), 0.866f);
     return mesh;
 }
 
 
 
-Mesh Mesh::CreateFrustum(const Camera& cam){
+Primitive Primitive::CreateFrustum(const Camera& cam){
     const float aspect = cam.width / cam.height;
     const float halfVSide = cam.zFar * tanf(glm::radians(cam.fovY) * .5f);
     const float halfHSide = halfVSide * aspect;
@@ -134,14 +155,13 @@ Mesh Mesh::CreateFrustum(const Camera& cam){
         0,  4, 3,         // Bottom face
         });
 
-    Mesh mesh;
+    Primitive mesh;
     GenerateDebugBuffers(&mesh, vertices, indices);
     mesh.indexCount = indices.size();
-    mesh.boundingVolume = new Sphere(glm::vec3(0.f, 0.f, 0.f), 0.707f);
     return mesh;
 }
 
-Mesh Mesh::CreatePyramid(){
+Primitive Primitive::CreatePyramid(){
     const std::vector<Vertex>
     vertices ({
         // positions                // colors              // texcoords
@@ -179,10 +199,10 @@ Mesh Mesh::CreatePyramid(){
         12, 13, 14,  // bot tr br tl
         14, 15, 12   // bot br bl tl
     });
-    Mesh mesh;
+    Primitive mesh;
     GenerateBuffers(&mesh, vertices, indices);
     mesh.indexCount = indices.size();
 
-    mesh.boundingVolume = new Sphere(glm::vec3(0.f, 0.f, 0.f), 0.86f);
+
     return mesh;
 }

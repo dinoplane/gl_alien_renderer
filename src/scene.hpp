@@ -44,7 +44,7 @@ class Scene {
 
     std::vector<Entity> entities;
 
-    std::vector<Mesh> debugMeshes;
+    std::vector<Primitive> debugMeshes;
     std::vector<Shader> shaders;
     std::vector<Mesh> meshes;
     std::vector<Camera> initCamConfigs;
