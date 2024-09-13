@@ -4,6 +4,11 @@
 #include <glm/gtx/string_cast.hpp>
 #include <glm/gtc/random.hpp>
 
+#include <fastgltf/core.hpp>
+#include <fastgltf/types.hpp>
+#include <fastgltf/tools.hpp>
+
+
 #include <shader_s.hpp>
 #include <camera.hpp>
 #include <mesh.hpp>
@@ -14,6 +19,7 @@
 #include <renderer.hpp>
 #include <comp_renderer.hpp>
 #include <scene_loader.hpp>
+#include <model_loader.hpp>
 
 
 #include <cstdlib>
@@ -67,6 +73,8 @@ std::vector<ComputeRenderer> computeRenderers;
 uint currRendererIdx = 0;
 std::string scenePath; 
 // glm::vec3 lightPos = glm::vec3(0.0, 15.0, 5.0);
+
+fastgltf::Asset asset;
 
 void setupCmdArgs(int argc, char **argv){
     if (argc == 2){
@@ -442,8 +450,19 @@ int main(int argc, char **argv)
     lastFrame = currentFrame;
 
     // Setup Scene
-    
+    fastgltf::Asset asset;
+    if (!ModelLoader::LoadGLTF("./resources/assets/models/teapot.gltf", &asset))
+    {
+        assert(false);
+    }
 
+    for (auto& mesh : asset.meshes) {
+        Mesh* teapot;
+
+        if (!ModelLoader::LoadMesh(asset, mesh, teapot)) {
+            assert(false);
+        }
+    }
 
 #define COMPUTE_DEMO 0
 #if COMPUTE_DEMO == 0

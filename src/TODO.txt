@@ -14,6 +14,8 @@ TODO Abstract organize the logic better
     My excuse for allowing memory leaks lol!
 - Get rid of include clutter
 
+- A mesh is an array of primitives
+
 DONE
 - GPU Frustum Culling + instancing
 - Multiple Cameras

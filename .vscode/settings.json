@@ -64,7 +64,25 @@
         "set": "cpp",
         "unordered_set": "cpp",
         "condition_variable": "cpp",
-        "mutex": "cpp"
+        "mutex": "cpp",
+        "any": "cpp",
+        "bitset": "cpp",
+        "charconv": "cpp",
+        "codecvt": "cpp",
+        "complex": "cpp",
+        "csetjmp": "cpp",
+        "forward_list": "cpp",
+        "list": "cpp",
+        "expected": "cpp",
+        "regex": "cpp",
+        "format": "cpp",
+        "scoped_allocator": "cpp",
+        "shared_mutex": "cpp",
+        "span": "cpp",
+        "stdfloat": "cpp",
+        "typeindex": "cpp",
+        "valarray": "cpp",
+        "variant": "cpp"
     },
     "C_Cpp.default.compilerPath": "/usr/bin/gcc"
 }
