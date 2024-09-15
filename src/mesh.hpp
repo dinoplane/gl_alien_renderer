@@ -21,8 +21,9 @@ class Renderer;
 struct Primitive;
 
 struct Mesh {
+
     std::vector<Primitive> primitives;
-    Sphere* boundingVolume;
+    Sphere boundingVolume;
 
     // Sphere* boundingVolume;
     static Mesh CreateCube();
@@ -35,10 +36,10 @@ struct Primitive {
     //     // Create a renderer class and compare times
 
         GLuint VBO, VAO, EBO; // keep the VAO in there, just in case.
-        static void GenerateBuffers(Primitive* mesh, const std::vector<Vertex> &vertices, const std::vector<uint>& indices);
-        // static void Rebind(Mesh*mesh, Renderer* renderer);
-        static void GenerateDebugBuffers(Primitive* mesh, const std::vector<glm::vec3> &vertices, const std::vector<uint>& indices);
-        // static void RebindDebug(Mesh*mesh);
+        static void GenerateBuffers(Primitive* primitive, const std::vector<Vertex> &vertices, const std::vector<uint>& indices);
+        // static void Rebind(Mesh*primitive, Renderer* renderer);
+        static void GenerateDebugBuffers(Primitive* primitive, const std::vector<glm::vec3> &vertices, const std::vector<uint>& indices);
+        // static void RebindDebug(Mesh*primitive);
 
 
 

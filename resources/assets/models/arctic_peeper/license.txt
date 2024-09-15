@@ -1,0 +1,11 @@
+Model Information:
+* title:	Arctic Peeper
+* source:	https://sketchfab.com/3d-models/arctic-peeper-476a7198566f40529d7bd4795c95fdc7
+* author:	gavinpgamer1 (https://sketchfab.com/gavinpgamer1)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Arctic Peeper" (https://sketchfab.com/3d-models/arctic-peeper-476a7198566f40529d7bd4795c95fdc7) by gavinpgamer1 (https://sketchfab.com/gavinpgamer1) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

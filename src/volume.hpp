@@ -26,6 +26,10 @@ struct Sphere : public Volume
     glm::vec3 center{ 0.f, 0.f, 0.f };
     float radius{ 0.f };
 
+    Sphere()
+        : center{ 0.f, 0.f, 0.f }, radius{ 0.f }
+    {}
+
     Sphere(const glm::vec3& inCenter, float inRadius)
         : center{ inCenter }, radius{ inRadius }
     {}
@@ -38,7 +42,7 @@ struct Sphere : public Volume
     bool IsOnFrustum(const Frustum& camFrustum,
                                             const Transform& modelTransform) const final;
 
-    GPUSphere ToGPUSphere()
+    GPUSphere ToGPUSphere() const 
     {
         return { {center.x, center.y, center.z, radius} };
     }

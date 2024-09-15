@@ -1,7 +1,14 @@
  #include <model_loader.hpp>
 
+#include <util.h>
+#include <mesh.hpp>
+#include <model.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/string_cast.hpp>
+ 
+ #include <limits>
  #include <iostream>
- #include <util.h>
+ 
 
 bool ModelLoader::LoadGLTF(const std::filesystem::path path, fastgltf::Asset* retAsset) {
 	if (!std::filesystem::exists(path)) {
@@ -51,17 +58,18 @@ bool ModelLoader::LoadGLTF(const std::filesystem::path path, fastgltf::Asset* re
 }
 
 bool ModelLoader::LoadMesh(const fastgltf::Asset& asset, const fastgltf::Mesh& mesh, 
-Primitive* outMesh) {
+Mesh* outMesh) {
     // Mesh outMesh = {};
-	std::vector<Vertex> vertices;
+	Mesh retMesh;
+	glm::vec3 min = glm::vec3(std::numeric_limits<float>::max());
+	glm::vec3 max = glm::vec3(std::numeric_limits<float>::min());
+
     for (auto it = mesh.primitives.begin(); it != mesh.primitives.end(); ++it) {
 		auto* positionIt = it->findAttribute("POSITION");
 		assert(positionIt != it->attributes.end()); // A mesh primitive is required to hold the POSITION attribute.
 		assert(it->indicesAccessor.has_value()); // We specify GenerateMeshIndices, so we should always have indices
 
-        // // Generate the VAO
-        // GLuint vao = GL_NONE;
-        // glCreateVertexArrays(1, &vao);
+
 
 		std::size_t baseColorTexcoordIndex = 0;
 
@@ -91,11 +99,17 @@ Primitive* outMesh) {
 			// primitive.materialUniformsIndex = 0;
 		// }
 
-        {
+        
             // Position
             auto& positionAccessor = asset.accessors[positionIt->accessorIndex];
             if (!positionAccessor.bufferViewIndex.has_value())
                 continue;
+			
+			fmt::print("Position Accessor Count: {}\n", positionAccessor.count);
+
+			std::vector<Vertex> vertices;
+			vertices.resize(positionAccessor.count);
+
 
 			// Create the vertex buffer for this primitive, and use the accessor tools to copy directly into the mapped buffer.
 			// glCreateBuffers(1, &primitive.vertexBuffer);
@@ -103,8 +117,11 @@ Primitive* outMesh) {
 			// auto* vertices = static_cast<Vertex*>(glMapNamedBuffer(primitive.vertexBuffer, GL_WRITE_ONLY));
 			fastgltf::iterateAccessorWithIndex<fastgltf::math::fvec3>(asset, positionAccessor, [&](fastgltf::math::fvec3 pos, std::size_t idx) {
 				vertices[idx].position = glm::vec3(pos.x(), pos.y(), pos.z());
-				vertices[idx].normal = glm::vec3(0.0f, 0.0f, 0.0f);
+				min = glm::min(min, vertices[idx].position);
+				max = glm::max(max, vertices[idx].position);
+				vertices[idx].normal = glm::vec3(1.0f, 0.0f, 0.0f);
 				vertices[idx].texcoords = glm::vec2(0.0f, 0.0f);
+				// fmt::print("Vertex Position: {}\n", glm::to_string(vertices[idx].position));
 			});
 			// glUnmapNamedBuffer(primitive.vertexBuffer);
 
@@ -116,9 +133,9 @@ Primitive* outMesh) {
 
 			// glVertexArrayVertexBuffer(vao, 0, primitive.vertexBuffer,
 			// 						  0, sizeof(Vertex));
-        }
+        
 
-		auto texcoordAttribute = std::string("TEXCOORD_") + std::to_string(baseColorTexcoordIndex);
+		auto texcoordAttribute = std::string("TEXCOORD_0");// + std::to_string(baseColorTexcoordIndex);
         if (const auto* texcoord = it->findAttribute(texcoordAttribute); texcoord != it->attributes.end()) {
             // Tex coord
 			auto& texCoordAccessor = asset.accessors[texcoord->accessorIndex];
@@ -175,9 +192,8 @@ Primitive* outMesh) {
 		// draw.firstIndex = 0;
 
 
-        auto& indexAccessor = asset.accessors[it->indicesAccessor.value()];
-        if (!indexAccessor.bufferViewIndex.has_value())
-            return false;
+        // if (!indexAccessor.bufferViewIndex.has_value())
+        //     return false;
         // draw.count = static_cast<std::uint32_t>(indexAccessor.count);
 		
 
@@ -204,18 +220,72 @@ Primitive* outMesh) {
 		// }
 
 
-		uint* indexPtr;
-		fastgltf::copyFromAccessor<uint>(asset, indexAccessor, indexPtr);
-		std::vector<uint> indices (indexPtr, indexPtr + indexAccessor.count);
+        auto& indexAccessor = asset.accessors[it->indicesAccessor.value()];
+		indexAccessor.count;
+		std::vector<uint> indices (indexAccessor.count, 0u);
+		fastgltf::iterateAccessorWithIndex<uint>(asset, indexAccessor, [&](uint indiceIdx, std::size_t idx) {
+				indices[idx] = indiceIdx;
+		});
 
-	Primitive::GenerateBuffers(outMesh, vertices, indices);
+		// uint32_t* indexPtr;
+		// fastgltf::copyFromAccessor<uint32_t>(asset, indexAccessor, indexPtr);
+		// (indexPtr, indexPtr + indexAccessor.count);
+
+	Primitive outPrimitive;
+	
+	Primitive::GenerateBuffers(&outPrimitive, vertices, indices);
+	retMesh.primitives.push_back(outPrimitive);
         // glVertexArrayElementBuffer(vao, primitive.indexBuffer);
     }
 
+	retMesh.boundingVolume = Sphere((min + max) / 2.0f, glm::distance(min, max) / 2.0f);
+
+	*outMesh = std::move(retMesh);
     // Create the buffer holding all of our primitive structs.
 
     return true;
 }
+
+bool ModelLoader::LoadModel(const fastgltf::Asset& asset, Model * model){
+	model->meshes.resize(asset.meshes.size());
+
+	for ( size_t meshIdx = 0; meshIdx < asset.meshes.size(); ++meshIdx ){
+		const fastgltf::Mesh& gltfMesh = asset.meshes[meshIdx];
+		Mesh& mesh = model->meshes[meshIdx];
+		if (!LoadMesh(asset, gltfMesh, &mesh)){
+			assert(false);
+			return false;
+		}
+	}
+
+	// const auto& sceneIndex = asset.defaultScene.value_or(0);
+	glm::vec3 min = glm::vec3(std::numeric_limits<float>::max());
+	glm::vec3 max = glm::vec3(std::numeric_limits<float>::min());
+	fastgltf::iterateSceneNodes(asset, 0u, fastgltf::math::fmat4x4(),
+								[&](const fastgltf::Node& node, fastgltf::math::fmat4x4 matrix) {
+		if (node.meshIndex.has_value()) {
+			model->nodes.push_back( Node( glm::make_mat4(matrix.data()), *node.meshIndex ) );
+			min = glm::min(min, model->meshes[*node.meshIndex].boundingVolume.center - glm::vec3(model->meshes[*node.meshIndex].boundingVolume.radius));
+			max = glm::max(max, model->meshes[*node.meshIndex].boundingVolume.center + glm::vec3(model->meshes[*node.meshIndex].boundingVolume.radius));
+	// 		// drawMesh(&viewer, *node.meshIndex, matrix);
+		}
+	// 	// node.children
+	});
+	model->boundingVolume = Sphere((min + max) / 2.0f, glm::distance(min, max) / 2.0f);
+
+	return true;
+}
+
+
+/*
+			fastgltf::iterateSceneNodes(asset, sceneIndex, fastgltf::math::fmat4x4(),
+										[&](fastgltf::Node& node, fastgltf::math::fmat4x4 matrix) {
+				if (node.meshIndex.has_value()) {
+					drawMesh(&viewer, *node.meshIndex, matrix);
+				}
+			});
+
+*/
 
 /*
 void drawMesh(Viewer* viewer, std::size_t meshIndex, fastgltf::math::fmat4x4 matrix) {

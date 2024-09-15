@@ -84,6 +84,12 @@ class Renderer {
     } frustumCullDataUBOBlock;
     static uint doCull;
 
+    GLuint meshPropertiesUBO;
+    struct MeshPropertiesUBOBlock {
+        glm::mat4 modelFromMesh;
+    } meshPropertiesUBOBlock;
+    
+
     float width;
     float height;
 

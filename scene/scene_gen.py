@@ -15,13 +15,21 @@ def main():
         height = int(sys.argv[3])
         depth = int(sys.argv[4])
 
+        DIST_INCR = 2
+        ANGLE_INCR = 5
+        SCALE = 2.0
+
         for i in range(width):
             for j in range(height):
                 for k in range(depth):
                     entData = {
-                        "classname": "cube",
-                        "origin": "{} {} {}".format(2*i, 2*j, 2*k),
-                        "mesh" : "cube.gltf",
+                        "classname": "fumo",
+                        "origin": "{} {} {}".format(DIST_INCR*i, DIST_INCR*j, DIST_INCR*k),
+                        "angles": "{} {} {}".format(ANGLE_INCR*i, ANGLE_INCR*j, ANGLE_INCR*k),
+                        
+                        "scale": "{} {} {}".format(SCALE, SCALE, SCALE),
+                        
+                        "mesh" : "./resources/assets/models/fumo/scene.gltf",
                         "material": "base_inst.shader",
                         "is_instanced" : "1"
                     }

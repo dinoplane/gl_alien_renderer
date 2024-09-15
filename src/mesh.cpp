@@ -7,14 +7,14 @@
 Mesh Mesh::CreateCube(){
     Mesh mesh;
     mesh.primitives.push_back(Primitive::CreateCube());
-    mesh.boundingVolume = new Sphere(glm::vec3(0.f, 0.f, 0.f), 0.866f);
+    mesh.boundingVolume = Sphere(glm::vec3(0.f, 0.f, 0.f), 0.866f);
     return mesh;
 }
 
 Mesh Mesh::CreateFrustum(const Camera& cam){
     Mesh mesh;
     mesh.primitives.push_back(Primitive::CreateFrustum(cam));
-    mesh.boundingVolume = new Sphere(glm::vec3(0.f, 0.f, 0.f), 0.866f);
+    mesh.boundingVolume = Sphere(glm::vec3(0.f, 0.f, 0.f), 0.866f);
     
     return mesh;
 }
@@ -22,40 +22,43 @@ Mesh Mesh::CreateFrustum(const Camera& cam){
 Mesh Mesh::CreatePyramid(){
     Mesh mesh;
     mesh.primitives.push_back(Primitive::CreatePyramid());
-    mesh.boundingVolume = new Sphere(glm::vec3(0.f, 0.f, 0.f), 0.707f);
+    mesh.boundingVolume = Sphere(glm::vec3(0.f, 0.f, 0.f), 0.707f);
     return mesh;
 }
 
 
-void Primitive::GenerateBuffers(Primitive* mesh, const std::vector<Vertex> &vertices, const std::vector<uint> &indices){
-    glCreateBuffers(1, &mesh->VBO);
-    // glGenBuffers(1, &mesh->VBO);
-    // glBindBuffer(GL_ARRAY_BUFFER, mesh->VBO);
-    glNamedBufferStorage(mesh->VBO, vertices.size() * sizeof(Vertex), vertices.data(), GL_DYNAMIC_STORAGE_BIT);
+void Primitive::GenerateBuffers(Primitive* primitive, const std::vector<Vertex> &vertices, const std::vector<uint> &indices){
+    primitive->indexCount = indices.size();
+    glCreateBuffers(1, &primitive->VBO);
+    // glGenBuffers(1, &primitive->VBO);
+    // glBindBuffer(GL_ARRAY_BUFFER, primitive->VBO);
+    glNamedBufferStorage(primitive->VBO, vertices.size() * sizeof(Vertex), vertices.data(), GL_DYNAMIC_STORAGE_BIT);
     // glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(),  GL_STATIC_DRAW);
 
-    glCreateBuffers(1, &mesh->EBO);
-    // glGenBuffers(1, &mesh->EBO);
-    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->EBO);
-    glNamedBufferStorage(mesh->EBO, indices.size() * sizeof(uint), indices.data(), GL_DYNAMIC_STORAGE_BIT);
+    glCreateBuffers(1, &primitive->EBO);
+    // glGenBuffers(1, &primitive->EBO);
+    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, primitive->EBO);
+    glNamedBufferStorage(primitive->EBO, indices.size() * sizeof(uint), indices.data(), GL_DYNAMIC_STORAGE_BIT);
     // glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(),  GL_STATIC_DRAW);
 }
 
-void Primitive::GenerateDebugBuffers(Primitive* mesh, const std::vector<glm::vec3> &vertices, const std::vector<uint> &indices){
-    glCreateBuffers(1, &mesh->VBO);
-    // glGenBuffers(1, &mesh->VBO);
-    // glBindBuffer(GL_ARRAY_BUFFER, mesh->VBO);
-    glNamedBufferStorage(mesh->VBO, vertices.size() * sizeof(glm::vec3), vertices.data(), GL_DYNAMIC_STORAGE_BIT);
+void Primitive::GenerateDebugBuffers(Primitive* primitive, const std::vector<glm::vec3> &vertices, const std::vector<uint> &indices){
+
+    primitive->indexCount = indices.size();
+    glCreateBuffers(1, &primitive->VBO);
+    // glGenBuffers(1, &primitive->VBO);
+    // glBindBuffer(GL_ARRAY_BUFFER, primitive->VBO);
+    glNamedBufferStorage(primitive->VBO, vertices.size() * sizeof(glm::vec3), vertices.data(), GL_DYNAMIC_STORAGE_BIT);
     // glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(),  GL_STATIC_DRAW);
 
-    glCreateBuffers(1, &mesh->EBO);
-    // glGenBuffers(1, &mesh->EBO);
-    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->EBO);
-    glNamedBufferStorage(mesh->EBO, indices.size() * sizeof(uint), indices.data(), GL_DYNAMIC_STORAGE_BIT);
+    glCreateBuffers(1, &primitive->EBO);
+    // glGenBuffers(1, &primitive->EBO);
+    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, primitive->EBO);
+    glNamedBufferStorage(primitive->EBO, indices.size() * sizeof(uint), indices.data(), GL_DYNAMIC_STORAGE_BIT);
     // glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(),  GL_STATIC_DRAW);
 }
 
-// void Mesh::RebindDebug(Mesh* mesh){
+// void Mesh::RebindDebug(Mesh* primitive){
 //     glBindVertexArray(mesh->VAO);
 //     glBindBuffer(GL_ARRAY_BUFFER, mesh->VBO);
 //     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->EBO);
@@ -124,7 +127,7 @@ Primitive Primitive::CreateCube(){
 
     Primitive mesh;
     GenerateBuffers(&mesh, vertices, indices);
-    mesh.indexCount = indices.size();
+    
     return mesh;
 }
 
@@ -157,7 +160,6 @@ Primitive Primitive::CreateFrustum(const Camera& cam){
 
     Primitive mesh;
     GenerateDebugBuffers(&mesh, vertices, indices);
-    mesh.indexCount = indices.size();
     return mesh;
 }
 
@@ -201,8 +203,6 @@ Primitive Primitive::CreatePyramid(){
     });
     Primitive mesh;
     GenerateBuffers(&mesh, vertices, indices);
-    mesh.indexCount = indices.size();
-
 
     return mesh;
 }

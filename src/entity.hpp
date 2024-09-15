@@ -1,14 +1,18 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include "mesh.hpp"
+#include "model.hpp"
 #include "transform.hpp"
 
 
 struct Entity {
-    Mesh mesh;
+    Model model;
     Transform transform;
     // Add a material later
+
+    Entity(const Model& inModel, const Transform& inTransform)
+        : model{ inModel }, transform{ inTransform }
+    {}
 };
 
 #endif

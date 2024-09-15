@@ -1,0 +1,72 @@
+{
+"classname" "cube"
+"origin" "0 0 0"
+"mesh" "./resources/assets/models/Triangle.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "0 0 2"
+"mesh" "./resources/assets/models/Triangle.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "0 2 0"
+"mesh" "./resources/assets/models/Triangle.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "0 2 2"
+"mesh" "./resources/assets/models/Triangle.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "2 0 0"
+"mesh" "./resources/assets/models/Triangle.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "2 0 2"
+"mesh" "./resources/assets/models/Triangle.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "2 2 0"
+"mesh" "./resources/assets/models/Triangle.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "cube"
+"origin" "2 2 2"
+"mesh" "./resources/assets/models/Triangle.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "camera"
+"origin" "-3 3 -3"
+"angles" "-60 -315 0"
+"fovy" "30"
+"near" "0.1"
+"far" "10.0"
+}
+{
+"classname" "camera"
+"origin" "-10 20 -10"
+"angles" "-60 -315 0"
+"fovy" "30"
+"near" "0.1"
+"far" "100.0"
+}

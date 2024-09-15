@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <iomanip>
+#include <filesystem>
 
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
@@ -46,7 +47,18 @@ Scene SceneLoader::LoadScene(const SceneData& sceneData)
                 if (sceneEntity == scene.entityInstanceMap.end())
                 {
                     sceneEntity = scene.entityInstanceMap.insert({meshMatKey, EntityInstanceData()}).first;
-                    sceneEntity->second.instMesh = Mesh::CreateCube();
+                    
+                    const auto& meshData = entityData.kvps.find("mesh");
+                    if (meshData != entityData.kvps.end()){
+                        // Load mesh
+                        if (meshData->second == "cube"){
+                            sceneEntity->second.instModel = Model::CreateCube();
+                        } else {
+                            fastgltf::Asset asset;
+                            ModelLoader::LoadGLTF(std::filesystem::path(meshData->second), &asset);
+                            ModelLoader::LoadModel(asset, &sceneEntity->second.instModel);
+                        }
+                    } else sceneEntity->second.instModel = Model::CreateCube();
                 }
                 // if (entityData != scene.entityInstanceMap.end()){
                 //     // Add instance
@@ -56,7 +68,21 @@ Scene SceneLoader::LoadScene(const SceneData& sceneData)
                 sceneEntity->second.isInstMeshRendered.push_back(1);
                 sceneEntity->second.instCount += 1;
             } else {
-            scene.entities.push_back({Mesh::CreateCube(), entityData.transform});
+                Model mesh;
+                const auto& meshData = entityData.kvps.find("mesh");
+                if (meshData != entityData.kvps.end()){
+                    // Load mesh
+                    if (meshData->second == "cube"){
+                        mesh = Model::CreateCube();
+                    } else {
+                        fastgltf::Asset asset;
+
+                            ModelLoader::LoadGLTF(std::filesystem::path(meshData->second), &asset);
+                            ModelLoader::LoadModel(asset, &mesh);
+                    }
+                } else mesh = Model::CreateCube();
+
+                scene.entities.push_back(Entity(mesh, entityData.transform));
             }
 
             
@@ -139,8 +165,8 @@ SceneData SceneLoader::LoadSceneData(const std::string& scenePath)
             } else if (key == "angles")
             {
                 data.transform.SetRotation(ParseVec3(value));
-            } else {
-
+            } else if (key == "scale"){
+                data.transform.SetScale(ParseVec3(value));
             }
             data.kvps[key] = value;
         // if (token == "entity")

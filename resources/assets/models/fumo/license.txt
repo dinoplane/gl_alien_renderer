@@ -1,0 +1,11 @@
+Model Information:
+* title:	Cirno Fumo Doll [Low-Poly]
+* source:	https://sketchfab.com/3d-models/cirno-fumo-doll-low-poly-dc5ec945cb604fc4b4fd423888370cf7
+* author:	Embur (https://sketchfab.com/embur_3D)
+
+Model License:
+* license type:	CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
+* requirements:	Author must be credited. No commercial use.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Cirno Fumo Doll [Low-Poly]" (https://sketchfab.com/3d-models/cirno-fumo-doll-low-poly-dc5ec945cb604fc4b4fd423888370cf7) by Embur (https://sketchfab.com/embur_3D) licensed under CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)

@@ -22,6 +22,10 @@ layout(binding = 5, std430) coherent buffer instMeshRenderedBuf {
     bool meshIsRendered[];
 }; // THIS DOES NOT SAVE COMPUTE!!!
 
+layout (binding = 6, std140) uniform meshPropertiesBuf {
+    mat4 modelFromMesh;
+};
+
 
 out vec3 Normal;
 out vec2 TexCoord;
@@ -30,7 +34,7 @@ void main()
 {
     if ( meshIsRendered[gl_InstanceID] )
     {
-        gl_Position = projection * view * worldFromModel[gl_InstanceID] * vec4(aPos, 1.0);
+        gl_Position = projection * view * worldFromModel[gl_InstanceID] * modelFromMesh * vec4(aPos, 1.0);
         Normal = aNormal;
         TexCoord = vec2(aPos.x, 1.0 - aPos.y);
     } else {

@@ -81,7 +81,7 @@ Renderer::Renderer(float w, float h) : width(w), height(h) {
     std::cout << "Main Camera Index: " << mainCameraIdx << std::endl;
     if (allCameras.size() == 0){
         Renderer::allCameras.push_back(
-            Camera(w, h, glm::vec3(-3, 3.0, -3.0), glm::vec3(0.0, 1.0, 0.0), -315.0f, -60.0f, 30.0f, 0.1f, 10.0f)
+            Camera(w, h, glm::vec3(-3, 3.0, -3.0), glm::vec3(0.0, 1.0, 0.0), -315.0f, -60.0f, 30.0f, 0.1f, 30.0f)
         );
     } else
     {
@@ -98,6 +98,10 @@ Renderer::Renderer(float w, float h) : width(w), height(h) {
 
     glCreateBuffers(1, &frustumCullDataUBO);
     glNamedBufferStorage(frustumCullDataUBO, sizeof(FrustumCullDataUBOBlock), NULL, GL_DYNAMIC_STORAGE_BIT);
+
+    glCreateBuffers(1, &meshPropertiesUBO);
+    glNamedBufferStorage(meshPropertiesUBO, sizeof(MeshPropertiesUBOBlock), NULL, GL_DYNAMIC_STORAGE_BIT);
+   
 
 }
 
@@ -345,11 +349,16 @@ void Renderer::Render(const Scene& scene){ // really bad, we are modifying the s
 
         glBindVertexArray(VAO);
         for (uint entityIdx = 0; entityIdx < scene.entities.size(); ++entityIdx){
-            if (!Renderer::doCull || (Renderer::doCull && scene.entities[entityIdx].mesh.boundingVolume->IsOnFrustum(Camera::createFrustumFromCamera(Renderer::allCameras[0]), scene.entities[entityIdx].transform))){
-                scene.shaders.at(0).setMat4("model", scene.entities[entityIdx].transform.GetModelMatrix());
-                for (const Primitive& primitive : scene.entities[entityIdx].mesh.primitives){
-                    BindPrimitive(primitive);
-                    glDrawElements(GL_TRIANGLES, primitive.indexCount, GL_UNSIGNED_INT, 0);
+            const Entity& entity = scene.entities[entityIdx];
+            if (!Renderer::doCull || (Renderer::doCull && entity.model.boundingVolume.IsOnFrustum(Camera::createFrustumFromCamera(Renderer::allCameras[0]), entity.transform))){
+                
+                for ( const Node& node : entity.model.nodes ){
+                    const Mesh& mesh = entity.model.meshes[node.meshIndex];
+                    scene.shaders.at(0).setMat4("model", entity.transform.GetModelMatrix() * node.nodeTransformMatrix);
+                    for (const Primitive& primitive : mesh.primitives){
+                        BindPrimitive(primitive);
+                        glDrawElements(GL_TRIANGLES, primitive.indexCount, GL_UNSIGNED_INT, 0);
+                    }
                 }
             }
         }
@@ -362,7 +371,7 @@ void Renderer::Render(const Scene& scene){ // really bad, we are modifying the s
         //     // What I'm about to do justifies the need to separate static state from dynamic state
 
         //     BindInstanceMesh(&scene.entityInstanceMap[entityIdx]);
-        //     glDrawElementsInstanced(GL_TRIANGLES, scene.entityInstanceMap[entityIdx].instMesh.indexCount, GL_UNSIGNED_INT, 0, scene.entityInstanceMap[entityIdx].instCount);
+        //     glDrawElementsInstanced(GL_TRIANGLES, scene.entityInstanceMap[entityIdx].instModel.indexCount, GL_UNSIGNED_INT, 0, scene.entityInstanceMap[entityIdx].instCount);
         // }
 
 
@@ -376,7 +385,7 @@ void Renderer::Render(const Scene& scene){ // really bad, we are modifying the s
             ZoneScoped;
             // scene.shaders.at(0).setMat4("model", scene.entityInstanceMap[entityIdx].transform.GetModelMatrix());
             // What I'm about to do justifies the need to separate static state from dynamic state
-            frustumCullDataUBOBlock.boundingVolume = entInstData.instMesh.boundingVolume->ToGPUSphere();
+            frustumCullDataUBOBlock.boundingVolume = entInstData.instModel.boundingVolume.ToGPUSphere();
             frustumCullDataUBOBlock.instCount = entInstData.instCount;
             //fmt::print("Instance Count: {}\n", entInstData.instCount);
             glNamedBufferSubData(frustumCullDataUBO, 0, sizeof(FrustumCullDataUBOBlock), &frustumCullDataUBOBlock);
@@ -397,10 +406,22 @@ void Renderer::Render(const Scene& scene){ // really bad, we are modifying the s
 
 
             BindInstanceData(entInstData);
-            for (const Primitive& primitive : entInstData.instMesh.primitives){
-                BindInstancePrimitive(primitive);
-                glDrawElementsInstanced(GL_TRIANGLES, primitive.indexCount, GL_UNSIGNED_INT, 0, entInstData.instCount);
+            for ( const Node& node : entInstData.instModel.nodes ){
+                const Mesh& mesh = entInstData.instModel.meshes[node.meshIndex];
+                meshPropertiesUBOBlock.modelFromMesh = node.nodeTransformMatrix;
+                glBindBufferBase(GL_UNIFORM_BUFFER, 6, meshPropertiesUBO);
+                glNamedBufferSubData(meshPropertiesUBO, 0, sizeof(MeshPropertiesUBOBlock), &meshPropertiesUBOBlock);
+                // scene.shaders.at(0).setMat4("model", entInstData.transform.GetModelMatrix() * node.nodeTransformMatrix);
+                for (const Primitive& primitive : mesh.primitives){
+                    BindInstancePrimitive(primitive);
+                    glDrawElementsInstanced(GL_TRIANGLES, primitive.indexCount, GL_UNSIGNED_INT, 0, entInstData.instCount);
+                }
             }
+
+            // for (const Primitive& primitive : entInstData.instModel.primitives){
+            //     BindInstancePrimitive(primitive);
+            //     glDrawElementsInstanced(GL_TRIANGLES, primitive.indexCount, GL_UNSIGNED_INT, 0, entInstData.instCount);
+            // }
         }
 
 

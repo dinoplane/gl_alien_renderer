@@ -113,7 +113,7 @@ Scene Scene::GenerateBasicScene(){
     transform.SetScale(glm::vec3(1.0, 1.0, 1.0));
 
     EntityInstanceData entityInstanceData;
-    entityInstanceData.instMesh = Mesh::CreateCube();
+    entityInstanceData.instModel = Model::CreateCube();
     entityInstanceData.instCount = 0;
     retScene.entityInstanceMap["hi"] =  entityInstanceData;
     retScene.entityInstanceMap["hi"].modelToWorldMat.push_back(transform.GetModelMatrix());
@@ -139,9 +139,9 @@ Scene Scene::GenerateDefaultScene(){
 
     Transform transform;
     EntityInstanceData entityInstanceData;
-    entityInstanceData.instMesh = Mesh::CreateCube();
+    entityInstanceData.instModel = Model::CreateCube();
     entityInstanceData.instCount = 0;
-    std::cout << (entityInstanceData.instMesh.boundingVolume->center.x) << std::endl;
+    std::cout << (entityInstanceData.instModel.boundingVolume.center.x) << std::endl;
     retScene.entityInstanceMap["hi"] =  entityInstanceData;
 
     transform.SetRotation(glm::vec3(0.0, 0.0, 0.0));
@@ -152,7 +152,7 @@ Scene Scene::GenerateDefaultScene(){
                 transform.SetPosition(glm::vec3(i * 2.0, j * 2.0, k * 2.0));
                 // retScene.entities.push_back({Mesh::CreateCube(), transform});
                 retScene.entityInstanceMap["hi"].modelToWorldMat.push_back(transform.GetModelMatrix());
-                // retScene.entityInstanceMap["hi"].boundingVolumes.push_back(entityInstanceData.instMesh.boundingVolume->ToGPUSphere());
+                // retScene.entityInstanceMap["hi"].boundingVolumes.push_back(entityInstanceData.instModel.boundingVolume->ToGPUSphere());
                 retScene.entityInstanceMap["hi"].instCount += 1;
             }
         }

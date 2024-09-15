@@ -5,7 +5,7 @@
 #include <unordered_map>
 // #include <memory>
 #include <mesh.hpp>
-
+#include <model.hpp>
 #include <gpu_structs.hpp>
 class Entity;
 class Shader; // Change this to only use move semantics
@@ -16,7 +16,7 @@ class Camera;
 
 struct EntityInstanceData
 {
-    Mesh instMesh; // essentially the bounding volumes and the mesh only need one of...
+    Model instModel; // essentially the bounding volumes and the mesh only need one of...
     uint instCount;
     std::vector<glm::mat4> modelToWorldMat;
     GLuint instModelMatrixBuffer; 
@@ -46,7 +46,6 @@ class Scene {
 
     std::vector<Primitive> debugMeshes;
     std::vector<Shader> shaders;
-    std::vector<Mesh> meshes;
     std::vector<Camera> initCamConfigs;
 
     Scene();

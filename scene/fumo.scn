@@ -1,0 +1,6577 @@
+{
+"classname" "fumo"
+"origin" "0 0 0"
+"angles" "0 0 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 0 2"
+"angles" "0 0 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 0 4"
+"angles" "0 0 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 0 6"
+"angles" "0 0 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 0 8"
+"angles" "0 0 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 0 10"
+"angles" "0 0 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 0 12"
+"angles" "0 0 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 0 14"
+"angles" "0 0 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 0 16"
+"angles" "0 0 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 2 0"
+"angles" "0 5 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 2 2"
+"angles" "0 5 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 2 4"
+"angles" "0 5 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 2 6"
+"angles" "0 5 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 2 8"
+"angles" "0 5 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 2 10"
+"angles" "0 5 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 2 12"
+"angles" "0 5 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 2 14"
+"angles" "0 5 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 2 16"
+"angles" "0 5 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 4 0"
+"angles" "0 10 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 4 2"
+"angles" "0 10 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 4 4"
+"angles" "0 10 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 4 6"
+"angles" "0 10 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 4 8"
+"angles" "0 10 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 4 10"
+"angles" "0 10 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 4 12"
+"angles" "0 10 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 4 14"
+"angles" "0 10 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 4 16"
+"angles" "0 10 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 6 0"
+"angles" "0 15 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 6 2"
+"angles" "0 15 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 6 4"
+"angles" "0 15 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 6 6"
+"angles" "0 15 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 6 8"
+"angles" "0 15 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 6 10"
+"angles" "0 15 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 6 12"
+"angles" "0 15 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 6 14"
+"angles" "0 15 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 6 16"
+"angles" "0 15 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 8 0"
+"angles" "0 20 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 8 2"
+"angles" "0 20 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 8 4"
+"angles" "0 20 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 8 6"
+"angles" "0 20 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 8 8"
+"angles" "0 20 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 8 10"
+"angles" "0 20 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 8 12"
+"angles" "0 20 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 8 14"
+"angles" "0 20 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 8 16"
+"angles" "0 20 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 10 0"
+"angles" "0 25 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 10 2"
+"angles" "0 25 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 10 4"
+"angles" "0 25 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 10 6"
+"angles" "0 25 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 10 8"
+"angles" "0 25 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 10 10"
+"angles" "0 25 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 10 12"
+"angles" "0 25 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 10 14"
+"angles" "0 25 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 10 16"
+"angles" "0 25 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 12 0"
+"angles" "0 30 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 12 2"
+"angles" "0 30 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 12 4"
+"angles" "0 30 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 12 6"
+"angles" "0 30 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 12 8"
+"angles" "0 30 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 12 10"
+"angles" "0 30 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 12 12"
+"angles" "0 30 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 12 14"
+"angles" "0 30 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 12 16"
+"angles" "0 30 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 14 0"
+"angles" "0 35 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 14 2"
+"angles" "0 35 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 14 4"
+"angles" "0 35 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 14 6"
+"angles" "0 35 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 14 8"
+"angles" "0 35 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 14 10"
+"angles" "0 35 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 14 12"
+"angles" "0 35 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 14 14"
+"angles" "0 35 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 14 16"
+"angles" "0 35 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 16 0"
+"angles" "0 40 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 16 2"
+"angles" "0 40 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 16 4"
+"angles" "0 40 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 16 6"
+"angles" "0 40 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 16 8"
+"angles" "0 40 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 16 10"
+"angles" "0 40 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 16 12"
+"angles" "0 40 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 16 14"
+"angles" "0 40 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "0 16 16"
+"angles" "0 40 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 0 0"
+"angles" "5 0 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 0 2"
+"angles" "5 0 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 0 4"
+"angles" "5 0 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 0 6"
+"angles" "5 0 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 0 8"
+"angles" "5 0 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 0 10"
+"angles" "5 0 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 0 12"
+"angles" "5 0 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 0 14"
+"angles" "5 0 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 0 16"
+"angles" "5 0 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 2 0"
+"angles" "5 5 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 2 2"
+"angles" "5 5 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 2 4"
+"angles" "5 5 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 2 6"
+"angles" "5 5 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 2 8"
+"angles" "5 5 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 2 10"
+"angles" "5 5 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 2 12"
+"angles" "5 5 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 2 14"
+"angles" "5 5 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 2 16"
+"angles" "5 5 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 4 0"
+"angles" "5 10 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 4 2"
+"angles" "5 10 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 4 4"
+"angles" "5 10 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 4 6"
+"angles" "5 10 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 4 8"
+"angles" "5 10 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 4 10"
+"angles" "5 10 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 4 12"
+"angles" "5 10 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 4 14"
+"angles" "5 10 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 4 16"
+"angles" "5 10 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 6 0"
+"angles" "5 15 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 6 2"
+"angles" "5 15 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 6 4"
+"angles" "5 15 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 6 6"
+"angles" "5 15 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 6 8"
+"angles" "5 15 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 6 10"
+"angles" "5 15 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 6 12"
+"angles" "5 15 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 6 14"
+"angles" "5 15 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 6 16"
+"angles" "5 15 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 8 0"
+"angles" "5 20 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 8 2"
+"angles" "5 20 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 8 4"
+"angles" "5 20 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 8 6"
+"angles" "5 20 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 8 8"
+"angles" "5 20 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 8 10"
+"angles" "5 20 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 8 12"
+"angles" "5 20 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 8 14"
+"angles" "5 20 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 8 16"
+"angles" "5 20 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 10 0"
+"angles" "5 25 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 10 2"
+"angles" "5 25 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 10 4"
+"angles" "5 25 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 10 6"
+"angles" "5 25 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 10 8"
+"angles" "5 25 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 10 10"
+"angles" "5 25 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 10 12"
+"angles" "5 25 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 10 14"
+"angles" "5 25 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 10 16"
+"angles" "5 25 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 12 0"
+"angles" "5 30 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 12 2"
+"angles" "5 30 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 12 4"
+"angles" "5 30 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 12 6"
+"angles" "5 30 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 12 8"
+"angles" "5 30 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 12 10"
+"angles" "5 30 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 12 12"
+"angles" "5 30 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 12 14"
+"angles" "5 30 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 12 16"
+"angles" "5 30 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 14 0"
+"angles" "5 35 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 14 2"
+"angles" "5 35 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 14 4"
+"angles" "5 35 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 14 6"
+"angles" "5 35 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 14 8"
+"angles" "5 35 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 14 10"
+"angles" "5 35 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 14 12"
+"angles" "5 35 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 14 14"
+"angles" "5 35 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 14 16"
+"angles" "5 35 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 16 0"
+"angles" "5 40 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 16 2"
+"angles" "5 40 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 16 4"
+"angles" "5 40 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 16 6"
+"angles" "5 40 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 16 8"
+"angles" "5 40 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 16 10"
+"angles" "5 40 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 16 12"
+"angles" "5 40 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 16 14"
+"angles" "5 40 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "2 16 16"
+"angles" "5 40 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 0 0"
+"angles" "10 0 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 0 2"
+"angles" "10 0 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 0 4"
+"angles" "10 0 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 0 6"
+"angles" "10 0 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 0 8"
+"angles" "10 0 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 0 10"
+"angles" "10 0 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 0 12"
+"angles" "10 0 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 0 14"
+"angles" "10 0 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 0 16"
+"angles" "10 0 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 2 0"
+"angles" "10 5 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 2 2"
+"angles" "10 5 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 2 4"
+"angles" "10 5 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 2 6"
+"angles" "10 5 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 2 8"
+"angles" "10 5 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 2 10"
+"angles" "10 5 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 2 12"
+"angles" "10 5 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 2 14"
+"angles" "10 5 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 2 16"
+"angles" "10 5 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 4 0"
+"angles" "10 10 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 4 2"
+"angles" "10 10 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 4 4"
+"angles" "10 10 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 4 6"
+"angles" "10 10 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 4 8"
+"angles" "10 10 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 4 10"
+"angles" "10 10 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 4 12"
+"angles" "10 10 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 4 14"
+"angles" "10 10 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 4 16"
+"angles" "10 10 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 6 0"
+"angles" "10 15 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 6 2"
+"angles" "10 15 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 6 4"
+"angles" "10 15 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 6 6"
+"angles" "10 15 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 6 8"
+"angles" "10 15 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 6 10"
+"angles" "10 15 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 6 12"
+"angles" "10 15 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 6 14"
+"angles" "10 15 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 6 16"
+"angles" "10 15 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 8 0"
+"angles" "10 20 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 8 2"
+"angles" "10 20 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 8 4"
+"angles" "10 20 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 8 6"
+"angles" "10 20 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 8 8"
+"angles" "10 20 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 8 10"
+"angles" "10 20 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 8 12"
+"angles" "10 20 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 8 14"
+"angles" "10 20 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 8 16"
+"angles" "10 20 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 10 0"
+"angles" "10 25 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 10 2"
+"angles" "10 25 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 10 4"
+"angles" "10 25 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 10 6"
+"angles" "10 25 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 10 8"
+"angles" "10 25 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 10 10"
+"angles" "10 25 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 10 12"
+"angles" "10 25 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 10 14"
+"angles" "10 25 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 10 16"
+"angles" "10 25 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 12 0"
+"angles" "10 30 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 12 2"
+"angles" "10 30 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 12 4"
+"angles" "10 30 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 12 6"
+"angles" "10 30 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 12 8"
+"angles" "10 30 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 12 10"
+"angles" "10 30 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 12 12"
+"angles" "10 30 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 12 14"
+"angles" "10 30 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 12 16"
+"angles" "10 30 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 14 0"
+"angles" "10 35 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 14 2"
+"angles" "10 35 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 14 4"
+"angles" "10 35 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 14 6"
+"angles" "10 35 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 14 8"
+"angles" "10 35 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 14 10"
+"angles" "10 35 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 14 12"
+"angles" "10 35 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 14 14"
+"angles" "10 35 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 14 16"
+"angles" "10 35 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 16 0"
+"angles" "10 40 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 16 2"
+"angles" "10 40 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 16 4"
+"angles" "10 40 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 16 6"
+"angles" "10 40 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 16 8"
+"angles" "10 40 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 16 10"
+"angles" "10 40 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 16 12"
+"angles" "10 40 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 16 14"
+"angles" "10 40 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "4 16 16"
+"angles" "10 40 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 0 0"
+"angles" "15 0 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 0 2"
+"angles" "15 0 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 0 4"
+"angles" "15 0 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 0 6"
+"angles" "15 0 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 0 8"
+"angles" "15 0 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 0 10"
+"angles" "15 0 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 0 12"
+"angles" "15 0 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 0 14"
+"angles" "15 0 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 0 16"
+"angles" "15 0 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 2 0"
+"angles" "15 5 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 2 2"
+"angles" "15 5 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 2 4"
+"angles" "15 5 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 2 6"
+"angles" "15 5 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 2 8"
+"angles" "15 5 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 2 10"
+"angles" "15 5 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 2 12"
+"angles" "15 5 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 2 14"
+"angles" "15 5 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 2 16"
+"angles" "15 5 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 4 0"
+"angles" "15 10 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 4 2"
+"angles" "15 10 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 4 4"
+"angles" "15 10 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 4 6"
+"angles" "15 10 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 4 8"
+"angles" "15 10 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 4 10"
+"angles" "15 10 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 4 12"
+"angles" "15 10 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 4 14"
+"angles" "15 10 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 4 16"
+"angles" "15 10 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 6 0"
+"angles" "15 15 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 6 2"
+"angles" "15 15 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 6 4"
+"angles" "15 15 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 6 6"
+"angles" "15 15 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 6 8"
+"angles" "15 15 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 6 10"
+"angles" "15 15 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 6 12"
+"angles" "15 15 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 6 14"
+"angles" "15 15 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 6 16"
+"angles" "15 15 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 8 0"
+"angles" "15 20 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 8 2"
+"angles" "15 20 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 8 4"
+"angles" "15 20 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 8 6"
+"angles" "15 20 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 8 8"
+"angles" "15 20 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 8 10"
+"angles" "15 20 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 8 12"
+"angles" "15 20 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 8 14"
+"angles" "15 20 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 8 16"
+"angles" "15 20 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 10 0"
+"angles" "15 25 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 10 2"
+"angles" "15 25 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 10 4"
+"angles" "15 25 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 10 6"
+"angles" "15 25 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 10 8"
+"angles" "15 25 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 10 10"
+"angles" "15 25 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 10 12"
+"angles" "15 25 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 10 14"
+"angles" "15 25 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 10 16"
+"angles" "15 25 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 12 0"
+"angles" "15 30 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 12 2"
+"angles" "15 30 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 12 4"
+"angles" "15 30 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 12 6"
+"angles" "15 30 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 12 8"
+"angles" "15 30 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 12 10"
+"angles" "15 30 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 12 12"
+"angles" "15 30 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 12 14"
+"angles" "15 30 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 12 16"
+"angles" "15 30 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 14 0"
+"angles" "15 35 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 14 2"
+"angles" "15 35 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 14 4"
+"angles" "15 35 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 14 6"
+"angles" "15 35 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 14 8"
+"angles" "15 35 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 14 10"
+"angles" "15 35 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 14 12"
+"angles" "15 35 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 14 14"
+"angles" "15 35 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 14 16"
+"angles" "15 35 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 16 0"
+"angles" "15 40 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 16 2"
+"angles" "15 40 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 16 4"
+"angles" "15 40 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 16 6"
+"angles" "15 40 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 16 8"
+"angles" "15 40 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 16 10"
+"angles" "15 40 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 16 12"
+"angles" "15 40 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 16 14"
+"angles" "15 40 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "6 16 16"
+"angles" "15 40 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 0 0"
+"angles" "20 0 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 0 2"
+"angles" "20 0 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 0 4"
+"angles" "20 0 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 0 6"
+"angles" "20 0 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 0 8"
+"angles" "20 0 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 0 10"
+"angles" "20 0 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 0 12"
+"angles" "20 0 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 0 14"
+"angles" "20 0 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 0 16"
+"angles" "20 0 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 2 0"
+"angles" "20 5 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 2 2"
+"angles" "20 5 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 2 4"
+"angles" "20 5 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 2 6"
+"angles" "20 5 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 2 8"
+"angles" "20 5 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 2 10"
+"angles" "20 5 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 2 12"
+"angles" "20 5 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 2 14"
+"angles" "20 5 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 2 16"
+"angles" "20 5 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 4 0"
+"angles" "20 10 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 4 2"
+"angles" "20 10 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 4 4"
+"angles" "20 10 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 4 6"
+"angles" "20 10 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 4 8"
+"angles" "20 10 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 4 10"
+"angles" "20 10 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 4 12"
+"angles" "20 10 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 4 14"
+"angles" "20 10 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 4 16"
+"angles" "20 10 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 6 0"
+"angles" "20 15 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 6 2"
+"angles" "20 15 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 6 4"
+"angles" "20 15 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 6 6"
+"angles" "20 15 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 6 8"
+"angles" "20 15 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 6 10"
+"angles" "20 15 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 6 12"
+"angles" "20 15 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 6 14"
+"angles" "20 15 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 6 16"
+"angles" "20 15 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 8 0"
+"angles" "20 20 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 8 2"
+"angles" "20 20 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 8 4"
+"angles" "20 20 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 8 6"
+"angles" "20 20 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 8 8"
+"angles" "20 20 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 8 10"
+"angles" "20 20 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 8 12"
+"angles" "20 20 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 8 14"
+"angles" "20 20 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 8 16"
+"angles" "20 20 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 10 0"
+"angles" "20 25 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 10 2"
+"angles" "20 25 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 10 4"
+"angles" "20 25 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 10 6"
+"angles" "20 25 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 10 8"
+"angles" "20 25 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 10 10"
+"angles" "20 25 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 10 12"
+"angles" "20 25 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 10 14"
+"angles" "20 25 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 10 16"
+"angles" "20 25 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 12 0"
+"angles" "20 30 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 12 2"
+"angles" "20 30 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 12 4"
+"angles" "20 30 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 12 6"
+"angles" "20 30 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 12 8"
+"angles" "20 30 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 12 10"
+"angles" "20 30 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 12 12"
+"angles" "20 30 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 12 14"
+"angles" "20 30 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 12 16"
+"angles" "20 30 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 14 0"
+"angles" "20 35 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 14 2"
+"angles" "20 35 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 14 4"
+"angles" "20 35 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 14 6"
+"angles" "20 35 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 14 8"
+"angles" "20 35 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 14 10"
+"angles" "20 35 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 14 12"
+"angles" "20 35 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 14 14"
+"angles" "20 35 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 14 16"
+"angles" "20 35 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 16 0"
+"angles" "20 40 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 16 2"
+"angles" "20 40 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 16 4"
+"angles" "20 40 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 16 6"
+"angles" "20 40 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 16 8"
+"angles" "20 40 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 16 10"
+"angles" "20 40 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 16 12"
+"angles" "20 40 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 16 14"
+"angles" "20 40 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "8 16 16"
+"angles" "20 40 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 0 0"
+"angles" "25 0 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 0 2"
+"angles" "25 0 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 0 4"
+"angles" "25 0 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 0 6"
+"angles" "25 0 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 0 8"
+"angles" "25 0 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 0 10"
+"angles" "25 0 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 0 12"
+"angles" "25 0 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 0 14"
+"angles" "25 0 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 0 16"
+"angles" "25 0 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 2 0"
+"angles" "25 5 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 2 2"
+"angles" "25 5 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 2 4"
+"angles" "25 5 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 2 6"
+"angles" "25 5 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 2 8"
+"angles" "25 5 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 2 10"
+"angles" "25 5 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 2 12"
+"angles" "25 5 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 2 14"
+"angles" "25 5 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 2 16"
+"angles" "25 5 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 4 0"
+"angles" "25 10 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 4 2"
+"angles" "25 10 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 4 4"
+"angles" "25 10 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 4 6"
+"angles" "25 10 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 4 8"
+"angles" "25 10 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 4 10"
+"angles" "25 10 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 4 12"
+"angles" "25 10 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 4 14"
+"angles" "25 10 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 4 16"
+"angles" "25 10 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 6 0"
+"angles" "25 15 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 6 2"
+"angles" "25 15 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 6 4"
+"angles" "25 15 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 6 6"
+"angles" "25 15 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 6 8"
+"angles" "25 15 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 6 10"
+"angles" "25 15 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 6 12"
+"angles" "25 15 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 6 14"
+"angles" "25 15 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 6 16"
+"angles" "25 15 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 8 0"
+"angles" "25 20 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 8 2"
+"angles" "25 20 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 8 4"
+"angles" "25 20 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 8 6"
+"angles" "25 20 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 8 8"
+"angles" "25 20 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 8 10"
+"angles" "25 20 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 8 12"
+"angles" "25 20 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 8 14"
+"angles" "25 20 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 8 16"
+"angles" "25 20 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 10 0"
+"angles" "25 25 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 10 2"
+"angles" "25 25 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 10 4"
+"angles" "25 25 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 10 6"
+"angles" "25 25 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 10 8"
+"angles" "25 25 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 10 10"
+"angles" "25 25 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 10 12"
+"angles" "25 25 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 10 14"
+"angles" "25 25 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 10 16"
+"angles" "25 25 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 12 0"
+"angles" "25 30 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 12 2"
+"angles" "25 30 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 12 4"
+"angles" "25 30 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 12 6"
+"angles" "25 30 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 12 8"
+"angles" "25 30 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 12 10"
+"angles" "25 30 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 12 12"
+"angles" "25 30 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 12 14"
+"angles" "25 30 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 12 16"
+"angles" "25 30 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 14 0"
+"angles" "25 35 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 14 2"
+"angles" "25 35 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 14 4"
+"angles" "25 35 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 14 6"
+"angles" "25 35 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 14 8"
+"angles" "25 35 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 14 10"
+"angles" "25 35 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 14 12"
+"angles" "25 35 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 14 14"
+"angles" "25 35 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 14 16"
+"angles" "25 35 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 16 0"
+"angles" "25 40 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 16 2"
+"angles" "25 40 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 16 4"
+"angles" "25 40 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 16 6"
+"angles" "25 40 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 16 8"
+"angles" "25 40 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 16 10"
+"angles" "25 40 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 16 12"
+"angles" "25 40 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 16 14"
+"angles" "25 40 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "10 16 16"
+"angles" "25 40 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 0 0"
+"angles" "30 0 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 0 2"
+"angles" "30 0 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 0 4"
+"angles" "30 0 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 0 6"
+"angles" "30 0 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 0 8"
+"angles" "30 0 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 0 10"
+"angles" "30 0 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 0 12"
+"angles" "30 0 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 0 14"
+"angles" "30 0 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 0 16"
+"angles" "30 0 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 2 0"
+"angles" "30 5 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 2 2"
+"angles" "30 5 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 2 4"
+"angles" "30 5 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 2 6"
+"angles" "30 5 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 2 8"
+"angles" "30 5 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 2 10"
+"angles" "30 5 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 2 12"
+"angles" "30 5 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 2 14"
+"angles" "30 5 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 2 16"
+"angles" "30 5 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 4 0"
+"angles" "30 10 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 4 2"
+"angles" "30 10 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 4 4"
+"angles" "30 10 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 4 6"
+"angles" "30 10 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 4 8"
+"angles" "30 10 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 4 10"
+"angles" "30 10 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 4 12"
+"angles" "30 10 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 4 14"
+"angles" "30 10 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 4 16"
+"angles" "30 10 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 6 0"
+"angles" "30 15 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 6 2"
+"angles" "30 15 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 6 4"
+"angles" "30 15 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 6 6"
+"angles" "30 15 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 6 8"
+"angles" "30 15 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 6 10"
+"angles" "30 15 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 6 12"
+"angles" "30 15 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 6 14"
+"angles" "30 15 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 6 16"
+"angles" "30 15 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 8 0"
+"angles" "30 20 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 8 2"
+"angles" "30 20 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 8 4"
+"angles" "30 20 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 8 6"
+"angles" "30 20 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 8 8"
+"angles" "30 20 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 8 10"
+"angles" "30 20 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 8 12"
+"angles" "30 20 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 8 14"
+"angles" "30 20 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 8 16"
+"angles" "30 20 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 10 0"
+"angles" "30 25 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 10 2"
+"angles" "30 25 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 10 4"
+"angles" "30 25 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 10 6"
+"angles" "30 25 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 10 8"
+"angles" "30 25 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 10 10"
+"angles" "30 25 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 10 12"
+"angles" "30 25 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 10 14"
+"angles" "30 25 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 10 16"
+"angles" "30 25 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 12 0"
+"angles" "30 30 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 12 2"
+"angles" "30 30 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 12 4"
+"angles" "30 30 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 12 6"
+"angles" "30 30 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 12 8"
+"angles" "30 30 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 12 10"
+"angles" "30 30 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 12 12"
+"angles" "30 30 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 12 14"
+"angles" "30 30 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 12 16"
+"angles" "30 30 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 14 0"
+"angles" "30 35 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 14 2"
+"angles" "30 35 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 14 4"
+"angles" "30 35 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 14 6"
+"angles" "30 35 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 14 8"
+"angles" "30 35 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 14 10"
+"angles" "30 35 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 14 12"
+"angles" "30 35 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 14 14"
+"angles" "30 35 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 14 16"
+"angles" "30 35 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 16 0"
+"angles" "30 40 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 16 2"
+"angles" "30 40 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 16 4"
+"angles" "30 40 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 16 6"
+"angles" "30 40 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 16 8"
+"angles" "30 40 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 16 10"
+"angles" "30 40 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 16 12"
+"angles" "30 40 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 16 14"
+"angles" "30 40 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "12 16 16"
+"angles" "30 40 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 0 0"
+"angles" "35 0 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 0 2"
+"angles" "35 0 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 0 4"
+"angles" "35 0 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 0 6"
+"angles" "35 0 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 0 8"
+"angles" "35 0 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 0 10"
+"angles" "35 0 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 0 12"
+"angles" "35 0 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 0 14"
+"angles" "35 0 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 0 16"
+"angles" "35 0 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 2 0"
+"angles" "35 5 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 2 2"
+"angles" "35 5 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 2 4"
+"angles" "35 5 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 2 6"
+"angles" "35 5 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 2 8"
+"angles" "35 5 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 2 10"
+"angles" "35 5 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 2 12"
+"angles" "35 5 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 2 14"
+"angles" "35 5 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 2 16"
+"angles" "35 5 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 4 0"
+"angles" "35 10 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 4 2"
+"angles" "35 10 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 4 4"
+"angles" "35 10 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 4 6"
+"angles" "35 10 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 4 8"
+"angles" "35 10 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 4 10"
+"angles" "35 10 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 4 12"
+"angles" "35 10 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 4 14"
+"angles" "35 10 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 4 16"
+"angles" "35 10 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 6 0"
+"angles" "35 15 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 6 2"
+"angles" "35 15 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 6 4"
+"angles" "35 15 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 6 6"
+"angles" "35 15 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 6 8"
+"angles" "35 15 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 6 10"
+"angles" "35 15 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 6 12"
+"angles" "35 15 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 6 14"
+"angles" "35 15 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 6 16"
+"angles" "35 15 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 8 0"
+"angles" "35 20 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 8 2"
+"angles" "35 20 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 8 4"
+"angles" "35 20 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 8 6"
+"angles" "35 20 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 8 8"
+"angles" "35 20 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 8 10"
+"angles" "35 20 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 8 12"
+"angles" "35 20 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 8 14"
+"angles" "35 20 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 8 16"
+"angles" "35 20 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 10 0"
+"angles" "35 25 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 10 2"
+"angles" "35 25 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 10 4"
+"angles" "35 25 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 10 6"
+"angles" "35 25 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 10 8"
+"angles" "35 25 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 10 10"
+"angles" "35 25 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 10 12"
+"angles" "35 25 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 10 14"
+"angles" "35 25 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 10 16"
+"angles" "35 25 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 12 0"
+"angles" "35 30 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 12 2"
+"angles" "35 30 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 12 4"
+"angles" "35 30 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 12 6"
+"angles" "35 30 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 12 8"
+"angles" "35 30 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 12 10"
+"angles" "35 30 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 12 12"
+"angles" "35 30 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 12 14"
+"angles" "35 30 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 12 16"
+"angles" "35 30 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 14 0"
+"angles" "35 35 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 14 2"
+"angles" "35 35 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 14 4"
+"angles" "35 35 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 14 6"
+"angles" "35 35 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 14 8"
+"angles" "35 35 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 14 10"
+"angles" "35 35 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 14 12"
+"angles" "35 35 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 14 14"
+"angles" "35 35 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 14 16"
+"angles" "35 35 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 16 0"
+"angles" "35 40 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 16 2"
+"angles" "35 40 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 16 4"
+"angles" "35 40 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 16 6"
+"angles" "35 40 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 16 8"
+"angles" "35 40 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 16 10"
+"angles" "35 40 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 16 12"
+"angles" "35 40 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 16 14"
+"angles" "35 40 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "14 16 16"
+"angles" "35 40 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 0 0"
+"angles" "40 0 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 0 2"
+"angles" "40 0 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 0 4"
+"angles" "40 0 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 0 6"
+"angles" "40 0 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 0 8"
+"angles" "40 0 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 0 10"
+"angles" "40 0 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 0 12"
+"angles" "40 0 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 0 14"
+"angles" "40 0 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 0 16"
+"angles" "40 0 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 2 0"
+"angles" "40 5 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 2 2"
+"angles" "40 5 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 2 4"
+"angles" "40 5 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 2 6"
+"angles" "40 5 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 2 8"
+"angles" "40 5 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 2 10"
+"angles" "40 5 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 2 12"
+"angles" "40 5 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 2 14"
+"angles" "40 5 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 2 16"
+"angles" "40 5 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 4 0"
+"angles" "40 10 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 4 2"
+"angles" "40 10 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 4 4"
+"angles" "40 10 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 4 6"
+"angles" "40 10 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 4 8"
+"angles" "40 10 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 4 10"
+"angles" "40 10 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 4 12"
+"angles" "40 10 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 4 14"
+"angles" "40 10 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 4 16"
+"angles" "40 10 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 6 0"
+"angles" "40 15 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 6 2"
+"angles" "40 15 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 6 4"
+"angles" "40 15 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 6 6"
+"angles" "40 15 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 6 8"
+"angles" "40 15 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 6 10"
+"angles" "40 15 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 6 12"
+"angles" "40 15 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 6 14"
+"angles" "40 15 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 6 16"
+"angles" "40 15 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 8 0"
+"angles" "40 20 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 8 2"
+"angles" "40 20 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 8 4"
+"angles" "40 20 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 8 6"
+"angles" "40 20 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 8 8"
+"angles" "40 20 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 8 10"
+"angles" "40 20 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 8 12"
+"angles" "40 20 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 8 14"
+"angles" "40 20 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 8 16"
+"angles" "40 20 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 10 0"
+"angles" "40 25 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 10 2"
+"angles" "40 25 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 10 4"
+"angles" "40 25 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 10 6"
+"angles" "40 25 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 10 8"
+"angles" "40 25 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 10 10"
+"angles" "40 25 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 10 12"
+"angles" "40 25 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 10 14"
+"angles" "40 25 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 10 16"
+"angles" "40 25 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 12 0"
+"angles" "40 30 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 12 2"
+"angles" "40 30 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 12 4"
+"angles" "40 30 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 12 6"
+"angles" "40 30 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 12 8"
+"angles" "40 30 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 12 10"
+"angles" "40 30 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 12 12"
+"angles" "40 30 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 12 14"
+"angles" "40 30 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 12 16"
+"angles" "40 30 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 14 0"
+"angles" "40 35 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 14 2"
+"angles" "40 35 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 14 4"
+"angles" "40 35 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 14 6"
+"angles" "40 35 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 14 8"
+"angles" "40 35 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 14 10"
+"angles" "40 35 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 14 12"
+"angles" "40 35 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 14 14"
+"angles" "40 35 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 14 16"
+"angles" "40 35 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 16 0"
+"angles" "40 40 0"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 16 2"
+"angles" "40 40 5"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 16 4"
+"angles" "40 40 10"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 16 6"
+"angles" "40 40 15"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 16 8"
+"angles" "40 40 20"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 16 10"
+"angles" "40 40 25"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 16 12"
+"angles" "40 40 30"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 16 14"
+"angles" "40 40 35"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "fumo"
+"origin" "16 16 16"
+"angles" "40 40 40"
+"scale" "2.0 2.0 2.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "camera"
+"origin" "-3 3 -3"
+"angles" "-60 -315 0"
+"fovy" "30"
+"near" "0.1"
+"far" "10.0"
+}
+{
+"classname" "camera"
+"origin" "-10 20 -10"
+"angles" "-60 -315 0"
+"fovy" "30"
+"near" "0.1"
+"far" "100.0"
+}

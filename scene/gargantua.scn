@@ -1,0 +1,592 @@
+{
+"classname" "gargantua"
+"origin" "0 0 0"
+"angles" "0 0 0"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "0 0 2"
+"angles" "0 0 5"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "0 0 4"
+"angles" "0 0 10"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "0 0 6"
+"angles" "0 0 15"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "0 2 0"
+"angles" "0 5 0"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "0 2 2"
+"angles" "0 5 5"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "0 2 4"
+"angles" "0 5 10"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "0 2 6"
+"angles" "0 5 15"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "0 4 0"
+"angles" "0 10 0"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "0 4 2"
+"angles" "0 10 5"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "0 4 4"
+"angles" "0 10 10"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "0 4 6"
+"angles" "0 10 15"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "0 6 0"
+"angles" "0 15 0"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "0 6 2"
+"angles" "0 15 5"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "0 6 4"
+"angles" "0 15 10"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "0 6 6"
+"angles" "0 15 15"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "2 0 0"
+"angles" "5 0 0"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "2 0 2"
+"angles" "5 0 5"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "2 0 4"
+"angles" "5 0 10"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "2 0 6"
+"angles" "5 0 15"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "2 2 0"
+"angles" "5 5 0"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "2 2 2"
+"angles" "5 5 5"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "2 2 4"
+"angles" "5 5 10"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "2 2 6"
+"angles" "5 5 15"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "2 4 0"
+"angles" "5 10 0"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "2 4 2"
+"angles" "5 10 5"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "2 4 4"
+"angles" "5 10 10"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "2 4 6"
+"angles" "5 10 15"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "2 6 0"
+"angles" "5 15 0"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "2 6 2"
+"angles" "5 15 5"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "2 6 4"
+"angles" "5 15 10"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "2 6 6"
+"angles" "5 15 15"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "4 0 0"
+"angles" "10 0 0"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "4 0 2"
+"angles" "10 0 5"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "4 0 4"
+"angles" "10 0 10"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "4 0 6"
+"angles" "10 0 15"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "4 2 0"
+"angles" "10 5 0"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "4 2 2"
+"angles" "10 5 5"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "4 2 4"
+"angles" "10 5 10"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "4 2 6"
+"angles" "10 5 15"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "4 4 0"
+"angles" "10 10 0"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "4 4 2"
+"angles" "10 10 5"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "4 4 4"
+"angles" "10 10 10"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "4 4 6"
+"angles" "10 10 15"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "4 6 0"
+"angles" "10 15 0"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "4 6 2"
+"angles" "10 15 5"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "4 6 4"
+"angles" "10 15 10"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "4 6 6"
+"angles" "10 15 15"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "6 0 0"
+"angles" "15 0 0"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "6 0 2"
+"angles" "15 0 5"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "6 0 4"
+"angles" "15 0 10"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "6 0 6"
+"angles" "15 0 15"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "6 2 0"
+"angles" "15 5 0"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "6 2 2"
+"angles" "15 5 5"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "6 2 4"
+"angles" "15 5 10"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "6 2 6"
+"angles" "15 5 15"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "6 4 0"
+"angles" "15 10 0"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "6 4 2"
+"angles" "15 10 5"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "6 4 4"
+"angles" "15 10 10"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "6 4 6"
+"angles" "15 10 15"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "6 6 0"
+"angles" "15 15 0"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "6 6 2"
+"angles" "15 15 5"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "6 6 4"
+"angles" "15 15 10"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "gargantua"
+"origin" "6 6 6"
+"angles" "15 15 15"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/gargantua/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}
+{
+"classname" "camera"
+"origin" "-3 3 -3"
+"angles" "-60 -315 0"
+"fovy" "30"
+"near" "0.1"
+"far" "10.0"
+}
+{
+"classname" "camera"
+"origin" "-10 20 -10"
+"angles" "-60 -315 0"
+"fovy" "30"
+"near" "0.1"
+"far" "100.0"
+}
