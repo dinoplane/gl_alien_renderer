@@ -1,14 +1,23 @@
  #include <model_loader.hpp>
 
+
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
+
 #include <util.h>
 #include <mesh.hpp>
 #include <model.hpp>
+
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
  
  #include <limits>
  #include <iostream>
+ #include <variant>
  
+
+
 
 bool ModelLoader::LoadGLTF(const std::filesystem::path path, fastgltf::Asset* retAsset) {
 	if (!std::filesystem::exists(path)) {
@@ -27,7 +36,8 @@ bool ModelLoader::LoadGLTF(const std::filesystem::path path, fastgltf::Asset* re
 		static constexpr auto supportedExtensions =
 			fastgltf::Extensions::KHR_mesh_quantization |
 			fastgltf::Extensions::KHR_texture_transform |
-			fastgltf::Extensions::KHR_materials_variants;
+			fastgltf::Extensions::KHR_materials_variants |
+			fastgltf::Extensions::KHR_materials_specular;
 
         fastgltf::Parser parser(supportedExtensions);
 
@@ -57,24 +67,49 @@ bool ModelLoader::LoadGLTF(const std::filesystem::path path, fastgltf::Asset* re
     return true;
 }
 
-bool ModelLoader::LoadMesh(const fastgltf::Asset& asset, const fastgltf::Mesh& mesh, 
-Mesh* outMesh) {
+bool ModelLoader::LoadMesh(const fastgltf::Asset& asset, const fastgltf::Mesh& mesh, const Model& model, Mesh* outMesh) {
     // Mesh outMesh = {};
 	Mesh retMesh;
 	glm::vec3 min = glm::vec3(std::numeric_limits<float>::max());
 	glm::vec3 max = glm::vec3(std::numeric_limits<float>::min());
 
     for (auto it = mesh.primitives.begin(); it != mesh.primitives.end(); ++it) {
+		Primitive outPrimitive;
+	
+
 		auto* positionIt = it->findAttribute("POSITION");
 		assert(positionIt != it->attributes.end()); // A mesh primitive is required to hold the POSITION attribute.
 		assert(it->indicesAccessor.has_value()); // We specify GenerateMeshIndices, so we should always have indices
 
 
-
 		std::size_t baseColorTexcoordIndex = 0;
+
 
         // Get the output primitive
         auto index = std::distance(mesh.primitives.begin(), it);
+
+        if (it->materialIndex.has_value()) {
+            outPrimitive.materialUniformsIndex = it->materialIndex.value() + 1; // Adjust for default material
+            auto& material = asset.materials[it->materialIndex.value()];
+
+			auto& baseColorTexture = material.pbrData.baseColorTexture;
+            if (baseColorTexture.has_value()) {
+                auto& texture = asset.textures[baseColorTexture->textureIndex];
+				if (!texture.imageIndex.has_value())
+					return false;
+                outPrimitive.albedoTexture = model.textures[texture.imageIndex.value()].texture;
+
+				if (baseColorTexture->transform && baseColorTexture->transform->texCoordIndex.has_value()) {
+					baseColorTexcoordIndex = baseColorTexture->transform->texCoordIndex.value();
+				} else {
+					baseColorTexcoordIndex = material.pbrData.baseColorTexture->texCoordIndex;
+				}
+            }
+        } else {
+			outPrimitive.materialUniformsIndex = 0;
+		}
+
+
         // auto& primitive = outMesh.primitives[index];
         // primitive.primitiveType = fastgltf::to_underlying(it->type);
         // primitive.vertexArray = vao;
@@ -231,7 +266,6 @@ Mesh* outMesh) {
 		// fastgltf::copyFromAccessor<uint32_t>(asset, indexAccessor, indexPtr);
 		// (indexPtr, indexPtr + indexAccessor.count);
 
-	Primitive outPrimitive;
 	
 	Primitive::GenerateBuffers(&outPrimitive, vertices, indices);
 	retMesh.primitives.push_back(outPrimitive);
@@ -247,18 +281,38 @@ Mesh* outMesh) {
 }
 
 bool ModelLoader::LoadModel(const fastgltf::Asset& asset, Model * model){
+	model->textures.resize(asset.images.size());
+	model->materials.resize(asset.materials.size());
 	model->meshes.resize(asset.meshes.size());
 
-	for ( size_t meshIdx = 0; meshIdx < asset.meshes.size(); ++meshIdx ){
-		const fastgltf::Mesh& gltfMesh = asset.meshes[meshIdx];
-		Mesh& mesh = model->meshes[meshIdx];
-		if (!LoadMesh(asset, gltfMesh, &mesh)){
+	for ( size_t imageIdx = 0; imageIdx < asset.images.size(); ++imageIdx ){
+		const fastgltf::Image& gltfImage = asset.images[imageIdx];
+		Texture& texture = model->textures[imageIdx];
+		if (!LoadImage(asset, gltfImage, &texture)){
 			assert(false);
 			return false;
 		}
 	}
 
-	// const auto& sceneIndex = asset.defaultScene.value_or(0);
+	for ( size_t materialIdx = 0; materialIdx < asset.materials.size(); ++materialIdx ){
+		const fastgltf::Material& gltfMaterial = asset.materials[materialIdx];
+		Material& material = model->materials[materialIdx];
+		if (!LoadMaterial(asset, gltfMaterial, &material)){
+			assert(false);
+			return false;
+		}
+	}
+
+	for ( size_t meshIdx = 0; meshIdx < asset.meshes.size(); ++meshIdx ){
+		const fastgltf::Mesh& gltfMesh = asset.meshes[meshIdx];
+		Mesh& mesh = model->meshes[meshIdx];
+		if (!LoadMesh(asset, gltfMesh, *model, &mesh)){
+			assert(false);
+			return false;
+		}
+	}
+
+	// const auto& sceneIndex = asset.desfaultScene.value_or(0);
 	glm::vec3 min = glm::vec3(std::numeric_limits<float>::max());
 	glm::vec3 max = glm::vec3(std::numeric_limits<float>::min());
 	fastgltf::iterateSceneNodes(asset, 0u, fastgltf::math::fmat4x4(),
@@ -275,6 +329,92 @@ bool ModelLoader::LoadModel(const fastgltf::Asset& asset, Model * model){
 
 	return true;
 }
+
+
+
+
+bool ModelLoader::LoadImage(const fastgltf::Asset& asset, const fastgltf::Image& image, Texture* outTexture) {	
+    auto getLevelCount = [](int width, int height) -> GLsizei {
+        return static_cast<GLsizei>(1 + floor(log2(width > height ? width : height)));
+    };
+
+    GLuint texture;
+    glCreateTextures(GL_TEXTURE_2D, 1, &texture);
+    std::visit(fastgltf::visitor {
+        [](auto& arg) {
+			fmt::print("Loaded Image: {}\n", "Nothing");
+
+
+		},
+        [&](const fastgltf::sources::URI& filePath) {
+            assert(filePath.fileByteOffset == 0); // We don't support offsets with stbi.
+            assert(filePath.uri.isLocalPath()); // We're only capable of loading local files.
+            int width, height, nrChannels;
+
+            const std::string path(filePath.uri.path().begin(), filePath.uri.path().end()); // Thanks C++.
+            unsigned char *data = stbi_load(path.c_str(), &width, &height, &nrChannels, 4);
+            glTextureStorage2D(texture, getLevelCount(width, height), GL_RGBA8, width, height);
+            glTextureSubImage2D(texture, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
+            stbi_image_free(data);
+			fmt::print("Loaded Image: {}\n", path);
+        },
+        [&](const fastgltf::sources::Array& vector) {
+            int width, height, nrChannels;
+            unsigned char *data = stbi_load_from_memory(reinterpret_cast<const stbi_uc*>(vector.bytes.data()), static_cast<int>(vector.bytes.size()), &width, &height, &nrChannels, 4);
+            glTextureStorage2D(texture, getLevelCount(width, height), GL_RGBA8, width, height);
+            glTextureSubImage2D(texture, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
+            stbi_image_free(data);
+			fmt::print("Loaded Image: {}\n", "From Memory");
+
+        },
+        [&](const fastgltf::sources::BufferView& view) {
+            auto& bufferView = asset.bufferViews[view.bufferViewIndex];
+            auto& buffer = asset.buffers[bufferView.bufferIndex];
+            // Yes, we've already loaded every buffer into some GL buffer. However, with GL it's simpler
+            // to just copy the buffer data again for the texture. Besides, this is just an example.
+            std::visit(fastgltf::visitor {
+                // We only care about VectorWithMime here, because we specify LoadExternalBuffers, meaning
+                // all buffers are already loaded into a vector.
+                [](auto& arg) {},
+                [&](const fastgltf::sources::Array& vector) {
+                    int width, height, nrChannels;
+					unsigned char* data = stbi_load_from_memory(reinterpret_cast<const stbi_uc*>(vector.bytes.data() + bufferView.byteOffset),
+					static_cast<int>(bufferView.byteLength), &width, &height, &nrChannels, 4);
+                    glTextureStorage2D(texture, getLevelCount(width, height), GL_RGBA8, width, height);
+                    glTextureSubImage2D(texture, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
+                    stbi_image_free(data);
+                }
+            }, buffer.data);
+			fmt::print("Loaded Image: {}\n", "From BufferView");
+
+        },
+    }, image.data);
+
+    glGenerateTextureMipmap(texture);
+
+    *outTexture = std::move(Texture { texture });
+    return true;
+
+}
+
+
+bool ModelLoader::LoadMaterial(const fastgltf::Asset& asset, const fastgltf::Material& material, Material* outMaterial) {
+    Material uniforms = {};
+    uniforms.alphaCutoff = material.alphaCutoff;
+
+    uniforms.baseColorFactor.x = material.pbrData.baseColorFactor.x();
+	uniforms.baseColorFactor.y = material.pbrData.baseColorFactor.y();
+	uniforms.baseColorFactor.z = material.pbrData.baseColorFactor.z();
+	uniforms.baseColorFactor.w = material.pbrData.baseColorFactor.w();
+
+    if (material.pbrData.baseColorTexture.has_value()) {
+        uniforms.flags |= MaterialUniformFlags::HasBaseColorTexture;
+    }
+
+    *outMaterial = std::move(uniforms);
+    return true;
+}
+
 
 
 /*

@@ -21,7 +21,8 @@ class Model {
     // each mesh can have its own material
     // each mesh can have its own texture
     // a model also contains a tree of nodes
-
+    std::vector<Texture> textures;
+    std::vector<Material> materials;
     std::vector<Mesh> meshes;
     std::vector<Node> nodes;
     

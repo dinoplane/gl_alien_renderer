@@ -7,6 +7,7 @@
 
 #include <util.h>
 #include <volume.hpp>
+#include <material.hpp>
 
 #include <vector>
 #include <string>
@@ -41,9 +42,12 @@ struct Primitive {
         static void GenerateDebugBuffers(Primitive* primitive, const std::vector<glm::vec3> &vertices, const std::vector<uint>& indices);
         // static void RebindDebug(Mesh*primitive);
 
-
-
         GLsizei indexCount;
+
+        std::size_t materialUniformsIndex;
+        GLuint albedoTexture;
+
+
 
         static Primitive CreateCube();
         static Primitive CreateFrustum(const Camera& camera);

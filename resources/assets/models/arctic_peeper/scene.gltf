@@ -13301,10 +13301,10 @@
     }
   ],
   "extensionsRequired": [
-    "KHR_materials_pbrSpecularGlossiness"
+    "KHR_materials_specular"
   ],
   "extensionsUsed": [
-    "KHR_materials_pbrSpecularGlossiness"
+    "KHR_materials_specular"
   ],
   "images": [
     {
@@ -13332,7 +13332,7 @@
         "index": 2
       },
       "extensions": {
-        "KHR_materials_pbrSpecularGlossiness": {
+        "KHR_materials_specular": {
           "diffuseFactor": [
             1.0,
             1.0,
@@ -13361,7 +13361,7 @@
     {
       "doubleSided": true,
       "extensions": {
-        "KHR_materials_pbrSpecularGlossiness": {
+        "KHR_materials_specular": {
           "diffuseFactor": [
             1.0,
             1.0,

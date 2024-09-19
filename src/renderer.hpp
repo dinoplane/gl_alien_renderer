@@ -89,6 +89,13 @@ class Renderer {
         glm::mat4 modelFromMesh;
     } meshPropertiesUBOBlock;
     
+    GLuint materialUniformsUBO;
+    // struct MaterialUniformsUBOBlock {
+    //     glm::vec4 baseColorFactor;
+    //     float alphaCutoff;
+    //     uint flags;
+    // } materialUniformsUBOBlock;
+
 
     float width;
     float height;

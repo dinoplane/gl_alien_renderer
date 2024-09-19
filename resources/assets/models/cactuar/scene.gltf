@@ -95,10 +95,10 @@
     }
   ],
   "extensionsRequired": [
-    "KHR_materials_pbrSpecularGlossiness"
+    "KHR_materials_specular"
   ],
   "extensionsUsed": [
-    "KHR_materials_pbrSpecularGlossiness"
+    "KHR_materials_specular"
   ],
   "images": [
     {
@@ -109,7 +109,7 @@
     {
       "doubleSided": true,
       "extensions": {
-        "KHR_materials_pbrSpecularGlossiness": {
+        "KHR_materials_specular": {
           "diffuseFactor": [
             1.0,
             1.0,

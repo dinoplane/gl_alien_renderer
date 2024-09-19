@@ -3,6 +3,7 @@
 #include <scene.hpp>
 #include <shader_s.hpp>
 #include <mesh.hpp>
+#include <material.hpp>
 #include <shader_c.hpp>
 #include <entity.hpp>
 #include <util.h>
@@ -102,7 +103,9 @@ Renderer::Renderer(float w, float h) : width(w), height(h) {
     glCreateBuffers(1, &meshPropertiesUBO);
     glNamedBufferStorage(meshPropertiesUBO, sizeof(MeshPropertiesUBOBlock), NULL, GL_DYNAMIC_STORAGE_BIT);
    
-
+    glCreateBuffers(1, &materialUniformsUBO);
+    glNamedBufferStorage(materialUniformsUBO, sizeof(Material), NULL, GL_DYNAMIC_STORAGE_BIT);
+    fmt::print("Material Size {}\n", sizeof(Material));
 }
 
 void Renderer::Init(float w, float h){
@@ -356,7 +359,13 @@ void Renderer::Render(const Scene& scene){ // really bad, we are modifying the s
                     const Mesh& mesh = entity.model.meshes[node.meshIndex];
                     scene.shaders.at(0).setMat4("model", entity.transform.GetModelMatrix() * node.nodeTransformMatrix);
                     for (const Primitive& primitive : mesh.primitives){
+                        glBindTextureUnit(7, primitive.albedoTexture);
+                        glBindBufferBase(GL_UNIFORM_BUFFER, 8, materialUniformsUBO);
+                        glNamedBufferSubData(materialUniformsUBO, 0, sizeof(Material), &entity.model.materials[primitive.materialUniformsIndex]);
+                    
                         BindPrimitive(primitive);
+
+
                         glDrawElements(GL_TRIANGLES, primitive.indexCount, GL_UNSIGNED_INT, 0);
                     }
                 }
@@ -413,6 +422,9 @@ void Renderer::Render(const Scene& scene){ // really bad, we are modifying the s
                 glNamedBufferSubData(meshPropertiesUBO, 0, sizeof(MeshPropertiesUBOBlock), &meshPropertiesUBOBlock);
                 // scene.shaders.at(0).setMat4("model", entInstData.transform.GetModelMatrix() * node.nodeTransformMatrix);
                 for (const Primitive& primitive : mesh.primitives){
+                    glBindTextureUnit(7, primitive.albedoTexture);
+                    glBindBufferBase(GL_UNIFORM_BUFFER, 8, materialUniformsUBO);
+                    glNamedBufferSubData(materialUniformsUBO, 0, sizeof(Material), &entInstData.instModel.materials[primitive.materialUniformsIndex]);
                     BindInstancePrimitive(primitive);
                     glDrawElementsInstanced(GL_TRIANGLES, primitive.indexCount, GL_UNSIGNED_INT, 0, entInstData.instCount);
                 }
