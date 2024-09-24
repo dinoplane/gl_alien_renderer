@@ -2,14 +2,14 @@
 
 out vec4 FragColor;
 
-in vec3 Normal;
-in vec2 TexCoord;
+layout (location = 10) in vec3 Normal;
+layout (location = 11) in vec2 TexCoord;
 
 
 const uint HAS_BASE_COLOR_TEXTURE = 1;
 
-layout(binding = 7) uniform sampler2D albedoTexture;
-layout(binding = 8, std140) uniform MaterialUniformsUBO {
+uniform sampler2D albedoTexture;
+layout(binding = 5, std140) uniform MaterialUniformsUBO {
     vec4 baseColorFactor;
     float alphaCutoff;
     uint flags;
@@ -36,11 +36,11 @@ void main()
 
     vec4 color = material.baseColorFactor;
     // vec4 color = texture(albedoTexture, TexCoord);
-    if ((material.flags & HAS_BASE_COLOR_TEXTURE) == HAS_BASE_COLOR_TEXTURE) {
-        color *= texture(albedoTexture, TexCoord);
+    // if ((material.flags & HAS_BASE_COLOR_TEXTURE) == HAS_BASE_COLOR_TEXTURE) {
+        color = vec4(v_normalColor, 1.0)*texture(albedoTexture, TexCoord);
 
         // color *= texture(albedoTexture, transformUv(texCoord));
-    }
+    // }
     color.a = 1.0;
 
     float factor = (rand(gl_FragCoord.xy) - 0.5) / 8;

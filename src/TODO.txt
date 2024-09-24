@@ -1,19 +1,27 @@
 TODO Abstract organize the logic better
 - A renderpass system
-- Loading models
-- *GPU Frustum Culling + standalone models
 - lighting
 - baked lighting + instancing... damn im gonna regret this aint i
-- Add material to the sdcene 
-- Use git submodules? Debatable
-- Make sure to delete all buffers after exiting // eeeeeeehhh?
-    There's no point if memory is not in demand in the lifetime.
-    The program will release all its resources upon exit anyway!
-    My excuse for allowing memory leaks lol!
+
 - Get rid of include clutter
-- untangle shader interfaces
+
+- indirect draws
+- deferred shading
+
+Bugs:
+- fix noninstanced model shader (im lazy so i dwanna right now)
+- cirno's eyes get gouged out sometimes... figure out why
+
+
+Capstone TODOs:
+- Implement an L system
+
 
 DONE
+- Add material to the scene 
+- GPU Frustum Culling + standalone models
+- untangle shader interfaces
+- Loading models
 - add a fumo
 - A mesh is an array of primitives
 - a model is an array of nodes, pointing to said meshes
@@ -29,6 +37,18 @@ DONE
 - A scene data vs a scene
     - Honestly, the scene data could be a file, and the scene could have a load from file method.
 a renderer takes in a const Scene&, a const Framebuffer& and a const cameraIndex
+
+
+CUT: 
+- Make sure to delete all buffers after exiting // eeeeeeehhh?
+    There's no point if memory is not in demand in the lifetime.
+    The program will release all its resources upon exit anyway!
+    My excuse for allowing memory leaks lol!
+- Use git submodules? Debatable
+    Don't wanna mess with this, in production code, using public modules is tied to legality issues, 
+
+
+
 
 TAROT
 0. FOOL:            Load a model.
@@ -53,3 +73,17 @@ TAROT
 19. SUN:            god rays and volumetric clouds
 20. JUDGEMENT:      Heaven
 21. WORLD:          ????
+
+
+
+
+Interface 
+
+Locations:
+0: aPosition
+1: aNormal
+2: aTexCoord
+3: aTangent // Maybe
+
+Bindings:
+0: 

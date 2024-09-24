@@ -102,8 +102,8 @@ Scene SceneLoader::LoadScene(const SceneData& sceneData)
     // {
     //     scene.initCamConfigs.push_back(camera);
     // }
-
-    scene.shaders.push_back(Shader("./resources/shader/base.vert", "./resources/shader/base.frag"));
+    // I could copy it over and make some edits 
+    scene.shaders.push_back(Shader("./resources/shader/base.vert", "./resources/shader/base_inst.frag"));
     scene.shaders.push_back(Shader("./resources/shader/base_inst.vert", "./resources/shader/base_inst.frag"));
 
 

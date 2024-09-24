@@ -2,13 +2,14 @@
 
 out vec4 FragColor;
 
-in vec3 Normal;
-in vec2 TexCoord;
+layout (location = 0) in vec3 Normal;
+layout (location = 1) in vec2 TexCoord;
+
 
 const uint HAS_BASE_COLOR_TEXTURE = 1;
 
-layout(location = 7) uniform sampler2D albedoTexture;
-layout(binding = 8, std140) uniform MaterialUniformsUBO {
+layout(location = 4) uniform sampler2D albedoTexture;
+layout(binding = 5, std140) uniform MaterialUniformsUBO {
     vec4 baseColorFactor;
     float alphaCutoff;
     uint flags;

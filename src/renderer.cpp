@@ -7,6 +7,7 @@
 #include <shader_c.hpp>
 #include <entity.hpp>
 #include <util.h>
+#include <gl_bindings.h>
 
 
 #include <glad/glad.h>
@@ -128,72 +129,42 @@ void Renderer::Init(float w, float h){
 
 void Renderer::CreateVAO(){
     glCreateVertexArrays(1, &VAO);
-    // glGenVertexArrays(1, &VAO);
-    // glBindVertexArray(VAO);
 
-    glEnableVertexArrayAttrib(VAO, 0);
-    glEnableVertexArrayAttrib(VAO, 1);
-    glEnableVertexArrayAttrib(VAO, 2);
-    // glEnableVertexAttribArray(0);
-    // glEnableVertexAttribArray(1);
-    // glEnableVertexAttribArray(2);
+    glEnableVertexArrayAttrib(VAO, POSITION_ATTRIB_LOC);
+    glEnableVertexArrayAttrib(VAO, NORMAL_ATTRIB_LOC);
+    glEnableVertexArrayAttrib(VAO, TEXCOORD_ATTRIB_LOC);
 
     // position attribute
-    glVertexArrayAttribFormat(VAO, 0, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, position));
-    glVertexArrayAttribBinding(VAO, 0, 0);
-    // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Vertex, position));
-
+    glVertexArrayAttribFormat(VAO, POSITION_ATTRIB_LOC, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, position));
+    glVertexArrayAttribBinding(VAO, POSITION_ATTRIB_LOC, 0);
+    
     // normal attribute
-    glVertexArrayAttribFormat(VAO, 1, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, normal));
-    glVertexArrayAttribBinding(VAO, 1, 0);
-    // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Vertex, normal));
-
+    glVertexArrayAttribFormat(VAO, NORMAL_ATTRIB_LOC, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, normal));
+    glVertexArrayAttribBinding(VAO, NORMAL_ATTRIB_LOC, 0);
+    
     // texcoord attribute
-    glVertexArrayAttribFormat(VAO, 2, 2, GL_FLOAT, GL_FALSE, offsetof(Vertex, texcoords));
-    glVertexArrayAttribBinding(VAO, 2, 0);
-    // glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Vertex, texcoords));
+    glVertexArrayAttribFormat(VAO, TEXCOORD_ATTRIB_LOC, 2, GL_FLOAT, GL_FALSE, offsetof(Vertex, texcoords));
+    glVertexArrayAttribBinding(VAO, TEXCOORD_ATTRIB_LOC, 0);
 }
 
 void Renderer::CreateInstanceVAO(){
     glCreateVertexArrays(1, &instVAO);
 
-    glEnableVertexArrayAttrib(instVAO, 0);
-    glEnableVertexArrayAttrib(instVAO, 1);
-    glEnableVertexArrayAttrib(instVAO, 2);
-
-    // glEnableVertexArrayAttrib(instVAO, 3);
-    // glEnableVertexArrayAttrib(instVAO, 4);
-    // glEnableVertexArrayAttrib(instVAO, 5);
-    // glEnableVertexArrayAttrib(instVAO, 6);
-
+    glEnableVertexArrayAttrib(instVAO, POSITION_ATTRIB_LOC);
+    glEnableVertexArrayAttrib(instVAO, NORMAL_ATTRIB_LOC);
+    glEnableVertexArrayAttrib(instVAO, TEXCOORD_ATTRIB_LOC);
 
     // position attribute
-    glVertexArrayAttribFormat(instVAO, 0, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, position));
-    glVertexArrayAttribBinding(instVAO, 0, 0);
+    glVertexArrayAttribFormat(instVAO, POSITION_ATTRIB_LOC, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, position));
+    glVertexArrayAttribBinding(instVAO, POSITION_ATTRIB_LOC, 0);
 
     // normal attribute
-    glVertexArrayAttribFormat(instVAO, 1, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, normal));
-    glVertexArrayAttribBinding(instVAO, 1, 0);
+    glVertexArrayAttribFormat(instVAO, NORMAL_ATTRIB_LOC, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, normal));
+    glVertexArrayAttribBinding(instVAO, NORMAL_ATTRIB_LOC, 0);
 
     // texcoord attribute
-    glVertexArrayAttribFormat(instVAO, 2, 2, GL_FLOAT, GL_FALSE, offsetof(Vertex, texcoords));
-    glVertexArrayAttribBinding(instVAO, 2, 0);
-
-    // modelmatrix attribute
-    // glVertexArrayAttribFormat(instVAO, 3, 4, GL_FLOAT, GL_FALSE, 0 * sizeof(glm::vec4));
-    // glVertexArrayAttribBinding(instVAO, 3, 1);
-    // glVertexArrayAttribFormat(instVAO, 4, 4, GL_FLOAT, GL_FALSE, 1 * sizeof(glm::vec4));
-    // glVertexArrayAttribBinding(instVAO, 4, 1);
-    // glVertexArrayAttribFormat(instVAO, 5, 4, GL_FLOAT, GL_FALSE, 2 * sizeof(glm::vec4));
-    // glVertexArrayAttribBinding(instVAO, 5, 1);
-    // glVertexArrayAttribFormat(instVAO, 6, 4, GL_FLOAT, GL_FALSE, 3 * sizeof(glm::vec4));
-    // glVertexArrayAttribBinding(instVAO, 6, 1);
-
-    // glVertexArrayBindingDivisor(instVAO, 1, 1);
-    // glVertexArrayBindingDivisor(instVAO, 4, 1);
-    // glVertexArrayBindingDivisor(instVAO, 5, 1);
-    // glVertexArrayBindingDivisor(instVAO, 6, 1);
-
+    glVertexArrayAttribFormat(instVAO, TEXCOORD_ATTRIB_LOC, 2, GL_FLOAT, GL_FALSE, offsetof(Vertex, texcoords));
+    glVertexArrayAttribBinding(instVAO, TEXCOORD_ATTRIB_LOC, 0);
 }
 
 void Renderer::CreateDebugVAO(){
@@ -309,15 +280,15 @@ void Renderer::BindDebugMesh(const Primitive& mesh){
 }
 
 void Renderer::BindInstanceCullingBuffers(const EntityInstanceData& entInstData){
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, entInstData.instModelMatrixBuffer);
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, entInstData.instMeshRenderedBuffer);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, WORLD_FROM_MODEL_SSBO_BINDING, entInstData.instModelMatrixBuffer);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, INST_IS_RENDERED_SSBO_BINDING, entInstData.instMeshRenderedBuffer);
 }
 
 
 void Renderer::BindInstanceData(const EntityInstanceData& entInstData){
     // glVertexArrayVertexBuffer(instVAO, 1, entInstData->instArrVBO, 0, sizeof(glm::mat4));
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, entInstData.instModelMatrixBuffer);
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, entInstData.instMeshRenderedBuffer);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, WORLD_FROM_MODEL_SSBO_BINDING, entInstData.instModelMatrixBuffer);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, INST_IS_RENDERED_SSBO_BINDING, entInstData.instMeshRenderedBuffer);
 
 }
 
@@ -344,7 +315,7 @@ void Renderer::Render(const Scene& scene){ // really bad, we are modifying the s
         cameraMatricesUBOBlock.view = Renderer::allCameras[mainCameraIdx].getViewMatrix();
 
         glNamedBufferSubData(cameraMatricesUBO, 0, 2 * sizeof(glm::mat4), &cameraMatricesUBOBlock);
-        glBindBufferBase(GL_UNIFORM_BUFFER, 3, cameraMatricesUBO);
+        glBindBufferBase(GL_UNIFORM_BUFFER, PROJ_VIEW_UBO_BINDING, cameraMatricesUBO);
 
         scene.shaders[0].use();
         // scene.shaders[0].setMat4("projection", Renderer::allCameras[mainCameraIdx].getProjMatrix()); // TODO : Profile this
@@ -359,8 +330,8 @@ void Renderer::Render(const Scene& scene){ // really bad, we are modifying the s
                     const Mesh& mesh = entity.model.meshes[node.meshIndex];
                     scene.shaders.at(0).setMat4("model", entity.transform.GetModelMatrix() * node.nodeTransformMatrix);
                     for (const Primitive& primitive : mesh.primitives){
-                        glBindTextureUnit(7, primitive.albedoTexture);
-                        glBindBufferBase(GL_UNIFORM_BUFFER, 8, materialUniformsUBO);
+                        glBindTexture(GL_TEXTURE_2D, primitive.albedoTexture);
+                        glBindBufferBase(GL_UNIFORM_BUFFER, MATERIAL_UBO_BINDING, materialUniformsUBO);
                         glNamedBufferSubData(materialUniformsUBO, 0, sizeof(Material), &entity.model.materials[primitive.materialUniformsIndex]);
                     
                         BindPrimitive(primitive);
@@ -372,33 +343,17 @@ void Renderer::Render(const Scene& scene){ // really bad, we are modifying the s
             }
         }
 
-        // cullShader->
-
-        // glBindVertexArray(instVAO);
-        // for (uint entityIdx = 0; entityIdx < scene.entityInstanceMap.size(); ++entityIdx){
-        //     // scene.shaders.at(0).setMat4("model", scene.entityInstanceMap[entityIdx].transform.GetModelMatrix());
-        //     // What I'm about to do justifies the need to separate static state from dynamic state
-
-        //     BindInstanceMesh(&scene.entityInstanceMap[entityIdx]);
-        //     glDrawElementsInstanced(GL_TRIANGLES, scene.entityInstanceMap[entityIdx].instModel.indexCount, GL_UNSIGNED_INT, 0, scene.entityInstanceMap[entityIdx].instCount);
-        // }
-
-
-        // scene.shaders[1].setMat4("projection", Renderer::allCameras[mainCameraIdx].getProjMatrix()); // TODO : Profile this
-        // scene.shaders[1].setMat4("view", Renderer::allCameras[mainCameraIdx].getViewMatrix());
-
         frustumCullDataUBOBlock.frustum = Camera::createFrustumFromCamera(Renderer::allCameras[0]).ToGPUFrustum();
         frustumCullDataUBOBlock.doCull = Renderer::doCull;
         
         for ( const auto& [classname, entInstData] : scene.entityInstanceMap ){
             ZoneScoped;
-            // scene.shaders.at(0).setMat4("model", scene.entityInstanceMap[entityIdx].transform.GetModelMatrix());
             // What I'm about to do justifies the need to separate static state from dynamic state
             frustumCullDataUBOBlock.boundingVolume = entInstData.instModel.boundingVolume.ToGPUSphere();
             frustumCullDataUBOBlock.instCount = entInstData.instCount;
             //fmt::print("Instance Count: {}\n", entInstData.instCount);
             glNamedBufferSubData(frustumCullDataUBO, 0, sizeof(FrustumCullDataUBOBlock), &frustumCullDataUBOBlock);
-            glBindBufferBase(GL_UNIFORM_BUFFER, 6, frustumCullDataUBO);
+            glBindBufferBase(GL_UNIFORM_BUFFER, FRUSTUM_CULL_DATA_UBO_BINDING, frustumCullDataUBO);
 
             cullShader->use();
             BindInstanceCullingBuffers(entInstData);
@@ -409,7 +364,7 @@ void Renderer::Render(const Scene& scene){ // really bad, we are modifying the s
 
 
             scene.shaders[1].use();
-            glBindBufferBase(GL_UNIFORM_BUFFER, 3, cameraMatricesUBO);
+            glBindBufferBase(GL_UNIFORM_BUFFER, PROJ_VIEW_UBO_BINDING, cameraMatricesUBO);
 
             glBindVertexArray(instVAO);
 
@@ -418,13 +373,14 @@ void Renderer::Render(const Scene& scene){ // really bad, we are modifying the s
             for ( const Node& node : entInstData.instModel.nodes ){
                 const Mesh& mesh = entInstData.instModel.meshes[node.meshIndex];
                 meshPropertiesUBOBlock.modelFromMesh = node.nodeTransformMatrix;
-                glBindBufferBase(GL_UNIFORM_BUFFER, 6, meshPropertiesUBO);
                 glNamedBufferSubData(meshPropertiesUBO, 0, sizeof(MeshPropertiesUBOBlock), &meshPropertiesUBOBlock);
-                // scene.shaders.at(0).setMat4("model", entInstData.transform.GetModelMatrix() * node.nodeTransformMatrix);
+                glBindBufferBase(GL_UNIFORM_BUFFER, MODEL_FROM_MESH_UBO_BINDING, meshPropertiesUBO);
+
                 for (const Primitive& primitive : mesh.primitives){
-                    glBindTextureUnit(7, primitive.albedoTexture);
-                    glBindBufferBase(GL_UNIFORM_BUFFER, 8, materialUniformsUBO);
+                    // glBindTexture(GL_TEXTURE_2D, primitive.albedoTexture);
                     glNamedBufferSubData(materialUniformsUBO, 0, sizeof(Material), &entInstData.instModel.materials[primitive.materialUniformsIndex]);
+
+                    glBindBufferBase(GL_UNIFORM_BUFFER, MATERIAL_UBO_BINDING, materialUniformsUBO);
                     BindInstancePrimitive(primitive);
                     glDrawElementsInstanced(GL_TRIANGLES, primitive.indexCount, GL_UNSIGNED_INT, 0, entInstData.instCount);
                 }
@@ -440,8 +396,6 @@ void Renderer::Render(const Scene& scene){ // really bad, we are modifying the s
         glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
         debugWireShader->use();
 
-        // debugWireShader->setMat4("projection", Renderer::allCameras[mainCameraIdx].getProjMatrix()); // TODO : Profile this
-        // debugWireShader->setMat4("view", Renderer::allCameras[mainCameraIdx].getViewMatrix());
         glBindVertexArray(debugVAO);
         for (uint cameraIdx = 0; cameraIdx < Renderer::allCameras.size(); ++cameraIdx){
             if (cameraIdx == mainCameraIdx){

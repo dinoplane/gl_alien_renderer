@@ -6,29 +6,28 @@ layout (location = 2) in vec2 aTexCoord;
 
 // layout (location = 3) in int aSelected;
 
-layout (std140, binding=3) uniform Matrices
+layout (binding = 0, std140) uniform Matrices
 {
     mat4 projection;
-    mat4 view;
+    mat4 view;    
 };
 
-
-// SSBO containing the instanced model matrices
-layout(binding = 4, std430) readonly buffer instModelMatBuf {
-    mat4 worldFromModel[];
-};
-
-layout(binding = 5, std430) coherent buffer instMeshRenderedBuf {
-    bool meshIsRendered[];
-}; // THIS DOES NOT SAVE COMPUTE!!!
-
-layout (binding = 6, std140) uniform meshPropertiesBuf {
+layout (binding = 1, std140) uniform meshPropertiesBuf {
     mat4 modelFromMesh;
 };
 
+// SSBO containing the instanced model matrices
+layout(binding = 2, std430) readonly buffer instModelMatBuf {
+    mat4 worldFromModel[];
+};
 
-out vec3 Normal;
-out vec2 TexCoord;
+layout(binding = 3, std430) coherent buffer instMeshRenderedBuf {
+    bool meshIsRendered[];
+}; // THIS DOES NOT SAVE COMPUTE!!!
+
+
+layout (location = 10) out vec3 Normal;
+layout (location = 11) out vec2 TexCoord;
 
 void main()
 {

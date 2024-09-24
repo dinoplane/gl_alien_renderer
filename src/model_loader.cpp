@@ -69,7 +69,7 @@ bool ModelLoader::LoadGLTF(const std::filesystem::path path, fastgltf::Asset* re
 
 bool ModelLoader::LoadMesh(const fastgltf::Asset& asset, const fastgltf::Mesh& mesh, const Model& model, Mesh* outMesh) {
     // Mesh outMesh = {};
-	Mesh retMesh;
+	// Mesh retMesh;
 	glm::vec3 min = glm::vec3(std::numeric_limits<float>::max());
 	glm::vec3 max = glm::vec3(std::numeric_limits<float>::min());
 
@@ -98,7 +98,7 @@ bool ModelLoader::LoadMesh(const fastgltf::Asset& asset, const fastgltf::Mesh& m
 				if (!texture.imageIndex.has_value())
 					return false;
                 outPrimitive.albedoTexture = model.textures[texture.imageIndex.value()].texture;
-
+				fmt::print("Albedo Loaded {}\n", outPrimitive.albedoTexture);
 				if (baseColorTexture->transform && baseColorTexture->transform->texCoordIndex.has_value()) {
 					baseColorTexcoordIndex = baseColorTexture->transform->texCoordIndex.value();
 				} else {
@@ -108,48 +108,17 @@ bool ModelLoader::LoadMesh(const fastgltf::Asset& asset, const fastgltf::Mesh& m
         } else {
 			outPrimitive.materialUniformsIndex = 0;
 		}
-
-
-        // auto& primitive = outMesh.primitives[index];
-        // primitive.primitiveType = fastgltf::to_underlying(it->type);
-        // primitive.vertexArray = vao;
-        // if (it->materialIndex.has_value()) {
-        //     primitive.materialUniformsIndex = it->materialIndex.value() + 1; // Adjust for default material
-        //     auto& material = viewer->asset.materials[it->materialIndex.value()];
-
-		// 	auto& baseColorTexture = material.pbrData.baseColorTexture;
-        //     if (baseColorTexture.has_value()) {
-        //         auto& texture = viewer->asset.textures[baseColorTexture->textureIndex];
-		// 		if (!texture.imageIndex.has_value())
-		// 			return false;
-        //         primitive.albedoTexture = viewer->textures[texture.imageIndex.value()].texture;
-
-		// 		if (baseColorTexture->transform && baseColorTexture->transform->texCoordIndex.has_value()) {
-		// 			baseColorTexcoordIndex = baseColorTexture->transform->texCoordIndex.value();
-		// 		} else {
-		// 			baseColorTexcoordIndex = material.pbrData.baseColorTexture->texCoordIndex;
-		// 		}
-        //     }
-        // } else {
-			// primitive.materialUniformsIndex = 0;
-		// }
-
         
             // Position
             auto& positionAccessor = asset.accessors[positionIt->accessorIndex];
             if (!positionAccessor.bufferViewIndex.has_value())
                 continue;
 			
-			fmt::print("Position Accessor Count: {}\n", positionAccessor.count);
+//			fmt::print("Position Accessor Count: {}\n", positionAccessor.count);
 
 			std::vector<Vertex> vertices;
 			vertices.resize(positionAccessor.count);
 
-
-			// Create the vertex buffer for this primitive, and use the accessor tools to copy directly into the mapped buffer.
-			// glCreateBuffers(1, &primitive.vertexBuffer);
-			// glNamedBufferData(primitive.vertexBuffer, positionAccessor.count * sizeof(Vertex), nullptr, GL_STATIC_DRAW);
-			// auto* vertices = static_cast<Vertex*>(glMapNamedBuffer(primitive.vertexBuffer, GL_WRITE_ONLY));
 			fastgltf::iterateAccessorWithIndex<fastgltf::math::fvec3>(asset, positionAccessor, [&](fastgltf::math::fvec3 pos, std::size_t idx) {
 				vertices[idx].position = glm::vec3(pos.x(), pos.y(), pos.z());
 				min = glm::min(min, vertices[idx].position);
@@ -158,16 +127,6 @@ bool ModelLoader::LoadMesh(const fastgltf::Asset& asset, const fastgltf::Mesh& m
 				vertices[idx].texcoords = glm::vec2(0.0f, 0.0f);
 				// fmt::print("Vertex Position: {}\n", glm::to_string(vertices[idx].position));
 			});
-			// glUnmapNamedBuffer(primitive.vertexBuffer);
-
-            // glEnableVertexArrayAttrib(vao, 0);
-            // glVertexArrayAttribFormat(vao, 0,
-            //                           3, GL_FLOAT,
-            //                           GL_FALSE, 0);
-            // glVertexArrayAttribBinding(vao, 0, 0);
-
-			// glVertexArrayVertexBuffer(vao, 0, primitive.vertexBuffer,
-			// 						  0, sizeof(Vertex));
         
 
 		auto texcoordAttribute = std::string("TEXCOORD_0");// + std::to_string(baseColorTexcoordIndex);
@@ -182,16 +141,6 @@ bool ModelLoader::LoadMesh(const fastgltf::Asset& asset, const fastgltf::Mesh& m
 				vertices[idx].texcoords.x = uv.x();
 				vertices[idx].texcoords.y = uv.y();
 			});
-			// glUnmapNamedBuffer(primitive.vertexBuffer);
-
-			// glEnableVertexArrayAttrib(vao, 1);
-            // glVertexArrayAttribFormat(vao, 1,
-			// 						  2, GL_FLOAT,
-            //                           GL_FALSE, 0);
-            // glVertexArrayAttribBinding(vao, 1, 1);
-
-			// glVertexArrayVertexBuffer(vao, 1, primitive.vertexBuffer,
-			// 						  offsetof(Vertex, uv), sizeof(Vertex));
         }
 
 		auto normalAttribute = std::string("NORMAL");
@@ -207,53 +156,7 @@ bool ModelLoader::LoadMesh(const fastgltf::Asset& asset, const fastgltf::Mesh& m
 				vertices[idx].normal.y = norm.y();
 				vertices[idx].normal.z = norm.z();
 			});
-			// glUnmapNamedBuffer(primitive.vertexBuffer);
-
-			// glEnableVertexArrayAttrib(vao, 1);
-            // glVertexArrayAttribFormat(vao, 1,
-			// 						  2, GL_FLOAT,
-            //                           GL_FALSE, 0);
-            // glVertexArrayAttribBinding(vao, 1, 1);
-
-			// glVertexArrayVertexBuffer(vao, 1, primitive.vertexBuffer,
-			// 						  offsetof(Vertex, uv), sizeof(Vertex));
-        }
-
-        // Generate the indirect draw command
-        // auto& draw = primitive.draw;
-        // draw.instanceCount = 1;
-        // draw.baseInstance = 0;
-        // draw.baseVertex = 0;
-		// draw.firstIndex = 0;
-
-
-        // if (!indexAccessor.bufferViewIndex.has_value())
-        //     return false;
-        // draw.count = static_cast<std::uint32_t>(indexAccessor.count);
-		
-
-		// // Create the index buffer and copy the indices into it.
-		// // glCreateBuffers(1, &primitive.indexBuffer);
-		// if (indexAccessor.componentType == fastgltf::ComponentType::UnsignedByte || indexAccessor.componentType == fastgltf::ComponentType::UnsignedShort) {
-        // 	// primitive.indexType = GL_UNSIGNED_SHORT;
-		// 	// glNamedBufferData(primitive.indexBuffer,
-		// 	// 				  static_cast<GLsizeiptr>(indexAccessor.count * sizeof(std::uint16_t)), nullptr,
-		// 	// 				  GL_STATIC_DRAW);
-		// 	// auto* indices = static_cast<std::uint16_t*>(glMapNamedBuffer(primitive.indexBuffer, GL_WRITE_ONLY));
-		// 	uint16_t* indexPtr;
-		// 	fastgltf::copyFromAccessor<std::uint16_t>(asset, indexAccessor, indexPtr);
-		// 	// glUnmapNamedBuffer(primitive.indexBuffer);
-		// } else {
-        // 	// primitive.indexType = GL_UNSIGNED_INT;
-		// 	// glNamedBufferData(primitive.indexBuffer,
-		// 					//   static_cast<GLsizeiptr>(indexAccessor.count * sizeof(std::uint32_t)), nullptr,
-		// 					//   GL_STATIC_DRAW);
-		// 	// auto* indices = static_cast<std::uint32_t*>(glMapNamedBuffer(primitive.indexBuffer, GL_WRITE_ONLY));
-		// 	uint32_t* indexPtr;
-		// 	fastgltf::copyFromAccessor<std::uint32_t>(asset, indexAccessor, indexPtr);
-		// 	// glUnmapNamedBuffer(primitive.indexBuffer);
-		// }
-
+		}
 
         auto& indexAccessor = asset.accessors[it->indicesAccessor.value()];
 		indexAccessor.count;
@@ -262,21 +165,120 @@ bool ModelLoader::LoadMesh(const fastgltf::Asset& asset, const fastgltf::Mesh& m
 				indices[idx] = indiceIdx;
 		});
 
-		// uint32_t* indexPtr;
-		// fastgltf::copyFromAccessor<uint32_t>(asset, indexAccessor, indexPtr);
-		// (indexPtr, indexPtr + indexAccessor.count);
-
 	
 	Primitive::GenerateBuffers(&outPrimitive, vertices, indices);
-	retMesh.primitives.push_back(outPrimitive);
+	outMesh->primitives.push_back(outPrimitive);
         // glVertexArrayElementBuffer(vao, primitive.indexBuffer);
     }
 
-	retMesh.boundingVolume = Sphere((min + max) / 2.0f, glm::distance(min, max) / 2.0f);
+	outMesh->boundingVolume = Sphere((min + max) / 2.0f, glm::distance(min, max) / 2.0f);
 
-	*outMesh = std::move(retMesh);
+	// *outMesh = std::move(retMesh);
     // Create the buffer holding all of our primitive structs.
 
+    return true;
+}
+
+
+bool ModelLoader::LoadImage(const fastgltf::Asset& asset, const fastgltf::Image& image, Texture* outTexture) {	
+    auto getLevelCount = [](int width, int height) -> GLsizei {
+        return static_cast<GLsizei>(1 + floor(log2(width > height ? width : height)));
+    };
+
+    GLuint texture;
+    glCreateTextures(GL_TEXTURE_2D, 1, &texture);
+    std::visit(fastgltf::visitor {
+        [](auto& arg) {
+			fmt::print("Loaded Image: {}\n", "Nothing");
+
+
+		},
+        [&](const fastgltf::sources::URI& filePath) {
+            assert(filePath.fileByteOffset == 0); // We don't support offsets with stbi.
+            assert(filePath.uri.isLocalPath()); // We're only capable of loading local files.
+            int width, height, nrChannels;
+
+            const std::string path(filePath.uri.path().begin(), filePath.uri.path().end()); // Thanks C++.
+            unsigned char *data = stbi_load(path.c_str(), &width, &height, &nrChannels, 4);
+            
+
+			glTextureParameteri(texture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+			glTextureParameteri(texture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+			glTextureParameteri(texture, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTextureParameteri(texture, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			
+			glTextureStorage2D(texture, getLevelCount(width, height), GL_RGBA8, width, height);
+            glTextureSubImage2D(texture, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
+            stbi_image_free(data);
+			fmt::print("Loaded Image: {}\n", path);
+        },
+        [&](const fastgltf::sources::Array& vector) {
+            int width, height, nrChannels;
+            unsigned char *data = stbi_load_from_memory(reinterpret_cast<const stbi_uc*>(vector.bytes.data()), static_cast<int>(vector.bytes.size()), &width, &height, &nrChannels, 4);
+            
+		
+			glTextureParameteri(texture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+			glTextureParameteri(texture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+			glTextureParameteri(texture, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTextureParameteri(texture, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+			glTextureStorage2D(texture, getLevelCount(width, height), GL_RGBA8, width, height);
+            glTextureSubImage2D(texture, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
+            stbi_image_free(data);
+			fmt::print("Loaded Image: {}\n", "From Memory");
+
+        },
+        [&](const fastgltf::sources::BufferView& view) {
+            auto& bufferView = asset.bufferViews[view.bufferViewIndex];
+            auto& buffer = asset.buffers[bufferView.bufferIndex];
+            // Yes, we've already loaded every buffer into some GL buffer. However, with GL it's simpler
+            // to just copy the buffer data again for the texture. Besides, this is just an example.
+            std::visit(fastgltf::visitor {
+                // We only care about VectorWithMime here, because we specify LoadExternalBuffers, meaning
+                // all buffers are already loaded into a vector.
+                [](auto& arg) {},
+                [&](const fastgltf::sources::Array& vector) {
+                    int width, height, nrChannels;
+					unsigned char* data = stbi_load_from_memory(reinterpret_cast<const stbi_uc*>(vector.bytes.data() + bufferView.byteOffset),
+					static_cast<int>(bufferView.byteLength), &width, &height, &nrChannels, 4);
+                    
+
+					glTextureParameteri(texture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+					glTextureParameteri(texture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+					glTextureParameteri(texture, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+					glTextureParameteri(texture, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+					
+					glTextureStorage2D(texture, getLevelCount(width, height), GL_RGBA8, width, height);
+                    glTextureSubImage2D(texture, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
+                    stbi_image_free(data);
+                }
+            }, buffer.data);
+			fmt::print("Loaded Image: {}\n", "From BufferView");
+
+        },
+    }, image.data);
+
+    glGenerateTextureMipmap(texture);
+	outTexture->texture = texture;
+    return true;
+
+}
+
+bool ModelLoader::LoadMaterial(const fastgltf::Asset& asset, const fastgltf::Material& material, Material* outMaterial) {
+    // Material uniforms = {};
+    outMaterial->alphaCutoff = material.alphaCutoff;
+
+    outMaterial->baseColorFactor.x = material.pbrData.baseColorFactor.x();
+	outMaterial->baseColorFactor.y = material.pbrData.baseColorFactor.y();
+	outMaterial->baseColorFactor.z = material.pbrData.baseColorFactor.z();
+	outMaterial->baseColorFactor.w = material.pbrData.baseColorFactor.w();
+	outMaterial->flags = 0;
+    if (material.pbrData.baseColorTexture.has_value()) {
+        outMaterial->flags |= MaterialUniformFlags::HasBaseColorTexture;
+    }
+	fmt::print("Has Base Color Texture: {}\n", outMaterial->flags & MaterialUniformFlags::HasBaseColorTexture);
+
+    // *outMaterial = std::move(uniforms);
     return true;
 }
 
@@ -321,166 +323,13 @@ bool ModelLoader::LoadModel(const fastgltf::Asset& asset, Model * model){
 			model->nodes.push_back( Node( glm::make_mat4(matrix.data()), *node.meshIndex ) );
 			min = glm::min(min, model->meshes[*node.meshIndex].boundingVolume.center - glm::vec3(model->meshes[*node.meshIndex].boundingVolume.radius));
 			max = glm::max(max, model->meshes[*node.meshIndex].boundingVolume.center + glm::vec3(model->meshes[*node.meshIndex].boundingVolume.radius));
-	// 		// drawMesh(&viewer, *node.meshIndex, matrix);
 		}
-	// 	// node.children
 	});
 	model->boundingVolume = Sphere((min + max) / 2.0f, glm::distance(min, max) / 2.0f);
 
 	return true;
 }
 
+// void ModelLoader::PrintModel(const Model& model){
 
-
-
-bool ModelLoader::LoadImage(const fastgltf::Asset& asset, const fastgltf::Image& image, Texture* outTexture) {	
-    auto getLevelCount = [](int width, int height) -> GLsizei {
-        return static_cast<GLsizei>(1 + floor(log2(width > height ? width : height)));
-    };
-
-    GLuint texture;
-    glCreateTextures(GL_TEXTURE_2D, 1, &texture);
-    std::visit(fastgltf::visitor {
-        [](auto& arg) {
-			fmt::print("Loaded Image: {}\n", "Nothing");
-
-
-		},
-        [&](const fastgltf::sources::URI& filePath) {
-            assert(filePath.fileByteOffset == 0); // We don't support offsets with stbi.
-            assert(filePath.uri.isLocalPath()); // We're only capable of loading local files.
-            int width, height, nrChannels;
-
-            const std::string path(filePath.uri.path().begin(), filePath.uri.path().end()); // Thanks C++.
-            unsigned char *data = stbi_load(path.c_str(), &width, &height, &nrChannels, 4);
-            glTextureStorage2D(texture, getLevelCount(width, height), GL_RGBA8, width, height);
-            glTextureSubImage2D(texture, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
-            stbi_image_free(data);
-			fmt::print("Loaded Image: {}\n", path);
-        },
-        [&](const fastgltf::sources::Array& vector) {
-            int width, height, nrChannels;
-            unsigned char *data = stbi_load_from_memory(reinterpret_cast<const stbi_uc*>(vector.bytes.data()), static_cast<int>(vector.bytes.size()), &width, &height, &nrChannels, 4);
-            glTextureStorage2D(texture, getLevelCount(width, height), GL_RGBA8, width, height);
-            glTextureSubImage2D(texture, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
-            stbi_image_free(data);
-			fmt::print("Loaded Image: {}\n", "From Memory");
-
-        },
-        [&](const fastgltf::sources::BufferView& view) {
-            auto& bufferView = asset.bufferViews[view.bufferViewIndex];
-            auto& buffer = asset.buffers[bufferView.bufferIndex];
-            // Yes, we've already loaded every buffer into some GL buffer. However, with GL it's simpler
-            // to just copy the buffer data again for the texture. Besides, this is just an example.
-            std::visit(fastgltf::visitor {
-                // We only care about VectorWithMime here, because we specify LoadExternalBuffers, meaning
-                // all buffers are already loaded into a vector.
-                [](auto& arg) {},
-                [&](const fastgltf::sources::Array& vector) {
-                    int width, height, nrChannels;
-					unsigned char* data = stbi_load_from_memory(reinterpret_cast<const stbi_uc*>(vector.bytes.data() + bufferView.byteOffset),
-					static_cast<int>(bufferView.byteLength), &width, &height, &nrChannels, 4);
-                    glTextureStorage2D(texture, getLevelCount(width, height), GL_RGBA8, width, height);
-                    glTextureSubImage2D(texture, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
-                    stbi_image_free(data);
-                }
-            }, buffer.data);
-			fmt::print("Loaded Image: {}\n", "From BufferView");
-
-        },
-    }, image.data);
-
-    glGenerateTextureMipmap(texture);
-
-    *outTexture = std::move(Texture { texture });
-    return true;
-
-}
-
-
-bool ModelLoader::LoadMaterial(const fastgltf::Asset& asset, const fastgltf::Material& material, Material* outMaterial) {
-    Material uniforms = {};
-    uniforms.alphaCutoff = material.alphaCutoff;
-
-    uniforms.baseColorFactor.x = material.pbrData.baseColorFactor.x();
-	uniforms.baseColorFactor.y = material.pbrData.baseColorFactor.y();
-	uniforms.baseColorFactor.z = material.pbrData.baseColorFactor.z();
-	uniforms.baseColorFactor.w = material.pbrData.baseColorFactor.w();
-
-    if (material.pbrData.baseColorTexture.has_value()) {
-        uniforms.flags |= MaterialUniformFlags::HasBaseColorTexture;
-    }
-
-    *outMaterial = std::move(uniforms);
-    return true;
-}
-
-
-
-/*
-			fastgltf::iterateSceneNodes(asset, sceneIndex, fastgltf::math::fmat4x4(),
-										[&](fastgltf::Node& node, fastgltf::math::fmat4x4 matrix) {
-				if (node.meshIndex.has_value()) {
-					drawMesh(&viewer, *node.meshIndex, matrix);
-				}
-			});
-
-*/
-
-/*
-void drawMesh(Viewer* viewer, std::size_t meshIndex, fastgltf::math::fmat4x4 matrix) {
-    auto& mesh = viewer->meshes[meshIndex];
-
-    glBindBuffer(GL_DRAW_INDIRECT_BUFFER, mesh.drawsBuffer);
-
-    glUniformMatrix4fv(viewer->modelMatrixUniform, 1, GL_FALSE, &matrix[0][0]);
-
-    for (auto i = 0U; i < mesh.primitives.size(); ++i) {
-        auto& prim = mesh.primitives[i];
-		auto& gltfPrimitive = viewer->asset.meshes[meshIndex].primitives[i];
-
-		std::size_t materialIndex;
-		auto& mappings = gltfPrimitive.mappings;
-		if (!mappings.empty() && mappings[viewer->materialVariant].has_value()) {
-			materialIndex = mappings[viewer->materialVariant].value() + 1; // Adjust for default material
-		} else {
-			materialIndex = prim.materialUniformsIndex;
-		}
-
-        auto& material = viewer->materialBuffers[materialIndex];
-        glBindTextureUnit(0, prim.albedoTexture);
-        glBindBufferBase(GL_UNIFORM_BUFFER, 0, material);
-        glBindVertexArray(prim.vertexArray);
-
-		// Update texture transform uniforms
-		`glUniform2f(viewer->uvOffsetUniform, 0, 0);
-		glUniform2f(viewer->uvScaleUniform, 1.f, 1.f);
-		glUniform1f(viewer->uvRotationUniform, 0);
-		if (materialIndex != 0) {
-			auto& gltfMaterial = viewer->asset.materials[materialIndex - 1];
-			if (gltfMaterial.pbrData.baseColorTexture.has_value() && gltfMaterial.pbrData.baseColorTexture->transform) {
-				auto& transform = gltfMaterial.pbrData.baseColorTexture->transform;
-				glUniform2f(viewer->uvOffsetUniform, transform->uvOffset[0], transform->uvOffset[1]);
-				glUniform2f(viewer->uvScaleUniform, transform->uvScale[0], transform->uvScale[1]);
-				glUniform1f(viewer->uvRotationUniform, static_cast<float>(transform->rotation));
-			}
-		}
-
-        glDrawElementsIndirect(prim.primitiveType, prim.indexType,
-                               reinterpret_cast<const void*>(i * sizeof(Primitive)));
-    }
-}
-
-	// Load the glTF file
-    auto start = std::chrono::high_resolution_clock::now();
-    if (!loadGltf(&viewer, gltfFile)) {
-        std::cerr << "Failed to parse glTF" << '\n';
-        return -1;
-    }
-
-    for (auto& mesh : asset.meshes) {
-        loadMesh(&viewer, mesh);
-    }
-
-
-*/
+// }

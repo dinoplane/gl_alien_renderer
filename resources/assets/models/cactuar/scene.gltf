@@ -102,32 +102,21 @@
   ],
   "images": [
     {
-      "uri": "textures/material0_diffuse.png"
+      "uri": "./textures/material0_diffuse.png"
     }
   ],
   "materials": [
     {
+      "alphaCutoff": 0.05,
+      "alphaMode": "MASK",
       "doubleSided": true,
-      "extensions": {
-        "KHR_materials_specular": {
-          "diffuseFactor": [
-            1.0,
-            1.0,
-            1.0,
-            1.0
-          ],
-          "diffuseTexture": {
-            "index": 0
-          },
-          "glossinessFactor": 0.0,
-          "specularFactor": [
-            0.0,
-            0.0,
-            0.0
-          ]
-        }
-      },
-      "name": "material0"
+      "name": "material_0",
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 0
+        },
+        "metallicFactor": 0.0
+      }
     }
   ],
   "meshes": [

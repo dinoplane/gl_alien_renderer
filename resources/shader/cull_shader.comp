@@ -29,19 +29,19 @@ struct SphereAABB
 
 
 // bounding volumes matrices
-layout(binding = 4, std430) readonly buffer instModelMatBuf {
+layout(binding = 2, std430) readonly buffer instModelMatBuf {
     mat4 worldFromModel[];
 };
 
-layout (binding = 6, std140) uniform frustumCullData {
+layout (binding = 4, std140) uniform frustumCullData {
     Frustum frustum;
     SphereAABB boundingVolume;
     uint instCount; // This is the number of instances
-    bool doCull;
+    uint doCull;
 };
 
 // Output -------------------------------------
-layout(binding = 5, std430) writeonly buffer instMeshRenderedBuf {
+layout(binding = 3, std430) writeonly buffer instMeshRenderedBuf {
     bool meshIsRendered[];
 };
 
@@ -84,7 +84,7 @@ void main()
     uint index = gl_GlobalInvocationID.x;
     if (index < instCount)
     {
-        if (doCull){
+        if (doCull == 1){
             meshIsRendered[index] = IsSphereOnFrustum(boundingVolume, frustum);  
         } else {
             meshIsRendered[index] = true;

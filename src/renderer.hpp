@@ -76,7 +76,7 @@ class Renderer {
     } cameraMatricesUBOBlock;
 
     GLuint frustumCullDataUBO;
-    struct FrustumCullDataUBOBlock {
+    struct alignas(16) FrustumCullDataUBOBlock {
         GPUFrustum frustum;
         GPUSphere boundingVolume;
         uint instCount;
