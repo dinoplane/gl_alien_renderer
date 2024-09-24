@@ -11,6 +11,7 @@ TODO Abstract organize the logic better
 Bugs:
 - fix noninstanced model shader (im lazy so i dwanna right now)
 - cirno's eyes get gouged out sometimes... figure out why
+    - This was also happening with the cactuar
 
 
 Capstone TODOs:

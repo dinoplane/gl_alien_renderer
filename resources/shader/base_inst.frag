@@ -37,11 +37,11 @@ void main()
     vec4 color = material.baseColorFactor;
     // vec4 color = texture(albedoTexture, TexCoord);
     // if ((material.flags & HAS_BASE_COLOR_TEXTURE) == HAS_BASE_COLOR_TEXTURE) {
-        color = vec4(v_normalColor, 1.0)*texture(albedoTexture, TexCoord);
+    color = vec4(v_normalColor, 1.0)*texture(albedoTexture, TexCoord);
 
         // color *= texture(albedoTexture, transformUv(texCoord));
     // }
-    color.a = 1.0;
+    // color.a = 1.0;
 
     // float factor = (rand(gl_FragCoord.xy) - 0.5) / 8;
     // if (color.a < material.alphaCutoff + factor)
