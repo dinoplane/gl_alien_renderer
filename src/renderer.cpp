@@ -377,7 +377,7 @@ void Renderer::Render(const Scene& scene){ // really bad, we are modifying the s
                 glBindBufferBase(GL_UNIFORM_BUFFER, MODEL_FROM_MESH_UBO_BINDING, meshPropertiesUBO);
 
                 for (const Primitive& primitive : mesh.primitives){
-                    // glBindTexture(GL_TEXTURE_2D, primitive.albedoTexture);
+                    glBindTexture(GL_TEXTURE_2D, primitive.albedoTexture);
                     glNamedBufferSubData(materialUniformsUBO, 0, sizeof(Material), &entInstData.instModel.materials[primitive.materialUniformsIndex]);
 
                     glBindBufferBase(GL_UNIFORM_BUFFER, MATERIAL_UBO_BINDING, materialUniformsUBO);

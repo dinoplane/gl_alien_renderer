@@ -43,9 +43,9 @@ void main()
     // }
     color.a = 1.0;
 
-    float factor = (rand(gl_FragCoord.xy) - 0.5) / 8;
-    if (color.a < material.alphaCutoff + factor)
-        discard;
+    // float factor = (rand(gl_FragCoord.xy) - 0.5) / 8;
+    // if (color.a < material.alphaCutoff + factor)
+    //     discard;
 
     FragColor = color;
 
