@@ -467,7 +467,12 @@ int main(int argc, char **argv)
 
 #define COMPUTE_DEMO 0
 #if COMPUTE_DEMO == 0
-    scene = SceneLoader::LoadScene(SceneLoader::LoadSceneData(scenePath));//Scene::GenerateDefaultScene();
+    SceneLoader::LoadScene(SceneLoader::LoadSceneData(scenePath), &scene);//Scene::GenerateDefaultScene();
+
+    for ( const auto& [classname, entInstData] : scene.entityInstanceMap ){
+        fmt::print("Material Index alpha cut off {}\n", entInstData.instModel.materials[0].alphaCutoff);
+    }
+    
     for (size_t i = 0; i < RENDERER_COUNT; ++i){
         renderers.push_back(Renderer(SCR_WIDTH / RENDERER_COUNT, SCR_HEIGHT ));
     }
@@ -478,13 +483,7 @@ int main(int argc, char **argv)
         ZoneScoped;
 
         processInput(window, &renderers[currRendererIdx], &scene);
-        // for (Renderer& renderer : renderers){
-        //     renderer.Render(&scene);
-        // }
-        // renderers[currRendererIdx].Render(&scene);
         RenderToFrame( scene );
-
-
     {
     // Start the Dear ImGui frame
         ImGui_ImplOpenGL3_NewFrame();

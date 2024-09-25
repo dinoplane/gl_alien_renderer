@@ -284,7 +284,7 @@ bool ModelLoader::LoadMaterial(const fastgltf::Asset& asset, const fastgltf::Mat
 
 bool ModelLoader::LoadModel(const fastgltf::Asset& asset, Model * model){
 	model->textures.resize(asset.images.size());
-	model->materials.resize(asset.materials.size());
+	model->materials.resize(asset.materials.size() + 1);
 	model->meshes.resize(asset.meshes.size());
 
 	for ( size_t imageIdx = 0; imageIdx < asset.images.size(); ++imageIdx ){
@@ -296,13 +296,21 @@ bool ModelLoader::LoadModel(const fastgltf::Asset& asset, Model * model){
 		}
 	}
 
-	for ( size_t materialIdx = 0; materialIdx < asset.materials.size(); ++materialIdx ){
-		const fastgltf::Material& gltfMaterial = asset.materials[materialIdx];
+	// Add a default material
+	auto& defaultMaterial = model->materials[0];
+	defaultMaterial.baseColorFactor = glm::vec4(1.0f);
+	defaultMaterial.alphaCutoff = 0.0f;
+	defaultMaterial.flags = 0;
+
+	for ( size_t materialIdx = 1; materialIdx < asset.materials.size() + 1; ++materialIdx ){
+		const fastgltf::Material& gltfMaterial = asset.materials[materialIdx - 1];
 		Material& material = model->materials[materialIdx];
 		if (!LoadMaterial(asset, gltfMaterial, &material)){
 			assert(false);
 			return false;
 		}
+		fmt::print("Material: {}\n", materialIdx);
+		fmt::print("Alpha Cutoff: {}\n", material.alphaCutoff);
 	}
 
 	for ( size_t meshIdx = 0; meshIdx < asset.meshes.size(); ++meshIdx ){
@@ -326,7 +334,7 @@ bool ModelLoader::LoadModel(const fastgltf::Asset& asset, Model * model){
 		}
 	});
 	model->boundingVolume = Sphere((min + max) / 2.0f, glm::distance(min, max) / 2.0f);
-
+	fmt::print("AlphaCutoff after model load {}\n", model->materials[0].alphaCutoff);
 	return true;
 }
 

@@ -21,9 +21,8 @@ static glm::vec3 ParseVec3(const std::string& vec3Str)
     return vec;
 }
 
-Scene SceneLoader::LoadScene(const SceneData& sceneData)
+void SceneLoader::LoadScene(const SceneData& sceneData, Scene* scene)
 {
-    Scene scene;
     // Add entities as instances. 
     for (const EntityData& entityData : sceneData.entitiesData)
     {
@@ -37,16 +36,16 @@ Scene SceneLoader::LoadScene(const SceneData& sceneData)
             camera.position = ParseVec3(entityData.kvps.at("origin"));
             camera.pitch = cameraAngles.x;
             camera.yaw = cameraAngles.y;
-            scene.initCamConfigs.push_back(camera);
+            scene->initCamConfigs.push_back(camera);
 
         } else {
             const std::string meshMatKey = entityData.kvps.at("mesh") + entityData.kvps.at("material");
             if (std::stoi(entityData.kvps.at("is_instanced"))){
-                auto sceneEntity = scene.entityInstanceMap.find(meshMatKey);
+                auto sceneEntity = scene->entityInstanceMap.find(meshMatKey);
 
-                if (sceneEntity == scene.entityInstanceMap.end())
+                if (sceneEntity == scene->entityInstanceMap.end())
                 {
-                    sceneEntity = scene.entityInstanceMap.insert({meshMatKey, EntityInstanceData()}).first;
+                    sceneEntity = scene->entityInstanceMap.insert({meshMatKey, EntityInstanceData()}).first;
                     
                     const auto& meshData = entityData.kvps.find("mesh");
                     if (meshData != entityData.kvps.end()){
@@ -59,8 +58,10 @@ Scene SceneLoader::LoadScene(const SceneData& sceneData)
                             ModelLoader::LoadModel(asset, &sceneEntity->second.instModel);
                         }
                     } else sceneEntity->second.instModel = Model::CreateCube();
+
+                    fmt::print("Alpha cutoff: {}\n", sceneEntity->second.instModel.materials[0].alphaCutoff);
                 }
-                // if (entityData != scene.entityInstanceMap.end()){
+                // if (entityData != scene->entityInstanceMap.end()){
                 //     // Add instance
                 sceneEntity->second.modelToWorldMat.push_back(entityData.transform.GetModelMatrix());
                 
@@ -82,7 +83,7 @@ Scene SceneLoader::LoadScene(const SceneData& sceneData)
                     }
                 } else mesh = Model::CreateCube();
 
-                scene.entities.push_back(Entity(mesh, entityData.transform));
+                scene->entities.push_back(Entity(mesh, entityData.transform));
             }
 
             
@@ -91,23 +92,23 @@ Scene SceneLoader::LoadScene(const SceneData& sceneData)
     //     Entity entity;
     //     entity.mesh = new Mesh(entityData.meshData.vertices, entityData.meshData.indices);
     //     entity.transform = entityData.transform;
-    //     scene.entities.push_back(entity);
+    //     scene->entities.push_back(entity);
     }
 
-    for (auto& [meshMatKey, entityInstanceData] : scene.entityInstanceMap){
+    for (auto& [meshMatKey, entityInstanceData] : scene->entityInstanceMap){
         entityInstanceData.GenerateInstanceBuffers();
     }
 
     // for (const Camera& camera : sceneData.cameraData)
     // {
-    //     scene.initCamConfigs.push_back(camera);
+    //     scene->initCamConfigs.push_back(camera);
     // }
     // I could copy it over and make some edits 
-    scene.shaders.push_back(Shader("./resources/shader/base.vert", "./resources/shader/base_inst.frag"));
-    scene.shaders.push_back(Shader("./resources/shader/base_inst.vert", "./resources/shader/base_inst.frag"));
+    scene->shaders.push_back(Shader("./resources/shader/base.vert", "./resources/shader/base_inst.frag"));
+    scene->shaders.push_back(Shader("./resources/shader/base_inst.vert", "./resources/shader/base_inst.frag"));
 
 
-    return scene;
+    // return std::move(scene);
 }
 
 

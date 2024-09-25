@@ -10,7 +10,7 @@
 
 class SceneLoader {
     public: 
-    static Scene LoadScene(const SceneData& sceneData);
+    static void LoadScene(const SceneData& sceneData, Scene* scene);
     static SceneData LoadSceneData(const std::string& scenePath);
 
 

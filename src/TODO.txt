@@ -4,15 +4,26 @@ TODO Abstract organize the logic better
 - baked lighting + instancing... damn im gonna regret this aint i
 
 - Get rid of include clutter
-
+- shadows
+- reflections
+- culling that actually reduces compute
+- multidraws
 - indirect draws
 - deferred shading
 
 Bugs:
 - fix noninstanced model shader (im lazy so i dwanna right now)
+
+
+Fixed:
 - cirno's eyes get gouged out sometimes... figure out why
     - This was also happening with the cactuar
-
+    - Fragments get discarded because a comparison in the fragment shader keeps firing
+        - this is beacuse the alpha cuttoff was greater than the alpha
+        - this was caused by the model loading a material out of the range of its material vector
+            - out of range exception wasn't thrown because [] operator has *undefined behavior* for indices out of range
+        - so the alpha cutoff was garbage sometimes and 0 most of the time.
+        - Fixed by making sure I assume that there is a default material in every model.
 
 Capstone TODOs:
 - Implement an L system

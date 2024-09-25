@@ -333,7 +333,8 @@ void Renderer::Render(const Scene& scene){ // really bad, we are modifying the s
                         glBindTexture(GL_TEXTURE_2D, primitive.albedoTexture);
                         glBindBufferBase(GL_UNIFORM_BUFFER, MATERIAL_UBO_BINDING, materialUniformsUBO);
                         glNamedBufferSubData(materialUniformsUBO, 0, sizeof(Material), &entity.model.materials[primitive.materialUniformsIndex]);
-                    
+                        // fmt::print("Alpha cutoff: {}\n", entity.model.materials[primitive.materialUniformsIndex].alphaCutoff);
+
                         BindPrimitive(primitive);
 
 
@@ -381,6 +382,7 @@ void Renderer::Render(const Scene& scene){ // really bad, we are modifying the s
                     glNamedBufferSubData(materialUniformsUBO, 0, sizeof(Material), &entInstData.instModel.materials[primitive.materialUniformsIndex]);
 
                     glBindBufferBase(GL_UNIFORM_BUFFER, MATERIAL_UBO_BINDING, materialUniformsUBO);
+                    
                     BindInstancePrimitive(primitive);
                     glDrawElementsInstanced(GL_TRIANGLES, primitive.indexCount, GL_UNSIGNED_INT, 0, entInstData.instCount);
                 }
