@@ -105,7 +105,7 @@ void SceneLoader::LoadScene(const SceneData& sceneData, Scene* scene)
     // }
     // I could copy it over and make some edits 
     scene->shaders.push_back(Shader("./resources/shader/base.vert", "./resources/shader/base_inst.frag"));
-    scene->shaders.push_back(Shader("./resources/shader/base_inst.vert", "./resources/shader/base_inst.frag"));
+    scene->shaders.push_back(Shader("./resources/shader/indirect_inst.vert", "./resources/shader/normal_shading.frag"));
 
 
     // return std::move(scene);

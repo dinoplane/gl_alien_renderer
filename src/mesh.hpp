@@ -21,9 +21,20 @@ class Renderer;
 
 struct Primitive;
 
-struct Mesh {
+struct IndirectDrawCommand {
+	uint count;
+	uint instanceCount;
+	uint firstIndex;
+	int baseVertex;
+	uint baseInstance;
+};
 
+
+struct Mesh {
+    GLuint drawsBuffer;
     std::vector<Primitive> primitives;
+    uint startPrimIdx;
+    uint primCount;
     Sphere boundingVolume;
 
     // Sphere* boundingVolume;
@@ -35,18 +46,21 @@ struct Mesh {
 struct Primitive {
     // public:
     //     // Create a renderer class and compare times
-
+        IndirectDrawCommand draw;
         GLuint VBO, VAO, EBO; // keep the VAO in there, just in case.
+        
+        GLsizei vertexStartIdx;
+        GLsizei vertexCount;
+        GLsizei indexStartIdx;
+        GLsizei indexCount;
+
+        size_t materialUniformsIndex;
+        GLuint albedoTexture;
+
         static void GenerateBuffers(Primitive* primitive, const std::vector<Vertex> &vertices, const std::vector<uint>& indices);
         // static void Rebind(Mesh*primitive, Renderer* renderer);
         static void GenerateDebugBuffers(Primitive* primitive, const std::vector<glm::vec3> &vertices, const std::vector<uint>& indices);
         // static void RebindDebug(Mesh*primitive);
-
-        GLsizei indexCount;
-
-        std::size_t materialUniformsIndex;
-        GLuint albedoTexture;
-
 
 
         static Primitive CreateCube();

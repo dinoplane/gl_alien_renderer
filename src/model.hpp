@@ -9,6 +9,21 @@
 #include <vector>
 #include <glm/glm.hpp>
 
+struct PrimitiveProperties {
+    uint materialIdx;
+    uint textureIdx;    
+};
+
+struct NodeProperties {
+    glm::mat4 modelFromMesh;
+    // uint primtiveIdx;
+};
+
+struct NodePrimProperties {
+    uint nodeIdx;
+    uint primIdx;
+};
+
 struct Node {
     glm::mat4x4 nodeTransformMatrix;
     uint meshIndex;
@@ -23,9 +38,72 @@ class Model {
     // a model also contains a tree of nodes
     std::vector<Texture> textures;
     std::vector<Material> materials;
+
+    // but in the end, a model could be a flat array of vertices and indices
+    GLuint VBO, EBO;
+    
+    std::vector<IndirectDrawCommand> drawCmdBufferVec;
+    GLuint drawCmdBuffer; // another compute pass to set the instance count in the buffer...?
+    // prolly can try cpu side first in all honesty
+
+    std::vector<Primitive> primitives;
     std::vector<Mesh> meshes;
     std::vector<Node> nodes;
+
+    std::vector<NodePrimProperties> nodePrimPropertiesBufferVec;
+    GLuint nodePrimPropertiesBuffer;
+
+    std::vector<NodeProperties> nodePropertiesBufferVec;
+    GLuint nodePropertiesBuffer;
+
+    std::vector<PrimitiveProperties> primitivePropertiesBufferVec;
+    GLuint primitivePropertiesBuffer;
+
+    GLuint materialPropertiesBuffer;
+    GLuint textureArray;
+
+
+    // std::vector<glm::mat4>
+
+/*
+
+    // Struct for MultiDrawElements
+    typedef  struct {
+        unsigned int  count;         // index count
+        unsigned int  instanceCount; // should always be 1
+        unsigned int  firstIndex;
+        int           baseVertex;
+        unsigned int  baseInstance;
+        // Optional user-defined data goes here - if nothing, stride is 0
+    } DrawElementsIndirectCommand;
+
+    void glMultiDrawElementsIndirect(
+        GLenum mode,
+        GLenum type,
+        const void *indirect,
+        GLsizei drawcount,
+        GLsizei stride
+    );
+
+
+    // Goal: 1 draw call per model
+    // Every model has its own materials/textures/primitives/nodes
+
+    // flat array of GLuints of primitives in meshes
+ 
+    In the renderer, it should look like this
+    for ( const auto& [classname, entInstData] : scene.entityInstanceMap ){
+        // do culling
+        // bind textures
+        // bind materials
+        // draw from the indirect buffer
+
+
+    }
+
+ */   
     
+
     Sphere boundingVolume;
 
     // void GenerateBoundingVolumeFromNodes();

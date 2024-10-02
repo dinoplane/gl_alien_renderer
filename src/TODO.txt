@@ -6,10 +6,28 @@ TODO Abstract organize the logic better
 - Get rid of include clutter
 - shadows
 - reflections
-- culling that actually reduces compute
-- multidraws
-- indirect draws
+- animation
+
+- multidraws/indirect draws/culling that actually reduces compute
+    - a draw a model instance with 1 draw call
+        - not possible thats not what multidraw means
+        - instead batch the draw calls (every N is a new instance)
+        - we can only really do it this way since if i were to have instance count be greater than one in the draw command, i would need to move around amtrices into a new buffer (inefficient...)
+        - the draw command probably needs the index of the model though
+    - Steps:
+        - 1. Modify the renderer to use indirect draws, DrawElementsIndirect.
+            - the glviewer example code has a way to set this up per mesh.
+            - very intuitive code, every primitive begins with a draw call
+            - a mesh contains a buffer of primitives
+            - DrawElementsIndirect is called on the location in the buffer (takes the 20 bytes from that pointer)
+        - 2. Aggregate all the primitive's vertices and indices into 1 giant buffer
+            - make sure i can render indirectly like that
+        - 3. Use MultiDrawElementsIndirect instead, this time to draw everything in that buffer
+        - 4. Modify the compute shader so that it modifies the draw out cmd buffer
+        - 5. Modify the shaders so that it uses materials and textures (using an index to query them from ssbos);
+
 - deferred shading
+- add doxygen
 
 Bugs:
 - fix noninstanced model shader (im lazy so i dwanna right now)

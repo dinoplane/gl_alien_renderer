@@ -20,6 +20,17 @@ struct ComputeShader;
 // class Material;
 // class Entity;
 
+// Struct for MultiDrawElements
+typedef struct {
+    unsigned int  count;
+    unsigned int  instanceCount;
+    unsigned int  firstIndex;
+    int           baseVertex;
+    unsigned int  baseInstance;
+    // Optional user-defined data goes here - if nothing, stride is 0
+} DrawElementsIndirectCommand;
+// sizeof(DrawElementsIndirectCommand) == 20
+
 class Renderer {
     public:
 
@@ -84,10 +95,10 @@ class Renderer {
     } frustumCullDataUBOBlock;
     static uint doCull;
 
-    GLuint meshPropertiesUBO;
-    struct MeshPropertiesUBOBlock {
-        glm::mat4 modelFromMesh;
-    } meshPropertiesUBOBlock;
+    // GLuint meshPropertiesUBO;
+    // struct MeshPropertiesUBOBlock {
+    //     glm::mat4 modelFromMesh;
+    // } meshPropertiesUBOBlock;
     
     GLuint materialUniformsUBO;
     // struct MaterialUniformsUBOBlock {
@@ -96,6 +107,12 @@ class Renderer {
     //     uint flags;
     // } materialUniformsUBOBlock;
 
+    // 1 draw command per instance
+    std::vector<DrawElementsIndirectCommand> commands;
+    
+    GLuint inDrawCmdBuffer;
+    GLuint outDrawCmdBuffer;
+    
 
     float width;
     float height;

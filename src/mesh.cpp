@@ -1,5 +1,5 @@
-#include <util.h>
 #include <mesh.hpp>
+#include <util.h>
 #include <camera.hpp>
 
 #include <iostream>

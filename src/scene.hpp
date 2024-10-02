@@ -22,7 +22,8 @@ struct EntityInstanceData
     GLuint instModelMatrixBuffer; 
     std::vector<int> isInstMeshRendered;
     GLuint instMeshRenderedBuffer;
-
+    std::vector<uint> visibleInstIndicesBufferVec;
+    GLuint visibleInstIndicesBuffer;
 
     void GenerateInstanceBuffers();
 

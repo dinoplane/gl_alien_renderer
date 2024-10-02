@@ -31,9 +31,9 @@ layout (location = 11) out vec2 TexCoord;
 
 void main()
 {
-    if ( meshIsRendered[gl_InstanceID] )
+    if ( true ) // meshIsRendered[gl_InstanceID] )
     {
-        gl_Position = projection * view * worldFromModel[gl_InstanceID] * modelFromMesh * vec4(aPos, 1.0);
+        gl_Position = projection * view * worldFromModel[gl_DrawID] * modelFromMesh * vec4(aPos, 1.0);
         Normal = aNormal;
         TexCoord =aTexCoord;
     } else {

@@ -14,7 +14,7 @@
 #include <gpu_structs.hpp>
 
 
-void EntityInstanceData::GenerateInstanceBuffers(){ // TODO honestly i could make this function take in the vectors.
+void EntityInstanceData::GenerateInstanceBuffers(){ // TODO honestly i could make this function take in the vectors. // instModel is already set
     glCreateBuffers(1, &instModelMatrixBuffer);
     glNamedBufferStorage(instModelMatrixBuffer, modelToWorldMat.size() * sizeof(glm::mat4), (const void *) modelToWorldMat.data(), GL_DYNAMIC_STORAGE_BIT);
 
@@ -31,6 +31,25 @@ void EntityInstanceData::GenerateInstanceBuffers(){ // TODO honestly i could mak
     GLint maxComputeWorkGroupCount;
     glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 0, &maxComputeWorkGroupCount);
     fmt::print("Max Compute Work Group Count x: {}\n", maxComputeWorkGroupCount);
+
+    // TODO remove this 
+    for (uint i = 0; i < instCount; ++i) {
+        visibleInstIndicesBufferVec.push_back(i);
+    }
+    glCreateBuffers(1, &visibleInstIndicesBuffer);
+    glNamedBufferStorage(visibleInstIndicesBuffer, instCount * sizeof(uint), visibleInstIndicesBufferVec.data(), GL_DYNAMIC_STORAGE_BIT);
+
+    for (IndirectDrawCommand& drawCmd : instModel.drawCmdBufferVec){
+        drawCmd.instanceCount = instCount;
+    }
+    glNamedBufferSubData(
+        instModel.drawCmdBuffer,
+        0,
+        instModel.drawCmdBufferVec.size() * sizeof(IndirectDrawCommand), 
+        instModel.drawCmdBufferVec.data()
+    );
+
+
 }
 
 Scene::Scene(){

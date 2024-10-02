@@ -13,11 +13,16 @@ struct Texture {
     GLuint texture;
 };
 
+
 struct alignas(16) Material {
     glm::vec4 baseColorFactor;
     float alphaCutoff;
     uint flags;
 };
 
+// struct Material{
+//     MaterialUniforms uniforms;
+//     std::vector<GLuint> 
+// }       
 
 #endif

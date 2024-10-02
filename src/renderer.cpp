@@ -101,12 +101,19 @@ Renderer::Renderer(float w, float h) : width(w), height(h) {
     glCreateBuffers(1, &frustumCullDataUBO);
     glNamedBufferStorage(frustumCullDataUBO, sizeof(FrustumCullDataUBOBlock), NULL, GL_DYNAMIC_STORAGE_BIT);
 
-    glCreateBuffers(1, &meshPropertiesUBO);
-    glNamedBufferStorage(meshPropertiesUBO, sizeof(MeshPropertiesUBOBlock), NULL, GL_DYNAMIC_STORAGE_BIT);
+    // glCreateBuffers(1, &meshPropertiesUBO);
+    // glNamedBufferStorage(meshPropertiesUBO, sizeof(MeshPropertiesUBOBlock), NULL, GL_DYNAMIC_STORAGE_BIT);
    
     glCreateBuffers(1, &materialUniformsUBO);
     glNamedBufferStorage(materialUniformsUBO, sizeof(Material), NULL, GL_DYNAMIC_STORAGE_BIT);
     fmt::print("Material Size {}\n", sizeof(Material));
+
+    // glCreateBuffers(1, &inDrawCmdBufferr);
+    // glNamedBufferStorage(inDrawCmdBuffer, 
+    //                     sizeof(DrawElementsIndirectCommand) * commands.size(), 
+    //                     (const void *)commands.data(), 
+    //                     GL_DYNAMIC_STORAGE_BIT);
+
 }
 
 void Renderer::Init(float w, float h){
@@ -281,14 +288,30 @@ void Renderer::BindDebugMesh(const Primitive& mesh){
 
 void Renderer::BindInstanceCullingBuffers(const EntityInstanceData& entInstData){
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, WORLD_FROM_MODEL_SSBO_BINDING, entInstData.instModelMatrixBuffer);
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, INST_IS_RENDERED_SSBO_BINDING, entInstData.instMeshRenderedBuffer);
+
 }
 
 
 void Renderer::BindInstanceData(const EntityInstanceData& entInstData){
     // glVertexArrayVertexBuffer(instVAO, 1, entInstData->instArrVBO, 0, sizeof(glm::mat4));
+    
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, NODEPRIM_PROPERTIES_SSBO_BINDING, entInstData.instModel.nodePrimPropertiesBuffer);
+    
+
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PRIMITIVE_PROPERTIES_SSBO_BINDING, entInstData.instModel.primitivePropertiesBuffer);
+    
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, VISIBLE_INSTANCES_SSBO_BINDING, entInstData.visibleInstIndicesBuffer);
+
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, WORLD_FROM_MODEL_SSBO_BINDING, entInstData.instModelMatrixBuffer);
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, INST_IS_RENDERED_SSBO_BINDING, entInstData.instMeshRenderedBuffer);
+    
+
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, NODE_PROPERTIES_SSBO_BINDING, entInstData.instModel.nodePropertiesBuffer);
+    
+    // glBindBufferBase(GL_SHADER_STORAGE_BUFFER, MODEL_FROM_MESH_SSBO_BINDING, entInstData.instModel.meshPropertiesBuffer);
+
+    // glBindBufferBase(GL_SHADER_STORAGE_BUFFER, MATERIAL_PROPERTIES_SSBO_BINDING, entInstData.instModel.materialPropertiesBuffer);
+
+    // glBindBufferBase(GL_SHADER_STORAGE_BUFFER, TEXTURES_SSBO_BINDING, entInstData.instModel.textureArray);
 
 }
 
@@ -343,6 +366,7 @@ void Renderer::Render(const Scene& scene){ // really bad, we are modifying the s
                 }
             }
         }
+/*
 
         frustumCullDataUBOBlock.frustum = Camera::createFrustumFromCamera(Renderer::allCameras[0]).ToGPUFrustum();
         frustumCullDataUBOBlock.doCull = Renderer::doCull;
@@ -392,45 +416,106 @@ void Renderer::Render(const Scene& scene){ // really bad, we are modifying the s
             //     BindInstancePrimitive(primitive);
             //     glDrawElementsInstanced(GL_TRIANGLES, primitive.indexCount, GL_UNSIGNED_INT, 0, entInstData.instCount);
             // }
+        }*/
+
+        scene.shaders[1].use();
+        glBindBufferBase(GL_UNIFORM_BUFFER, PROJ_VIEW_UBO_BINDING, cameraMatricesUBO);
+
+        glBindVertexArray(instVAO);
+
+        for ( const auto& [classname, entInstData] : scene.entityInstanceMap ){
+            const Model& instModel = entInstData.instModel;
+            BindInstanceData(entInstData);
+            
+        glVertexArrayVertexBuffer(instVAO, 0, instModel.VBO, 0, sizeof(Vertex));
+        glVertexArrayElementBuffer(instVAO, instModel.EBO);
+
+
+
+        glBindBuffer(GL_DRAW_INDIRECT_BUFFER, instModel.drawCmdBuffer);
+        glMultiDrawElementsIndirect(
+            GL_TRIANGLES,                           // Mode
+            GL_UNSIGNED_INT,                        // type
+            (const void*) (0 * sizeof(IndirectDrawCommand)),        // offset
+            instModel.drawCmdBufferVec.size(),      // # of calls
+            0                                       // stride
+        );
+
+
+        // glMultiDrawElementsIndirect(
+        //     GL_TRIANGLES,                           // Mode
+        //     GL_UNSIGNED_INT,                        // type
+        //     (const void*) (16 * sizeof(IndirectDrawCommand)),        // offset
+        //     1,//instModel.drawCmdBufferVec.size(),      // # of calls
+        //     0                                       // stride
+        // );
+
+        
+            /*
+            for ( const Node& node : entInstData.instModel.nodes ){
+                const Mesh& mesh = entInstData.instModel.meshes[node.meshIndex];
+
+
+                glBindBuffer(GL_DRAW_INDIRECT_BUFFER, mesh.drawsBuffer);
+                
+                meshPropertiesUBOBlock.modelFromMesh = node.nodeTransformMatrix;
+                glNamedBufferSubData(meshPropertiesUBO, 0, sizeof(MeshPropertiesUBOBlock), &meshPropertiesUBOBlock);
+                glBindBufferBase(GL_UNIFORM_BUFFER, MODEL_FROM_MESH_UBO_BINDING, meshPropertiesUBO);
+                for (size_t primIdx = 0; primIdx < mesh.primitives.size(); ++primIdx){
+                    const Primitive& primitive = mesh.primitives[primIdx];
+                    glBindTexture(GL_TEXTURE_2D, primitive.albedoTexture);
+                    glNamedBufferSubData(materialUniformsUBO, 0, sizeof(Material), &entInstData.instModel.materials[primitive.materialUniformsIndex]);
+
+                    glBindBufferBase(GL_UNIFORM_BUFFER, MATERIAL_UBO_BINDING, materialUniformsUBO);
+                    
+                    BindInstancePrimitive(primitive);
+                    // glDrawElementsInstanced(GL_TRIANGLES, primitive.indexCount, GL_UNSIGNED_INT, 0, entInstData.instCount);
+                
+                    glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT,
+                               reinterpret_cast<const void*>(primIdx * sizeof(Primitive)));
+                }
+            }*/
         }
 
+        { // Wire Pass
+            glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+            debugWireShader->use();
 
-        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-        debugWireShader->use();
+            glBindVertexArray(debugVAO);
+            for (uint cameraIdx = 0; cameraIdx < Renderer::allCameras.size(); ++cameraIdx){
+                if (cameraIdx == mainCameraIdx){
+                    continue;
+                }
+                debugWireShader->setMat4("model", Renderer::allCameras[cameraIdx].GetModelMatrix());
+                BindDebugMesh(Renderer::allDebugMeshes[cameraIdx]);
 
-        glBindVertexArray(debugVAO);
-        for (uint cameraIdx = 0; cameraIdx < Renderer::allCameras.size(); ++cameraIdx){
-            if (cameraIdx == mainCameraIdx){
-                continue;
+                glDrawElements(GL_TRIANGLES, Renderer::allDebugMeshes[cameraIdx].indexCount, GL_UNSIGNED_INT, 0);
             }
-            debugWireShader->setMat4("model", Renderer::allCameras[cameraIdx].GetModelMatrix());
-            BindDebugMesh(Renderer::allDebugMeshes[cameraIdx]);
-
-            glDrawElements(GL_TRIANGLES, Renderer::allDebugMeshes[cameraIdx].indexCount, GL_UNSIGNED_INT, 0);
+            glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
         }
-        glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 
 
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        debugShader->use();
+        { // Debug Camera Polygon Pass
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            debugShader->use();
 
-        // debugShader->setMat4("projection", Renderer::allCameras[mainCameraIdx].getProjMatrix()); // TODO : Profile this
-        // debugShader->setMat4("view", Renderer::allCameras[mainCameraIdx].getViewMatrix());
-        glBindVertexArray(debugVAO);
-        for (uint cameraIdx = 0; cameraIdx < Renderer::allCameras.size(); ++cameraIdx){
-            if (cameraIdx == mainCameraIdx){
-                continue;
+            // debugShader->setMat4("projection", Renderer::allCameras[mainCameraIdx].getProjMatrix()); // TODO : Profile this
+            // debugShader->setMat4("view", Renderer::allCameras[mainCameraIdx].getViewMatrix());
+            glBindVertexArray(debugVAO);
+            for (uint cameraIdx = 0; cameraIdx < Renderer::allCameras.size(); ++cameraIdx){
+                if (cameraIdx == mainCameraIdx){
+                    continue;
+                }
+                debugShader->setMat4("model", Renderer::allCameras[cameraIdx].GetModelMatrix());
+                BindDebugMesh(Renderer::allDebugMeshes[cameraIdx]);
+                // glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+
+                glDrawElements(GL_TRIANGLES, Renderer::allDebugMeshes[cameraIdx].indexCount, GL_UNSIGNED_INT, 0);
+
+                // glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
             }
-            debugShader->setMat4("model", Renderer::allCameras[cameraIdx].GetModelMatrix());
-            BindDebugMesh(Renderer::allDebugMeshes[cameraIdx]);
-            // glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-
-            glDrawElements(GL_TRIANGLES, Renderer::allDebugMeshes[cameraIdx].indexCount, GL_UNSIGNED_INT, 0);
-
-            // glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
         }
-
         RenderPostProcess();
         // glBindVertexArray(0);
         // glUseProgram(0);
