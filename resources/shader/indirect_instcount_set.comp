@@ -1,0 +1,37 @@
+#version 460 core
+layout (local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
+
+
+struct IndirectDrawCommand {
+	uint count;
+	uint instanceCount;
+	uint firstIndex;
+	int baseVertex;
+	uint baseInstance;
+};
+
+
+// SSBO containing the indices of the visible instances
+layout(binding = 3, std430) readonly buffer visibleInstIndicesBuf {
+    uint visibleInstCount;
+    uint visibleInstIndices[]; // arrlen total visible instances in scene; indexed with gl_InstanceID
+};
+
+
+layout(binding=9, std430) writeonly buffer indirectDrawCommandBuf {
+    IndirectDrawCommand indirectDrawCommands[];
+};
+
+layout(binding=10, std430) readonly buffer indirectDrawCountBuf {
+    uint drawCmdCount;
+};
+
+
+void main()
+{
+    // uint index = gl_GlobalInvocationID.x;
+    // if (index < drawCmdCount)
+    // {
+    //     indirectDrawCommands[index].instanceCount = visibleInstCount;
+    // }
+}

@@ -11,11 +11,11 @@
 
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
- 
+
  #include <limits>
  #include <iostream>
  #include <variant>
- 
+
 
 
 
@@ -79,7 +79,7 @@ bool ModelLoader::LoadMesh(const fastgltf::Asset& asset, const fastgltf::Mesh& m
 
     for (auto it = mesh.primitives.begin(); it != mesh.primitives.end(); ++it) {
 		Primitive outPrimitive;
-	
+
 
 		auto* positionIt = it->findAttribute("POSITION");
 		assert(positionIt != it->attributes.end()); // A mesh primitive is required to hold the POSITION attribute.
@@ -117,12 +117,12 @@ bool ModelLoader::LoadMesh(const fastgltf::Asset& asset, const fastgltf::Mesh& m
         } else {
 			outPrimitive.materialUniformsIndex = 0;
 		}
-        
+
             // Position
             auto& positionAccessor = asset.accessors[positionIt->accessorIndex];
             if (!positionAccessor.bufferViewIndex.has_value())
                 continue;
-			
+
 //			fmt::print("Position Accessor Count: {}\n", positionAccessor.count);
 			size_t initVerticesSize = vertices->size();
 			vertices->resize(initVerticesSize + positionAccessor.count);
@@ -137,7 +137,7 @@ bool ModelLoader::LoadMesh(const fastgltf::Asset& asset, const fastgltf::Mesh& m
 				( *vertices )[ initVerticesSize + idx ].texcoords = glm::vec2(0.0f, 0.0f);
 				// fmt::print("Vertex Position: {}\n", glm::to_string(( *vertices )[ initVerticesSize + idx ].position));
 			});
-        
+
 
 		auto texcoordAttribute = std::string("TEXCOORD_0");// + std::to_string(baseColorTexcoordIndex);
         if (const auto* texcoord = it->findAttribute(texcoordAttribute); texcoord != it->attributes.end()) {
@@ -173,7 +173,7 @@ bool ModelLoader::LoadMesh(const fastgltf::Asset& asset, const fastgltf::Mesh& m
         draw.baseInstance = 0;
         draw.baseVertex = 0;
 		draw.firstIndex = 0;
-		
+
         auto& indexAccessor = asset.accessors[it->indicesAccessor.value()];
 		draw.count = static_cast<std::uint32_t>(indexAccessor.count);
 
@@ -188,7 +188,7 @@ bool ModelLoader::LoadMesh(const fastgltf::Asset& asset, const fastgltf::Mesh& m
 				( *indices )[ initIndicesSize + idx ] = indiceIdx;
 		});
 
-	
+
 		// Primitive::GenerateBuffers(&outPrimitive, vertices, indices);
 		outMesh->primitives.push_back(outPrimitive);
 		model->primitives.push_back(outPrimitive);
@@ -199,7 +199,7 @@ bool ModelLoader::LoadMesh(const fastgltf::Asset& asset, const fastgltf::Mesh& m
 	outMesh->boundingVolume = Sphere((min + max) / 2.0f, glm::distance(min, max) / 2.0f);
 
     glCreateBuffers(1, &outMesh->drawsBuffer);
-    glNamedBufferData(outMesh->drawsBuffer, 
+    glNamedBufferData(outMesh->drawsBuffer,
     static_cast<GLsizeiptr>(outMesh->primitives.size() * sizeof(Primitive)),
                       outMesh->primitives.data(), GL_STATIC_DRAW);
 
@@ -210,7 +210,7 @@ bool ModelLoader::LoadMesh(const fastgltf::Asset& asset, const fastgltf::Mesh& m
 }
 
 
-bool ModelLoader::LoadImage(const fastgltf::Asset& asset, const fastgltf::Image& image, Texture* outTexture) {	
+bool ModelLoader::LoadImage(const fastgltf::Asset& asset, const fastgltf::Image& image, Texture* outTexture) {
     auto getLevelCount = [](int width, int height) -> GLsizei {
         return static_cast<GLsizei>(1 + floor(log2(width > height ? width : height)));
     };
@@ -230,13 +230,13 @@ bool ModelLoader::LoadImage(const fastgltf::Asset& asset, const fastgltf::Image&
 
             const std::string path(filePath.uri.path().begin(), filePath.uri.path().end()); // Thanks C++.
             unsigned char *data = stbi_load(path.c_str(), &width, &height, &nrChannels, 4);
-            
+
 
 			glTextureParameteri(texture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
 			glTextureParameteri(texture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 			glTextureParameteri(texture, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 			glTextureParameteri(texture, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-			
+
 			glTextureStorage2D(texture, getLevelCount(width, height), GL_RGBA8, width, height);
             glTextureSubImage2D(texture, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
             stbi_image_free(data);
@@ -245,8 +245,8 @@ bool ModelLoader::LoadImage(const fastgltf::Asset& asset, const fastgltf::Image&
         [&](const fastgltf::sources::Array& vector) {
             int width, height, nrChannels;
             unsigned char *data = stbi_load_from_memory(reinterpret_cast<const stbi_uc*>(vector.bytes.data()), static_cast<int>(vector.bytes.size()), &width, &height, &nrChannels, 4);
-            
-		
+
+
 			glTextureParameteri(texture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
 			glTextureParameteri(texture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 			glTextureParameteri(texture, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -271,13 +271,13 @@ bool ModelLoader::LoadImage(const fastgltf::Asset& asset, const fastgltf::Image&
                     int width, height, nrChannels;
 					unsigned char* data = stbi_load_from_memory(reinterpret_cast<const stbi_uc*>(vector.bytes.data() + bufferView.byteOffset),
 					static_cast<int>(bufferView.byteLength), &width, &height, &nrChannels, 4);
-                    
+
 
 					glTextureParameteri(texture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
 					glTextureParameteri(texture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 					glTextureParameteri(texture, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 					glTextureParameteri(texture, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-					
+
 					glTextureStorage2D(texture, getLevelCount(width, height), GL_RGBA8, width, height);
                     glTextureSubImage2D(texture, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
                     stbi_image_free(data);
@@ -364,7 +364,7 @@ bool ModelLoader::LoadModel(const fastgltf::Asset& asset, Model * model){
 
 	glCreateBuffers(1, &model->nodePropertiesBuffer);
 	glNamedBufferStorage( model->nodePropertiesBuffer, model->nodePropertiesBufferVec.size() * sizeof(NodeProperties), model->nodePrimPropertiesBufferVec.data(), GL_DYNAMIC_STORAGE_BIT);
-	
+
 
 	// const auto& sceneIndex = asset.desfaultScene.value_or(0);
 	glm::vec3 min = glm::vec3(std::numeric_limits<float>::max());
@@ -386,12 +386,12 @@ bool ModelLoader::LoadModel(const fastgltf::Asset& asset, Model * model){
 
 
 	model->boundingVolume = Sphere((min + max) / 2.0f, glm::distance(min, max) / 2.0f);
-	
 
-	for ( size_t nodeIdx = 0; nodeIdx < model->nodes.size(); ++nodeIdx ) 
+
+	for ( size_t nodeIdx = 0; nodeIdx < model->nodes.size(); ++nodeIdx )
 	{
 		const Mesh& mesh = model->meshes[model->nodes[nodeIdx].meshIndex];
-		
+
 		for (size_t primOffset = 0; primOffset < mesh.primCount; ++primOffset)
 		{
 			const uint primIdx = mesh.startPrimIdx + primOffset;
@@ -408,12 +408,15 @@ bool ModelLoader::LoadModel(const fastgltf::Asset& asset, Model * model){
 	}
 	glCreateBuffers(1, &model->nodePrimPropertiesBuffer);
 	glNamedBufferStorage(model->nodePrimPropertiesBuffer, model->nodePrimPropertiesBufferVec.size() * sizeof(NodePrimProperties), model->nodePrimPropertiesBufferVec.data(), GL_DYNAMIC_STORAGE_BIT);
-	
+
 	glCreateBuffers(1, &model->drawCmdBuffer);
 	glNamedBufferStorage(model->drawCmdBuffer, model->drawCmdBufferVec.size() * sizeof(IndirectDrawCommand), model->drawCmdBufferVec.data(), GL_DYNAMIC_STORAGE_BIT);
-	
-	
-	
+
+	glCreateBuffers(1, &model->drawCmdCountBuffer);
+	model->drawCmdCount.count = model->drawCmdBufferVec.size();
+	glNamedBufferStorage(model->drawCmdCountBuffer, sizeof(Model::DrawCmdCount), &model->drawCmdCount, GL_DYNAMIC_STORAGE_BIT);
+
+
 	fmt::print("AlphaCutoff after model load {}\n", model->materials[0].alphaCutoff);
 	return true;
 }

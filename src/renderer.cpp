@@ -25,6 +25,8 @@ Shader* Renderer::debugWireShader = nullptr;
 Shader* Renderer::postProcessShader = nullptr;
 Shader* Renderer::passthroughShader = nullptr;
 ComputeShader* Renderer::cullShader = nullptr;
+ComputeShader* Renderer::instCountSetShader = nullptr;
+
 GLuint Renderer::quadVAO = 0;
 GLuint Renderer::quadVBO = 0;
 uint Renderer::doCull = 0;
@@ -70,7 +72,8 @@ Renderer::Renderer(float w, float h) : width(w), height(h) {
         debugShader = new Shader("./resources/shader/debug.vert", "./resources/shader/debug.frag");
         debugWireShader = new Shader("./resources/shader/debug.vert", "./resources/shader/debugline.frag");
 
-        cullShader = new ComputeShader("./resources/shader/cull_shader.comp");
+        cullShader = new ComputeShader("./resources/shader/indirect_cull_shader.comp");
+        instCountSetShader = new ComputeShader("./resources/shader/indirect_instcount_set.comp");
 
 
         postProcessShader = new Shader("./resources/shader/screen.vert", "./resources/shader/screen.frag");
@@ -103,15 +106,15 @@ Renderer::Renderer(float w, float h) : width(w), height(h) {
 
     // glCreateBuffers(1, &meshPropertiesUBO);
     // glNamedBufferStorage(meshPropertiesUBO, sizeof(MeshPropertiesUBOBlock), NULL, GL_DYNAMIC_STORAGE_BIT);
-   
+
     glCreateBuffers(1, &materialUniformsUBO);
     glNamedBufferStorage(materialUniformsUBO, sizeof(Material), NULL, GL_DYNAMIC_STORAGE_BIT);
     fmt::print("Material Size {}\n", sizeof(Material));
 
     // glCreateBuffers(1, &inDrawCmdBufferr);
-    // glNamedBufferStorage(inDrawCmdBuffer, 
-    //                     sizeof(DrawElementsIndirectCommand) * commands.size(), 
-    //                     (const void *)commands.data(), 
+    // glNamedBufferStorage(inDrawCmdBuffer,
+    //                     sizeof(DrawElementsIndirectCommand) * commands.size(),
+    //                     (const void *)commands.data(),
     //                     GL_DYNAMIC_STORAGE_BIT);
 
 }
@@ -144,11 +147,11 @@ void Renderer::CreateVAO(){
     // position attribute
     glVertexArrayAttribFormat(VAO, POSITION_ATTRIB_LOC, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, position));
     glVertexArrayAttribBinding(VAO, POSITION_ATTRIB_LOC, 0);
-    
+
     // normal attribute
     glVertexArrayAttribFormat(VAO, NORMAL_ATTRIB_LOC, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, normal));
     glVertexArrayAttribBinding(VAO, NORMAL_ATTRIB_LOC, 0);
-    
+
     // texcoord attribute
     glVertexArrayAttribFormat(VAO, TEXCOORD_ATTRIB_LOC, 2, GL_FLOAT, GL_FALSE, offsetof(Vertex, texcoords));
     glVertexArrayAttribBinding(VAO, TEXCOORD_ATTRIB_LOC, 0);
@@ -287,26 +290,34 @@ void Renderer::BindDebugMesh(const Primitive& mesh){
 }
 
 void Renderer::BindInstanceCullingBuffers(const EntityInstanceData& entInstData){
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, WORLD_FROM_MODEL_SSBO_BINDING, entInstData.instModelMatrixBuffer);
-
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, CULLING_WORLD_FROM_MODEL_SSBO_BINDING, entInstData.instModelMatrixBuffer);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, CULLING_VISIBLE_INSTANCES_SSBO_BINDING, entInstData.visibleInstIndicesSSBO);
+    glBindBufferBase(GL_UNIFORM_BUFFER, CULLING_FRUSTUM_CULL_DATA_UBO_BINDING, frustumCullDataUBO);
 }
+
+void Renderer::BindDrawCmdInstCountSetBuffers(const EntityInstanceData& entInstData){
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, INSTCOUNT_SET_VISIBLE_INSTANCES_SSBO_BINDING, entInstData.visibleInstIndicesSSBO);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, INSTCOUNT_SET_DRAW_CMD_BUFFER_SSBO_BINDING, entInstData.instModel.drawCmdBuffer);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, INSTCOUNT_SET_DRAW_CMD_COUNT_SSBO_BINDING, entInstData.instModel.drawCmdCountBuffer);
+}
+
 
 
 void Renderer::BindInstanceData(const EntityInstanceData& entInstData){
     // glVertexArrayVertexBuffer(instVAO, 1, entInstData->instArrVBO, 0, sizeof(glm::mat4));
-    
+
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, NODEPRIM_PROPERTIES_SSBO_BINDING, entInstData.instModel.nodePrimPropertiesBuffer);
-    
+
 
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PRIMITIVE_PROPERTIES_SSBO_BINDING, entInstData.instModel.primitivePropertiesBuffer);
-    
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, VISIBLE_INSTANCES_SSBO_BINDING, entInstData.visibleInstIndicesBuffer);
+
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, VISIBLE_INSTANCES_SSBO_BINDING, entInstData.visibleInstIndicesSSBO);
 
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, WORLD_FROM_MODEL_SSBO_BINDING, entInstData.instModelMatrixBuffer);
-    
+
 
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, NODE_PROPERTIES_SSBO_BINDING, entInstData.instModel.nodePropertiesBuffer);
-    
+
     // glBindBufferBase(GL_SHADER_STORAGE_BUFFER, MODEL_FROM_MESH_SSBO_BINDING, entInstData.instModel.meshPropertiesBuffer);
 
     // glBindBufferBase(GL_SHADER_STORAGE_BUFFER, MATERIAL_PROPERTIES_SSBO_BINDING, entInstData.instModel.materialPropertiesBuffer);
@@ -348,7 +359,7 @@ void Renderer::Render(const Scene& scene){ // really bad, we are modifying the s
         for (uint entityIdx = 0; entityIdx < scene.entities.size(); ++entityIdx){
             const Entity& entity = scene.entities[entityIdx];
             if (!Renderer::doCull || (Renderer::doCull && entity.model.boundingVolume.IsOnFrustum(Camera::createFrustumFromCamera(Renderer::allCameras[0]), entity.transform))){
-                
+
                 for ( const Node& node : entity.model.nodes ){
                     const Mesh& mesh = entity.model.meshes[node.meshIndex];
                     scene.shaders.at(0).setMat4("model", entity.transform.GetModelMatrix() * node.nodeTransformMatrix);
@@ -370,7 +381,7 @@ void Renderer::Render(const Scene& scene){ // really bad, we are modifying the s
 
         frustumCullDataUBOBlock.frustum = Camera::createFrustumFromCamera(Renderer::allCameras[0]).ToGPUFrustum();
         frustumCullDataUBOBlock.doCull = Renderer::doCull;
-        
+
         for ( const auto& [classname, entInstData] : scene.entityInstanceMap ){
             ZoneScoped;
             // What I'm about to do justifies the need to separate static state from dynamic state
@@ -406,7 +417,7 @@ void Renderer::Render(const Scene& scene){ // really bad, we are modifying the s
                     glNamedBufferSubData(materialUniformsUBO, 0, sizeof(Material), &entInstData.instModel.materials[primitive.materialUniformsIndex]);
 
                     glBindBufferBase(GL_UNIFORM_BUFFER, MATERIAL_UBO_BINDING, materialUniformsUBO);
-                    
+
                     BindInstancePrimitive(primitive);
                     glDrawElementsInstanced(GL_TRIANGLES, primitive.indexCount, GL_UNSIGNED_INT, 0, entInstData.instCount);
                 }
@@ -418,46 +429,72 @@ void Renderer::Render(const Scene& scene){ // really bad, we are modifying the s
             // }
         }*/
 
-        scene.shaders[1].use();
-        glBindBufferBase(GL_UNIFORM_BUFFER, PROJ_VIEW_UBO_BINDING, cameraMatricesUBO);
 
-        glBindVertexArray(instVAO);
+
+        frustumCullDataUBOBlock.frustum = Camera::createFrustumFromCamera(Renderer::allCameras[0]).ToGPUFrustum();
+        frustumCullDataUBOBlock.doCull = Renderer::doCull;
 
         for ( const auto& [classname, entInstData] : scene.entityInstanceMap ){
             const Model& instModel = entInstData.instModel;
+
+            // cullShader->use();
+            // frustumCullDataUBOBlock.boundingVolume = entInstData.instModel.boundingVolume.ToGPUSphere();
+            // frustumCullDataUBOBlock.instCount = entInstData.instCount;
+            // glNamedBufferSubData(frustumCullDataUBO, 0, sizeof(FrustumCullDataUBOBlock), &frustumCullDataUBOBlock);
+            // BindInstanceCullingBuffers(entInstData);
+            // glDispatchCompute(entInstData.instCount, 1u, 1u);
+
+            // glMemoryBarrier( GL_ALL_BARRIER_BITS );
+            // glFinish();
+
+
+
+
+            // // set the instance counts
+            // instCountSetShader->use();
+            // BindDrawCmdInstCountSetBuffers(entInstData);
+            // glDispatchCompute(instModel.drawCmdCount.count, 1u, 1u);
+
+            // glMemoryBarrier( GL_ALL_BARRIER_BITS );
+            // glFinish();
+
+
+
+            scene.shaders[1].use();
+            glBindBufferBase(GL_UNIFORM_BUFFER, PROJ_VIEW_UBO_BINDING, cameraMatricesUBO);
+            glBindVertexArray(instVAO);
+
             BindInstanceData(entInstData);
-            
-        glVertexArrayVertexBuffer(instVAO, 0, instModel.VBO, 0, sizeof(Vertex));
-        glVertexArrayElementBuffer(instVAO, instModel.EBO);
+
+            glVertexArrayVertexBuffer(instVAO, 0, instModel.VBO, 0, sizeof(Vertex));
+            glVertexArrayElementBuffer(instVAO, instModel.EBO);
+
+            glBindBuffer(GL_DRAW_INDIRECT_BUFFER, instModel.drawCmdBuffer);
+            glMultiDrawElementsIndirect(
+                GL_TRIANGLES,                           // Mode
+                GL_UNSIGNED_INT,                        // type
+                (const void*) (0 * sizeof(IndirectDrawCommand)),        // offset
+                instModel.drawCmdBufferVec.size(),      // # of calls
+                0                                       // stride
+            );
 
 
-
-        glBindBuffer(GL_DRAW_INDIRECT_BUFFER, instModel.drawCmdBuffer);
-        glMultiDrawElementsIndirect(
-            GL_TRIANGLES,                           // Mode
-            GL_UNSIGNED_INT,                        // type
-            (const void*) (0 * sizeof(IndirectDrawCommand)),        // offset
-            instModel.drawCmdBufferVec.size(),      // # of calls
-            0                                       // stride
-        );
+            // glMultiDrawElementsIndirect(
+            //     GL_TRIANGLES,                           // Mode
+            //     GL_UNSIGNED_INT,                        // type
+            //     (const void*) (16 * sizeof(IndirectDrawCommand)),        // offset
+            //     1,//instModel.drawCmdBufferVec.size(),      // # of calls
+            //     0                                       // stride
+            // );
 
 
-        // glMultiDrawElementsIndirect(
-        //     GL_TRIANGLES,                           // Mode
-        //     GL_UNSIGNED_INT,                        // type
-        //     (const void*) (16 * sizeof(IndirectDrawCommand)),        // offset
-        //     1,//instModel.drawCmdBufferVec.size(),      // # of calls
-        //     0                                       // stride
-        // );
-
-        
             /*
             for ( const Node& node : entInstData.instModel.nodes ){
                 const Mesh& mesh = entInstData.instModel.meshes[node.meshIndex];
 
 
                 glBindBuffer(GL_DRAW_INDIRECT_BUFFER, mesh.drawsBuffer);
-                
+
                 meshPropertiesUBOBlock.modelFromMesh = node.nodeTransformMatrix;
                 glNamedBufferSubData(meshPropertiesUBO, 0, sizeof(MeshPropertiesUBOBlock), &meshPropertiesUBOBlock);
                 glBindBufferBase(GL_UNIFORM_BUFFER, MODEL_FROM_MESH_UBO_BINDING, meshPropertiesUBO);
@@ -467,10 +504,10 @@ void Renderer::Render(const Scene& scene){ // really bad, we are modifying the s
                     glNamedBufferSubData(materialUniformsUBO, 0, sizeof(Material), &entInstData.instModel.materials[primitive.materialUniformsIndex]);
 
                     glBindBufferBase(GL_UNIFORM_BUFFER, MATERIAL_UBO_BINDING, materialUniformsUBO);
-                    
+
                     BindInstancePrimitive(primitive);
                     // glDrawElementsInstanced(GL_TRIANGLES, primitive.indexCount, GL_UNSIGNED_INT, 0, entInstData.instCount);
-                
+
                     glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT,
                                reinterpret_cast<const void*>(primIdx * sizeof(Primitive)));
                 }

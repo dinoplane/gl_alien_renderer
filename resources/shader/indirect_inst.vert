@@ -33,7 +33,7 @@ struct Primitive {
 layout (binding = 0, std140) uniform Matrices
 {
     mat4 projection;
-    mat4 view;    
+    mat4 view;
 };
 
 // ---------------------------------------------------------------------
@@ -53,7 +53,8 @@ layout (binding = 2, std430) readonly buffer primitivePropertiesBuf {
 
 
 // SSBO containing the indices of the visible instances
-layout(binding = 3, std430) readonly buffer visibleInstIdxBuf {
+layout(binding = 3, std430) readonly buffer visibleInstIndicesBuf {
+    uint visibleInstCount;
     uint visibleInstIndices[]; // arrlen total visible instances in scene; indexed with gl_InstanceID
 };
 
@@ -93,7 +94,7 @@ struct inputData {
 };
 
 */
- 
+
 layout (location = 10) out vec3 Normal;
 layout (location = 11) out vec2 TexCoord;
 

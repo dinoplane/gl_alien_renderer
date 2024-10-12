@@ -1,0 +1,92 @@
+#version 460 core
+layout (local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
+
+struct Plane
+{
+    vec4 normalAndDistance;
+};
+
+struct Frustum
+{
+    Plane top;
+    Plane bottom;
+
+    Plane right;
+    Plane left;
+
+    Plane far;
+    Plane near;
+};
+
+struct SphereAABB
+{
+    vec4 centerAndRadius;
+};
+
+
+// Input --------------------------------------
+// bounding volumes
+
+
+// bounding volumes matrices
+layout(binding = 4, std430) readonly buffer instModelMatBuf {
+    mat4 worldFromModel[];
+};
+
+layout (binding = 8, std140) uniform frustumCullData {
+    Frustum frustum;
+    SphereAABB boundingVolume;
+    uint instCount; // This is the number of instances
+    uint doCull;
+};
+
+// Output -------------------------------------
+layout(binding = 3, std430) coherent buffer visibleInstIndicesBuf {
+    uint visibleInstCount;
+    uint visibleInstIndices[];
+};
+
+
+// Helper functions ----------------------------
+float GetSignedDistanceToPlane(vec3 point, Plane plane)
+{
+    return dot(plane.normalAndDistance.xyz, point) - plane.normalAndDistance.w;
+}
+
+bool IsSphereOnOrForwardPlane( SphereAABB sphere, Plane plane )
+{
+    return GetSignedDistanceToPlane( sphere.centerAndRadius.xyz, plane ) > -sphere.centerAndRadius.w;
+}
+
+
+// This can definitely be optimized
+bool IsSphereOnFrustum ( SphereAABB sphere, Frustum frustum )
+{
+    const vec4 center = vec4( sphere.centerAndRadius.xyz, 1.0 );
+    const vec4 surfacePoint =  center + vec4( sphere.centerAndRadius.w, 0.0, 0.0, 0.0 );
+
+    // Transform sphere to world space
+    const vec4 newCenter = worldFromModel[gl_GlobalInvocationID.x] * center;
+    const vec4 newSurfacePoint = worldFromModel[gl_GlobalInvocationID.x] * surfacePoint;
+    const float newRadius = length( newSurfacePoint - newCenter );
+
+    const SphereAABB newSphere = SphereAABB( vec4(newCenter.xyz, newRadius) );
+
+    return IsSphereOnOrForwardPlane( newSphere, frustum.near ) &&
+           IsSphereOnOrForwardPlane( newSphere, frustum.far ) &&
+           IsSphereOnOrForwardPlane( newSphere, frustum.left ) &&
+           IsSphereOnOrForwardPlane( newSphere, frustum.right ) &&
+           IsSphereOnOrForwardPlane( newSphere, frustum.top ) &&
+           IsSphereOnOrForwardPlane( newSphere, frustum.bottom );
+}
+
+void main()
+{
+    uint index = gl_GlobalInvocationID.x;
+    // if (index < instCount)
+    // {
+    //     if (doCull == 1){
+    //         visibleInstIndices[atomicAdd(visibleInstCount, 1)] = index;
+    //     }
+    // }
+}

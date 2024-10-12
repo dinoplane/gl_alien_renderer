@@ -11,7 +11,7 @@
 
 struct PrimitiveProperties {
     uint materialIdx;
-    uint textureIdx;    
+    uint textureIdx;
 };
 
 struct NodeProperties {
@@ -31,7 +31,7 @@ struct Node {
 };
 
 class Model {
-    public: 
+    public:
     //  a model is a collection of meshes
     // each mesh can have its own material
     // each mesh can have its own texture
@@ -41,10 +41,14 @@ class Model {
 
     // but in the end, a model could be a flat array of vertices and indices
     GLuint VBO, EBO;
-    
+
     std::vector<IndirectDrawCommand> drawCmdBufferVec;
     GLuint drawCmdBuffer; // another compute pass to set the instance count in the buffer...?
     // prolly can try cpu side first in all honesty
+    struct DrawCmdCount {
+        uint count;
+    } drawCmdCount;
+    GLuint drawCmdCountBuffer;
 
     std::vector<Primitive> primitives;
     std::vector<Mesh> meshes;
@@ -90,7 +94,7 @@ class Model {
     // Every model has its own materials/textures/primitives/nodes
 
     // flat array of GLuints of primitives in meshes
- 
+
     In the renderer, it should look like this
     for ( const auto& [classname, entInstData] : scene.entityInstanceMap ){
         // do culling
@@ -101,15 +105,15 @@ class Model {
 
     }
 
- */   
-    
+ */
+
 
     Sphere boundingVolume;
 
     // void GenerateBoundingVolumeFromNodes();
     static Model CreateCube();
     static Model CreatePyramid();
-    
+
 };
 
 #endif

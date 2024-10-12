@@ -19,11 +19,17 @@ struct EntityInstanceData
     Model instModel; // essentially the bounding volumes and the mesh only need one of...
     uint instCount;
     std::vector<glm::mat4> modelToWorldMat;
-    GLuint instModelMatrixBuffer; 
+    GLuint instModelMatrixBuffer;
     std::vector<int> isInstMeshRendered;
     GLuint instMeshRenderedBuffer;
-    std::vector<uint> visibleInstIndicesBufferVec;
-    GLuint visibleInstIndicesBuffer;
+
+    struct VisibleInstIndicesBlock {
+        uint visibleInstCount;
+        std::vector<uint> visibleInstIndices;
+    } visibleInstIndicesBlock;
+
+    // std::vector<uint> visibleInstIndicesBufferVec;
+    GLuint visibleInstIndicesSSBO;
 
     void GenerateInstanceBuffers();
 

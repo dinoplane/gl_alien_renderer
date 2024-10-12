@@ -32,12 +32,12 @@ void EntityInstanceData::GenerateInstanceBuffers(){ // TODO honestly i could mak
     glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 0, &maxComputeWorkGroupCount);
     fmt::print("Max Compute Work Group Count x: {}\n", maxComputeWorkGroupCount);
 
-    // TODO remove this 
+    // TODO remove this
     for (uint i = 0; i < instCount; ++i) {
-        visibleInstIndicesBufferVec.push_back(i);
+        visibleInstIndicesBlock.visibleInstIndices.push_back(i);
     }
-    glCreateBuffers(1, &visibleInstIndicesBuffer);
-    glNamedBufferStorage(visibleInstIndicesBuffer, instCount * sizeof(uint), visibleInstIndicesBufferVec.data(), GL_DYNAMIC_STORAGE_BIT);
+    glCreateBuffers(1, &visibleInstIndicesSSBO);
+    glNamedBufferStorage(visibleInstIndicesSSBO, sizeof(VisibleInstIndicesBlock), &visibleInstIndicesBlock, GL_DYNAMIC_STORAGE_BIT);
 
     for (IndirectDrawCommand& drawCmd : instModel.drawCmdBufferVec){
         drawCmd.instanceCount = instCount;
@@ -45,7 +45,7 @@ void EntityInstanceData::GenerateInstanceBuffers(){ // TODO honestly i could mak
     glNamedBufferSubData(
         instModel.drawCmdBuffer,
         0,
-        instModel.drawCmdBufferVec.size() * sizeof(IndirectDrawCommand), 
+        instModel.drawCmdBufferVec.size() * sizeof(IndirectDrawCommand),
         instModel.drawCmdBufferVec.data()
     );
 

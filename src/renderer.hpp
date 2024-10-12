@@ -40,6 +40,7 @@ class Renderer {
     static Shader* debugWireShader;
 
     static ComputeShader* cullShader;
+    static ComputeShader* instCountSetShader;
 
     static std::unordered_map<std::string, Shader*> allPostProcessShaders;
     static Shader* postProcessShader;
@@ -95,11 +96,13 @@ class Renderer {
     } frustumCullDataUBOBlock;
     static uint doCull;
 
+
+
     // GLuint meshPropertiesUBO;
     // struct MeshPropertiesUBOBlock {
     //     glm::mat4 modelFromMesh;
     // } meshPropertiesUBOBlock;
-    
+
     GLuint materialUniformsUBO;
     // struct MaterialUniformsUBOBlock {
     //     glm::vec4 baseColorFactor;
@@ -109,10 +112,10 @@ class Renderer {
 
     // 1 draw command per instance
     std::vector<DrawElementsIndirectCommand> commands;
-    
+
     GLuint inDrawCmdBuffer;
     GLuint outDrawCmdBuffer;
-    
+
 
     float width;
     float height;
@@ -140,7 +143,7 @@ class Renderer {
     void BindInstanceData(const EntityInstanceData& entityInstanceData);
     void BindInstancePrimitive(const Primitive& primitive);
 
-    
+
     void BindDebugMesh(const Primitive& mesh);
 
     // void Render(Scene* scene);
@@ -156,7 +159,7 @@ class Renderer {
     // model transform buffer inside scene
 
     void BindInstanceCullingBuffers(const EntityInstanceData& entityInstanceData);
-
+    void BindDrawCmdInstCountSetBuffers(const EntityInstanceData& entityInstanceData);
 
     void SwitchCamera(const Scene& scene);
 
