@@ -11,5 +11,12 @@ CTestTestfile.cmake
 _deps
 CMakeUserPresets.json
 /bin
-/vendor
+/vendor/*/docs
+/vendor/*/doc
+/vendor/*/tests
+/vendor/*/test
+/vendor/*/deprecated
+
+
+
 /build
