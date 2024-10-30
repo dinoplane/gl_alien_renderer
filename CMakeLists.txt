@@ -26,8 +26,15 @@ set(OpenGL_GL_PREFERENCE GLVND)
 option(GLFW_BUILD_DOCS OFF)
 option(GLFW_BUILD_EXAMPLES OFF)
 option(GLFW_BUILD_TESTS OFF)
-option(GLFW_INSTALL OFF)
-find_package(glfw3 REQUIRED)
+add_subdirectory(${VENDOR_DIR}/glfw EXCLUDE_FROM_ALL)
+# target_include_directories(glfw
+#   PUBLIC
+#     ${VENDOR_DIR}/glfw/include
+# )
+
+
+# option(GLFW_INSTALL OFF)
+# find_package(glfw3 REQUIRED)
 
 
 #fmt
@@ -74,7 +81,7 @@ target_include_directories(stb INTERFACE ${VENDOR_DIR}/stb)
 #tracy
 option ( TRACY_ENABLE " " ON )
 option ( TRACY_ON_DEMAND " " ON )
-add_subdirectory ( ${VENDOR_DIR}/tracy ) 
+add_subdirectory ( ${VENDOR_DIR}/tracy )
 
 
 #fastgltf
@@ -86,9 +93,10 @@ add_subdirectory( ${VENDOR_DIR}/fastgltf)
 include_directories(
    ${VENDOR_DIR}/glm/
    ${VENDOR_DIR}/glad/include/
+   ${VENDOR_DIR}/glfw/include/
    ${VENDOR_DIR}/stb/
    ${VENDOR_DIR}/tracy/public/tracy
-   ${VENDOR_DIR}/fastgltf/include 
+   ${VENDOR_DIR}/fastgltf/include
    ${SRC_DIR}/
 )
 
