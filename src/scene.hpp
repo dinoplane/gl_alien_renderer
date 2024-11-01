@@ -23,12 +23,12 @@ struct EntityInstanceData
     std::vector<int> isInstMeshRendered;
     GLuint instMeshRenderedBuffer;
 
-    struct VisibleInstIndicesBlock {
-        uint visibleInstCount;
-        std::vector<uint> visibleInstIndices;
-    } visibleInstIndicesBlock;
+    // struct VisibleInstIndicesBlock {
+    //     uint visibleInstCount;
+    // //     std::vector<uint> visibleInstIndices;
+    // } visibleInstIndicesBlock;
 
-    // std::vector<uint> visibleInstIndicesBufferVec;
+    std::vector<uint> visibleInstIndicesBlock;
     GLuint visibleInstIndicesSSBO;
 
     void GenerateInstanceBuffers();

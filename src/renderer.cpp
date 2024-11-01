@@ -434,6 +434,12 @@ void Renderer::Render(const Scene& scene){ // really bad, we are modifying the s
         frustumCullDataUBOBlock.frustum = Camera::createFrustumFromCamera(Renderer::allCameras[0]).ToGPUFrustum();
         frustumCullDataUBOBlock.doCull = Renderer::doCull;
 
+
+        scene.shaders[1].use();
+        glBindBufferBase(GL_UNIFORM_BUFFER, PROJ_VIEW_UBO_BINDING, cameraMatricesUBO);
+        glBindVertexArray(instVAO);
+
+
         for ( const auto& [classname, entInstData] : scene.entityInstanceMap ){
             const Model& instModel = entInstData.instModel;
 
@@ -459,10 +465,6 @@ void Renderer::Render(const Scene& scene){ // really bad, we are modifying the s
             // glFinish();
 
 
-
-            scene.shaders[1].use();
-            glBindBufferBase(GL_UNIFORM_BUFFER, PROJ_VIEW_UBO_BINDING, cameraMatricesUBO);
-            glBindVertexArray(instVAO);
 
             BindInstanceData(entInstData);
 
