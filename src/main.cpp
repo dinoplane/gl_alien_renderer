@@ -497,6 +497,7 @@ int main(int argc, char **argv)
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
         {
             ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+            ImGui::Text("Culling %s", (Renderer::doCull ? "Enabled" : "Disabled"));
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", deltaTime * 1000.0f, 1.0f / deltaTime);
             ImGui::End();
         }

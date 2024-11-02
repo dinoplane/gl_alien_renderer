@@ -83,10 +83,12 @@ bool IsSphereOnFrustum ( SphereAABB sphere, Frustum frustum )
 void main()
 {
     uint index = gl_GlobalInvocationID.x;
-    // if (index < instCount)
-    // {
-    //     if (doCull == 1){
-    //         visibleInstIndices[atomicAdd(visibleInstCount, 1)] = index;
-    //     }
-    // }
+    if (index < instCount)
+    {
+        if (doCull > 0){
+            if (IsSphereOnFrustum(boundingVolume, frustum))
+                uint oldInstCount = atomicAdd(visibleInstCount, 1u);
+            // visibleInstIndices[oldInstCount] = index;
+        }
+    }
 }

@@ -22,6 +22,11 @@ Below is a running list of finished, in progress, and cut features, in addition 
 
 
 ## (Fixed) Bugs:
+- Instancing not working with MultiDrawIndirect?
+    - This was caused when I used a struct to contain both the visibleInstIndices and the visibleInstCount. 
+    - Using sizeof the struct yielded 32 bytes only. sizeof did not account for the fact that there was a vector inside of itself. 
+    - I just used a single vector like before to hold the count as well (since it's a uint as well). 
+    - I may change this solution if there is other data (that has a different type) to be accounted for. 
 - cirno's eyes disappear sometimes... figure out why
     - This was also happening with the cactuar
     - Fragments get discarded because a comparison in the fragment shader keeps firing

@@ -434,24 +434,30 @@ void Renderer::Render(const Scene& scene){ // really bad, we are modifying the s
         frustumCullDataUBOBlock.frustum = Camera::createFrustumFromCamera(Renderer::allCameras[0]).ToGPUFrustum();
         frustumCullDataUBOBlock.doCull = Renderer::doCull;
 
-
-        scene.shaders[1].use();
-        glBindBufferBase(GL_UNIFORM_BUFFER, PROJ_VIEW_UBO_BINDING, cameraMatricesUBO);
-        glBindVertexArray(instVAO);
+        
 
 
         for ( const auto& [classname, entInstData] : scene.entityInstanceMap ){
             const Model& instModel = entInstData.instModel;
 
-            // cullShader->use();
-            // frustumCullDataUBOBlock.boundingVolume = entInstData.instModel.boundingVolume.ToGPUSphere();
-            // frustumCullDataUBOBlock.instCount = entInstData.instCount;
-            // glNamedBufferSubData(frustumCullDataUBO, 0, sizeof(FrustumCullDataUBOBlock), &frustumCullDataUBOBlock);
-            // BindInstanceCullingBuffers(entInstData);
-            // glDispatchCompute(entInstData.instCount, 1u, 1u);
+            cullShader->use();
+            frustumCullDataUBOBlock.boundingVolume = entInstData.instModel.boundingVolume.ToGPUSphere();
+            frustumCullDataUBOBlock.instCount = entInstData.instCount;
+            glNamedBufferSubData(frustumCullDataUBO, 0, sizeof(FrustumCullDataUBOBlock), &frustumCullDataUBOBlock);
+            // glNamedBufferSubData(entInstData.visibleInstIndicesSSBO, 0, sizeof(uint), );
+            glClearNamedBufferSubData(entInstData.visibleInstIndicesSSBO, GL_R32UI, 0, sizeof(GLuint), GL_RED_INTEGER, GL_UNSIGNED_INT, NULL);
+            glMemoryBarrier( GL_ALL_BARRIER_BITS );
 
-            // glMemoryBarrier( GL_ALL_BARRIER_BITS );
-            // glFinish();
+            BindInstanceCullingBuffers(entInstData);
+
+            glDispatchCompute(entInstData.instCount, 1u, 1u);
+
+            glMemoryBarrier( GL_ALL_BARRIER_BITS );
+            glFinish();
+
+            uint visibleInstCount = 123;
+            glGetNamedBufferSubData(entInstData.visibleInstIndicesSSBO, 0, sizeof(uint), &visibleInstCount);
+            fmt::print("Visible Instance Count: {}\n", visibleInstCount);
 
 
 
@@ -465,6 +471,9 @@ void Renderer::Render(const Scene& scene){ // really bad, we are modifying the s
             // glFinish();
 
 
+            scene.shaders[1].use();
+            glBindBufferBase(GL_UNIFORM_BUFFER, PROJ_VIEW_UBO_BINDING, cameraMatricesUBO);
+            glBindVertexArray(instVAO);
 
             BindInstanceData(entInstData);
 

@@ -34,7 +34,7 @@ void EntityInstanceData::GenerateInstanceBuffers(){ // TODO honestly i could mak
 
     // TODO remove this
     
-    visibleInstIndicesBlock.push_back(instCount);
+    visibleInstIndicesBlock.push_back(0);
     for (uint i = 0; i < instCount; ++i) {
         visibleInstIndicesBlock.push_back(i);
     }
