@@ -22,19 +22,19 @@ class Renderer;
 struct Primitive;
 
 struct IndirectDrawCommand {
-	uint count;
-	uint instanceCount;
-	uint firstIndex;
-	int baseVertex;
-	uint baseInstance;
+	uint32_t count;
+	uint32_t instanceCount;
+	uint32_t firstIndex;
+    uint32_t baseVertex;
+	uint32_t baseInstance;
 };
 
 
 struct Mesh {
     GLuint drawsBuffer;
     std::vector<Primitive> primitives;
-    uint startPrimIdx;
-    uint primCount;
+    uint32_t startPrimIdx;
+    uint32_t primCount;
     Sphere boundingVolume;
 
     // Sphere* boundingVolume;
@@ -49,17 +49,17 @@ struct Primitive {
         IndirectDrawCommand draw;
         GLuint VBO, VAO, EBO; // keep the VAO in there, just in case.
         
-        GLsizei vertexStartIdx;
-        GLsizei vertexCount;
-        GLsizei indexStartIdx;
-        GLsizei indexCount;
+        uint32_t vertexStartIdx;
+        uint32_t vertexCount;
+        uint32_t indexStartIdx;
+        uint32_t indexCount;
 
         size_t materialUniformsIndex;
         GLuint albedoTexture;
 
-        static void GenerateBuffers(Primitive* primitive, const std::vector<Vertex> &vertices, const std::vector<uint>& indices);
+        static void GenerateBuffers(Primitive* primitive, const std::vector<Vertex> &vertices, const std::vector<uint32_t>& indices);
         // static void Rebind(Mesh*primitive, Renderer* renderer);
-        static void GenerateDebugBuffers(Primitive* primitive, const std::vector<glm::vec3> &vertices, const std::vector<uint>& indices);
+        static void GenerateDebugBuffers(Primitive* primitive, const std::vector<glm::vec3> &vertices, const std::vector<uint32_t>& indices);
         // static void RebindDebug(Mesh*primitive);
 
 

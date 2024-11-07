@@ -4,7 +4,7 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 
-enum MaterialUniformFlags : uint {
+enum MaterialUniformFlags : uint32_t {
     None = 0 << 0,
     HasBaseColorTexture = 1 << 0,
 };
@@ -17,7 +17,7 @@ struct Texture {
 struct alignas(16) Material {
     glm::vec4 baseColorFactor;
     float alphaCutoff;
-    uint flags;
+    uint32_t flags;
 };
 
 // struct Material{

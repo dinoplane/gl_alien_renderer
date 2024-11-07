@@ -17,18 +17,18 @@ class Camera;
 struct EntityInstanceData
 {
     Model instModel; // essentially the bounding volumes and the mesh only need one of...
-    uint instCount;
+    uint32_t instCount;
     std::vector<glm::mat4> modelToWorldMat;
     GLuint instModelMatrixBuffer;
     std::vector<int> isInstMeshRendered;
     GLuint instMeshRenderedBuffer;
 
     // struct VisibleInstIndicesBlock {
-    //     uint visibleInstCount;
-    // //     std::vector<uint> visibleInstIndices;
+    //     uint32_t visibleInstCount;
+    // //     std::vector<uint32_t> visibleInstIndices;
     // } visibleInstIndicesBlock;
 
-    std::vector<uint> visibleInstIndicesBlock;
+    std::vector<uint32_t> visibleInstIndicesBlock;
     GLuint visibleInstIndicesSSBO;
 
     void GenerateInstanceBuffers();

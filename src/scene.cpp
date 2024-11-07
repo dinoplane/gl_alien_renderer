@@ -34,18 +34,23 @@ void EntityInstanceData::GenerateInstanceBuffers(){ // TODO honestly i could mak
 
     // TODO remove this
     
-    visibleInstIndicesBlock.push_back(0);
-    for (uint i = 0; i < instCount; ++i) {
+    visibleInstIndicesBlock.push_back(instCount);
+    for (uint32_t i = 0; i < instCount; ++i) {
         visibleInstIndicesBlock.push_back(i);
     }
     // visibleInstIndicesBlock.visibleInstCount = instCount;
     // fmt::printf("sizeof(VisibleInstIndicesBlock) = %lu\n", sizeof(VisibleInstIndicesBlock));
-    // for (uint i = 0; i < instCount; ++i) {
+    // for (uint32_t i = 0; i < instCount; ++i) {
         
     //     fmt::printf("Vis Inst %u\n", visibleInstIndicesBlock.visibleInstIndices[i]);
     // }
     glCreateBuffers(1, &visibleInstIndicesSSBO);
-    glNamedBufferStorage(visibleInstIndicesSSBO, sizeof(uint) * visibleInstIndicesBlock.size(), visibleInstIndicesBlock.data(), GL_DYNAMIC_STORAGE_BIT);
+    glNamedBufferStorage(
+        visibleInstIndicesSSBO,
+        sizeof(uint32_t) * visibleInstIndicesBlock.size(),
+        visibleInstIndicesBlock.data(),
+        GL_DYNAMIC_STORAGE_BIT
+    );
 
     for (IndirectDrawCommand& drawCmd : instModel.drawCmdBufferVec){
         drawCmd.instanceCount = instCount;

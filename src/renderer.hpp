@@ -60,6 +60,7 @@ class Renderer {
 
 
     static void SetupScreenQuad();
+    static void ToggleCull(const Scene& scene);
 
 
 
@@ -91,10 +92,10 @@ class Renderer {
     struct alignas(16) FrustumCullDataUBOBlock {
         GPUFrustum frustum;
         GPUSphere boundingVolume;
-        uint instCount;
-        uint doCull;
+        uint32_t instCount;
+        uint32_t doCull;
     } frustumCullDataUBOBlock;
-    static uint doCull;
+    static uint32_t doCull;
 
 
 
@@ -107,7 +108,7 @@ class Renderer {
     // struct MaterialUniformsUBOBlock {
     //     glm::vec4 baseColorFactor;
     //     float alphaCutoff;
-    //     uint flags;
+    //     uint32_t flags;
     // } materialUniformsUBOBlock;
 
     // 1 draw command per instance
@@ -164,8 +165,8 @@ class Renderer {
     void SwitchCamera(const Scene& scene);
 
     public:
-    uint mainCameraIdx {0};
-    uint currCameraIdx {0};
+    uint32_t mainCameraIdx {0};
+    uint32_t currCameraIdx {0};
     bool debugOn {true};
 };
 

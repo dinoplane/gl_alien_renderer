@@ -1,6 +1,6 @@
 #ifndef UTIL_H
 #define UTIL_H
-
+#define NOMINMAX
 #include <glm/glm.hpp>
 #include <gpu_structs.hpp>
 #include <fmt/core.h>

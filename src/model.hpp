@@ -10,23 +10,23 @@
 #include <glm/glm.hpp>
 
 struct PrimitiveProperties {
-    uint materialIdx;
-    uint textureIdx;
+    uint32_t materialIdx;
+    uint32_t textureIdx;
 };
 
 struct NodeProperties {
     glm::mat4 modelFromMesh;
-    // uint primtiveIdx;
+    // uint32_t primtiveIdx;
 };
 
 struct NodePrimProperties {
-    uint nodeIdx;
-    uint primIdx;
+    uint32_t nodeIdx;
+    uint32_t primIdx;
 };
 
 struct Node {
     glm::mat4x4 nodeTransformMatrix;
-    uint meshIndex;
+    uint32_t meshIndex;
 
 };
 
@@ -46,7 +46,7 @@ class Model {
     GLuint drawCmdBuffer; // another compute pass to set the instance count in the buffer...?
     // prolly can try cpu side first in all honesty
     struct DrawCmdCount {
-        uint count;
+        uint32_t count;
     } drawCmdCount;
     GLuint drawCmdCountBuffer;
 

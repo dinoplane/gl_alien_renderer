@@ -1,4 +1,4 @@
- #include <model_loader.hpp>
+#include <model_loader.hpp>
 
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -67,14 +67,14 @@ bool ModelLoader::LoadGLTF(const std::filesystem::path path, fastgltf::Asset* re
     return true;
 }
 
-bool ModelLoader::LoadMesh(const fastgltf::Asset& asset, const fastgltf::Mesh& mesh, Model* model, Mesh* outMesh, std::vector<Vertex>* vertices, std::vector<uint>* indices) {
+bool ModelLoader::LoadMesh(const fastgltf::Asset& asset, const fastgltf::Mesh& mesh, Model* model, Mesh* outMesh, std::vector<Vertex>* vertices, std::vector<uint32_t>* indices) {
     // Mesh outMesh = {};
 	// Mesh retMesh;
-	glm::vec3 min = glm::vec3(std::numeric_limits<float>::max());
-	glm::vec3 max = glm::vec3(std::numeric_limits<float>::min());
+	glm::vec3 minBound = glm::vec3(std::numeric_limits<float>::max());
+	glm::vec3 maxBound = glm::vec3(std::numeric_limits<float>::min());
 
-	outMesh->startPrimIdx = static_cast<uint>(model->primitives.size());
-	outMesh->primCount = static_cast<uint>(mesh.primitives.size());
+	outMesh->startPrimIdx = static_cast<uint32_t>(model->primitives.size());
+	outMesh->primCount = static_cast<uint32_t>(mesh.primitives.size());
 
 
     for (auto it = mesh.primitives.begin(); it != mesh.primitives.end(); ++it) {
@@ -131,8 +131,8 @@ bool ModelLoader::LoadMesh(const fastgltf::Asset& asset, const fastgltf::Mesh& m
 
 			fastgltf::iterateAccessorWithIndex<fastgltf::math::fvec3>(asset, positionAccessor, [&](fastgltf::math::fvec3 pos, std::size_t idx) {
 				( *vertices )[ initVerticesSize + idx ].position = glm::vec3(pos.x(), pos.y(), pos.z());
-				min = glm::min(min, ( *vertices )[ initVerticesSize + idx ].position);
-				max = glm::max(max, ( *vertices )[ initVerticesSize + idx ].position);
+				minBound = glm::min(minBound, ( *vertices )[ initVerticesSize + idx ].position);
+				maxBound = glm::max(maxBound, ( *vertices )[ initVerticesSize + idx ].position);
 				( *vertices )[ initVerticesSize + idx ].normal = glm::vec3(1.0f, 0.0f, 0.0f);
 				( *vertices )[ initVerticesSize + idx ].texcoords = glm::vec2(0.0f, 0.0f);
 				// fmt::print("Vertex Position: {}\n", glm::to_string(( *vertices )[ initVerticesSize + idx ].position));
@@ -177,14 +177,14 @@ bool ModelLoader::LoadMesh(const fastgltf::Asset& asset, const fastgltf::Mesh& m
         auto& indexAccessor = asset.accessors[it->indicesAccessor.value()];
 		draw.count = static_cast<std::uint32_t>(indexAccessor.count);
 
-		// std::vector<uint> indices (indexAccessor.count, 0u);
+		// std::vector<uint32_t> indices (indexAccessor.count, 0u);
 		size_t initIndicesSize = indices->size();
 		indices->resize( initIndicesSize + indexAccessor.count );
 		outPrimitive.indexStartIdx = initIndicesSize;
 		outPrimitive.indexCount = indexAccessor.count;
 
 
-		fastgltf::iterateAccessorWithIndex<uint>(asset, indexAccessor, [&](uint indiceIdx, std::size_t idx) {
+		fastgltf::iterateAccessorWithIndex<uint32_t>(asset, indexAccessor, [&](uint32_t indiceIdx, std::size_t idx) {
 				( *indices )[ initIndicesSize + idx ] = indiceIdx;
 		});
 
@@ -196,7 +196,7 @@ bool ModelLoader::LoadMesh(const fastgltf::Asset& asset, const fastgltf::Mesh& m
 
     }
 
-	outMesh->boundingVolume = Sphere((min + max) / 2.0f, glm::distance(min, max) / 2.0f);
+	outMesh->boundingVolume = Sphere((minBound + maxBound) / 2.0f, glm::distance(minBound, maxBound) / 2.0f);
 
     glCreateBuffers(1, &outMesh->drawsBuffer);
     glNamedBufferData(outMesh->drawsBuffer,
@@ -210,7 +210,7 @@ bool ModelLoader::LoadMesh(const fastgltf::Asset& asset, const fastgltf::Mesh& m
 }
 
 
-bool ModelLoader::LoadImage(const fastgltf::Asset& asset, const fastgltf::Image& image, Texture* outTexture) {
+bool ModelLoader::LoadModelImage(const fastgltf::Asset& asset, const fastgltf::Image& image, Texture* outTexture) {
     auto getLevelCount = [](int width, int height) -> GLsizei {
         return static_cast<GLsizei>(1 + floor(log2(width > height ? width : height)));
     };
@@ -320,7 +320,7 @@ bool ModelLoader::LoadModel(const fastgltf::Asset& asset, Model * model){
 	for ( size_t imageIdx = 0; imageIdx < asset.images.size(); ++imageIdx ){
 		const fastgltf::Image& gltfImage = asset.images[imageIdx];
 		Texture& texture = model->textures[imageIdx];
-		if (!LoadImage(asset, gltfImage, &texture)){
+		if (!LoadModelImage(asset, gltfImage, &texture)){
 			assert(false);
 			return false;
 		}
@@ -344,7 +344,7 @@ bool ModelLoader::LoadModel(const fastgltf::Asset& asset, Model * model){
 	}
 
 	std::vector<Vertex> vertices;
-	std::vector<uint> indices;
+	std::vector<uint32_t> indices;
 
 	for ( size_t meshIdx = 0; meshIdx < asset.meshes.size(); ++meshIdx ){
 		const fastgltf::Mesh& gltfMesh = asset.meshes[meshIdx];
@@ -360,7 +360,7 @@ bool ModelLoader::LoadModel(const fastgltf::Asset& asset, Model * model){
 	glNamedBufferStorage( model->VBO, vertices.size() * sizeof( Vertex ), vertices.data(), GL_DYNAMIC_STORAGE_BIT );
 
 	glCreateBuffers( 1,  &model->EBO );
-	glNamedBufferStorage( model->EBO, indices.size() * sizeof( uint ), indices.data(), GL_DYNAMIC_STORAGE_BIT );
+	glNamedBufferStorage( model->EBO, indices.size() * sizeof( uint32_t ), indices.data(), GL_DYNAMIC_STORAGE_BIT );
 
 	glCreateBuffers(1, &model->nodePropertiesBuffer);
 	glNamedBufferStorage( model->nodePropertiesBuffer, model->nodePropertiesBufferVec.size() * sizeof(NodeProperties), model->nodePrimPropertiesBufferVec.data(), GL_DYNAMIC_STORAGE_BIT);
@@ -388,20 +388,20 @@ bool ModelLoader::LoadModel(const fastgltf::Asset& asset, Model * model){
 	model->boundingVolume = Sphere((min + max) / 2.0f, glm::distance(min, max) / 2.0f);
 
 
-	for ( size_t nodeIdx = 0; nodeIdx < model->nodes.size(); ++nodeIdx )
+	for ( uint32_t nodeIdx = 0; nodeIdx < model->nodes.size(); ++nodeIdx )
 	{
 		const Mesh& mesh = model->meshes[model->nodes[nodeIdx].meshIndex];
 
-		for (size_t primOffset = 0; primOffset < mesh.primCount; ++primOffset)
+		for (uint32_t primOffset = 0; primOffset < mesh.primCount; ++primOffset)
 		{
-			const uint primIdx = mesh.startPrimIdx + primOffset;
+			const uint32_t primIdx = mesh.startPrimIdx + primOffset;
 			model->nodePrimPropertiesBufferVec.push_back( { nodeIdx,  primIdx } );
 			const Primitive& prim = model->primitives[ primIdx ];
 			model->drawCmdBufferVec.push_back ( {
 				prim.indexCount, 		// indexCount
 				1,						// instanceCount
 				prim.indexStartIdx,		// firstIndex
-				prim.vertexStartIdx,	// baseVertex
+				prim.vertexStartIdx,	// baseVertex TODO: WHY IS THIS AN INT???? 
 				0						// baseInstance
 			} );
 		}

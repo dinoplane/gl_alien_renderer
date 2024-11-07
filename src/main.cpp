@@ -71,7 +71,7 @@ Scene scene;
 std::vector<Renderer> renderers;
 std::vector<ComputeRenderer> computeRenderers;
 
-uint currRendererIdx = 0;
+uint32_t currRendererIdx = 0;
 std::string scenePath; 
 // glm::vec3 lightPos = glm::vec3(0.0, 15.0, 5.0);
 
@@ -80,7 +80,7 @@ fastgltf::Asset asset;
 void setupCmdArgs(int argc, char **argv){
     if (argc == 2){
         scenePath = argv[1];
-    } else scenePath = "./resources/assets/scene/scene.scn";
+    } else scenePath = "./scene/fumo.scn";
 
     // int i = 1;
     // while (i < argc){
@@ -276,7 +276,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     }
 
     if (key == GLFW_KEY_H && action == GLFW_PRESS){
-        Renderer::doCull = ~Renderer::doCull;
+        // Renderer::doCull = ~Renderer::doCull;
+        Renderer::ToggleCull(scene);
         fmt::print("Culling: {}\n", Renderer::doCull);
     }
 }

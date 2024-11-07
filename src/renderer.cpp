@@ -29,7 +29,7 @@ ComputeShader* Renderer::instCountSetShader = nullptr;
 
 GLuint Renderer::quadVAO = 0;
 GLuint Renderer::quadVBO = 0;
-uint Renderer::doCull = 0;
+uint32_t Renderer::doCull = 0;
 
 
 void Renderer::SetupScreenQuad(){
@@ -49,6 +49,37 @@ void Renderer::SetupScreenQuad(){
     glCreateBuffers(1, &Renderer::quadVBO);
     glNamedBufferStorage(Renderer::quadVBO, array_size(quadVertices) * sizeof(float) , &quadVertices, GL_DYNAMIC_STORAGE_BIT);
 
+}
+
+void Renderer::ToggleCull(const Scene& scene){
+    Renderer::doCull = ~Renderer::doCull;
+    if (!Renderer::doCull){
+        for ( const auto& [classname, entInstData] : scene.entityInstanceMap ){
+            const Model& instModel = entInstData.instModel;
+            glNamedBufferSubData(
+                entInstData.visibleInstIndicesSSBO,
+                0, 
+                entInstData.instCount * sizeof(uint32_t), 
+                entInstData.visibleInstIndicesBlock.data()
+            );
+            glNamedBufferSubData(
+                instModel.drawCmdBuffer,
+                0,
+                instModel.drawCmdBufferVec.size() * sizeof(IndirectDrawCommand),
+                instModel.drawCmdBufferVec.data()
+            );
+            glMemoryBarrier( GL_ALL_BARRIER_BITS );
+        }
+
+        // // set the instance counts
+        // instCountSetShader->use();
+        // BindDrawCmdInstCountSetBuffers(entInstData);
+        // glDispatchCompute(instModel.drawCmdCount.count, 1u, 1u);
+
+        // glMemoryBarrier( GL_ALL_BARRIER_BITS );
+        // glFinish();
+
+    }
 }
 
 void Renderer::RenderPostProcess(){
@@ -356,7 +387,7 @@ void Renderer::Render(const Scene& scene){ // really bad, we are modifying the s
         // scene.shaders[0].setMat4("view", Renderer::allCameras[mainCameraIdx].getViewMatrix());
 
         glBindVertexArray(VAO);
-        for (uint entityIdx = 0; entityIdx < scene.entities.size(); ++entityIdx){
+        for (uint32_t entityIdx = 0; entityIdx < scene.entities.size(); ++entityIdx){
             const Entity& entity = scene.entities[entityIdx];
             if (!Renderer::doCull || (Renderer::doCull && entity.model.boundingVolume.IsOnFrustum(Camera::createFrustumFromCamera(Renderer::allCameras[0]), entity.transform))){
 
@@ -439,29 +470,27 @@ void Renderer::Render(const Scene& scene){ // really bad, we are modifying the s
 
         for ( const auto& [classname, entInstData] : scene.entityInstanceMap ){
             const Model& instModel = entInstData.instModel;
+            if (Renderer::doCull) {
+                cullShader->use();
+                frustumCullDataUBOBlock.boundingVolume = entInstData.instModel.boundingVolume.ToGPUSphere();
+                frustumCullDataUBOBlock.instCount = entInstData.instCount;
+                glNamedBufferSubData(frustumCullDataUBO, 0, sizeof(FrustumCullDataUBOBlock), &frustumCullDataUBOBlock);
+                // glNamedBufferSubData(entInstData.visibleInstIndicesSSBO, 0, sizeof(uint32_t), );
+                glClearNamedBufferSubData(entInstData.visibleInstIndicesSSBO, GL_R32UI, 0, sizeof(GLuint), GL_RED_INTEGER, GL_UNSIGNED_INT, NULL);
+                glMemoryBarrier(GL_ALL_BARRIER_BITS);
 
-            cullShader->use();
-            frustumCullDataUBOBlock.boundingVolume = entInstData.instModel.boundingVolume.ToGPUSphere();
-            frustumCullDataUBOBlock.instCount = entInstData.instCount;
-            glNamedBufferSubData(frustumCullDataUBO, 0, sizeof(FrustumCullDataUBOBlock), &frustumCullDataUBOBlock);
-            // glNamedBufferSubData(entInstData.visibleInstIndicesSSBO, 0, sizeof(uint), );
-            glClearNamedBufferSubData(entInstData.visibleInstIndicesSSBO, GL_R32UI, 0, sizeof(GLuint), GL_RED_INTEGER, GL_UNSIGNED_INT, NULL);
-            glMemoryBarrier( GL_ALL_BARRIER_BITS );
+                BindInstanceCullingBuffers(entInstData);
 
-            BindInstanceCullingBuffers(entInstData);
+                glDispatchCompute(entInstData.instCount, 1u, 1u);
 
-            glDispatchCompute(entInstData.instCount, 1u, 1u);
-
-            glMemoryBarrier( GL_ALL_BARRIER_BITS );
-            glFinish();
-
-            uint visibleInstCount = 123;
-            glGetNamedBufferSubData(entInstData.visibleInstIndicesSSBO, 0, sizeof(uint), &visibleInstCount);
-            fmt::print("Visible Instance Count: {}\n", visibleInstCount);
+                glMemoryBarrier(GL_ALL_BARRIER_BITS);
+                glFinish();
 
 
 
 
+
+            }
             // // set the instance counts
             // instCountSetShader->use();
             // BindDrawCmdInstCountSetBuffers(entInstData);
@@ -470,6 +499,10 @@ void Renderer::Render(const Scene& scene){ // really bad, we are modifying the s
             // glMemoryBarrier( GL_ALL_BARRIER_BITS );
             // glFinish();
 
+
+            uint32_t visibleInstCount = 123;
+            glGetNamedBufferSubData(entInstData.visibleInstIndicesSSBO, 0, sizeof(uint32_t), &visibleInstCount);
+            fmt::print("Visible Instance Count: {}\n", visibleInstCount);
 
             scene.shaders[1].use();
             glBindBufferBase(GL_UNIFORM_BUFFER, PROJ_VIEW_UBO_BINDING, cameraMatricesUBO);
@@ -530,7 +563,7 @@ void Renderer::Render(const Scene& scene){ // really bad, we are modifying the s
             debugWireShader->use();
 
             glBindVertexArray(debugVAO);
-            for (uint cameraIdx = 0; cameraIdx < Renderer::allCameras.size(); ++cameraIdx){
+            for (uint32_t cameraIdx = 0; cameraIdx < Renderer::allCameras.size(); ++cameraIdx){
                 if (cameraIdx == mainCameraIdx){
                     continue;
                 }
@@ -551,7 +584,7 @@ void Renderer::Render(const Scene& scene){ // really bad, we are modifying the s
             // debugShader->setMat4("projection", Renderer::allCameras[mainCameraIdx].getProjMatrix()); // TODO : Profile this
             // debugShader->setMat4("view", Renderer::allCameras[mainCameraIdx].getViewMatrix());
             glBindVertexArray(debugVAO);
-            for (uint cameraIdx = 0; cameraIdx < Renderer::allCameras.size(); ++cameraIdx){
+            for (uint32_t cameraIdx = 0; cameraIdx < Renderer::allCameras.size(); ++cameraIdx){
                 if (cameraIdx == mainCameraIdx){
                     continue;
                 }

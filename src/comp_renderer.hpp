@@ -11,7 +11,7 @@ class ComputeRenderer : public Renderer
     public:
     const unsigned int TEXTURE_WIDTH = 512, TEXTURE_HEIGHT = 512;
     ComputeShader* computeShader;
-    uint outTexture;
+    uint32_t outTexture;
 
     ComputeRenderer(float w, float h);
 

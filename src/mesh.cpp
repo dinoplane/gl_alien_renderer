@@ -27,7 +27,7 @@ Mesh Mesh::CreatePyramid(){
 }
 
 
-void Primitive::GenerateBuffers(Primitive* primitive, const std::vector<Vertex> &vertices, const std::vector<uint> &indices){
+void Primitive::GenerateBuffers(Primitive* primitive, const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices){
     primitive->indexCount = indices.size();
     glCreateBuffers(1, &primitive->VBO);
     // glGenBuffers(1, &primitive->VBO);
@@ -38,11 +38,11 @@ void Primitive::GenerateBuffers(Primitive* primitive, const std::vector<Vertex> 
     glCreateBuffers(1, &primitive->EBO);
     // glGenBuffers(1, &primitive->EBO);
     // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, primitive->EBO);
-    glNamedBufferStorage(primitive->EBO, indices.size() * sizeof(uint), indices.data(), GL_DYNAMIC_STORAGE_BIT);
+    glNamedBufferStorage(primitive->EBO, indices.size() * sizeof(uint32_t), indices.data(), GL_DYNAMIC_STORAGE_BIT);
     // glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(),  GL_STATIC_DRAW);
 }
 
-void Primitive::GenerateDebugBuffers(Primitive* primitive, const std::vector<glm::vec3> &vertices, const std::vector<uint> &indices){
+void Primitive::GenerateDebugBuffers(Primitive* primitive, const std::vector<glm::vec3> &vertices, const std::vector<uint32_t> &indices){
 
     primitive->indexCount = indices.size();
     glCreateBuffers(1, &primitive->VBO);
@@ -54,7 +54,7 @@ void Primitive::GenerateDebugBuffers(Primitive* primitive, const std::vector<glm
     glCreateBuffers(1, &primitive->EBO);
     // glGenBuffers(1, &primitive->EBO);
     // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, primitive->EBO);
-    glNamedBufferStorage(primitive->EBO, indices.size() * sizeof(uint), indices.data(), GL_DYNAMIC_STORAGE_BIT);
+    glNamedBufferStorage(primitive->EBO, indices.size() * sizeof(uint32_t), indices.data(), GL_DYNAMIC_STORAGE_BIT);
     // glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(),  GL_STATIC_DRAW);
 }
 
@@ -110,7 +110,7 @@ Primitive Primitive::CreateCube(){
         {{ 0.5f, -0.5f,  0.5f},        { 0.0f, -1.0f,  0.0f},         {1.0f, 1.0f}},
         {{-0.5f, -0.5f,  0.5f},        { 0.0f, -1.0f,  0.0f},         {0.0f, 1.0f}},
     });
-    const std::vector<uint> indices {  // note that we start from 0!
+    const std::vector<uint32_t> indices {  // note that we start from 0!
         // top
             0, 1, 2, 2, 3, 0,
         // right
@@ -147,7 +147,7 @@ Primitive Primitive::CreateFrustum(const Camera& cam){
         {cam.zFar, -halfVSide,  halfHSide},
     });
 
-    const std::vector<uint> indices({
+    const std::vector<uint32_t> indices({
         // Front face (near plane)
         1,  3, 4,
         3,  1, 2,  // First square
@@ -189,7 +189,7 @@ Primitive Primitive::CreatePyramid(){
         {{ 0.5f, -0.5f, -0.5f},    {-1.0f, 0.0f,  0.0f},   {1.0f, 1.0f}},
     });
 
-    const std::vector<uint> indices ({  // note that we start from 0!
+    const std::vector<uint32_t> indices ({  // note that we start from 0!
         0, 1, 2,  // front tr br tl
 
         3, 4, 5,  // right tr br tl

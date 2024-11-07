@@ -53,6 +53,10 @@ Capstone TODOs:
     - Particle System
     - Splines
     - Inverse kinematics
+- Cloth Simulation
+    - Try your best ot make it real time
+- Particle Systems
+- Animation
 
 TODO
 - Abstract organize the logic better
@@ -64,7 +68,7 @@ TODO
 - shadows
 - reflections
 - animation
-
+- Integrating OpenUSD
 - multidraws/indirect draws/culling that actually reduces compute
     - a draw a model instance with 1 draw call
         - not possible thats not what multidraw means
