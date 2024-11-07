@@ -86,9 +86,10 @@ void main()
     if (index < instCount)
     {
         if (doCull > 0){
-            if (IsSphereOnFrustum(boundingVolume, frustum))
+            if (IsSphereOnFrustum(boundingVolume, frustum)){
                 uint oldInstCount = atomicAdd(visibleInstCount, 1u);
-            // visibleInstIndices[oldInstCount] = index;
+                visibleInstIndices[oldInstCount] = index;
+            }
         }
     }
 }

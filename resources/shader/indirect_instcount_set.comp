@@ -29,9 +29,9 @@ layout(binding=10, std430) readonly buffer indirectDrawCountBuf {
 
 void main()
 {
-    // uint index = gl_GlobalInvocationID.x;
-    // if (index < drawCmdCount)
-    // {
-    //     indirectDrawCommands[index].instanceCount = visibleInstCount;
-    // }
+    uint index = gl_GlobalInvocationID.x;
+    if (index < drawCmdCount)
+    {
+        indirectDrawCommands[index].instanceCount = visibleInstCount;
+    }
 }

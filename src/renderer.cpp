@@ -487,17 +487,16 @@ void Renderer::Render(const Scene& scene){ // really bad, we are modifying the s
                 glFinish();
 
 
-
+                 // set the instance counts
+                 instCountSetShader->use();
+                 BindDrawCmdInstCountSetBuffers(entInstData);
+                 glDispatchCompute(instModel.drawCmdCount.count, 1u, 1u);
+                 glMemoryBarrier( GL_ALL_BARRIER_BITS );
+                 glFinish();
 
 
             }
-            // // set the instance counts
-            // instCountSetShader->use();
-            // BindDrawCmdInstCountSetBuffers(entInstData);
-            // glDispatchCompute(instModel.drawCmdCount.count, 1u, 1u);
 
-            // glMemoryBarrier( GL_ALL_BARRIER_BITS );
-            // glFinish();
 
 
             uint32_t visibleInstCount = 123;
