@@ -6,6 +6,7 @@
 // #include <memory>
 #include <mesh.hpp>
 #include <model.hpp>
+#include <particle_system.hpp>
 #include <gpu_structs.hpp>
 class Entity;
 class Shader; // Change this to only use move semantics
@@ -54,6 +55,11 @@ class Scene {
     std::vector<Primitive> debugMeshes;
     std::vector<Shader> shaders;
     std::vector<Camera> initCamConfigs;
+    std::vector<BaseParticleSystem<
+        ParticleDataBlock,
+        ParticleSystemDataBlock,
+        ParticleSystemParameters
+        >> particleSystems;
 
     Scene();
     ~Scene();

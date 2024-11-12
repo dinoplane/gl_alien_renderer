@@ -1,0 +1,59 @@
+#version 460 core
+layout (local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
+
+// SSBO containing the indices of the visible instances
+layout(binding = 0, std430) buffer particlePositionsBuf {
+    vec4 positions[]; // arrlen total # of particles, indexed with globalInvocationID.x
+};
+
+
+layout(binding = 1, std430) buffer particleVelocitiesBuf {
+    vec4 velocities[]; // arrlen total # of particles, indexed with globalInvocationID.x
+};
+
+layout(binding = 2, std430) buffer particleForcesBuf {
+    vec4 forces[]; // arrlen total # of particles, indexed with globalInvocationID.x
+};
+
+// struct ParticleDataBlock {
+//     float mass;
+//     float lifetime;
+// };
+
+// layout(binding = 3, std430) buffer particleDataBuf {
+//     ParticleDataBlock pData[]; // arrlen total # of particles, indexed with globalInvocationID.x
+// };
+
+struct ParticleSystemDataBlock {
+    uint particleCount;
+    float timeStep;
+    // float fluidViscosity;
+    // float gravityAccel;
+    // float maxLifetime;
+    // float maxSpeed;
+    // glm::vec3 initialPosition;
+    // glm::vec3 initialVelocity;
+};
+
+layout(binding = 4, std430) buffer particleSystemDataBuf {
+    ParticleSystemDataBlock psData; // arrlen total # of particles, indexed with globalInvocationID.x
+};
+
+
+void main()
+{
+    uint index = gl_GlobalInvocationID.x;
+    if (index < psData.particleCount)
+    {
+        vec4 position = positions[index];
+        vec4 velocity = velocities[index];
+        vec4 force = forces[index];
+
+        vec4 acceleration = force; /// pData[index].mass;
+        velocity += acceleration * psData.timeStep;
+        position += velocity * psData.timeStep;
+
+        velocities[index] = velocity;
+        positions[index] = position;
+    }
+}

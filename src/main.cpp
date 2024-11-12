@@ -17,7 +17,6 @@
 #include <scenedata.hpp>
 #include <scene.hpp>
 #include <renderer.hpp>
-#include <comp_renderer.hpp>
 #include <scene_loader.hpp>
 #include <model_loader.hpp>
 
@@ -69,7 +68,6 @@ SceneData sceneData;
 Scene scene;
 // Renderer renderer;
 std::vector<Renderer> renderers;
-std::vector<ComputeRenderer> computeRenderers;
 
 uint32_t currRendererIdx = 0;
 std::string scenePath; 
@@ -80,7 +78,7 @@ fastgltf::Asset asset;
 void setupCmdArgs(int argc, char **argv){
     if (argc == 2){
         scenePath = argv[1];
-    } else scenePath = "./scene/fumo.scn";
+    } else scenePath = "./scene/blank.scn";
 
     // int i = 1;
     // while (i < argc){
@@ -373,25 +371,6 @@ static void RenderToFrame (const Scene& scene){
     // glBindTexture(GL_TEXTURE_2D, renderer->FBOTexture);
     // glDrawArrays(GL_TRIANGLES, 0, 6);
 // glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-}
-
-
-void RenderCompute (){
-
-    // First Pass
-    for (ComputeRenderer& renderer : computeRenderers){
-        renderer.Render(currentFrame);
-    }
-
-    // Second Pass
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-    int startPixel = 0;
-    for (Renderer& renderer : computeRenderers){
-        glBlitNamedFramebuffer(renderer.FBO, 0, 0, 0, renderer.width, renderer.height, startPixel, 0, startPixel + renderer.width, renderer.height, GL_COLOR_BUFFER_BIT, GL_LINEAR);
-        startPixel += renderer.width;
-    }
 }
 
 

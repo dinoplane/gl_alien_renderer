@@ -1,4 +1,6 @@
 #include <scene_loader.hpp>
+#include <particle_system.hpp>
+
 #include <fstream>
 #include <sstream>
 #include <iomanip>
@@ -107,7 +109,16 @@ void SceneLoader::LoadScene(const SceneData& sceneData, Scene* scene)
     scene->shaders.push_back(Shader("./resources/shader/base.vert", "./resources/shader/base_inst.frag"));
     scene->shaders.push_back(Shader("./resources/shader/indirect_inst.vert", "./resources/shader/normal_shading.frag"));
 
+    fmt::printf("Size: particle systems : %u\n", scene->particleSystems.size());
 
+
+    
+    //scene->particleSystems.push_back(ParticleSystem({100, 0.0001, "gen_particle"}));
+    scene->particleSystems.push_back(ParticleSystem({100, 0.0001, "gen_particle"}));
+
+    for (ParticleSystem& ps : scene->particleSystems){
+       ps.InitializeBuffers();
+    }
     // return std::move(scene);
 }
 

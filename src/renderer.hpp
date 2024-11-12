@@ -11,11 +11,14 @@
 #include <shader_c.hpp>
 
 #include <unordered_map>
+#include <particle_system.hpp>
+
 class Scene;
 class Camera;
 struct Primitive;
 struct EntityInstanceData;
 struct ComputeShader;
+
 // class Light;
 // class Material;
 // class Entity;
@@ -67,6 +70,7 @@ class Renderer {
     GLuint VAO;
     GLuint debugVAO;
     GLuint instVAO;
+    GLuint particleVAO;
 
     static GLuint quadVAO;
     static GLuint quadVBO;
@@ -131,6 +135,7 @@ class Renderer {
     void Init(float w, float h);
     void CreateVAO();
     void CreateInstanceVAO();
+    void CreateParticleVAO();
     void CreateDebugVAO();
     void CreateFBO(float w, float h);
     void CreateRBO(float w, float h);
@@ -143,7 +148,7 @@ class Renderer {
 
     void BindInstanceData(const EntityInstanceData& entityInstanceData);
     void BindInstancePrimitive(const Primitive& primitive);
-
+    void BindParticleSystem(const ParticleSystem* particleSystem);
 
     void BindDebugMesh(const Primitive& mesh);
 
@@ -151,6 +156,11 @@ class Renderer {
 
 
     void Render(const Scene& scene);
+    void RenderEntities(const Scene& scene);
+    void RenderInstancedStaticModels(const Scene& scene);
+    void RenderParticleSystems(const Scene& scene);
+    void RenderDebugVolumes(const Scene& scene);
+    
     void RenderPostProcess();
 
 
