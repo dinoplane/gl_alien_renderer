@@ -1,5 +1,7 @@
 #include <scene_loader.hpp>
 #include <particle_system.hpp>
+#include <cloth_system.hpp>
+
 
 #include <fstream>
 #include <sstream>
@@ -111,14 +113,36 @@ void SceneLoader::LoadScene(const SceneData& sceneData, Scene* scene)
 
     fmt::printf("Size: particle systems : %u\n", scene->particleSystems.size());
 
-
-    
     //scene->particleSystems.push_back(ParticleSystem({100, 0.0001, "gen_particle"}));
-    scene->particleSystems.push_back(ParticleSystem({100, 0.0001, "gen_particle"}));
+    // scene->particleSystems.push_back(ParticleSystem({100, 0.0001, "gen_particle"}));
+    ParticleSystemParameters p{ 10, 0.0001, "gen_particle" };
+    //scene->particleSystems.push_back( std::make_unique<ParticleSystem>());
+    //scene->particleSystems[0]->Initialize(&p);
 
-    for (ParticleSystem& ps : scene->particleSystems){
-       ps.InitializeBuffers();
+    ClothSystemParameters c{ 10, 0.0001f, "cloth_particle", 3, 5.0f, 100.0f};
+    scene->particleSystems.push_back(std::make_unique<ClothSystem>());
+    scene->particleSystems[0]->Initialize(&c);
+
+
+    // scene->particleSystems.push_back();
+    // ClothSystem* cs = new ClothSystem(&c);
+    //ClothSystem cs2 (&c);
+
+    // BaseParticleSystem<ClothDataBlock, ClothSystemDataBlock, ClothSystemParameters> cs2(&c);
+    //BaseParticleSystem<ParticleDataBlock, ParticleSystemDataBlock, ParticleSystemParameters> cs2(&p);
+    
+
+    for (auto& ps : scene->particleSystems){
+       ps->InitializeBuffers();
     }
+
+    // scene->clothSystems.push_back(ClothSystem({100, 0.0001, "gen_particle"}));
+
+    // for (ClothSystem& cs : scene->clothSystems){
+    //    cs.InitializeBuffers();
+    // }
+    
+
     // return std::move(scene);
 }
 

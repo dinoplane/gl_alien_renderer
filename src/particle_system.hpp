@@ -11,25 +11,44 @@
 #include <glm/glm.hpp>
 #include <shader_s.hpp>
 #include <shader_c.hpp>
+#include <gl_bindings.h>
 
-typedef struct ParticleSystemParameters {
+/* TODOs
+- redefine the particle system design
+- Get the cloth mesh to render / show up on the screen
+- get the cloth mesh to update
+- set up hinges correctly
+- set up edges correctly
+- calculate the gradient of theta (hinges)
+- calculate the hessian of theta (hinges)
+- calculate the gradient of stretching
+- calculate the hessian of stretching
+- create compute shaders for the operations
+- use a gpu to solve these
+- create a presentation
+- create a report
+
+
+*/
+
+ struct ParticleSystemParameters {
 	uint32_t particleCount;
 	float timeStep;
 	std::string shaderName;
 
-	float fluidViscosity;
-	float gravityAccel;
-	float maxLifetime;
-	float maxSpeed;
+	// float fluidViscosity;
+	// float gravityAccel;
+	// float maxLifetime;
+	// float maxSpeed;
 };
 
-typedef struct ParticleDataBlock{
+ struct ParticleDataBlock{
 		float mass;
-		float lifeSpan;
-		float radius;
+		// float lifeSpan;
+		// float radius;
 };
 
-typedef struct ParticleSystemDataBlock {
+ struct ParticleSystemDataBlock {
 	uint32_t particleCount;
 	float timeStep;
 	// float fluidViscosity;
@@ -40,18 +59,35 @@ typedef struct ParticleSystemDataBlock {
 	// glm::vec3 initialVelocity;
 };
 
+class IBaseParticleSystem {
+public:
+	uint32_t particleCount;
+	uint32_t indiceCount;
+	GLuint EBO;
+	//std::vector<Vertex> positions;
+	GLuint positionsBuffer; // Buffers for freedom
+
+	// IBaseParticleSystem(void* params) {};
+	virtual void Initialize(void* params) {};
+	virtual void InitializeSystemData(void* params) {};
+	virtual void InitializeBufferData(void* params) {};
+	virtual void InitializeShaders(void* params) {};
+	virtual void InitializeBuffers() {};
+	virtual void BindBuffers() const{};
+	virtual void SetupRender() {};
+	virtual void CalculateForces() const {};
+	virtual ~IBaseParticleSystem() = default;
+};
+
 template <
 	typename BaseParticleDataBlock, 
 	typename BaseParticleSystemDataBlock, 
 	typename BaseParticleSystemParameters
 > 
-class BaseParticleSystem {
+class BaseParticleSystem : public IBaseParticleSystem{
 	public: 
 
-	uint32_t particleCount;
-	GLuint EBO;
-	//std::vector<Vertex> positions;
-	GLuint positionsBuffer; // Buffers for freedom
+
 	GLuint velocityBuffer;
 	GLuint forcesBuffer;
 	// GLuint particleDataBuffer;
@@ -59,6 +95,7 @@ class BaseParticleSystem {
 	std::vector<glm::vec4> positionsVec;
 	std::vector<glm::vec4> velocityVec;
 	std::vector<glm::vec4> forceVec;
+	std::vector<uint32_t> indicesVec;
 
 	std::vector<BaseParticleDataBlock> particleDataVec;
 	BaseParticleSystemDataBlock particleSystemDataBlock;
@@ -67,18 +104,23 @@ class BaseParticleSystem {
 	// GLuint particleConstantsDataBuffer;
 	Shader* particleShader;
 	ComputeShader* particleComputeShader;
-	
-	BaseParticleSystem(BaseParticleSystemParameters params);
-	void InitializeBuffers();
-	void CalculateForce() const;
+	//BaseParticleSystem();
+	//BaseParticleSystem();
+	virtual void Initialize(void* params) override;
+	virtual void InitializeSystemData(void* params) override;
+	virtual void InitializeBufferData(void* params) override;
+	virtual void InitializeShaders(void* params) override;
+	virtual void InitializeBuffers();
+	virtual void BindBuffers() const override;
+	virtual void CalculateForces() const override;
+	virtual void SetupRender() override;
 
 	// void Render();
 };
 
 
- typedef BaseParticleSystem<
- 			ParticleDataBlock, 
- 			ParticleSystemDataBlock, 
- 			ParticleSystemParameters
- 		> ParticleSystem;
+template class BaseParticleSystem<ParticleDataBlock, ParticleSystemDataBlock, ParticleSystemParameters>;
+typedef BaseParticleSystem<ParticleDataBlock, ParticleSystemDataBlock, ParticleSystemParameters> ParticleSystem;
+
+
 #endif

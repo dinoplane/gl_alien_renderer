@@ -148,7 +148,7 @@ class Renderer {
 
     void BindInstanceData(const EntityInstanceData& entityInstanceData);
     void BindInstancePrimitive(const Primitive& primitive);
-    void BindParticleSystem(const ParticleSystem* particleSystem);
+    void BindParticleSystem(const IBaseParticleSystem* particleSystem);
 
     void BindDebugMesh(const Primitive& mesh);
 

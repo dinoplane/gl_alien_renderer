@@ -1,33 +1,73 @@
 #include <particle_system.hpp>
 #include <glm/gtc/random.hpp>
 
+
+//template <
+//	typename BaseParticleDataBlock, 
+//	typename BaseParticleSystemDataBlock, 
+//	typename BaseParticleSystemParameters
+//> BaseParticleSystem<
+//	BaseParticleDataBlock, 
+//	BaseParticleSystemDataBlock, 
+//	BaseParticleSystemParameters
+//>::BaseParticleSystem(BaseParticleSystemParameters* params){
+//    // BaseParticleSystemParameters* baseParams = static_cast<BaseParticleSystemParameters*>(params);
+//    InitializeSystemData(params); // validate it!
+//    InitializeBufferData(params);
+//    InitializeShaders(params);
+//}
+
 template <
-	typename BaseParticleDataBlock, 
-	typename BaseParticleSystemDataBlock, 
-	typename BaseParticleSystemParameters
-> BaseParticleSystem<
-	BaseParticleDataBlock, 
-	BaseParticleSystemDataBlock, 
-	BaseParticleSystemParameters
->::BaseParticleSystem(BaseParticleSystemParameters params){
-    // particleCount = params.particleCount;
-    // timeStep = params.timeStep;
-    // fluidViscosity = params.fluidViscosity;
-    // gravityAccel = params.gravityAccel;
-    // maxLifetime = params.maxLifetime;
-    // maxSpeed = params.maxSpeed;
+    typename BaseParticleDataBlock, 
+    typename BaseParticleSystemDataBlock, 
+    typename BaseParticleSystemParameters
+> 
+void BaseParticleSystem<
+    BaseParticleDataBlock, 
+    BaseParticleSystemDataBlock, 
+    BaseParticleSystemParameters
+>::Initialize(void* params){
+    BaseParticleSystemParameters* baseParams = static_cast<BaseParticleSystemParameters*>(params);
+    InitializeSystemData(baseParams); // validate it!
+    InitializeBufferData(baseParams);
+    InitializeShaders(baseParams);
+}
 
-    particleSystemDataBlock.particleCount = params.particleCount;
-    particleSystemDataBlock.timeStep = params.timeStep;
-    
-    particleCount = params.particleCount;
+template <
+    typename BaseParticleDataBlock,
+    typename BaseParticleSystemDataBlock,
+    typename BaseParticleSystemParameters
+>
+void BaseParticleSystem<
+    BaseParticleDataBlock,
+    BaseParticleSystemDataBlock,
+    BaseParticleSystemParameters
+>::InitializeSystemData(void* params) {
+    BaseParticleSystemParameters* baseParams = static_cast<BaseParticleSystemParameters*>(params);
+    particleSystemDataBlock.particleCount = baseParams->particleCount;
+    particleSystemDataBlock.timeStep = baseParams->timeStep;
+    particleCount = baseParams->particleCount;
+}
 
-    positionsVec.resize(params.particleCount);
-    velocityVec.resize(params.particleCount);
-    forceVec.resize(params.particleCount);
+
+template <
+    typename BaseParticleDataBlock,
+    typename BaseParticleSystemDataBlock,
+    typename BaseParticleSystemParameters
+>
+void BaseParticleSystem<
+    BaseParticleDataBlock,
+    BaseParticleSystemDataBlock,
+    BaseParticleSystemParameters
+>::InitializeBufferData(void* params) {
+    BaseParticleSystemParameters* baseParams = static_cast<BaseParticleSystemParameters*>(params);
+    positionsVec.resize(baseParams->particleCount);
+    velocityVec.resize(baseParams->particleCount);
+    forceVec.resize(baseParams->particleCount);
     // particleDataVec.resize(particleCount);
+    fmt::printf("KILLAKILL");
 
-    for (uint32_t i = 0; i < particleCount; ++i){
+    for (uint32_t i = 0; i < particleCount; ++i) {
         positionsVec[i] = glm::vec4(glm::sphericalRand(1.0f), 1.0f);// glm::vec3(0.0f);
         velocityVec[i] = glm::vec4(glm::sphericalRand(1.0f), 1.0f);
         forceVec[i] = glm::vec4(-1.0f);
@@ -36,13 +76,35 @@ template <
         // particleDataVec[i].radius = 1.0f;
     }
 
-    std::string vertPath = "./resources/shader/" + params.shaderName + ".vert";
-    std::string fragPath = "./resources/shader/" + params.shaderName + ".frag";
-    std::string compPath = "./resources/shader/" + params.shaderName + ".comp";
+    fmt::print("InistializeBufferData");
+    indicesVec.resize(particleCount);
+    for (uint32_t i = 0; i < particleCount; ++i) {
+        indicesVec[i] = i;
+    }
+    indiceCount = particleCount;
+
+}
+
+
+template <
+    typename BaseParticleDataBlock,
+    typename BaseParticleSystemDataBlock,
+    typename BaseParticleSystemParameters
+>
+void BaseParticleSystem<
+    BaseParticleDataBlock,
+    BaseParticleSystemDataBlock,
+    BaseParticleSystemParameters
+>::InitializeShaders(void* params) {
+    BaseParticleSystemParameters* baseParams = static_cast<BaseParticleSystemParameters*>(params);
+    std::string vertPath = "./resources/shader/" + baseParams->shaderName + ".vert";
+    std::string fragPath = "./resources/shader/" + baseParams->shaderName + ".frag";
+    std::string compPath = "./resources/shader/" + baseParams->shaderName + ".comp";
 
     particleShader = new Shader(vertPath.c_str(), fragPath.c_str());
     particleComputeShader = new ComputeShader(compPath.c_str());
 }
+
 
 template <
 	typename BaseParticleDataBlock, 
@@ -78,16 +140,12 @@ void BaseParticleSystem<
          GL_DYNAMIC_STORAGE_BIT
     );
     
-    std::vector<uint32_t> indices(particleCount);
-    for (uint32_t i = 0; i < particleCount; ++i){
-        indices[i] = i;
-    }
 
     glCreateBuffers(1, &EBO);
     glNamedBufferStorage(
         EBO, 
-        sizeof(uint32_t) * particleCount, 
-        indices.data(),
+        sizeof(uint32_t) * indiceCount, 
+        indicesVec.data(),
          GL_DYNAMIC_STORAGE_BIT
     );
 
@@ -117,21 +175,53 @@ void BaseParticleSystem<
 	BaseParticleDataBlock, 
 	BaseParticleSystemDataBlock, 
 	BaseParticleSystemParameters
->::CalculateForce() const{
+>::CalculateForces() const{
     
-    // Calculate forces
-    // for (uint32_t i = 0; i < particleCount; ++i){
-    //     forceVec[i] = glm::vec3(0.0f);
-    //     for (uint32_t j = 0; j < particleCount; ++j){
-    //         if (i != j){
-    //             glm::vec3 r = positionsVec[j] - positionsVec[i];
-    //             float rLen = glm::length(r);
-    //             forceVec[i] += glm::normalize(r) * (particleDataVec[i].mass * particleDataVec[j].mass) / (rLen * rLen);
-    //         }
-    //     }
-    // }
+    //BindParticleSystem(&particleSystem);
+    glNamedBufferSubData(
+        particleSystemDataBuffer,
+        0,
+        sizeof(ParticleSystemDataBlock),
+        &particleSystemDataBlock
+    );
+    glDispatchCompute(particleCount, 1u, 1u);
+    glMemoryBarrier(GL_ALL_BARRIER_BITS);
+
+    glFinish();
+
 }
 
-template class BaseParticleSystem<ParticleDataBlock, ParticleSystemDataBlock, ParticleSystemParameters>;
+template <
+	typename BaseParticleDataBlock, 
+	typename BaseParticleSystemDataBlock, 
+	typename BaseParticleSystemParameters
+> 
+void BaseParticleSystem<
+	BaseParticleDataBlock, 
+	BaseParticleSystemDataBlock, 
+	BaseParticleSystemParameters
+>::BindBuffers() const {
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_POSITIONS_SSBO_BINDING, positionsBuffer);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_VELOCITIES_SSBO_BINDING, velocityBuffer);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_FORCES_SSBO_BINDING, forcesBuffer);
+    //glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_DATA_SSBO_BINDING, particleDataBuffer);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_SYSTEM_DATA_SSBO_BINDING, particleSystemDataBuffer);
+    particleComputeShader->use();
+}
 
-typedef BaseParticleSystem<ParticleDataBlock, ParticleSystemDataBlock, ParticleSystemParameters> ParticleSystem;
+template <
+	typename BaseParticleDataBlock, 
+	typename BaseParticleSystemDataBlock, 
+	typename BaseParticleSystemParameters
+> 
+void BaseParticleSystem<
+	BaseParticleDataBlock, 
+	BaseParticleSystemDataBlock, 
+	BaseParticleSystemParameters
+>::SetupRender(){
+
+    particleShader->use();
+
+}
+
+

@@ -376,12 +376,8 @@ void Renderer::BindInstancePrimitive(const Primitive& primitive){
     glVertexArrayElementBuffer(instVAO, primitive.EBO);
 }
 
-void Renderer::BindParticleSystem(const ParticleSystem* particleSystem){
-   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_POSITIONS_SSBO_BINDING, particleSystem->positionsBuffer);
-   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_VELOCITIES_SSBO_BINDING, particleSystem->velocityBuffer);
-   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_FORCES_SSBO_BINDING, particleSystem->forcesBuffer);
-   //glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_DATA_SSBO_BINDING, particleSystem->particleDataBuffer);
-   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_SYSTEM_DATA_SSBO_BINDING, particleSystem->particleSystemDataBuffer);
+void Renderer::BindParticleSystem(const IBaseParticleSystem* particleSystem){
+    particleSystem->BindBuffers();
 }
 
 void Renderer::RenderEntities(const Scene& scene){
@@ -469,31 +465,20 @@ void Renderer::RenderInstancedStaticModels(const Scene& scene){
 }
 
 void Renderer::RenderParticleSystems(const Scene& scene){
-    glPolygonMode( GL_FRONT_AND_BACK, GL_POINT );
+    glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
     glPointSize(10.0f);
 
-    for (const ParticleSystem& particleSystem : scene.particleSystems){
-        // scene.shaders[1].use();
-        particleSystem.particleComputeShader->use();
-        BindParticleSystem(&particleSystem);
-        glNamedBufferSubData(
-            particleSystem.particleSystemDataBuffer, 
-            0,
-            sizeof(ParticleSystemDataBlock), 
-            &particleSystem.particleSystemDataBlock
-        );
-        glDispatchCompute(particleSystem.particleCount, 1u, 1u);
-        glMemoryBarrier( GL_ALL_BARRIER_BITS );
-
-        glFinish();
-
-        particleSystem.particleShader->use();
+    for (const auto& particleSystem : scene.particleSystems){
+        particleSystem->BindBuffers();
+        particleSystem->CalculateForces();
+        particleSystem->SetupRender();
         glBindVertexArray(particleVAO);
+        glVertexArrayVertexBuffer(particleVAO, 0, particleSystem->positionsBuffer, 0, sizeof(glm::vec4));
+        glVertexArrayElementBuffer(particleVAO, particleSystem->EBO);
 
-        glVertexArrayVertexBuffer(particleVAO, 0, particleSystem.positionsBuffer, 0, sizeof(glm::vec3));
-        glVertexArrayElementBuffer(particleVAO, particleSystem.EBO);
+        glDrawElements(GL_TRIANGLES, particleSystem->indiceCount, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_POINTS, particleSystem->indiceCount, GL_UNSIGNED_INT, 0);
 
-        glDrawElements(GL_POINTS, particleSystem.particleCount, GL_UNSIGNED_INT, 0);
     }
     glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 
@@ -561,7 +546,7 @@ void Renderer::Render(const Scene& scene){ // really bad, we are modifying the s
 
         RenderEntities(scene);
         RenderInstancedStaticModels(scene);
-         RenderParticleSystems(scene);
+        RenderParticleSystems(scene);
         RenderDebugVolumes(scene);
         RenderPostProcess();
         // glBindVertexArray(0);
