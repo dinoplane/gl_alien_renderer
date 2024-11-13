@@ -119,7 +119,7 @@ void SceneLoader::LoadScene(const SceneData& sceneData, Scene* scene)
     //scene->particleSystems.push_back( std::make_unique<ParticleSystem>());
     //scene->particleSystems[0]->Initialize(&p);
 
-    ClothSystemParameters c{ 10, 0.0001f, "cloth_particle", 3, 5.0f, 100.0f};
+    ClothSystemParameters c{ 10, 0.0001f, "cloth_particle", 100, 0.5f, 100.0f};
     scene->particleSystems.push_back(std::make_unique<ClothSystem>());
     scene->particleSystems[0]->Initialize(&c);
 

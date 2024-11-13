@@ -75,6 +75,10 @@ class ClothSystem : public BaseParticleSystem<
     virtual void BindBuffers() const override;
     virtual void SetupRender() override;
     virtual void CalculateForces() const override;
+
+
+
+    void CalculateNewPositions();
 };
 //class ClothSystem : public BaseParticleSystem<
 //    ClothDataBlock, 

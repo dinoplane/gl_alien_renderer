@@ -14,8 +14,8 @@
 #include <gl_bindings.h>
 
 /* TODOs
-- redefine the particle system design
-- Get the cloth mesh to render / show up on the screen
+DONE? redefine the particle system design
+DONE! Get the cloth mesh to render / show up on the screen
 - get the cloth mesh to update
 - set up hinges correctly
 - set up edges correctly
