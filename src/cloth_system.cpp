@@ -37,11 +37,12 @@ void ClothSystem::InitializeBufferData(void* params) {
 
     // tangentsVec.resize(clothParams->particleCount);
     // bitangentsVec.resize(clothParams->particleCount);
-    edgesVec.resize(clothParams->particleCount);
-    hingesVec.resize(clothParams->particleCount);
+
 
     glm::vec4 meshStartPosition = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
     float yIncrement = 0.5f * sqrt(3.0f) * clothParams->cellSideLength;
+
+
     uint32_t clothSideParticleCount = clothParams->clothSideLength + 1;
     float deltaMass = clothParams->totalMass / clothParams->particleCount;
 
@@ -67,21 +68,40 @@ void ClothSystem::InitializeBufferData(void* params) {
         }
     }
 
-    // Fill in the EBO
+    // Fill in the EBO, edges, and hinges
+    uint32_t c = clothParams->clothSideLength;
+    edgeCount = c * (3 * c + 2);
+    hingeCount = c * (3 * c - 2);
+    edgesVec.resize(edgeCount);
+    hingesVec.resize(hingeCount);
+    uint32_t edgeIdx = 0;
+    uint32_t hingeIdx = 0;
+    
     indicesVec.resize(6 * clothParams->clothSideLength * clothParams->clothSideLength);
     for (uint32_t rowIdx = 0; rowIdx < clothParams->clothSideLength; ++rowIdx) {
+        if (rowIdx % 2 == 1) {
+            edgeVec[edgeIdx] = glm::ivec2(rowIdx * clothSideParticleCount, (rowIdx + 1) * clothSideParticleCount);
+            edgeIdx += 1;
+        }   
         for (uint32_t colIdx = 0; colIdx < clothParams->clothSideLength; ++colIdx) {
-            // ACD / ABD
-            //    C---------D
-            //     \   ____/ \
-            //      \ /       \
-            //       A---------B
+            // ADC / ABD
+            //    C---------D---------E   
+            //     \   ____/ \   ____/ \  
+            //      \ /       \ /       \ 
+            //       A---------B---------F
             //
             //    ABC / BDC
-            //       C---------D
-            //      / \____   /
-            //     /       \ /
-            //    A---------B
+            //       C---------D---------E
+            //      / \____   / \____   / 
+            //     /       \ /       \ /  
+            //    A---------B---------F   
+
+            //             Edges = Horizontals + Verticals
+            //     __ __   Edges = c * (c + 1) + (2 * c + 1) * c = c * [(c + 1) + (2 * c + 1)] = c * (3 * c + 2) 
+            //    |\ |\ |  2 * 3 + 5 * 2 = 6 + 10 = 16
+            //    |_\|_\|  Hinges = Diagonals + Verticals + Horizontals
+            //    | /| /|  Hinges = c * c + (c - 1) * c + (c - 1) * c
+            //    |/_|/_|  Hinges = c * ( 3 * c - 2 )
 
             
 
@@ -100,6 +120,11 @@ void ClothSystem::InitializeBufferData(void* params) {
                 indicesVec[indiceIdx + 3] = aIdx;
                 indicesVec[indiceIdx + 4] = bIdx;
                 indicesVec[indiceIdx + 5] = dIdx;
+
+                edgeVec[edgeIdx + 0] = glm::vec2(aIdx, dIdx);
+                edgeVec[edgeIdx + 1] = glm::vec2(dIdx, cIdx);
+                edgeVec[edgeIdx + 2] = glm::vec2(cIdx, aIdx);
+                
             }
             else {
                 indicesVec[indiceIdx + 0] = aIdx;
@@ -109,7 +134,14 @@ void ClothSystem::InitializeBufferData(void* params) {
                 indicesVec[indiceIdx + 3] = bIdx;
                 indicesVec[indiceIdx + 4] = dIdx;
                 indicesVec[indiceIdx + 5] = cIdx;
+            
+                edgeVec[edgeIdx + 0] = glm::vec2(bIdx, dIdx);
+                edgeVec[edgeIdx + 1] = glm::vec2(dIdx, cIdx);
+                edgeVec[edgeIdx + 2] = glm::vec2(cIdx, bIdx);
             }
+            edgeIdx += 3;
+
+
 
             /*fmt::print("\nFirst Triangle\n");
             for (uint32_t j = 0; j < 3; ++j) {
@@ -120,6 +152,13 @@ void ClothSystem::InitializeBufferData(void* params) {
                 fmt::print("{} ", indicesVec[indiceIdx + j]);
             }*/
         }
+
+        if (rowIdx % 2 == 1) {
+            edgeVec[edgeIdx] = glm::ivec2(rowIdx * clothSideParticleCount, (rowIdx + 1) * clothSideParticleCount);
+            edgeIdx += 1;
+        }   
+
+
     }
     indiceCount = 6 * clothParams->clothSideLength * clothParams->clothSideLength;
 }

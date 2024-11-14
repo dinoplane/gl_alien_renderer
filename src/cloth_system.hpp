@@ -43,11 +43,11 @@ template class BaseParticleSystem<ClothDataBlock, ClothSystemDataBlock, ClothSys
 
 
 struct HingeData{
-
+    glm::ivec4 nodes;
 }; // Add as we figure that out
 
 struct EdgeData{
- 
+    glm::ivec2 nodes;
 }; // Add as we figure this out
 
 
@@ -61,9 +61,13 @@ class ClothSystem : public BaseParticleSystem<
 
         std::vector<glm::vec4> normalsVec;
         GLuint normalsBuffer;
+        
         std::vector<glm::vec4> edgesVec;
+        uint32_t edgeCount;
         GLuint edgesBuffer;
+
         std::vector<glm::vec4> hingesVec;
+        uint32_t hingeCount;
         GLuint hingesBuffer;
 
     //ClothSystem(ClothSystemParameters* params);
