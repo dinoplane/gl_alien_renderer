@@ -86,16 +86,16 @@ void ClothSystem::InitializeBufferData(void* params) {
         }   
         for (uint32_t colIdx = 0; colIdx < clothParams->clothSideLength; ++colIdx) {
             // ADC / ABD
-            //    C---------D---------E   
-            //     \   ____/ \   ____/ \  
-            //      \ /       \ /       \ 
-            //       A---------B---------F
+            //    G---------C---------D---------E   
+            //     \   ____/ \   ____/ \   ____/ \  
+            //      \ /       \ /       \ /       \ 
+            //       H---------A---------B---------F
             //
             //    ABC / BDC
-            //       C---------D---------E
-            //      / \____   / \____   / 
-            //     /       \ /       \ /  
-            //    A---------B---------F   
+            //       G---------C---------D---------E
+            //      / \____   / \____   / \____   / 
+            //     /       \ /       \ /       \ /  
+            //    H---------A---------B---------F   
 
             //                          Edges = Horizontals + Verticals
             //    0---1---2             Edges = c * (c + 1) + (2 * c + 1) * c 
@@ -116,9 +116,10 @@ void ClothSystem::InitializeBufferData(void* params) {
             uint32_t indiceIdx = 6 * (rowIdx * clothParams->clothSideLength + colIdx);
             //fmt::print("\ni {}\n", indiceIdx);
 
-            uint32_t topHingeIdx = aIdx - clothSideParticleCount;
-            uint32_t rightHingeIdx = dIdx + 1;
-            uint32_t leftHingeIdx = aIdx;
+            uint32_t topHingeIdx = cIdx - clothSideParticleCount;
+            uint32_t bottomHingeIdx = aIdx;
+            uint32_t rightHingeIdx = cIdx + 1;
+            uint32_t leftHingeIdx = aIdx - 1;
 
             if (rowIdx % 2 == 0) {
                 indicesVec[indiceIdx + 0] = aIdx;
@@ -151,23 +152,25 @@ void ClothSystem::InitializeBufferData(void* params) {
                 edgeVec[edgeIdx + 1] = glm::vec2(dIdx, cIdx);
                 edgeVec[edgeIdx + 2] = glm::vec2(cIdx, bIdx);
 
-                topHingeIdx = bIdx - clothSideParticleCount;
-                rightHingeIdx = bIdx + 1;
-                leftHingeIdx = cIdx;
+                topHingeIdx = dIdx - clothSideParticleCount;
+                bottomHingeIdx = bIdx;
+                rightHingeIdx = aIdx + 1;
+                leftHingeIdx = cIdx - 1;
             }
             hingeIdx += 1;
             edgeIdx += 3;
 
+            if (colIdx > 0){
+                hingeVec[hingeIdx] = glm::ivec4(cIdx, aIdx, rightHingeIdx, leftHingeIdx);
+                hingeIdx += 1;
+            } 
 
             if (rowIdx > 0){
-                hingeVec[hingeIdx] = glm::ivec4(cIdx, dIdx, topHingeIdx, bIdx);
+                hingeVec[hingeIdx] = glm::ivec4(cIdx, dIdx, topHingeIdx, bottomHingeIdx);
                 hingeIdx += 1;
             }
 
-            if (colIdx > 0){
-                hingeVec[hingeIdx] = glm::ivec4(dIdx, bIdx, rightHingeIdx, leftHingeIdx);
-                hingeIdx += 1;
-            } 
+
 
 
             /*fmt::print("\nFirst Triangle\n");
@@ -725,8 +728,8 @@ void ClothSystem::RenderDebug(GLuint VAO) {
     glNamedBufferSubData(pickedDebugDataBuffer, 0, sizeof(PickedClothData), &pickedClothData);
 
     //edgeDebugShader->use();
-    //glVertexArrayVertexBuffer(VAO, 0, edgeDebugDataBuffer, 0, sizeof(glm::vec4));
-    //glVertexArrayElementBuffer(VAO, edgeDebugEBO);
+    glVertexArrayVertexBuffer(VAO, 0, edgeDebugDataBuffer, 0, sizeof(glm::vec4));
+    glVertexArrayElementBuffer(VAO, edgeDebugEBO);
     //glPointSize(10.0f);
     //glLineWidth(10.0f);
     //glDrawElements(GL_LINES, 2, GL_UNSIGNED_INT, 0);
