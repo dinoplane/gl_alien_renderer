@@ -61,14 +61,14 @@ void BaseParticleSystem<
     BaseParticleSystemParameters
 >::InitializeBufferData(void* params) {
     BaseParticleSystemParameters* baseParams = static_cast<BaseParticleSystemParameters*>(params);
-    positionsVec.resize(baseParams->particleCount);
+    positionVec.resize(baseParams->particleCount);
     velocityVec.resize(baseParams->particleCount);
     forceVec.resize(baseParams->particleCount);
     // particleDataVec.resize(particleCount);
     fmt::printf("KILLAKILL");
 
     for (uint32_t i = 0; i < particleCount; ++i) {
-        positionsVec[i] = glm::vec4(glm::sphericalRand(1.0f), 1.0f);// glm::vec3(0.0f);
+        positionVec[i] = glm::vec4(glm::sphericalRand(1.0f), 1.0f);// glm::vec3(0.0f);
         velocityVec[i] = glm::vec4(glm::sphericalRand(1.0f), 1.0f);
         forceVec[i] = glm::vec4(-1.0f);
         // particleDataVec[i].mass = 1.0f;
@@ -97,9 +97,9 @@ void BaseParticleSystem<
     BaseParticleSystemParameters
 >::InitializeShaders(void* params) {
     BaseParticleSystemParameters* baseParams = static_cast<BaseParticleSystemParameters*>(params);
-    std::string vertPath = "./resources/shader/" + baseParams->shaderName + ".vert";
-    std::string fragPath = "./resources/shader/" + baseParams->shaderName + ".frag";
-    std::string compPath = "./resources/shader/" + baseParams->shaderName + ".comp";
+    std::string vertPath = "./resources/shader/" + baseParams->shaderName + "_particle.vert";
+    std::string fragPath = "./resources/shader/" + baseParams->shaderName + "_particle.frag";
+    std::string compPath = "./resources/shader/" + baseParams->shaderName + "_particle.comp";
 
     particleShader = new Shader(vertPath.c_str(), fragPath.c_str());
     particleComputeShader = new ComputeShader(compPath.c_str());
@@ -116,11 +116,11 @@ void BaseParticleSystem<
 	BaseParticleSystemDataBlock, 
 	BaseParticleSystemParameters
 >::InitializeBuffers(){
-    glCreateBuffers(1, &positionsBuffer);
+    glCreateBuffers(1, &positionBuffer);
     glNamedBufferStorage(
-        positionsBuffer, 
+        positionBuffer, 
         sizeof(glm::vec4) * particleCount, 
-        positionsVec.data(),
+        positionVec.data(),
          GL_DYNAMIC_STORAGE_BIT
     );
 
@@ -201,7 +201,7 @@ void BaseParticleSystem<
 	BaseParticleSystemDataBlock, 
 	BaseParticleSystemParameters
 >::BindBuffers() const {
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_POSITIONS_SSBO_BINDING, positionsBuffer);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_POSITIONS_SSBO_BINDING, positionBuffer);
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_VELOCITIES_SSBO_BINDING, velocityBuffer);
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_FORCES_SSBO_BINDING, forcesBuffer);
     //glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_DATA_SSBO_BINDING, particleDataBuffer);

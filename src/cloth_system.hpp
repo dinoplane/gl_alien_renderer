@@ -5,6 +5,7 @@
 // #include <fastgltf/core.hpp>
 #include <particle_system.hpp>
 #include <particle_system.cpp>
+#include <chrono>
 
 struct ClothSystemParameters {
     uint32_t particleCount;
@@ -57,18 +58,41 @@ class ClothSystem : public BaseParticleSystem<
     ClothSystemDataBlock,
     ClothSystemParameters
 > {
+    uint32_t dofCount;
     public:
 
         std::vector<glm::vec4> normalsVec;
         GLuint normalsBuffer;
         
-        std::vector<glm::vec4> edgesVec;
+        std::vector<glm::ivec2> edgeVec;
         uint32_t edgeCount;
         GLuint edgesBuffer;
 
-        std::vector<glm::vec4> hingesVec;
+        std::vector<glm::ivec4> hingeVec;
         uint32_t hingeCount;
         GLuint hingesBuffer;
+
+
+        struct PickedClothData {
+            uint32_t pickedEdgeIdx = 0; 
+            uint32_t pickedHingeIdx = 0;
+        } pickedClothData;
+        GLuint pickedDebugDataBuffer; // picked databuffer
+        
+        // glm::vec4 edgePointDataVec[2] { glm::vec4(0.0f), glm::vec4(0.0f) } ; // picked data vec
+        // uint32_t edgeDebugEBOData[2] { 0, 1 };
+        // GLuint edgePointDebugBuffer; // 2 vec4s
+        // GLuint edgePointEBO;
+
+        glm::vec4 edgeDebugDataVec[4] { glm::vec4(0.0f), glm::vec4(0.0f), glm::vec4(0.0f), glm::vec4(0.0f) };
+        uint32_t edgeDebugEBOData[6] { 0, 1, 2, 0, 3, 1};
+        GLuint edgeDebugDataBuffer; // 4 vec4s
+        GLuint edgeDebugEBO;
+
+        Shader* edgeDebugShader;
+        Shader* hingeDebugShader;
+
+        
 
     //ClothSystem(ClothSystemParameters* params);
         //virtual void Initialize(void* params) override;
@@ -78,11 +102,12 @@ class ClothSystem : public BaseParticleSystem<
     virtual void InitializeBuffers() override;
     virtual void BindBuffers() const override;
     virtual void SetupRender() override;
+    virtual void RenderDebug(GLuint VAO) override;
     virtual void CalculateForces() const override;
 
+    std::chrono::time_point<std::chrono::high_resolution_clock> lastTime;
 
-
-    void CalculateNewPositions();
+    // void CalculateNewPositions();
 };
 //class ClothSystem : public BaseParticleSystem<
 //    ClothDataBlock, 

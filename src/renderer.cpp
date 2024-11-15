@@ -466,22 +466,30 @@ void Renderer::RenderInstancedStaticModels(const Scene& scene){
 
 void Renderer::RenderParticleSystems(const Scene& scene){
     glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-    glPointSize(10.0f);
+    //glEnable(GL_BLEND);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glPointSize(5.0f);
+    glLineWidth(1.0f);
 
     for (const auto& particleSystem : scene.particleSystems){
         particleSystem->BindBuffers();
         particleSystem->CalculateForces();
         particleSystem->SetupRender();
         glBindVertexArray(particleVAO);
-        glVertexArrayVertexBuffer(particleVAO, 0, particleSystem->positionsBuffer, 0, sizeof(glm::vec4));
+        glVertexArrayVertexBuffer(particleVAO, 0, particleSystem->positionBuffer, 0, sizeof(glm::vec4));
         glVertexArrayElementBuffer(particleVAO, particleSystem->EBO);
 
         glDrawElements(GL_TRIANGLES, particleSystem->indiceCount, GL_UNSIGNED_INT, 0);
         glDrawElements(GL_POINTS, particleSystem->indiceCount, GL_UNSIGNED_INT, 0);
+        glFinish();
+
+
+        particleSystem->RenderDebug(particleVAO);
 
     }
     glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-
+    glPointSize(5.0f);
+    glLineWidth(1.0f);
 }
 
 void Renderer::RenderDebugVolumes(const Scene& scene){

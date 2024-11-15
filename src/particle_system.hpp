@@ -65,7 +65,7 @@ public:
 	uint32_t indiceCount;
 	GLuint EBO;
 	//std::vector<Vertex> positions;
-	GLuint positionsBuffer; // Buffers for freedom
+	GLuint positionBuffer; // Buffers for freedom
 
 	// IBaseParticleSystem(void* params) {};
 	virtual void Initialize(void* params) {};
@@ -76,6 +76,7 @@ public:
 	virtual void BindBuffers() const{};
 	virtual void SetupRender() {};
 	virtual void CalculateForces() const {};
+	virtual void RenderDebug(GLuint VAO) {};
 	virtual ~IBaseParticleSystem() = default;
 };
 
@@ -92,7 +93,7 @@ class BaseParticleSystem : public IBaseParticleSystem{
 	GLuint forcesBuffer;
 	// GLuint particleDataBuffer;
 	
-	std::vector<glm::vec4> positionsVec;
+	std::vector<glm::vec4> positionVec;
 	std::vector<glm::vec4> velocityVec;
 	std::vector<glm::vec4> forceVec;
 	std::vector<uint32_t> indicesVec;
@@ -113,6 +114,7 @@ class BaseParticleSystem : public IBaseParticleSystem{
 	virtual void InitializeBuffers();
 	virtual void BindBuffers() const override;
 	virtual void CalculateForces() const override;
+	virtual void RenderDebug(GLuint VAO) override {};
 	virtual void SetupRender() override;
 
 	// void Render();

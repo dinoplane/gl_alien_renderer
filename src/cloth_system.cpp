@@ -1,7 +1,7 @@
 #include <cloth_system.hpp>
 #include <shader_c.hpp>
 #include <shader_s.hpp>
-
+#include <chrono>
 
 //ClothSystem::ClothSystem(ClothSystemParameters* params) :
 //    BaseParticleSystem(params) {
@@ -14,6 +14,7 @@ void ClothSystem::InitializeSystemData(void* params) {
     particleSystemDataBlock.particleCount = clothParams->particleCount;
     particleCount = clothParams->particleCount;
     particleSystemDataBlock.timeStep = clothParams->timeStep;
+    dofCount = 3 * particleCount;
     //particleSystemDataBlock.tolerance = clothParams->tolerance;
     //particleSystemDataBlock.fluidViscosity = clothParams->fluidViscosity;
     //particleSystemDataBlock.gravityAccel = clothParams->gravityAccel;
@@ -29,7 +30,7 @@ void ClothSystem::InitializeBufferData(void* params) {
     ClothSystemParameters* clothParams = static_cast<ClothSystemParameters*>(params);
         clothParams->particleCount = (clothParams->clothSideLength+ 1) * (clothParams->clothSideLength + 1);
     // count particles
-    positionsVec.resize(clothParams->particleCount);
+    positionVec.resize(clothParams->particleCount);
     velocityVec.resize(clothParams->particleCount);
     forceVec.resize(clothParams->particleCount);
     normalsVec.resize(clothParams->particleCount);
@@ -58,7 +59,7 @@ void ClothSystem::InitializeBufferData(void* params) {
         glm::vec4 currentPosition = rowStartPosition;
         for (uint32_t colIdx = 0; colIdx < clothSideParticleCount; ++colIdx) {
             uint32_t particleIdx = rowIdx * clothSideParticleCount + colIdx;
-            positionsVec[particleIdx] = currentPosition;
+            positionVec[particleIdx] = currentPosition;
             velocityVec[particleIdx] = glm::vec4(0.0f);
             forceVec[particleIdx] = glm::vec4(0.0f);
             particleDataVec[particleIdx].mass = deltaMass;
@@ -72,8 +73,8 @@ void ClothSystem::InitializeBufferData(void* params) {
     uint32_t c = clothParams->clothSideLength;
     edgeCount = c * (3 * c + 2);
     hingeCount = c * (3 * c - 2);
-    edgesVec.resize(edgeCount);
-    hingesVec.resize(hingeCount);
+    edgeVec.resize(edgeCount);
+    hingeVec.resize(hingeCount);
     uint32_t edgeIdx = 0;
     uint32_t hingeIdx = 0;
     
@@ -96,13 +97,15 @@ void ClothSystem::InitializeBufferData(void* params) {
             //     /       \ /       \ /  
             //    A---------B---------F   
 
-            //             Edges = Horizontals + Verticals
-            //     __ __   Edges = c * (c + 1) + (2 * c + 1) * c = c * [(c + 1) + (2 * c + 1)] = c * (3 * c + 2) 
-            //    |\ |\ |  2 * 3 + 5 * 2 = 6 + 10 = 16
-            //    |_\|_\|  Hinges = Diagonals + Verticals + Horizontals
-            //    | /| /|  Hinges = c * c + (c - 1) * c + (c - 1) * c
-            //    |/_|/_|  Hinges = c * ( 3 * c - 2 )
-
+            //                          Edges = Horizontals + Verticals
+            //    0---1---2             Edges = c * (c + 1) + (2 * c + 1) * c 
+            //    |\  |\  |             c * [(c + 1) + (2 * c + 1)] = c * (3 * c + 2) 
+            //    |  \|  \|             2 * 3 + 5 * 2 = 6 + 10 = 16
+            //    3---4---5             Hinges = Diagonals + Verticals + Horizontals
+            //    |  /|  /|               
+            //    |/  |/  |             Hinges = c * c + (c - 1) * c + (c - 1) * c
+            //    6---7---8             Hinges = c * ( 3 * c - 2 )
+            //         
             
 
             uint32_t cIdx = rowIdx * clothSideParticleCount + colIdx;
@@ -112,6 +115,11 @@ void ClothSystem::InitializeBufferData(void* params) {
 
             uint32_t indiceIdx = 6 * (rowIdx * clothParams->clothSideLength + colIdx);
             //fmt::print("\ni {}\n", indiceIdx);
+
+            uint32_t topHingeIdx = aIdx - clothSideParticleCount;
+            uint32_t rightHingeIdx = dIdx + 1;
+            uint32_t leftHingeIdx = aIdx;
+
             if (rowIdx % 2 == 0) {
                 indicesVec[indiceIdx + 0] = aIdx;
                 indicesVec[indiceIdx + 1] = dIdx;
@@ -120,6 +128,8 @@ void ClothSystem::InitializeBufferData(void* params) {
                 indicesVec[indiceIdx + 3] = aIdx;
                 indicesVec[indiceIdx + 4] = bIdx;
                 indicesVec[indiceIdx + 5] = dIdx;
+
+                hingeVec[hingeIdx] = glm::ivec4(aIdx, dIdx, cIdx, bIdx);
 
                 edgeVec[edgeIdx + 0] = glm::vec2(aIdx, dIdx);
                 edgeVec[edgeIdx + 1] = glm::vec2(dIdx, cIdx);
@@ -134,13 +144,30 @@ void ClothSystem::InitializeBufferData(void* params) {
                 indicesVec[indiceIdx + 3] = bIdx;
                 indicesVec[indiceIdx + 4] = dIdx;
                 indicesVec[indiceIdx + 5] = cIdx;
+                
+                hingeVec[hingeIdx] = glm::ivec4(cIdx, bIdx, dIdx, aIdx);
             
                 edgeVec[edgeIdx + 0] = glm::vec2(bIdx, dIdx);
                 edgeVec[edgeIdx + 1] = glm::vec2(dIdx, cIdx);
                 edgeVec[edgeIdx + 2] = glm::vec2(cIdx, bIdx);
+
+                topHingeIdx = bIdx - clothSideParticleCount;
+                rightHingeIdx = bIdx + 1;
+                leftHingeIdx = cIdx;
             }
+            hingeIdx += 1;
             edgeIdx += 3;
 
+
+            if (rowIdx > 0){
+                hingeVec[hingeIdx] = glm::ivec4(cIdx, dIdx, topHingeIdx, bIdx);
+                hingeIdx += 1;
+            }
+
+            if (colIdx > 0){
+                hingeVec[hingeIdx] = glm::ivec4(dIdx, bIdx, rightHingeIdx, leftHingeIdx);
+                hingeIdx += 1;
+            } 
 
 
             /*fmt::print("\nFirst Triangle\n");
@@ -153,43 +180,83 @@ void ClothSystem::InitializeBufferData(void* params) {
             }*/
         }
 
-        if (rowIdx % 2 == 1) {
-            edgeVec[edgeIdx] = glm::ivec2(rowIdx * clothSideParticleCount, (rowIdx + 1) * clothSideParticleCount);
+        uint32_t lastRowParticleIdx = rowIdx * clothSideParticleCount + clothParams->clothSideLength;
+        if (rowIdx % 2 == 0) {
+            edgeVec[edgeIdx] = glm::ivec2(lastRowParticleIdx, lastRowParticleIdx + clothSideParticleCount);
             edgeIdx += 1;
         }   
 
 
+    }
+    uint32_t cIdx = clothParams->clothSideLength * clothSideParticleCount;
+    for (uint32_t colIdx = 0; colIdx < clothParams->clothSideLength; ++colIdx){
+        edgeVec[edgeIdx] = glm::ivec2(cIdx, cIdx + 1);
+        edgeIdx += 1;
+        cIdx += 1;
     }
     indiceCount = 6 * clothParams->clothSideLength * clothParams->clothSideLength;
 }
 
 void ClothSystem::InitializeShaders(void* params) {
     ClothSystemParameters* clothParams = static_cast<ClothSystemParameters*>(params);
-    std::string vertPath = "./resources/shader/" + clothParams->shaderName + ".vert";
-    std::string fragPath = "./resources/shader/" + clothParams->shaderName + ".frag";
-    std::string compPath = "./resources/shader/" + clothParams->shaderName + ".comp";
+    std::string vertPath = "./resources/shader/" + clothParams->shaderName + "_particle.vert";
+    std::string fragPath = "./resources/shader/" + clothParams->shaderName + "_particle.frag";
+    std::string compPath = "./resources/shader/" + clothParams->shaderName + "_particle.comp";
+    std::string edgeDebugVertPath = "./resources/shader/" + clothParams->shaderName + "_edge.vert";
+    std::string edgeDebugFragPath = "./resources/shader/" + clothParams->shaderName + "_edge.frag";
+    std::string hingeDebugVertPath = "./resources/shader/" + clothParams->shaderName + "_hinge.vert";
+    std::string hingeDebugFragPath = "./resources/shader/" + clothParams->shaderName + "_hinge.frag";
 
     particleShader = new Shader(vertPath.c_str(), fragPath.c_str());
     particleComputeShader = new ComputeShader(compPath.c_str());
+
+    edgeDebugShader = new Shader(edgeDebugVertPath.c_str(), edgeDebugFragPath.c_str());
+    hingeDebugShader = new Shader(hingeDebugVertPath.c_str(), hingeDebugFragPath.c_str());
+
 }
 
 void ClothSystem::InitializeBuffers(){
     BaseParticleSystem::InitializeBuffers();
-    //glCreateBuffers(1, &edgesBuffer);
-    //glNamedBufferStorage(
-    //    edgesBuffer, 
-    //    sizeof(glm::vec4) * particleCount, 
-    //    edgesVec.data(),
-    //     GL_DYNAMIC_STORAGE_BIT
-    //);
+    glCreateBuffers(1, &edgesBuffer);
+    glNamedBufferStorage(
+       edgesBuffer, 
+       sizeof(glm::ivec2) * edgeCount, 
+       edgeVec.data(),
+        GL_DYNAMIC_STORAGE_BIT
+    );
 
-    //glCreateBuffers(1, &hingesBuffer);
-    //glNamedBufferStorage(
-    //    hingesBuffer, 
-    //    sizeof(glm::vec4) * particleCount, 
-    //    hingesVec.data(),
-    //     GL_DYNAMIC_STORAGE_BIT
-    //);
+    glCreateBuffers(1, &hingesBuffer);
+    glNamedBufferStorage(
+       hingesBuffer, 
+       sizeof(glm::ivec4) * hingeCount, 
+       hingeVec.data(),
+        GL_DYNAMIC_STORAGE_BIT
+    );
+
+    glCreateBuffers(1, &edgeDebugDataBuffer);
+    glNamedBufferStorage(
+       edgeDebugDataBuffer, 
+       sizeof(glm::vec4) * 4, 
+       edgeDebugDataVec,
+        GL_DYNAMIC_STORAGE_BIT
+    );
+
+    glCreateBuffers(1, &edgeDebugEBO);
+    glNamedBufferStorage(
+       edgeDebugEBO, 
+       sizeof(uint32_t) * 6, 
+       edgeDebugEBOData,
+        GL_DYNAMIC_STORAGE_BIT
+    );
+    
+    glCreateBuffers(1, &pickedDebugDataBuffer);
+    glNamedBufferStorage(
+       pickedDebugDataBuffer, 
+       sizeof(PickedClothData), 
+       &pickedClothData,
+        GL_DYNAMIC_STORAGE_BIT
+    );
+    lastTime = std::chrono::high_resolution_clock::now();
 }
 
 /*
@@ -598,43 +665,53 @@ def objfun(qGuess, q0, u, freeIndex, dt, tol,
 
 void ClothSystem::CalculateForces() const{
     // Iterate through every hinge
+    //std::vector<float> bendingForces(dofCount, 0.0f);
 
     // Iterate through every edge
+    // std::vector<float> stretchingForces(dofCount, 0.0f);
+    // std::vector<float> stretchingHessians(dofCount * dofCount, 0.0f);
+    //float stretchingForces[dofCount];
+    //float stretchingJacobian[dofCount * dofCount];
+
     
-    Fs = np.zeros(ndof)
-    Js = np.zeros((ndof,ndof))
-    for kEdge in range(edges.shape[0]):
-      node0 = edges[kEdge,0]
-      node1 = edges[kEdge,1]
-      x0 = q[3*node0:3*node0+3]
-      x1 = q[3*node1:3*node1+3]
-      ind = [3*node0, 3*node0 + 1, 3*node0 + 2,
-             3*node1, 3*node1 + 1, 3*node1 + 2]
-      dF, dJ = gradEs_hessEs(x0, x1, lk[kEdge], ks[kEdge])
-      Fs[ind] = Fs[ind] - dF
-      Js[np.ix_(ind,ind)] = Js[np.ix_(ind,ind)] - dJ
+
+    // Fs = np.zeros(ndof)
+    // Js = np.zeros((ndof,ndof))
+    // for kEdge in range(edges.shape[0]):
+    //   node0 = edges[kEdge,0]
+    //   node1 = edges[kEdge,1]
+    //   x0 = q[3*node0:3*node0+3]
+    //   x1 = q[3*node1:3*node1+3]
+    //   ind = [3*node0, 3*node0 + 1, 3*node0 + 2,
+    //          3*node1, 3*node1 + 1, 3*node1 + 2]
+    //   dF, dJ = gradEs_hessEs(x0, x1, lk[kEdge], ks[kEdge])
+    //   Fs[ind] = Fs[ind] - dF
+    //   Js[np.ix_(ind,ind)] = Js[np.ix_(ind,ind)] - dJ
 
 
-    glNamedBufferSubData(
-        particleSystemDataBuffer,
-        0,
-        sizeof(ParticleSystemDataBlock),
-        &particleSystemDataBlock
-    );
-    glDispatchCompute(particleCount, 1u, 1u);
-    glMemoryBarrier(GL_ALL_BARRIER_BITS);
+    // glNamedBufferSubData(
+    //     particleSystemDataBuffer,
+    //     0,
+    //     sizeof(ParticleSystemDataBlock),
+    //     &particleSystemDataBlock
+    // );
+    // glDispatchCompute(particleCount, 1u, 1u);
+    // glMemoryBarrier(GL_ALL_BARRIER_BITS);
 
-    glFinish();
+    // glFinish();
 
 
 }
 
 void ClothSystem::BindBuffers() const{
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_POSITIONS_SSBO_BINDING, positionsBuffer);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_POSITIONS_SSBO_BINDING, positionBuffer);
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_VELOCITIES_SSBO_BINDING, velocityBuffer);
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_FORCES_SSBO_BINDING, forcesBuffer);
     //glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_DATA_SSBO_BINDING, particleDataBuffer);
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_SYSTEM_DATA_SSBO_BINDING, particleSystemDataBuffer);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_EDGE_DATA_SSBO_BINDING, edgesBuffer);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_HINGE_DATA_SSBO_BINDING, hingesBuffer);
+    glBindBufferBase(GL_UNIFORM_BUFFER, PICKED_DATA_UBO_BINDING, pickedDebugDataBuffer);
     particleComputeShader->use();
 }
 
@@ -643,3 +720,43 @@ void ClothSystem::SetupRender() {
     particleShader->use();
 }
 
+void ClothSystem::RenderDebug(GLuint VAO) {
+    glBindVertexArray(VAO);
+    glNamedBufferSubData(pickedDebugDataBuffer, 0, sizeof(PickedClothData), &pickedClothData);
+
+    //edgeDebugShader->use();
+    //glVertexArrayVertexBuffer(VAO, 0, edgeDebugDataBuffer, 0, sizeof(glm::vec4));
+    //glVertexArrayElementBuffer(VAO, edgeDebugEBO);
+    //glPointSize(10.0f);
+    //glLineWidth(10.0f);
+    //glDrawElements(GL_LINES, 2, GL_UNSIGNED_INT, 0);
+    //glDrawElements(GL_POINTS, 2, GL_UNSIGNED_INT, 0);
+
+    hingeDebugShader->use();
+    glPointSize(20.0f);
+    glLineWidth(20.0f);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_POINTS, 6, GL_UNSIGNED_INT, 0);
+
+    auto currTime = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<float, std::milli> duration = currTime - lastTime;
+    
+    if (duration.count() > 500) {
+        pickedClothData.pickedEdgeIdx = (pickedClothData.pickedEdgeIdx + 1) % edgeCount;
+        // fmt::print("Edge {}: {} {}\n",
+        //     pickedClothData.pickedEdgeIdx, 
+        //     edgeVec[pickedClothData.pickedEdgeIdx].x, 
+        //     edgeVec[pickedClothData.pickedEdgeIdx].y);
+
+        fmt::print("Hinge {}: {} {} {} {}\n",
+            pickedClothData.pickedHingeIdx, 
+            hingeVec[pickedClothData.pickedHingeIdx].x, 
+            hingeVec[pickedClothData.pickedHingeIdx].y,
+            hingeVec[pickedClothData.pickedHingeIdx].z,
+            hingeVec[pickedClothData.pickedHingeIdx].w);
+        pickedClothData.pickedHingeIdx = (pickedClothData.pickedHingeIdx + 1) % hingeCount;        
+        lastTime = currTime;
+    }
+
+
+}

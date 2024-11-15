@@ -40,6 +40,9 @@ layout(binding = 4, std430) buffer particleSystemDataBuf {
 };
 
 
+
+
+
 void main()
 {
     uint index = gl_GlobalInvocationID.x;
