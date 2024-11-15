@@ -727,13 +727,13 @@ void ClothSystem::RenderDebug(GLuint VAO) {
     glBindVertexArray(VAO);
     glNamedBufferSubData(pickedDebugDataBuffer, 0, sizeof(PickedClothData), &pickedClothData);
 
-    //edgeDebugShader->use();
+    edgeDebugShader->use();
     glVertexArrayVertexBuffer(VAO, 0, edgeDebugDataBuffer, 0, sizeof(glm::vec4));
     glVertexArrayElementBuffer(VAO, edgeDebugEBO);
-    //glPointSize(10.0f);
-    //glLineWidth(10.0f);
-    //glDrawElements(GL_LINES, 2, GL_UNSIGNED_INT, 0);
-    //glDrawElements(GL_POINTS, 2, GL_UNSIGNED_INT, 0);
+    glPointSize(10.0f);
+    glLineWidth(10.0f);
+    glDrawElements(GL_LINES, 2, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_POINTS, 2, GL_UNSIGNED_INT, 0);
 
     hingeDebugShader->use();
     glPointSize(20.0f);
@@ -744,19 +744,19 @@ void ClothSystem::RenderDebug(GLuint VAO) {
     auto currTime = std::chrono::high_resolution_clock::now();
     std::chrono::duration<float, std::milli> duration = currTime - lastTime;
     
-    if (duration.count() > 500) {
+    if (duration.count() > 120) {
         pickedClothData.pickedEdgeIdx = (pickedClothData.pickedEdgeIdx + 1) % edgeCount;
         // fmt::print("Edge {}: {} {}\n",
         //     pickedClothData.pickedEdgeIdx, 
         //     edgeVec[pickedClothData.pickedEdgeIdx].x, 
         //     edgeVec[pickedClothData.pickedEdgeIdx].y);
 
-        fmt::print("Hinge {}: {} {} {} {}\n",
-            pickedClothData.pickedHingeIdx, 
-            hingeVec[pickedClothData.pickedHingeIdx].x, 
-            hingeVec[pickedClothData.pickedHingeIdx].y,
-            hingeVec[pickedClothData.pickedHingeIdx].z,
-            hingeVec[pickedClothData.pickedHingeIdx].w);
+        // fmt::print("Hinge {}: {} {} {} {}\n",
+        //     pickedClothData.pickedHingeIdx, 
+        //     hingeVec[pickedClothData.pickedHingeIdx].x, 
+        //     hingeVec[pickedClothData.pickedHingeIdx].y,
+        //     hingeVec[pickedClothData.pickedHingeIdx].z,
+        //     hingeVec[pickedClothData.pickedHingeIdx].w);
         pickedClothData.pickedHingeIdx = (pickedClothData.pickedHingeIdx + 1) % hingeCount;        
         lastTime = currTime;
     }
