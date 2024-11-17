@@ -807,7 +807,7 @@ def gradEb_hessEb_Shell(x0, x1=None, x2=None, x3=None, theta_bar=0, kb=1.0):
     Eigen::Map<Eigen::Matrix<float, 6, 6, Eigen::RowMajor>> hessMap(hess);
 
     // TODO Which is the correct transpose?
-    // TODO grad is corrupted
+
     dJMap = 0.5 * kb * (2 *  gradMap.transpose() * gradMap + 2 * (theta - thetaBar) * hessMap);
 }
 

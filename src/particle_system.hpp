@@ -14,21 +14,39 @@
 #include <gl_bindings.h>
 
 /* TODOs
-- Put Perforce and other skills in resume 
+- TODO Put Perforce and other skills in resume 
+- TODO Buy Jo's mp3
+
 DONE? redefine the particle system design
 DONE! Get the cloth mesh to render / show up on the screen
-- get the cloth mesh to update
 DONE! set up hinges correctly
 DONE! set up edges correctly
-- Buy Jo's mp3
-- calculate the gradient of theta (hinges)
-- calculate the hessian of theta (hinges)
-- calculate the gradient of stretching
-- calculate the hessian of stretching
-- create compute shaders for the operations
-- use a gpu to solve these
-- create a presentation
-- create a report
+DONE! calculate the gradient of stretching
+DONE! calculate the hessian of stretching
+
+- TODO get the cloth mesh to update
+- DONE! calculate the gradient of bending (hinges)
+	- DONE! calculate gradTheta
+	- DONE! calculate getTheta
+	- TODO Debug the gradTheta
+	
+- TODO calculate the hessian of bending (hinges)
+	- TODO calculate hessTheta
+- TODO translate the mainloop
+	DONE translate the stretching calculation
+	- TODO translate the bending calculation
+	- TODO translate the rest of the calculation (the solver)
+	- TODO mess with free indices
+	- TODO translate the error loop
+
+- TODO create compute shaders for the operations
+- TODO use a gpu to solve these
+- TODO create a presentation
+	- TODO midterm (3 slides?)
+	- TODO final (5 slides)
+- TODO create a report
+	- TODO midterm (5 pages, 5+ references)
+	- TODO final (n pages, 10 references)
 
 
 */
