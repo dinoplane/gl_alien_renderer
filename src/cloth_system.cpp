@@ -2,6 +2,9 @@
 #include <shader_c.hpp>
 #include <shader_s.hpp>
 #include <chrono>
+#include <iostream>
+#include <Eigen/Dense>
+ 
 
 //ClothSystem::ClothSystem(ClothSystemParameters* params) :
 //    BaseParticleSystem(params) {
@@ -15,6 +18,9 @@ void ClothSystem::InitializeSystemData(void* params) {
     particleCount = clothParams->particleCount;
     particleSystemDataBlock.timeStep = clothParams->timeStep;
     dofCount = 3 * particleCount;
+    vecValCount = particleCount * 4;
+    
+    indiceCount = 6 * clothParams->clothSideLength * clothParams->clothSideLength;
     //particleSystemDataBlock.tolerance = clothParams->tolerance;
     //particleSystemDataBlock.fluidViscosity = clothParams->fluidViscosity;
     //particleSystemDataBlock.gravityAccel = clothParams->gravityAccel;
@@ -28,11 +34,11 @@ void ClothSystem::InitializeSystemData(void* params) {
 
 void ClothSystem::InitializeBufferData(void* params) {
     ClothSystemParameters* clothParams = static_cast<ClothSystemParameters*>(params);
-        clothParams->particleCount = (clothParams->clothSideLength+ 1) * (clothParams->clothSideLength + 1);
+    clothParams->particleCount = (clothParams->clothSideLength+ 1) * (clothParams->clothSideLength + 1);
     // count particles
-    positionVec.resize(clothParams->particleCount);
-    velocityVec.resize(clothParams->particleCount);
-    forceVec.resize(clothParams->particleCount);
+    positionVec.resize(vecValCount);
+    velocityVec.resize(vecValCount);
+    forceVec.resize(vecValCount);
     normalsVec.resize(clothParams->particleCount);
     particleDataVec.resize(clothParams->particleCount);
 
@@ -52,16 +58,23 @@ void ClothSystem::InitializeBufferData(void* params) {
             meshStartPosition;
 
         rowStartPosition.z -= yIncrement * rowIdx;
+        rowStartPosition.y = 0.5f*sin(rowIdx * clothParams->cellSideLength * 2.0f);
         if (rowIdx % 2 == 1) {
             rowStartPosition.x += 0.5f * clothParams->cellSideLength;
         }
 
         glm::vec4 currentPosition = rowStartPosition;
         for (uint32_t colIdx = 0; colIdx < clothSideParticleCount; ++colIdx) {
+            currentPosition.y = rowStartPosition.y + 0.5f * sin(colIdx * clothParams->cellSideLength * 2.0f);
             uint32_t particleIdx = rowIdx * clothSideParticleCount + colIdx;
-            positionVec[particleIdx] = currentPosition;
-            velocityVec[particleIdx] = glm::vec4(0.0f);
-            forceVec[particleIdx] = glm::vec4(0.0f);
+            for (uint32_t i = 0; i < 4; ++i) {
+                positionVec[particleIdx * 4 + i] = currentPosition[i];
+                velocityVec[particleIdx * 4 + i] = 0.0f;
+                forceVec[particleIdx * 4 + i] = 0.0f;
+            }
+            // positionVec[particleIdx] = currentPosition;
+            // velocityVec[particleIdx] = glm::vec4(0.0f);
+            // forceVec[particleIdx] = glm::vec4(0.0f);
             particleDataVec[particleIdx].mass = deltaMass;
 
             // normalsVec[particleIdx] = glm::vec4(0.0f);
@@ -197,7 +210,21 @@ void ClothSystem::InitializeBufferData(void* params) {
         edgeIdx += 1;
         cIdx += 1;
     }
-    indiceCount = 6 * clothParams->clothSideLength * clothParams->clothSideLength;
+
+    undeformedEdgeLengthVec.resize(edgeCount);
+    elasticStretchingVec.resize(edgeCount);
+    const Y = 1.0e7f;
+    const h = 1.0e3f;
+    bendingStiffness = 2.0f / sqrt(3.0f) * Y * pow(h, 3.0f) / 12.0f;
+    for (uint32_t edgeIdx = 0; edgeIdx < edgeCount; ++edgeIdx) {
+        glm::ivec2 edge = edgeVec[edgeIdx];
+        glm::vec4 edgeStart = positionVec[edge[0]];
+        glm::vec4 edgeEnd = positionVec[edge[1]];
+        glm::vec4 edgeVec = edgeEnd - edgeStart;
+        undeformedEdgeLengthVec[edgeIdx] = glm::length(edgeVec);
+        elasticStretchingVec[edgeIdx] = 0.5f * sqrt(3.0) * Y * h * pow(undeformedEdgeLengthVec[edgeIdx], 2.0f);
+        
+    }
 }
 
 void ClothSystem::InitializeShaders(void* params) {
@@ -259,7 +286,18 @@ void ClothSystem::InitializeBuffers(){
        &pickedClothData,
         GL_DYNAMIC_STORAGE_BIT
     );
+
+    //https://stackoverflow.com/questions/12399422/how-to-set-linker-flags-for-openmp-in-cmakes-try-compile-function
     lastTime = std::chrono::high_resolution_clock::now();
+  Eigen::MatrixXd m(2,2);
+  m(0,0) = 3;
+  m(1,0) = 2.5;
+  m(0,1) = -1;
+  m(1,1) = m(1,0) + m(0,1);
+  //fmt::print("Eigen used here: {}", m);
+  std::cout << m << std::endl;
+
+
 }
 
 /*
@@ -666,20 +704,89 @@ def objfun(qGuess, q0, u, freeIndex, dt, tol,
 
 */
 
-void ClothSystem::CalculateForces() const{
+static void calculateGradEs_HessEs(const Eigen::RowVector3f& x0, const Eigen::RowVector3f& x1, float lk, float ks, float* dF, float* dJ) {
+
+}
+
+void ClothSystem::CalculateForces() {
     // Iterate through every hinge
     //std::vector<float> bendingForces(dofCount, 0.0f);
 
+    float baka[8] = { 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f};
+    Eigen::Map<
+        Eigen::MatrixXf, 
+        Eigen::Unaligned, 
+        Eigen::Stride<0, 0>    
+    > positionMap (positionVec.data(), 1, vecValCount, Eigen::Stride<0, 0>(0, 0));
+    std::cout << "Vec--------\n" << positionMap << std::endl;
+
+    Eigen::Map<
+        Eigen::MatrixXf,
+        Eigen::Unaligned,
+        Eigen::Stride<1, 4>
+    > testMap(positionVec.data(), 3, particleCount, Eigen::Stride<1, 4>(1, 4));
+    std::cout << "Mat--------\n" << testMap << std::endl;
+     
+     
+    // Define the float array (input data)
+    float rawArray[] = {
+        0, 0, 0, 1,
+        0.1, 0.0993347, 0, 1,
+        0.05, 0.0993347, -0.0866025, 1,
+        0.15, 0.198669, -0.0866025, 1
+    };
+
+
+
+    // Define strides: 4 elements per row, skip 1 element per column
+    Eigen::Stride<Eigen::Dynamic, Eigen::Dynamic> bufferStrides(4, 1);
+    Eigen::Stride<Eigen::Dynamic, Eigen::Dynamic> tmpVecStrides(3, 1);
+
+
+    Eigen::Map<
+        Eigen::Matrix<
+            float, 
+            Eigen::Dynamic, 3, 
+            Eigen::RowMajor
+        >, Eigen::Unaligned, 
+        Eigen::Stride<Eigen::Dynamic, Eigen::Dynamic>
+    > positions(positionVec.data(), particleCount, 3, bufferStrides);
+
+    //// Map the raw array to a 4x3 matrix with the defined bufferStrides
+    //Eigen::Map<Eigen::Matrix<float, 4, 3, Eigen::RowMajor>, 0, Eigen::Stride<Eigen::Dynamic, Eigen::Dynamic>>
+    //    positions(rawArray, 4, 3, bufferStrides);
+
+    // Print the extracted positions
+    std::cout << "Extracted 4x3 Positions Matrix:\n" << positions << "\n";
+    // Eigen::Map<Eigen::Matrix<float,1, vecValCount>>(velocityVec.data());
     // Iterate through every edge
-    // std::vector<float> stretchingForces(dofCount, 0.0f);
-    // std::vector<float> stretchingHessians(dofCount * dofCount, 0.0f);
-    //float stretchingForces[dofCount];
-    //float stretchingJacobian[dofCount * dofCount];
+    /*float stretchingForces[dofCount];
+    float stretchingJacobian[dofCount * dofCount];*/
+
+
 
     
-
     // Fs = np.zeros(ndof)
     // Js = np.zeros((ndof,ndof))
+    std::vector<float> stretchingForcesVec(dofCount, 0.0f);
+    std::vector<float> stretchingHessiansVec(dofCount * dofCount, 0.0f);
+
+    Eigen::Map<
+        Eigen::Matrix<
+        float,
+        Eigen::Dynamic, Eigen::Dynamic,
+        Eigen::RowMajor
+        >, Eigen::Unaligned> stretchForces(stretchingForcesVec.data(), dofCount, 1);
+
+    Eigen::Map<
+        Eigen::Matrix<
+        float,
+        Eigen::Dynamic, Eigen::Dynamic,
+        Eigen::RowMajor
+        >, Eigen::Unaligned> stretchHessians(stretchingHessiansVec.data(), dofCount, dofCount);
+
+
+
     // for kEdge in range(edges.shape[0]):
     //   node0 = edges[kEdge,0]
     //   node1 = edges[kEdge,1]
@@ -690,6 +797,110 @@ void ClothSystem::CalculateForces() const{
     //   dF, dJ = gradEs_hessEs(x0, x1, lk[kEdge], ks[kEdge])
     //   Fs[ind] = Fs[ind] - dF
     //   Js[np.ix_(ind,ind)] = Js[np.ix_(ind,ind)] - dJ
+
+    for (uint32_t edgeIdx = 0; edgeIdx < edgeCount; edgeIdx++) {
+        glm::ivec2 kEdge = edgeVec[edgeIdx];
+        uint32_t node0 = kEdge[0];
+        uint32_t node1 = kEdge[1];
+        float lk = undeformedEdgeLengthVec[edgeIdx];
+        float ks  = stretchStiffnessVec[edgeIdx];
+        
+        //Eigen::MatrixXf x0 = positions(Eigen::seq(3 * node0, 3 * node0 + 2));
+        //Eigen::MatrixXf x1 = positions(Eigen::seq(3 * node1, 3 * node1 + 2));
+
+        Eigen::RowVector3f x0 = positions.row(node0);
+        Eigen::RowVector3f x1 = positions.row(node1);
+
+        int ind[] = { 3 * node0, 3 * node0 + 1, 3 * node0 + 2,
+                      3 * node1, 3 * node1 + 1, 3 * node1 + 2 };
+
+        float df[6] = {-1.0f, -2.0f, -3.0f, 1.0f, 2.0f, 3.0f};
+        float dj[36];
+        for (int i = 0; i < 36; i++) {
+            dj[i] = i;
+        }
+
+        calculateGradEs_HessEs(x0, x1, lk, ks, df, dj);
+        stretchForces(ind, Eigen::placeholders::all) = Eigen::Map<Eigen::Matrix<float, 6, 1>>(df);
+        stretchHessians(ind, ind) = Eigen::Map<Eigen::Matrix<float, 6, 6>>(dj);
+
+        fmt::print("Edge {} {}\n", node0, node1);
+        std::cout << "Vec0s ----------- " << x0 << std::endl;
+        std::cout << "Vec1s ----------- " << x1 << std::endl;
+
+
+
+        std::cout << "Stretching Forces -----------\n" << stretchForces << std::endl;
+        std::cout << "Stretching Hessians -----------\n" << stretchHessians << std::endl;
+    }
+
+    /*
+
+  q = qGuess
+  ndof = len(q)
+  iter = 0
+  error = 10 * tol
+
+  while error > tol:
+
+    # Calculating Bending
+    Fb = np.zeros(ndof)
+    Jb = np.zeros((ndof,ndof))
+    for kHinge in range(hinges.shape[0]):
+      node0 = hinges[kHinge,0]
+      node1 = hinges[kHinge,1]
+      node2 = hinges[kHinge,2]
+      node3 = hinges[kHinge,3]
+      x0 = q[3*node0:3*node0+3]
+      x1 = q[3*node1:3*node1+3]
+      x2 = q[3*node2:3*node2+3]
+      x3 = q[3*node3:3*node3+3]
+      ind = [3*node0, 3*node0 + 1, 3*node0 + 2,
+             3*node1, 3*node1 + 1, 3*node1 + 2,
+             3*node2, 3*node2 + 1, 3*node2 + 2,
+             3*node3, 3*node3 + 1, 3*node3 + 2]
+      dF, dJ = gradEb_hessEb_Shell(x0, x1, x2, x3, thetaBar, kb)
+      Fb[ind] = Fb[ind] - dF
+      Jb[np.ix_(ind,ind)] = Jb[np.ix_(ind,ind)] - dJ
+
+    # Calculating stretching
+    Fs = np.zeros(ndof)
+    Js = np.zeros((ndof,ndof))
+    for kEdge in range(edges.shape[0]):
+      node0 = edges[kEdge,0]
+      node1 = edges[kEdge,1]
+      x0 = q[3*node0:3*node0+3]
+      x1 = q[3*node1:3*node1+3]
+      ind = [3*node0, 3*node0 + 1, 3*node0 + 2,
+             3*node1, 3*node1 + 1, 3*node1 + 2]
+      dF, dJ = gradEs_hessEs(x0, x1, lk[kEdge], ks[kEdge])
+      Fs[ind] = Fs[ind] - dF
+      Js[np.ix_(ind,ind)] = Js[np.ix_(ind,ind)] - dJ
+
+    # Calculating total force
+    F = Fg + Fb + Fs # Viscous forces can sometimes be useful
+    JForces = Js + Jb
+
+    f = massVector/dt * ( (q-q0)/dt - u ) - F
+    J = mMat / dt ** 2 - JForces
+
+    f_free = f[freeIndex]
+    J_free = J[np.ix_(freeIndex, freeIndex)]
+    dq_free = np.linalg.solve(J_free, f_free)
+
+    q[freeIndex] = q[freeIndex] - dq_free
+
+    error = np.sum( np.abs(f_free) )
+    iter += 1
+
+    print('Iter = %d' % iter)
+    print('Error = %f' % error)
+
+  u = (q - q0) / dt
+
+  return q, u
+    
+    */
 
 
     // glNamedBufferSubData(

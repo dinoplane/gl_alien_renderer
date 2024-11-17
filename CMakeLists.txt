@@ -11,7 +11,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set (CMAKE_VERBOSE_MAKEFILE 0) # 1 should be used for debugging
 set (CMAKE_SUPPRESS_REGENERATION TRUE) # Suppresses ZERO_CHECK
 if(MSVC)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /O2")
 else()
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -std=c++20")
   if(NOT WIN32)
@@ -88,6 +88,9 @@ add_subdirectory ( ${VENDOR_DIR}/tracy )
 
 add_subdirectory( ${VENDOR_DIR}/fastgltf)
 
+#Eigen
+#add_subdirectory( ${VENDOR_DIR}/Eigen )
+
 
 # Organize files
 include_directories(
@@ -97,6 +100,7 @@ include_directories(
    ${VENDOR_DIR}/stb/
    ${VENDOR_DIR}/tracy/public/tracy
    ${VENDOR_DIR}/fastgltf/include
+   ${VENDOR_DIR}/eigen
    ${SRC_DIR}/
 )
 

@@ -58,13 +58,18 @@ class ClothSystem : public BaseParticleSystem<
     ClothSystemDataBlock,
     ClothSystemParameters
 > {
-    uint32_t dofCount;
     public:
+
+    uint32_t dofCount;
 
         std::vector<glm::vec4> normalsVec;
         GLuint normalsBuffer;
         
         std::vector<glm::ivec2> edgeVec;
+        std::vector<float> undeformedEdgeLengthVec;
+        std::vector<float> elasticStretchingVec;
+        float bendingStiffness;
+
         uint32_t edgeCount;
         GLuint edgesBuffer;
 
@@ -103,7 +108,7 @@ class ClothSystem : public BaseParticleSystem<
     virtual void BindBuffers() const override;
     virtual void SetupRender() override;
     virtual void RenderDebug(GLuint VAO) override;
-    virtual void CalculateForces() const override;
+    virtual void CalculateForces() override;
 
     std::chrono::time_point<std::chrono::high_resolution_clock> lastTime;
 

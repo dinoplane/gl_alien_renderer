@@ -47,6 +47,9 @@ void BaseParticleSystem<
     particleSystemDataBlock.particleCount = baseParams->particleCount;
     particleSystemDataBlock.timeStep = baseParams->timeStep;
     particleCount = baseParams->particleCount;
+    vecValCount = particleCount * 4;
+    indiceCount = particleCount;
+
 }
 
 
@@ -61,27 +64,36 @@ void BaseParticleSystem<
     BaseParticleSystemParameters
 >::InitializeBufferData(void* params) {
     BaseParticleSystemParameters* baseParams = static_cast<BaseParticleSystemParameters*>(params);
-    positionVec.resize(baseParams->particleCount);
-    velocityVec.resize(baseParams->particleCount);
-    forceVec.resize(baseParams->particleCount);
+    positionVec.resize(vecValCount);
+    velocityVec.resize(vecValCount);
+    forceVec.resize(vecValCount);
     // particleDataVec.resize(particleCount);
     fmt::printf("KILLAKILL");
 
     for (uint32_t i = 0; i < particleCount; ++i) {
-        positionVec[i] = glm::vec4(glm::sphericalRand(1.0f), 1.0f);// glm::vec3(0.0f);
-        velocityVec[i] = glm::vec4(glm::sphericalRand(1.0f), 1.0f);
-        forceVec[i] = glm::vec4(-1.0f);
+        glm::vec3 tmpPosition = glm::sphericalRand(1.0f);
+        glm::vec3 tmpVelocity = glm::sphericalRand(1.0f);
+
+        for (uint32_t j = 0; j < 3; ++j) {
+            positionVec[i * 4 + j] = tmpPosition[j];
+            velocityVec[i * 4 + j] = tmpVelocity[j];
+            forceVec[i * 4 + j] = -1.0f;
+        }
+        positionVec[i * 4 + 3] = 1.0f;
+        velocityVec[i * 4 + 3] = 1.0f;
+        forceVec[i * 4 + 3] = 1.0f;
+
         // particleDataVec[i].mass = 1.0f;
         // particleDataVec[i].lifeSpan = 1.0f;
         // particleDataVec[i].radius = 1.0f;
     }
 
     fmt::print("InistializeBufferData");
-    indicesVec.resize(particleCount);
-    for (uint32_t i = 0; i < particleCount; ++i) {
+    indicesVec.resize(indiceCount);
+    for (uint32_t i = 0; i < indiceCount; ++i) {
         indicesVec[i] = i;
     }
-    indiceCount = particleCount;
+    
 
 }
 
@@ -119,7 +131,7 @@ void BaseParticleSystem<
     glCreateBuffers(1, &positionBuffer);
     glNamedBufferStorage(
         positionBuffer, 
-        sizeof(glm::vec4) * particleCount, 
+        sizeof(float) * vecValCount, 
         positionVec.data(),
          GL_DYNAMIC_STORAGE_BIT
     );
@@ -127,7 +139,7 @@ void BaseParticleSystem<
     glCreateBuffers(1, &velocityBuffer);
     glNamedBufferStorage(
         velocityBuffer, 
-        sizeof(glm::vec4) * particleCount, 
+        sizeof(float) * vecValCount, 
         velocityVec.data(),
          GL_DYNAMIC_STORAGE_BIT
     );
@@ -135,7 +147,7 @@ void BaseParticleSystem<
     glCreateBuffers(1, &forcesBuffer);
     glNamedBufferStorage(
         forcesBuffer, 
-        sizeof(glm::vec4) * particleCount, 
+        sizeof(float) * vecValCount, 
         forceVec.data(),
          GL_DYNAMIC_STORAGE_BIT
     );
@@ -175,7 +187,7 @@ void BaseParticleSystem<
 	BaseParticleDataBlock, 
 	BaseParticleSystemDataBlock, 
 	BaseParticleSystemParameters
->::CalculateForces() const{
+>::CalculateForces() {
     
     //BindParticleSystem(&particleSystem);
     glNamedBufferSubData(

@@ -14,11 +14,13 @@
 #include <gl_bindings.h>
 
 /* TODOs
+- Put Perforce and other skills in resume 
 DONE? redefine the particle system design
 DONE! Get the cloth mesh to render / show up on the screen
 - get the cloth mesh to update
-- set up hinges correctly
-- set up edges correctly
+DONE! set up hinges correctly
+DONE! set up edges correctly
+- Buy Jo's mp3
 - calculate the gradient of theta (hinges)
 - calculate the hessian of theta (hinges)
 - calculate the gradient of stretching
@@ -75,7 +77,7 @@ public:
 	virtual void InitializeBuffers() {};
 	virtual void BindBuffers() const{};
 	virtual void SetupRender() {};
-	virtual void CalculateForces() const {};
+	virtual void CalculateForces() {};
 	virtual void RenderDebug(GLuint VAO) {};
 	virtual ~IBaseParticleSystem() = default;
 };
@@ -93,9 +95,11 @@ class BaseParticleSystem : public IBaseParticleSystem{
 	GLuint forcesBuffer;
 	// GLuint particleDataBuffer;
 	
-	std::vector<glm::vec4> positionVec;
-	std::vector<glm::vec4> velocityVec;
-	std::vector<glm::vec4> forceVec;
+	std::vector<float> positionVec;
+	std::vector<float> velocityVec;
+	std::vector<float> forceVec;
+    uint32_t vecValCount;
+
 	std::vector<uint32_t> indicesVec;
 
 	std::vector<BaseParticleDataBlock> particleDataVec;
@@ -113,7 +117,7 @@ class BaseParticleSystem : public IBaseParticleSystem{
 	virtual void InitializeShaders(void* params) override;
 	virtual void InitializeBuffers();
 	virtual void BindBuffers() const override;
-	virtual void CalculateForces() const override;
+	virtual void CalculateForces() override;
 	virtual void RenderDebug(GLuint VAO) override {};
 	virtual void SetupRender() override;
 
