@@ -616,8 +616,90 @@ def hessTheta(x0, x1 = None, x2 = None, x3 = None):
     return hess_theta
     */
 
-static void hessTheta(const Eigen::RowVector3f& node0, const Eigen::RowVector3f& node1, const Eigen::RowVector3f& node2, const Eigen::RowVector3f& node3, float* hess){
+static Eigen::MatrixXf uvT(const Eigen::RowVector3f& u, const Eigen::RowVector3f& v){
+    return u.transpose() * v;
+}
 
+static void hessTheta(const Eigen::RowVector3f& node0, const Eigen::RowVector3f& node1, const Eigen::RowVector3f& node2, const Eigen::RowVector3f& node3, float* hess){
+    Eigen::RowVector3f m_e0 = node1 - node0;
+    Eigen::RowVector3f m_e1 = node2 - node0;
+    Eigen::RowVector3f m_e2 = node3 - node0;
+    Eigen::RowVector3f m_e3 = node2 - node1;
+    Eigen::RowVector3f m_e4 = node3 - node1;
+
+    float m_cosA1 = m_e0.dot(m_e1) / (m_e0.norm() * m_e1.norm());
+    float m_cosA2 = m_e0.dot(m_e2) / (m_e0.norm() * m_e2.norm());
+    float m_cosA3 = -m_e0.dot(m_e3) / (m_e0.norm() * m_e3.norm());
+    float m_cosA4 = -m_e0.dot(m_e4) / (m_e0.norm() * m_e4.norm());
+
+    float m_sinA1 = m_e0.cross(m_e1).norm() / (m_e0.norm() * m_e1.norm());
+    float m_sinA2 = m_e0.cross(m_e2).norm() / (m_e0.norm() * m_e2.norm());
+    float m_sinA3 = -m_e0.cross(m_e3).norm() / (m_e0.norm() * m_e3.norm());
+    float m_sinA4 = -m_e0.cross(m_e4).norm() / (m_e0.norm() * m_e4.norm());
+
+    Eigen::RowVector3f m_nn1 = m_e0.cross(m_e3);
+    m_nn1 = m_nn1 / m_nn1.norm();
+    Eigen::RowVector3f m_nn2 = -m_e0.cross(m_e4);
+    m_nn2 = m_nn2 / m_nn2.norm();
+
+    float m_h1 = m_e0.norm() * m_sinA1;
+    float m_h2 = m_e0.norm() * m_sinA2;
+    float m_h3 = -m_e0.norm() * m_sinA3;
+    float m_h4 = -m_e0.norm() * m_sinA4;
+    float m_h01 = m_e1.norm() * m_sinA1;
+    float m_h02 = m_e2.norm() * m_sinA2;
+
+    Eigen::RowVector3f m_m1 = m_nn1.cross(m_e1) / m_e1.norm();
+    Eigen::RowVector3f m_m2 = -m_nn2.cross(m_e2) / m_e2.norm();
+    Eigen::RowVector3f m_m3 = -m_nn1.cross(m_e3) / m_e3.norm();
+    Eigen::RowVector3f m_m4 = m_nn2.cross(m_e4) / m_e4.norm();
+    Eigen::RowVector3f m_m01 = -m_nn1.cross(m_e0) / m_e0.norm();
+    Eigen::RowVector3f m_m02 = m_nn2.cross(m_e0) / m_e0.norm();
+    //
+    Eigen::Map<Eigen::MatrixXf> hess_theta(hess, 12, 12);
+    hess_theta.setZero();
+
+    Eigen::MatrixXf M331 = m_cosA3 / (m_h3 * m_h3) * uvT(m_m3, m_nn1);
+    Eigen::MatrixXf M311 = m_cosA3 / (m_h3 * m_h1) * uvT(m_m1, m_nn1);
+    Eigen::MatrixXf M131 = m_cosA1 / (m_h1 * m_h3) * uvT(m_m3, m_nn1);
+    Eigen::MatrixXf M3011 = m_cosA3 / (m_h3 * m_h01) * uvT(m_m01, m_nn1);
+    Eigen::MatrixXf M111 = m_cosA1 / (m_h1 * m_h1) * uvT(m_m1, m_nn1);
+    Eigen::MatrixXf M1011 = m_cosA1 / (m_h1 * m_h01) * uvT(m_m01, m_nn1);
+    
+    Eigen::MatrixXf M442 = m_cosA4 / (m_h4 * m_h4) * uvT(m_m4, m_nn2);
+    Eigen::MatrixXf M422 = m_cosA4 / (m_h4 * m_h2) * uvT(m_m2, m_nn2);
+    Eigen::MatrixXf M242 = m_cosA2 / (m_h2 * m_h4) * uvT(m_m4, m_nn2);
+    Eigen::MatrixXf M4022 = m_cosA4 / (m_h4 * m_h02) * uvT(m_m02, m_nn2);
+    Eigen::MatrixXf M222 = m_cosA2 / (m_h2 * m_h2) * uvT(m_m2, m_nn2);
+    Eigen::MatrixXf M2022 = m_cosA2 / (m_h2 * m_h02) * uvT(m_m02, m_nn2);
+
+    Eigen::MatrixXf B1 = 1 / m_e0.norm() / m_e0.norm() * uvT(m_nn1, m_m01);
+    Eigen::MatrixXf B2 = 1 / m_e0.norm() / m_e0.norm() * uvT(m_nn2, m_m02);
+
+    Eigen::MatrixXf N13 = 1 / (m_h01 * m_h3) * uvT(m_nn1, m_m3);
+    Eigen::MatrixXf N24 = 1 / (m_h02 * m_h4) * uvT(m_nn2, m_m4);
+    Eigen::MatrixXf N11 = 1 / (m_h01 * m_h1) * uvT(m_nn1, m_m1);
+    Eigen::MatrixXf N22 = 1 / (m_h02 * m_h2) * uvT(m_nn2, m_m2);
+    Eigen::MatrixXf N101 = 1 / (m_h01 * m_h01) * uvT(m_nn1, m_m01);
+    Eigen::MatrixXf N202 = 1 / (m_h02 * m_h02) * uvT(m_nn2, m_m02);
+
+    //std::cout << M331 << std::endl;
+
+    hess_theta.block<3, 3>(0, 0) = mmt(M331) - B1 + mmt(M442) - B2;
+    hess_theta.block<3, 3>(0, 3) = M311 + M131.transpose() + B1 + M422 + M242.transpose() + B2;
+    hess_theta.block<3, 3>(0, 6) = M3011 - N13;
+    hess_theta.block<3, 3>(0, 9) = M4022 - N24;
+    hess_theta.block<3, 3>(3, 3) = mmt(M111) - B1 + mmt(M222) - B2;
+    hess_theta.block<3, 3>(3, 6) = M1011 - N11;
+    hess_theta.block<3, 3>(3, 9) = M2022 - N22;
+    hess_theta.block<3, 3>(6, 6) = -mmt(N101);
+    hess_theta.block<3, 3>(9, 9) = -mmt(N202);
+
+    hess_theta.block<3, 3>(3, 0) = hess_theta.block<3, 3>(0, 3).transpose();
+    hess_theta.block<3, 3>(6, 0) = hess_theta.block<3, 3>(0, 6).transpose();
+    hess_theta.block<3, 3>(9, 0) = hess_theta.block<3, 3>(0, 9).transpose();
+    hess_theta.block<3, 3>(6, 3) = hess_theta.block<3, 3>(3, 6).transpose();
+    hess_theta.block<3, 3>(9, 3) = hess_theta.block<3, 3>(3, 9).transpose();
 }
 
 
@@ -793,26 +875,68 @@ def gradEb_hessEb_Shell(x0, x1=None, x2=None, x3=None, theta_bar=0, kb=1.0):
 
     */
     float theta = getTheta(node0, node1, node2, node3);
-    float grad[6] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+    float grad[12] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
     gradTheta(node0, node1, node2, node3, grad);
 
-    Eigen::Map<Eigen::RowVectorXf> dFMap(dF, 6);
-    dFMap = 0.5 * kb * (2 * (theta - thetaBar) * Eigen::Map<Eigen::RowVectorXf>(grad, 6));
+    Eigen::Map<Eigen::RowVectorXf> gradMap(grad, 12);
+    Eigen::Map<Eigen::RowVectorXf> dFMap(dF, 12);
+
+    dFMap = 0.5 * kb * (2 * (theta - thetaBar) * gradMap);
     
-    float hess[36];
+    float hess[144];
     hessTheta(node0, node1, node2, node3, hess);
-    Eigen::Map<Eigen::Matrix<float, 6, 6, Eigen::RowMajor>> dJMap(dJ);
-
-    Eigen::Map<Eigen::RowVectorXf> gradMap(grad, 6);
-    Eigen::Map<Eigen::Matrix<float, 6, 6, Eigen::RowMajor>> hessMap(hess);
-
-    // TODO Which is the correct transpose?
-    // TODO grad is corrupted
+    Eigen::Map<Eigen::Matrix<float, 12, 12, Eigen::RowMajor>> dJMap(dJ);
+    Eigen::Map<Eigen::Matrix<float, 12, 12, Eigen::RowMajor>> hessMap(hess);
+    //// TODO Which is the correct transpose?
     dJMap = 0.5 * kb * (2 *  gradMap.transpose() * gradMap + 2 * (theta - thetaBar) * hessMap);
 }
 
-static void calculateFb_Jb(){
+static void calculateFb_Jb(float* bendingForcesVecPtr, float* bendingHessiansVecPtr, const std::vector<glm::ivec4>& hingeVec, const Eigen::MatrixXf& positionMap, float kb, float thetaBar, uint32_t dofCount, uint32_t hingeCount) {
+    Eigen::Map<
+        Eigen::Matrix<
+        float,
+        Eigen::Dynamic, Eigen::Dynamic,
+        Eigen::RowMajor
+        >, Eigen::Unaligned> bendingForces(bendingForcesVecPtr, dofCount, 1);
+    Eigen::Map<
+        Eigen::Matrix<
+        float,
+        Eigen::Dynamic, Eigen::Dynamic,
+        Eigen::RowMajor
+        >, Eigen::Unaligned> bendingHessians(bendingHessiansVecPtr, dofCount, dofCount);
 
+
+    // Bending Forces
+    for (uint32_t hingeIdx = 0; hingeIdx < hingeCount; ++hingeIdx) {
+        glm::ivec4 kHinge = hingeVec[hingeIdx];
+        uint32_t node0 = kHinge[0];
+        uint32_t node1 = kHinge[1];
+        uint32_t node2 = kHinge[2];
+        uint32_t node3 = kHinge[3];
+
+        Eigen::RowVector3f x0 = positionMap.row(node0);
+        Eigen::RowVector3f x1 = positionMap.row(node1);
+        Eigen::RowVector3f x2 = positionMap.row(node2);
+        Eigen::RowVector3f x3 = positionMap.row(node3);
+
+        int ind[] = { 3 * node0, 3 * node0 + 1, 3 * node0 + 2,
+                      3 * node1, 3 * node1 + 1, 3 * node1 + 2,
+                      3 * node2, 3 * node2 + 1, 3 * node2 + 2,
+                      3 * node3, 3 * node3 + 1, 3 * node3 + 2 };
+
+        float df[12] = { -1.0f, -2.0f, -3.0f, 1.0f, 2.0f, 3.0f, -4.0f, -5.0f, -6.0f, 4.0f, 5.0f, 6.0f };
+        float dj[144];
+        for (int i = 0; i < 144; i++) {
+            dj[i] = i;
+        }
+
+        calculateGradEb_HessEb_Shell(x0, x1, x2, x3, 0.0f, 1.0f, df, dj);
+
+        bendingForces(ind, Eigen::placeholders::all) = bendingForces(ind, Eigen::placeholders::all) - Eigen::Map<Eigen::Matrix<float, 12, 1>>(df);
+        bendingHessians(ind, ind) = bendingHessians(ind, ind) - Eigen::Map<Eigen::Matrix<float, 12, 12>>(dj);
+
+        //    //fmt
+    }
 }
 
 
@@ -960,39 +1084,7 @@ void ClothSystem::CalculateForces() {
     std::vector<float> bendingForcesVec(dofCount, 0.0f);
     std::vector<float> bendingHessiansVec(dofCount * dofCount, 0.0f);
 
-    // Bending Forces
-    for (uint32_t hingeIdx = 0;  hingeIdx < hingeCount; ++hingeIdx){
-        glm::ivec4 kHinge = hingeVec[hingeIdx];
-        uint32_t node0 = kHinge[0];
-        uint32_t node1 = kHinge[1];
-        uint32_t node2 = kHinge[2];
-        uint32_t node3 = kHinge[3];
-
-        Eigen::RowVector3f x0 = positionMap.row(node0);
-        Eigen::RowVector3f x1 = positionMap.row(node1);
-        Eigen::RowVector3f x2 = positionMap.row(node2);
-        Eigen::RowVector3f x3 = positionMap.row(node3);
-
-        int ind[] = { 3 * node0, 3 * node0 + 1, 3 * node0 + 2,
-                      3 * node1, 3 * node1 + 1, 3 * node1 + 2,
-                      3 * node2, 3 * node2 + 1, 3 * node2 + 2,
-                      3 * node3, 3 * node3 + 1, 3 * node3 + 2 };
-
-        float df[12] = { -1.0f, -2.0f, -3.0f, 1.0f, 2.0f, 3.0f, -4.0f, -5.0f, -6.0f, 4.0f, 5.0f, 6.0f };
-        float dj[144];
-        for (int i = 0; i < 144; i++) {
-            dj[i] = i;
-        }
-
-        calculateGradEb_HessEb_Shell(x0, x1, x2, x3, 0.0f, 1.0f, df, dj);
-        Eigen::Map<Eigen::Matrix<float, 12, 1>> bendingForces(bendingForcesVec.data() + ind[0]);
-        Eigen::Map<Eigen::Matrix<float, 12, 12>> bendingHessians(bendingHessiansVec.data() + ind[0] * dofCount + ind[0]);
-
-        bendingForces(ind) = bendingForces(ind) - Eigen::Map<Eigen::Matrix<float, 12, 1>>(df);
-        bendingHessians(ind, ind) = bendingHessians(ind, ind) - Eigen::Map<Eigen::Matrix<float, 12, 12>>(dj);
-
-        //fmt
-    }
+    calculateFb_Jb(bendingForcesVec.data(), bendingHessiansVec.data(), hingeVec, positionMap, bendingStiffness, 0.0f, dofCount, hingeCount);
 
         // Fb = np.zeros(ndof)
         // Jb = np.zeros((ndof,ndof))

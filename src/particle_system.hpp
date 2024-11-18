@@ -23,15 +23,18 @@ DONE! set up hinges correctly
 DONE! set up edges correctly
 DONE! calculate the gradient of stretching
 DONE! calculate the hessian of stretching
-
-- TODO get the cloth mesh to update
-- DONE! calculate the gradient of bending (hinges)
+DONE! calculate the gradient of bending (hinges)
 	- DONE! calculate gradTheta
 	- DONE! calculate getTheta
-	- TODO Debug the gradTheta
-	
-- TODO calculate the hessian of bending (hinges)
-	- TODO calculate hessTheta
+	- DONE! Debug the gradTheta
+DONE! calculate the hessian of bending (hinges)
+	- DONE! calculate hessTheta
+
+- TODO Debug the gradient 
+- TODO Debug the hessian
+
+- TODO get the cloth mesh to update
+
 - TODO translate the mainloop
 	DONE translate the stretching calculation
 	- TODO translate the bending calculation
