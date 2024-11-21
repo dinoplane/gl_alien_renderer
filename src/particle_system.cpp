@@ -49,7 +49,7 @@ void BaseParticleSystem<
     particleCount = baseParams->particleCount;
     vecValCount = particleCount * 4;
     indiceCount = particleCount;
-
+    type = "base";
 }
 
 

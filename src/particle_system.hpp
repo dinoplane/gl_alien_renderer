@@ -89,6 +89,7 @@ public:
 	GLuint EBO;
 	//std::vector<Vertex> positions;
 	GLuint positionBuffer; // Buffers for freedom
+	std::string type;
 
 	// IBaseParticleSystem(void* params) {};
 	virtual void Initialize(void* params) {};

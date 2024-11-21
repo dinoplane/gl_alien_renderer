@@ -6,10 +6,113 @@
 #include <Eigen/Dense>
  
 
-//ClothSystem::ClothSystem(ClothSystemParameters* params) :
-//    BaseParticleSystem(params) {
-//
-//};
+/*
+def signedAngle(u = None,v = None,n = None):
+    # This function calculates the signed angle between two vectors, "u" and "v",
+    # using an optional axis vector "n" to determine the direction of the angle.
+    #
+    # Parameters:
+    #   u: numpy array-like, shape (3,), the first vector.
+    #   v: numpy array-like, shape (3,), the second vector.
+    #   n: numpy array-like, shape (3,), the axis vector that defines the plane
+    #      in which the angle is measured. It determines the sign of the angle.
+    #
+    # Returns:
+    #   angle: double, the signed angle (in radians) from vector "u" to vector "v".
+    #          The angle is positive if the rotation from "u" to "v" follows
+    #          the right-hand rule with respect to the axis "n", and negative otherwise.
+    #
+    # The function works by:
+    # 1. Computing the cross product "w" of "u" and "v" to find the vector orthogonal
+    #    to both "u" and "v".
+    # 2. Calculating the angle between "u" and "v" using the arctan2 function, which
+    #    returns the angle based on the norm of "w" (magnitude of the cross product)
+    #    and the dot product of "u" and "v".
+    # 3. Using the dot product of "n" and "w" to determine the sign of the angle.
+    #    If this dot product is negative, the angle is adjusted to be negative.
+    #
+    # Example:
+    #   signedAngle(np.array([1, 0, 0]), np.array([0, 1, 0]), np.array([0, 0, 1]))
+    #   This would return a positive angle (π/2 radians), as the rotation
+    #   from the x-axis to the y-axis is counterclockwise when viewed along the z-axis.
+    w = np.cross(u,v)
+    angle = np.arctan2( np.linalg.norm(w), np.dot(u,v) )
+    if (np.dot(n,w) < 0):
+        angle = - angle
+
+    return angle
+
+def mmt(matrix):
+    return matrix + matrix.T
+*/
+
+static double signedAngle(const Eigen::Vector3d& u, const Eigen::Vector3d& v, const Eigen::Vector3d& n){
+    Eigen::Vector3d w = u.cross(v);
+    double angle = atan2(w.norm(), u.dot(v));
+    if (n.dot(w) < 0){
+        angle = -angle;
+    }
+    return angle;
+}
+
+
+static Eigen::Matrix3d mmt(const Eigen::Matrix3d& matrix){
+    return matrix + matrix.transpose();
+}
+
+/*
+"""# Hinge angle, its gradient, and Hessian"""
+
+#          x2
+#          /\
+#         /  \
+#      e1/    \e3
+#       /  t0  \
+#      /        \
+#     /    e0    \
+#   x0------------x1
+#     \          /
+#      \   t1   /
+#       \      /
+#      e2\    /e4
+#         \  /
+#          \/
+#          x3
+#
+#  Edge orientation: e0,e1,e2 point away from x0
+#                       e3,e4 point away from x1
+
+def getTheta(x0, x1 = None, x2 = None, x3 = None):
+
+    if np.size(x0) == 12:  # Allow another type of input where x0 contains all the info
+      x1 = x0[3:6]
+      x2 = x0[6:9]
+      x3 = x0[9:12]
+      x0 = x0[0:3]
+
+    m_e0 = x1 - x0
+    m_e1 = x2 - x0
+    m_e2 = x3 - x0
+
+    n0 = np.cross(m_e0, m_e1)
+    n1 = np.cross(m_e2, m_e0)
+
+    # Calculate the signed angle using the provided function
+    theta = signedAngle(n0, n1, m_e0)
+
+    return theta
+    */
+
+static double getTheta(const Eigen::Vector3d& node0, const Eigen::Vector3d& node1, const Eigen::Vector3d& node2, const Eigen::Vector3d& node3){
+    Eigen::Vector3d m_e0 = node1 - node0;
+    Eigen::Vector3d m_e1 = node2 - node0;
+    Eigen::Vector3d m_e2 = node3 - node0;
+
+    Eigen::Vector3d n0 = m_e0.cross(m_e1);
+    Eigen::Vector3d n1 = m_e2.cross(m_e0);
+
+    return signedAngle(n0, n1, m_e0);
+}
 
 void ClothSystem::InitializeSystemData(void* params) {
     ClothSystemParameters* clothParams = static_cast<ClothSystemParameters*>(params);
@@ -21,13 +124,22 @@ void ClothSystem::InitializeSystemData(void* params) {
     vecValCount = particleCount * 4;
     
     indiceCount = 6 * clothParams->clothSideLength * clothParams->clothSideLength;
-    //particleSystemDataBlock.tolerance = clothParams->tolerance;
-    //particleSystemDataBlock.fluidViscosity = clothParams->fluidViscosity;
-    //particleSystemDataBlock.gravityAccel = clothParams->gravityAccel;
-    //particleSystemDataBlock.youngModulus = 1.0e7f;
-    //particleSystemDataBlock.thickness = 1.0e3f;
-    //particleSystemDataBlock.bendingStiffness = 2.0f / sqrt(3.0f) * particleSystemDataBlock.youngModulus * pow(particleSystemDataBlock.thickness, 3.0f) / 12.0f;
-    //particleSystemDataBlock.stretchStiffness = 1.0f;
+
+    double Y = clothParams->youngModulus;
+    double h = clothParams->thickness;
+    
+    particleSystemDataBlock.bendingStiffness = 2.0 / sqrt(3.0) * Y * pow(h, 3.0) / 12.0;
+    particleSystemDataBlock.timeStep = clothParams->timeStep;
+    particleSystemDataBlock.tolerance = particleSystemDataBlock.bendingStiffness / (0.01) * 1.0e-3;
+    particleSystemDataBlock.gravityAccel = clothParams->gravityAccel;
+
+
+    bendingStiffness = particleSystemDataBlock.bendingStiffness;    
+    dt = particleSystemDataBlock.timeStep;
+    tol = particleSystemDataBlock.tolerance;
+    gravityAccel = particleSystemDataBlock.gravityAccel;
+    totalTime = 0.0;
+    type = "base";
 };
 
 
@@ -36,48 +148,84 @@ void ClothSystem::InitializeBufferData(void* params) {
     ClothSystemParameters* clothParams = static_cast<ClothSystemParameters*>(params);
     clothParams->particleCount = (clothParams->clothSideLength+ 1) * (clothParams->clothSideLength + 1);
     // count particles
-    positionVec.resize(vecValCount);
-    velocityVec.resize(vecValCount);
-    forceVec.resize(vecValCount);
-    normalsVec.resize(clothParams->particleCount);
+    clothPositionVec.resize(vecValCount);
+    // velocityVec.resize(vecValCount);
+    // forceVec.resize(vecValCount);
+    // normalsVec.resize(clothParams->particleCount);
     particleDataVec.resize(clothParams->particleCount);
+
+    lastdofPositions.resize(dofCount);
+    dofPositions.resize(dofCount);
+    dofVelocities.resize(dofCount);
+
+    //std::cout << "HAI" << lastdofPositions.size() << std::endl;
 
     // tangentsVec.resize(clothParams->particleCount);
     // bitangentsVec.resize(clothParams->particleCount);
 
-
-    glm::vec4 meshStartPosition = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-    float yIncrement = 0.5f * sqrt(3.0f) * clothParams->cellSideLength;
-
+    //dofVelocities.push_back(3.0);
+    glm::dvec4 meshStartPosition = glm::dvec4(0.0, 0.0, 0.0, 1.0);
+    double yIncrement = 0.5 * sqrt(3.0) * clothParams->cellSideLength;
 
     uint32_t clothSideParticleCount = clothParams->clothSideLength + 1;
-    float deltaMass = clothParams->totalMass / clothParams->particleCount;
+    double deltaMass = clothParams->totalMass / clothParams->particleCount;
+    massVector.resize(dofCount, deltaMass);
+    massMatrix.resize(dofCount*dofCount, 0.0);
+    for (uint32_t i = 0; i < dofCount; ++i) {
+        massMatrix[i * dofCount + i] = deltaMass;
+    }
+    
+    // freeindices 0-9
+    fixedNodes.push_back(0);
+    fixedNodes.push_back(1);
+    fixedNodes.push_back(2);
+    uint32_t currFixedIdx = 0;
+    for (uint32_t node = 0; node < particleCount; ++node) {
+        if (currFixedIdx < fixedNodes.size() && node == fixedNodes[currFixedIdx]){
+            currFixedIdx += 1;
+            continue;
+        }
+        freeIndices.push_back(3*node);
+        freeIndices.push_back(3*node + 1);
+        freeIndices.push_back(3*node + 2);
+        
+    }
+
+    // for (uint32_t i = 0; i < clothParams->clothSideLength; ++i) {
+
+    // }
 
     for (uint32_t rowIdx = 0; rowIdx < clothSideParticleCount; ++rowIdx) {
-        glm::vec4 rowStartPosition =
+        glm::dvec4 rowStartPosition =
             meshStartPosition;
 
         rowStartPosition.z -= yIncrement * rowIdx;
-        rowStartPosition.y = 0.5f*sin(rowIdx * clothParams->cellSideLength * 2.0f);
+        //rowStartPosition.y = 0.5*sin(rowIdx * clothParams->cellSideLength * 2.0);
         if (rowIdx % 2 == 1) {
-            rowStartPosition.x += 0.5f * clothParams->cellSideLength;
+            rowStartPosition.x += 0.5 * clothParams->cellSideLength;
         }
 
-        glm::vec4 currentPosition = rowStartPosition;
+        glm::dvec4 currentPosition = rowStartPosition;
         for (uint32_t colIdx = 0; colIdx < clothSideParticleCount; ++colIdx) {
-            currentPosition.y = rowStartPosition.y + 0.5f * sin(colIdx * clothParams->cellSideLength * 2.0f);
+            //currentPosition.y = rowStartPosition.y + 0.5 * sin(colIdx * clothParams->cellSideLength * 2.0);
             uint32_t particleIdx = rowIdx * clothSideParticleCount + colIdx;
             for (uint32_t i = 0; i < 4; ++i) {
-                positionVec[particleIdx * 4 + i] = currentPosition[i];
-                velocityVec[particleIdx * 4 + i] = 0.0f;
-                forceVec[particleIdx * 4 + i] = 0.0f;
+                clothPositionVec[particleIdx * 4 + i] = currentPosition[i];
+                //clothVelocityVec[particleIdx * 4 + i] = 0.0;
+                //clothForceVec[particleIdx * 4 + i] = 0.0;
             }
-            // positionVec[particleIdx] = currentPosition;
-            // velocityVec[particleIdx] = glm::vec4(0.0f);
-            // forceVec[particleIdx] = glm::vec4(0.0f);
+            for (uint32_t i = 0; i < 3; ++i) {
+                lastdofPositions[particleIdx * 3 + i] = currentPosition[i];
+                dofPositions[particleIdx * 3 + i] = currentPosition[i];
+                dofVelocities[particleIdx * 3 + i] = 0.0;
+            }
+
+            // clothPositionVec[particleIdx] = currentPosition;
+            // velocityVec[particleIdx] = glm::dvec4(0.0);
+            // forceVec[particleIdx] = glm::dvec4(0.0);
             particleDataVec[particleIdx].mass = deltaMass;
 
-            // normalsVec[particleIdx] = glm::vec4(0.0f);
+            // normalsVec[particleIdx] = glm::dvec4(0.0);
             currentPosition.x += clothParams->cellSideLength;
         }
     }
@@ -145,9 +293,9 @@ void ClothSystem::InitializeBufferData(void* params) {
 
                 hingeVec[hingeIdx] = glm::ivec4(aIdx, dIdx, cIdx, bIdx);
 
-                edgeVec[edgeIdx + 0] = glm::vec2(aIdx, dIdx);
-                edgeVec[edgeIdx + 1] = glm::vec2(dIdx, cIdx);
-                edgeVec[edgeIdx + 2] = glm::vec2(cIdx, aIdx);
+                edgeVec[edgeIdx + 0] = glm::ivec2(aIdx, dIdx);
+                edgeVec[edgeIdx + 1] = glm::ivec2(dIdx, cIdx);
+                edgeVec[edgeIdx + 2] = glm::ivec2(cIdx, aIdx);
                 
             }
             else {
@@ -161,9 +309,9 @@ void ClothSystem::InitializeBufferData(void* params) {
                 
                 hingeVec[hingeIdx] = glm::ivec4(cIdx, bIdx, dIdx, aIdx);
             
-                edgeVec[edgeIdx + 0] = glm::vec2(bIdx, dIdx);
-                edgeVec[edgeIdx + 1] = glm::vec2(dIdx, cIdx);
-                edgeVec[edgeIdx + 2] = glm::vec2(cIdx, bIdx);
+                edgeVec[edgeIdx + 0] = glm::ivec2(bIdx, dIdx);
+                edgeVec[edgeIdx + 1] = glm::ivec2(dIdx, cIdx);
+                edgeVec[edgeIdx + 2] = glm::ivec2(cIdx, bIdx);
 
                 topHingeIdx = dIdx - clothSideParticleCount;
                 bottomHingeIdx = bIdx;
@@ -183,17 +331,6 @@ void ClothSystem::InitializeBufferData(void* params) {
                 hingeIdx += 1;
             }
 
-
-
-
-            /*fmt::print("\nFirst Triangle\n");
-            for (uint32_t j = 0; j < 3; ++j) {
-                fmt::print("{} ", indicesVec[indiceIdx + j]);
-            }
-            fmt::print("\nSecond Triangle\n");
-            for (uint32_t j = 3; j < 6; ++j) {
-                fmt::print("{} ", indicesVec[indiceIdx + j]);
-            }*/
         }
 
         uint32_t lastRowParticleIdx = rowIdx * clothSideParticleCount + clothParams->clothSideLength;
@@ -213,17 +350,45 @@ void ClothSystem::InitializeBufferData(void* params) {
 
     undeformedEdgeLengthVec.resize(edgeCount);
     elasticStretchingVec.resize(edgeCount);
-    const float Y = 1.0e7f;
-    const float h = 1.0e3f;
-    bendingStiffness = 2.0f / sqrt(3.0f) * Y * pow(h, 3.0f) / 12.0f;
+    
+    const double Y = clothParams->youngModulus;
+    const double h = clothParams->thickness;
+
     for (uint32_t edgeIdx = 0; edgeIdx < edgeCount; ++edgeIdx) {
         glm::ivec2 edge = edgeVec[edgeIdx];
-        glm::vec4 edgeStart (positionVec[4 * edge[0]], positionVec[4 * edge[0] + 1], positionVec[4 * edge[0] + 2], 1.0f);
-        glm::vec4 edgeEnd (positionVec[4 * edge[1]], positionVec[4 * edge[1] + 1], positionVec[4 * edge[1] + 2], 1.0f);
-        glm::vec4 edgeVec = edgeEnd - edgeStart;
+        glm::dvec4 edgeStart (clothPositionVec[4 * edge[0]], clothPositionVec[4 * edge[0] + 1], clothPositionVec[4 * edge[0] + 2], 1.0);
+        glm::dvec4 edgeEnd (clothPositionVec[4 * edge[1]], clothPositionVec[4 * edge[1] + 1], clothPositionVec[4 * edge[1] + 2], 1.0);
+        glm::dvec4 edgeVec = edgeEnd - edgeStart;
         undeformedEdgeLengthVec[edgeIdx] = glm::length(edgeVec);
-        elasticStretchingVec[edgeIdx] = 0.5f * sqrt(3.0) * Y * h * pow(undeformedEdgeLengthVec[edgeIdx], 2.0f);
+        elasticStretchingVec[edgeIdx] = 0.5 * sqrt(3.0) * Y * h * pow(undeformedEdgeLengthVec[edgeIdx], 2.0);
         
+    }
+
+    Eigen::Stride<Eigen::Dynamic, Eigen::Dynamic> bufferStrides(4, 1);
+    Eigen::Map<
+        Eigen::Matrix<
+                double,
+                Eigen::Dynamic, 1>
+    > q(dofPositions.data(), dofCount, 1);
+
+    thetaBarVec.resize(hingeCount);
+    for (uint32_t hingeIdx = 0; hingeIdx < hingeCount; hingeIdx++){
+        glm::ivec4 hinge = hingeVec[hingeIdx];
+        Eigen::Vector3d x0 = q.segment<3>(3 * hinge[0]);  
+        Eigen::Vector3d x1 = q.segment<3>(3 * hinge[1]);
+        Eigen::Vector3d x2 = q.segment<3>(3 * hinge[2]);
+        Eigen::Vector3d x3 = q.segment<3>(3 * hinge[3]);
+
+        thetaBarVec[hingeIdx] = getTheta(x0, x1, x2, x3);
+    }
+
+    externalForcesVec.resize(dofCount);
+    for (uint32_t particleIdx = 0; particleIdx < particleCount; ++particleIdx) {
+        externalForcesVec[3 * particleIdx] = 0.0;
+        externalForcesVec[3 * particleIdx + 1] = -gravityAccel * particleDataVec[particleIdx].mass;
+        externalForcesVec[3 * particleIdx + 2] = 0.0;
+        // glm::dvec4 normal = glm::dvec4(0.0, 1.0, 0.0, 0.0);
+        // normalsVec[particleIdx] = normal;
     }
 }
 
@@ -246,7 +411,57 @@ void ClothSystem::InitializeShaders(void* params) {
 }
 
 void ClothSystem::InitializeBuffers(){
-    BaseParticleSystem::InitializeBuffers();
+    // BaseParticleSystem::InitializeBuffers();
+    glCreateBuffers(1, &positionBuffer);
+    glNamedBufferStorage(
+        positionBuffer, 
+        sizeof(float) * vecValCount, 
+        clothPositionVec.data(),
+         GL_DYNAMIC_STORAGE_BIT
+    );
+
+    // glCreateBuffers(1, &velocityBuffer);
+    // glNamedBufferStorage(
+    //     velocityBuffer, 
+    //     sizeof(double) * vecValCount, 
+    //     clothVelocityVec.data(),
+    //      GL_DYNAMIC_STORAGE_BIT
+    // );
+
+    // glCreateBuffers(1, &forcesBuffer);
+    // glNamedBufferStorage(
+    //     forcesBuffer, 
+    //     sizeof(double) * vecValCount, 
+    //     clothForceVec.data(),
+    //      GL_DYNAMIC_STORAGE_BIT
+    // );
+    
+
+    glCreateBuffers(1, &EBO);
+    glNamedBufferStorage(
+        EBO, 
+        sizeof(uint32_t) * indiceCount, 
+        indicesVec.data(),
+         GL_DYNAMIC_STORAGE_BIT
+    );
+
+    // glCreateBuffers(1, &particleDataBuffer);
+    // glNamedBufferStorage(
+    //     particleDataBuffer, 
+    //     sizeof(ParticleDataBlock) * particleCount, 
+    //     nullptr,
+    //      GL_DYNAMIC_STORAGE_BIT
+    // );
+
+     glCreateBuffers(1, &particleSystemDataBuffer);
+     glNamedBufferStorage(
+         particleSystemDataBuffer, 
+         sizeof(ClothSystemDataBlock), 
+         &particleSystemDataBlock,
+          GL_DYNAMIC_STORAGE_BIT
+     );
+
+
     glCreateBuffers(1, &edgesBuffer);
     glNamedBufferStorage(
        edgesBuffer, 
@@ -266,7 +481,7 @@ void ClothSystem::InitializeBuffers(){
     glCreateBuffers(1, &edgeDebugDataBuffer);
     glNamedBufferStorage(
        edgeDebugDataBuffer, 
-       sizeof(glm::vec4) * 4, 
+       sizeof(glm::dvec4) * 4, 
        edgeDebugDataVec,
         GL_DYNAMIC_STORAGE_BIT
     );
@@ -288,233 +503,9 @@ void ClothSystem::InitializeBuffers(){
     );
 
     //https://stackoverflow.com/questions/12399422/how-to-set-linker-flags-for-openmp-in-cmakes-try-compile-function
-    lastTime = std::chrono::high_resolution_clock::now();
-  Eigen::MatrixXd m(2,2);
-  m(0,0) = 3;
-  m(1,0) = 2.5;
-  m(0,1) = -1;
-  m(1,1) = m(1,0) + m(0,1);
-  //fmt::print("Eigen used here: {}", m);
-  std::cout << m << std::endl;
-
 
 }
 
-    
-
-
-
-/*
-"""# Bending energy for a shell, it's gradient, and Hessian"""
-
-
-def getEb_Shell(x0, x1=None, x2=None, x3=None, theta_bar=0, kb=1.0):
-    """
-    Compute the bending energy for a shell.
-
-    Returns:
-    E (scalar): Bending energy.
-    """
-    # Allow another type of input where x0 contains all the information
-    if np.size(x0) == 12:
-        x1 = x0[3:6]
-        x2 = x0[6:9]
-        x3 = x0[9:12]
-        x0 = x0[:3]
-
-    # Compute theta, gradient, and Hessian
-    theta = getTheta(x0, x1, x2, x3)  # Replace with your getTheta function in Python
-    grad = gradTheta(x0, x1, x2, x3)  # Replace with your gradTheta function in Python
-
-    # E = 0.5 * kb * (theta-thetaBar)^2
-    E = 0.5 * kb * (theta - theta_bar) ** 2
-
-    return E
-    */
-
-    /*
-
-def objfun(qGuess, q0, u, freeIndex, dt, tol,
-                massVector, mMat,
-                ks, lk, edges,
-                kb, thetaBar, hinges,
-                Fg):
-
-  q = qGuess
-  ndof = len(q)
-  iter = 0
-  error = 10 * tol
-
-  while error > tol:
-
-    # Calculating Bending
-    Fb = np.zeros(ndof)
-    Jb = np.zeros((ndof,ndof))
-    for kHinge in range(hinges.shape[0]):
-      node0 = hinges[kHinge,0]
-      node1 = hinges[kHinge,1]
-      node2 = hinges[kHinge,2]
-      node3 = hinges[kHinge,3]
-      x0 = q[3*node0:3*node0+3]
-      x1 = q[3*node1:3*node1+3]
-      x2 = q[3*node2:3*node2+3]
-      x3 = q[3*node3:3*node3+3]
-      ind = [3*node0, 3*node0 + 1, 3*node0 + 2,
-             3*node1, 3*node1 + 1, 3*node1 + 2,
-             3*node2, 3*node2 + 1, 3*node2 + 2,
-             3*node3, 3*node3 + 1, 3*node3 + 2]
-      dF, dJ = gradEb_hessEb_Shell(x0, x1, x2, x3, thetaBar, kb)
-      Fb[ind] = Fb[ind] - dF
-      Jb[np.ix_(ind,ind)] = Jb[np.ix_(ind,ind)] - dJ
-
-    # Calculating stretching
-    Fs = np.zeros(ndof)
-    Js = np.zeros((ndof,ndof))
-    for kEdge in range(edges.shape[0]):
-      node0 = edges[kEdge,0]
-      node1 = edges[kEdge,1]
-      x0 = q[3*node0:3*node0+3]
-      x1 = q[3*node1:3*node1+3]
-      ind = [3*node0, 3*node0 + 1, 3*node0 + 2,
-             3*node1, 3*node1 + 1, 3*node1 + 2]
-      dF, dJ = gradEs_hessEs(x0, x1, lk[kEdge], ks[kEdge])
-      Fs[ind] = Fs[ind] - dF
-      Js[np.ix_(ind,ind)] = Js[np.ix_(ind,ind)] - dJ
-
-    # Calculating total force
-    F = Fg + Fb + Fs # Viscous forces can sometimes be useful
-    JForces = Js + Jb
-
-    f = massVector/dt * ( (q-q0)/dt - u ) - F
-    J = mMat / dt ** 2 - JForces
-
-    f_free = f[freeIndex]
-    J_free = J[np.ix_(freeIndex, freeIndex)]
-    dq_free = np.linalg.solve(J_free, f_free)
-
-    q[freeIndex] = q[freeIndex] - dq_free
-
-    error = np.sum( np.abs(f_free) )
-    iter += 1
-
-    print('Iter = %d' % iter)
-    print('Error = %f' % error)
-
-  u = (q - q0) / dt
-
-  return q, u
-
-
-*/
-
-
-/*
-def signedAngle(u = None,v = None,n = None):
-    # This function calculates the signed angle between two vectors, "u" and "v",
-    # using an optional axis vector "n" to determine the direction of the angle.
-    #
-    # Parameters:
-    #   u: numpy array-like, shape (3,), the first vector.
-    #   v: numpy array-like, shape (3,), the second vector.
-    #   n: numpy array-like, shape (3,), the axis vector that defines the plane
-    #      in which the angle is measured. It determines the sign of the angle.
-    #
-    # Returns:
-    #   angle: float, the signed angle (in radians) from vector "u" to vector "v".
-    #          The angle is positive if the rotation from "u" to "v" follows
-    #          the right-hand rule with respect to the axis "n", and negative otherwise.
-    #
-    # The function works by:
-    # 1. Computing the cross product "w" of "u" and "v" to find the vector orthogonal
-    #    to both "u" and "v".
-    # 2. Calculating the angle between "u" and "v" using the arctan2 function, which
-    #    returns the angle based on the norm of "w" (magnitude of the cross product)
-    #    and the dot product of "u" and "v".
-    # 3. Using the dot product of "n" and "w" to determine the sign of the angle.
-    #    If this dot product is negative, the angle is adjusted to be negative.
-    #
-    # Example:
-    #   signedAngle(np.array([1, 0, 0]), np.array([0, 1, 0]), np.array([0, 0, 1]))
-    #   This would return a positive angle (π/2 radians), as the rotation
-    #   from the x-axis to the y-axis is counterclockwise when viewed along the z-axis.
-    w = np.cross(u,v)
-    angle = np.arctan2( np.linalg.norm(w), np.dot(u,v) )
-    if (np.dot(n,w) < 0):
-        angle = - angle
-
-    return angle
-
-def mmt(matrix):
-    return matrix + matrix.T
-*/
-
-static float signedAngle(const Eigen::RowVector3f& u, const Eigen::RowVector3f& v, const Eigen::RowVector3f& n){
-    Eigen::RowVector3f w = u.cross(v);
-    float angle = atan2(w.norm(), u.dot(v));
-    if (n.dot(w) < 0){
-        angle = -angle;
-    }
-    return angle;
-}
-
-
-static Eigen::Matrix3f mmt(const Eigen::Matrix3f& matrix){
-    return matrix + matrix.transpose();
-}
-
-/*
-"""# Hinge angle, its gradient, and Hessian"""
-
-#          x2
-#          /\
-#         /  \
-#      e1/    \e3
-#       /  t0  \
-#      /        \
-#     /    e0    \
-#   x0------------x1
-#     \          /
-#      \   t1   /
-#       \      /
-#      e2\    /e4
-#         \  /
-#          \/
-#          x3
-#
-#  Edge orientation: e0,e1,e2 point away from x0
-#                       e3,e4 point away from x1
-
-def getTheta(x0, x1 = None, x2 = None, x3 = None):
-
-    if np.size(x0) == 12:  # Allow another type of input where x0 contains all the info
-      x1 = x0[3:6]
-      x2 = x0[6:9]
-      x3 = x0[9:12]
-      x0 = x0[0:3]
-
-    m_e0 = x1 - x0
-    m_e1 = x2 - x0
-    m_e2 = x3 - x0
-
-    n0 = np.cross(m_e0, m_e1)
-    n1 = np.cross(m_e2, m_e0)
-
-    # Calculate the signed angle using the provided function
-    theta = signedAngle(n0, n1, m_e0)
-
-    return theta
-    */
-
-static float getTheta(const Eigen::RowVector3f& node0, const Eigen::RowVector3f& node1, const Eigen::RowVector3f& node2, const Eigen::RowVector3f& node3){
-    Eigen::RowVector3f m_e0 = node1 - node0;
-    Eigen::RowVector3f m_e1 = node2 - node0;
-    Eigen::RowVector3f m_e2 = node3 - node0;
-
-    Eigen::RowVector3f n0 = m_e0.cross(m_e1);
-    Eigen::RowVector3f n1 = m_e2.cross(m_e0);
-
-    return signedAngle(n0, n1, m_e0);
-}
 
 /*
 def hessTheta(x0, x1 = None, x2 = None, x3 = None):
@@ -616,72 +607,73 @@ def hessTheta(x0, x1 = None, x2 = None, x3 = None):
     return hess_theta
     */
 
-static Eigen::MatrixXf uvT(const Eigen::RowVector3f& u, const Eigen::RowVector3f& v){
+static Eigen::MatrixXd uvT(const Eigen::Vector3d& u, const Eigen::Vector3d& v){
     return u.transpose() * v;
 }
 
-static void hessTheta(const Eigen::RowVector3f& node0, const Eigen::RowVector3f& node1, const Eigen::RowVector3f& node2, const Eigen::RowVector3f& node3, float* hess){
-    Eigen::RowVector3f m_e0 = node1 - node0;
-    Eigen::RowVector3f m_e1 = node2 - node0;
-    Eigen::RowVector3f m_e2 = node3 - node0;
-    Eigen::RowVector3f m_e3 = node2 - node1;
-    Eigen::RowVector3f m_e4 = node3 - node1;
+static void hessTheta(const Eigen::Vector3d& node0, const Eigen::Vector3d& node1, const Eigen::Vector3d& node2, const Eigen::Vector3d& node3, double* hess){
+    /*
+    Eigen::Vector3d m_e0 = node1 - node0;
+    Eigen::Vector3d m_e1 = node2 - node0;
+    Eigen::Vector3d m_e2 = node3 - node0;
+    Eigen::Vector3d m_e3 = node2 - node1;
+    Eigen::Vector3d m_e4 = node3 - node1;
 
-    float m_cosA1 = m_e0.dot(m_e1) / (m_e0.norm() * m_e1.norm());
-    float m_cosA2 = m_e0.dot(m_e2) / (m_e0.norm() * m_e2.norm());
-    float m_cosA3 = -m_e0.dot(m_e3) / (m_e0.norm() * m_e3.norm());
-    float m_cosA4 = -m_e0.dot(m_e4) / (m_e0.norm() * m_e4.norm());
+    double m_cosA1 = m_e0.dot(m_e1) / (m_e0.norm() * m_e1.norm());
+    double m_cosA2 = m_e0.dot(m_e2) / (m_e0.norm() * m_e2.norm());
+    double m_cosA3 = -m_e0.dot(m_e3) / (m_e0.norm() * m_e3.norm());
+    double m_cosA4 = -m_e0.dot(m_e4) / (m_e0.norm() * m_e4.norm());
 
-    float m_sinA1 = m_e0.cross(m_e1).norm() / (m_e0.norm() * m_e1.norm());
-    float m_sinA2 = m_e0.cross(m_e2).norm() / (m_e0.norm() * m_e2.norm());
-    float m_sinA3 = -m_e0.cross(m_e3).norm() / (m_e0.norm() * m_e3.norm());
-    float m_sinA4 = -m_e0.cross(m_e4).norm() / (m_e0.norm() * m_e4.norm());
+    double m_sinA1 = m_e0.cross(m_e1).norm() / (m_e0.norm() * m_e1.norm());
+    double m_sinA2 = m_e0.cross(m_e2).norm() / (m_e0.norm() * m_e2.norm());
+    double m_sinA3 = -m_e0.cross(m_e3).norm() / (m_e0.norm() * m_e3.norm());
+    double m_sinA4 = -m_e0.cross(m_e4).norm() / (m_e0.norm() * m_e4.norm());
 
-    Eigen::RowVector3f m_nn1 = m_e0.cross(m_e3);
+    Eigen::Vector3d m_nn1 = m_e0.cross(m_e3);
     m_nn1 = m_nn1 / m_nn1.norm();
-    Eigen::RowVector3f m_nn2 = -m_e0.cross(m_e4);
+    Eigen::Vector3d m_nn2 = -m_e0.cross(m_e4);
     m_nn2 = m_nn2 / m_nn2.norm();
 
-    float m_h1 = m_e0.norm() * m_sinA1;
-    float m_h2 = m_e0.norm() * m_sinA2;
-    float m_h3 = -m_e0.norm() * m_sinA3;
-    float m_h4 = -m_e0.norm() * m_sinA4;
-    float m_h01 = m_e1.norm() * m_sinA1;
-    float m_h02 = m_e2.norm() * m_sinA2;
+    double m_h1 = m_e0.norm() * m_sinA1;
+    double m_h2 = m_e0.norm() * m_sinA2;
+    double m_h3 = -m_e0.norm() * m_sinA3;
+    double m_h4 = -m_e0.norm() * m_sinA4;
+    double m_h01 = m_e1.norm() * m_sinA1;
+    double m_h02 = m_e2.norm() * m_sinA2;
 
-    Eigen::RowVector3f m_m1 = m_nn1.cross(m_e1) / m_e1.norm();
-    Eigen::RowVector3f m_m2 = -m_nn2.cross(m_e2) / m_e2.norm();
-    Eigen::RowVector3f m_m3 = -m_nn1.cross(m_e3) / m_e3.norm();
-    Eigen::RowVector3f m_m4 = m_nn2.cross(m_e4) / m_e4.norm();
-    Eigen::RowVector3f m_m01 = -m_nn1.cross(m_e0) / m_e0.norm();
-    Eigen::RowVector3f m_m02 = m_nn2.cross(m_e0) / m_e0.norm();
+    Eigen::Vector3d m_m1 = m_nn1.cross(m_e1) / m_e1.norm();
+    Eigen::Vector3d m_m2 = -m_nn2.cross(m_e2) / m_e2.norm();
+    Eigen::Vector3d m_m3 = -m_nn1.cross(m_e3) / m_e3.norm();
+    Eigen::Vector3d m_m4 = m_nn2.cross(m_e4) / m_e4.norm();
+    Eigen::Vector3d m_m01 = -m_nn1.cross(m_e0) / m_e0.norm();
+    Eigen::Vector3d m_m02 = m_nn2.cross(m_e0) / m_e0.norm();
     //
-    Eigen::Map<Eigen::MatrixXf> hess_theta(hess, 12, 12);
+    Eigen::Map<Eigen::MatrixXd> hess_theta(hess, 12, 12);
     hess_theta.setZero();
 
-    Eigen::MatrixXf M331 = m_cosA3 / (m_h3 * m_h3) * uvT(m_m3, m_nn1);
-    Eigen::MatrixXf M311 = m_cosA3 / (m_h3 * m_h1) * uvT(m_m1, m_nn1);
-    Eigen::MatrixXf M131 = m_cosA1 / (m_h1 * m_h3) * uvT(m_m3, m_nn1);
-    Eigen::MatrixXf M3011 = m_cosA3 / (m_h3 * m_h01) * uvT(m_m01, m_nn1);
-    Eigen::MatrixXf M111 = m_cosA1 / (m_h1 * m_h1) * uvT(m_m1, m_nn1);
-    Eigen::MatrixXf M1011 = m_cosA1 / (m_h1 * m_h01) * uvT(m_m01, m_nn1);
+    Eigen::MatrixXd M331 = m_cosA3 / (m_h3 * m_h3) * uvT(m_m3, m_nn1);
+    Eigen::MatrixXd M311 = m_cosA3 / (m_h3 * m_h1) * uvT(m_m1, m_nn1);
+    Eigen::MatrixXd M131 = m_cosA1 / (m_h1 * m_h3) * uvT(m_m3, m_nn1);
+    Eigen::MatrixXd M3011 = m_cosA3 / (m_h3 * m_h01) * uvT(m_m01, m_nn1);
+    Eigen::MatrixXd M111 = m_cosA1 / (m_h1 * m_h1) * uvT(m_m1, m_nn1);
+    Eigen::MatrixXd M1011 = m_cosA1 / (m_h1 * m_h01) * uvT(m_m01, m_nn1);
     
-    Eigen::MatrixXf M442 = m_cosA4 / (m_h4 * m_h4) * uvT(m_m4, m_nn2);
-    Eigen::MatrixXf M422 = m_cosA4 / (m_h4 * m_h2) * uvT(m_m2, m_nn2);
-    Eigen::MatrixXf M242 = m_cosA2 / (m_h2 * m_h4) * uvT(m_m4, m_nn2);
-    Eigen::MatrixXf M4022 = m_cosA4 / (m_h4 * m_h02) * uvT(m_m02, m_nn2);
-    Eigen::MatrixXf M222 = m_cosA2 / (m_h2 * m_h2) * uvT(m_m2, m_nn2);
-    Eigen::MatrixXf M2022 = m_cosA2 / (m_h2 * m_h02) * uvT(m_m02, m_nn2);
+    Eigen::MatrixXd M442 = m_cosA4 / (m_h4 * m_h4) * uvT(m_m4, m_nn2);
+    Eigen::MatrixXd M422 = m_cosA4 / (m_h4 * m_h2) * uvT(m_m2, m_nn2);
+    Eigen::MatrixXd M242 = m_cosA2 / (m_h2 * m_h4) * uvT(m_m4, m_nn2);
+    Eigen::MatrixXd M4022 = m_cosA4 / (m_h4 * m_h02) * uvT(m_m02, m_nn2);
+    Eigen::MatrixXd M222 = m_cosA2 / (m_h2 * m_h2) * uvT(m_m2, m_nn2);
+    Eigen::MatrixXd M2022 = m_cosA2 / (m_h2 * m_h02) * uvT(m_m02, m_nn2);
 
-    Eigen::MatrixXf B1 = 1 / m_e0.norm() / m_e0.norm() * uvT(m_nn1, m_m01);
-    Eigen::MatrixXf B2 = 1 / m_e0.norm() / m_e0.norm() * uvT(m_nn2, m_m02);
+    Eigen::MatrixXd B1 = 1 / m_e0.norm() / m_e0.norm() * uvT(m_nn1, m_m01);
+    Eigen::MatrixXd B2 = 1 / m_e0.norm() / m_e0.norm() * uvT(m_nn2, m_m02);
 
-    Eigen::MatrixXf N13 = 1 / (m_h01 * m_h3) * uvT(m_nn1, m_m3);
-    Eigen::MatrixXf N24 = 1 / (m_h02 * m_h4) * uvT(m_nn2, m_m4);
-    Eigen::MatrixXf N11 = 1 / (m_h01 * m_h1) * uvT(m_nn1, m_m1);
-    Eigen::MatrixXf N22 = 1 / (m_h02 * m_h2) * uvT(m_nn2, m_m2);
-    Eigen::MatrixXf N101 = 1 / (m_h01 * m_h01) * uvT(m_nn1, m_m01);
-    Eigen::MatrixXf N202 = 1 / (m_h02 * m_h02) * uvT(m_nn2, m_m02);
+    Eigen::MatrixXd N13 = 1 / (m_h01 * m_h3) * uvT(m_nn1, m_m3);
+    Eigen::MatrixXd N24 = 1 / (m_h02 * m_h4) * uvT(m_nn2, m_m4);
+    Eigen::MatrixXd N11 = 1 / (m_h01 * m_h1) * uvT(m_nn1, m_m1);
+    Eigen::MatrixXd N22 = 1 / (m_h02 * m_h2) * uvT(m_nn2, m_m2);
+    Eigen::MatrixXd N101 = 1 / (m_h01 * m_h01) * uvT(m_nn1, m_m01);
+    Eigen::MatrixXd N202 = 1 / (m_h02 * m_h02) * uvT(m_nn2, m_m02);
 
     //std::cout << M331 << std::endl;
 
@@ -700,6 +692,7 @@ static void hessTheta(const Eigen::RowVector3f& node0, const Eigen::RowVector3f&
     hess_theta.block<3, 3>(9, 0) = hess_theta.block<3, 3>(0, 9).transpose();
     hess_theta.block<3, 3>(6, 3) = hess_theta.block<3, 3>(3, 6).transpose();
     hess_theta.block<3, 3>(9, 3) = hess_theta.block<3, 3>(3, 9).transpose();
+*/
 }
 
 
@@ -756,47 +749,48 @@ def gradTheta(x0, x1 = None, x2 = None, x3 = None):
     return gradTheta
 */
 
-static void gradTheta(const Eigen::RowVector3f& node0, const Eigen::RowVector3f& node1, const Eigen::RowVector3f& node2, const Eigen::RowVector3f& node3, float* grad){
-    Eigen::RowVector3f m_e0 = node1 - node0;
-    Eigen::RowVector3f m_e1 = node2 - node0;
-    Eigen::RowVector3f m_e2 = node3 - node0;
-    Eigen::RowVector3f m_e3 = node2 - node1;
-    Eigen::RowVector3f m_e4 = node3 - node1;
+static void gradTheta(const Eigen::Vector3d& node0, const Eigen::Vector3d& node1, const Eigen::Vector3d& node2, const Eigen::Vector3d& node3, double* grad){
+    /*
+    Eigen::Vector3d m_e0 = node1 - node0;
+    Eigen::Vector3d m_e1 = node2 - node0;
+    Eigen::Vector3d m_e2 = node3 - node0;
+    Eigen::Vector3d m_e3 = node2 - node1;
+    Eigen::Vector3d m_e4 = node3 - node1;
 
-    float m_cosA1 = m_e0.dot(m_e1) / (m_e0.norm() * m_e1.norm());
-    float m_cosA2 = m_e0.dot(m_e2) / (m_e0.norm() * m_e2.norm());
-    float m_cosA3 = -m_e0.dot(m_e3) / (m_e0.norm() * m_e3.norm());
-    float m_cosA4 = -m_e0.dot(m_e4) / (m_e0.norm() * m_e4.norm());
+    double m_cosA1 = m_e0.dot(m_e1) / (m_e0.norm() * m_e1.norm());
+    double m_cosA2 = m_e0.dot(m_e2) / (m_e0.norm() * m_e2.norm());
+    double m_cosA3 = -m_e0.dot(m_e3) / (m_e0.norm() * m_e3.norm());
+    double m_cosA4 = -m_e0.dot(m_e4) / (m_e0.norm() * m_e4.norm());
 
-    float m_sinA1 = m_e0.cross(m_e1).norm() / (m_e0.norm() * m_e1.norm());
-    float m_sinA2 = m_e0.cross(m_e2).norm() / (m_e0.norm() * m_e2.norm());
-    float m_sinA3 = -m_e0.cross(m_e3).norm() / (m_e0.norm() * m_e3.norm());
-    float m_sinA4 = -m_e0.cross(m_e4).norm() / (m_e0.norm() * m_e4.norm());
+    double m_sinA1 = m_e0.cross(m_e1).norm() / (m_e0.norm() * m_e1.norm());
+    double m_sinA2 = m_e0.cross(m_e2).norm() / (m_e0.norm() * m_e2.norm());
+    double m_sinA3 = -m_e0.cross(m_e3).norm() / (m_e0.norm() * m_e3.norm());
+    double m_sinA4 = -m_e0.cross(m_e4).norm() / (m_e0.norm() * m_e4.norm());
 
-    Eigen::RowVector3f m_nn1 = m_e0.cross(m_e3);
+    Eigen::Vector3d m_nn1 = m_e0.cross(m_e3);
     m_nn1 /= m_nn1.norm();
-    Eigen::RowVector3f m_nn2 = -m_e0.cross(m_e4);
+    Eigen::Vector3d m_nn2 = -m_e0.cross(m_e4);
     m_nn2 /= m_nn2.norm();
 
-    float m_h1 = m_e0.norm() * m_sinA1;
-    float m_h2 = m_e0.norm() * m_sinA2;
-    float m_h3 = -m_e0.norm() * m_sinA3;
-    float m_h4 = -m_e0.norm() * m_sinA4;
-    float m_h01 = m_e1.norm() * m_sinA1;
-    float m_h02 = m_e2.norm() * m_sinA2;
+    double m_h1 = m_e0.norm() * m_sinA1;
+    double m_h2 = m_e0.norm() * m_sinA2;
+    double m_h3 = -m_e0.norm() * m_sinA3;
+    double m_h4 = -m_e0.norm() * m_sinA4;
+    double m_h01 = m_e1.norm() * m_sinA1;
+    double m_h02 = m_e2.norm() * m_sinA2;
 
-    Eigen::RowVector3f gradTheta0 = m_cosA3 * m_nn1 / m_h3 + m_cosA4 * m_nn2 / m_h4;
-    Eigen::RowVector3f gradTheta1 = m_cosA1 * m_nn1 / m_h1 + m_cosA2 * m_nn2 / m_h2;
-    Eigen::RowVector3f gradTheta2 = -m_nn1 / m_h01;
-    Eigen::RowVector3f gradTheta3 = -m_nn2 / m_h02;
+    Eigen::Vector3d gradTheta0 = m_cosA3 * m_nn1 / m_h3 + m_cosA4 * m_nn2 / m_h4;
+    Eigen::Vector3d gradTheta1 = m_cosA1 * m_nn1 / m_h1 + m_cosA2 * m_nn2 / m_h2;
+    Eigen::Vector3d gradTheta2 = -m_nn1 / m_h01;
+    Eigen::Vector3d gradTheta3 = -m_nn2 / m_h02;
 
-    Eigen::Map<Eigen::RowVectorXf> dFMap(grad, 12);
+    Eigen::Map<Eigen::Matrix<double, 12, 1, Eigen::RowMajor>> dFMap(grad);
     dFMap.segment<3>(0) = gradTheta0;
     dFMap.segment<3>(3) = gradTheta1;
     dFMap.segment<3>(6) = gradTheta2;
     dFMap.segment<3>(9) = gradTheta3;
 
-
+*/
 }
 
     /*
@@ -839,7 +833,7 @@ def gradEs_hessEs(node0 = None,node1 = None,l_k = None,EA = None):
 */
 
 
-static void calculateGradEb_HessEb_Shell(const Eigen::RowVector3f& node0, const Eigen::RowVector3f& node1, const Eigen::RowVector3f& node2, const Eigen::RowVector3f& node3, float thetaBar, float kb, float* dF, float* dJ){
+static void calculateGradEb_HessEb_Shell(const Eigen::Vector3d& node0, const Eigen::Vector3d& node1, const Eigen::Vector3d& node2, const Eigen::Vector3d& node3, double thetaBar, double kb, double* dF, double* dJ){
     /*
 def gradEb_hessEb_Shell(x0, x1=None, x2=None, x3=None, theta_bar=0, kb=1.0):
     """
@@ -848,8 +842,8 @@ def gradEb_hessEb_Shell(x0, x1=None, x2=None, x3=None, theta_bar=0, kb=1.0):
     Parameters:
     x0 (array): Can either be a 3-element array (single point) or a 12-element array.
     x1, x2, x3 (arrays): Optional, 3-element arrays specifying points.
-    theta_bar (float): Reference angle.
-    kb (float): Bending stiffness.
+    theta_bar (double): Reference angle.
+    kb (double): Bending stiffness.
 
     Returns:
     dF (array): Gradient of the bending energy.
@@ -874,33 +868,48 @@ def gradEb_hessEb_Shell(x0, x1=None, x2=None, x3=None, theta_bar=0, kb=1.0):
     return dF, dJ
 
     */
-    float theta = getTheta(node0, node1, node2, node3);
-    float grad[12] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+    /*
+    double theta = getTheta(node0, node1, node2, node3);
+    double grad[12] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
     gradTheta(node0, node1, node2, node3, grad);
 
-    Eigen::Map<Eigen::RowVectorXf> gradMap(grad, 12);
-    Eigen::Map<Eigen::RowVectorXf> dFMap(dF, 12);
+    Eigen::Map<
+        Eigen::Matrix<
+            double,
+            12, 1,
+            Eigen::RowMajor
+        >
+    > gradMap(grad);
+    Eigen::Map<
+        Eigen::Matrix<
+            double,
+            12, 1
+            Eigen::RowMajor
+        >
+    > dFMap(dF);
 
-    dFMap = 0.5 * kb * (2 * (theta - thetaBar) * gradMap);
+    dFMap.segment<12>(0) = 0.5 * kb * (2.0 * (theta - thetaBar) * gradMap);
     
-    float hess[144];
+    double hess[144];
     hessTheta(node0, node1, node2, node3, hess);
-    Eigen::Map<Eigen::Matrix<float, 12, 12, Eigen::RowMajor>> dJMap(dJ);
-    Eigen::Map<Eigen::Matrix<float, 12, 12, Eigen::RowMajor>> hessMap(hess);
+    Eigen::Map<Eigen::Matrix<double, 12, 12, Eigen::RowMajor>> dJMap(dJ);
+    Eigen::Map<Eigen::Matrix<double, 12, 12, Eigen::RowMajor>> hessMap(hess);
     //// TODO Which is the correct transpose?
-    dJMap = 0.5 * kb * (2 *  gradMap.transpose() * gradMap + 2 * (theta - thetaBar) * hessMap);
+    Eigen::MatrixXd gradgradT = gradMap.transpose() * gradMap;
+    dJMap.block<12, 12>(0, 0) = 0.5 * kb * (2.0 * gradgradT + 2.0 * (theta - thetaBar) * hessMap);
+*/
 }
-
-static void calculateFb_Jb(float* bendingForcesVecPtr, float* bendingHessiansVecPtr, const std::vector<glm::ivec4>& hingeVec, const Eigen::MatrixXf& positionMap, float kb, float thetaBar, uint32_t dofCount, uint32_t hingeCount) {
+// use span and references
+static void calculateFb_Jb(double* bendingForcesVecPtr, double* bendingHessiansVecPtr, const std::vector<glm::ivec4>& hingeVec, const Eigen::Matrix<double, Eigen::Dynamic, 1, Eigen::RowMajor>& q, double kb, const std::vector<double>& thetaBar, uint32_t dofCount, uint32_t hingeCount) {
+    /*
+    Eigen::Map<Eigen::Matrix<
+            double,
+            Eigen::Dynamic, 1,
+            Eigen::RowMajor
+            >> bendingForces(bendingForcesVecPtr, dofCount, 1);
     Eigen::Map<
         Eigen::Matrix<
-        float,
-        Eigen::Dynamic, Eigen::Dynamic,
-        Eigen::RowMajor
-        >, Eigen::Unaligned> bendingForces(bendingForcesVecPtr, dofCount, 1);
-    Eigen::Map<
-        Eigen::Matrix<
-        float,
+        double,
         Eigen::Dynamic, Eigen::Dynamic,
         Eigen::RowMajor
         >, Eigen::Unaligned> bendingHessians(bendingHessiansVecPtr, dofCount, dofCount);
@@ -914,33 +923,38 @@ static void calculateFb_Jb(float* bendingForcesVecPtr, float* bendingHessiansVec
         uint32_t node2 = kHinge[2];
         uint32_t node3 = kHinge[3];
 
-        Eigen::RowVector3f x0 = positionMap.row(node0);
-        Eigen::RowVector3f x1 = positionMap.row(node1);
-        Eigen::RowVector3f x2 = positionMap.row(node2);
-        Eigen::RowVector3f x3 = positionMap.row(node3);
+        Eigen::Vector3d x0 = q.segment<3>(3 * node0);
+        Eigen::Vector3d x1 = q.segment<3>(3 * node1);
+        Eigen::Vector3d x2 = q.segment<3>(3 * node2);
+        Eigen::Vector3d x3 = q.segment<3>(3 * node3);
 
         int ind[] = { 3 * node0, 3 * node0 + 1, 3 * node0 + 2,
                       3 * node1, 3 * node1 + 1, 3 * node1 + 2,
                       3 * node2, 3 * node2 + 1, 3 * node2 + 2,
                       3 * node3, 3 * node3 + 1, 3 * node3 + 2 };
 
-        float df[12] = { -1.0f, -2.0f, -3.0f, 1.0f, 2.0f, 3.0f, -4.0f, -5.0f, -6.0f, 4.0f, 5.0f, 6.0f };
-        float dj[144];
-        for (int i = 0; i < 144; i++) {
-            dj[i] = i;
-        }
+        double df[12];
+        double dj[144];
 
-        calculateGradEb_HessEb_Shell(x0, x1, x2, x3, 0.0f, 1.0f, df, dj);
+        calculateGradEb_HessEb_Shell(x0, x1, x2, x3, thetaBar[hingeIdx], kb, df, dj);
+        Eigen::Map<
+        Eigen::Matrix<
+            double,
+            Eigen::Dynamic, 1,
+            Eigen::RowMajor
+            >
+            > dfMap(df, dofCount, 1);
 
-        bendingForces(ind, Eigen::placeholders::all) = bendingForces(ind, Eigen::placeholders::all) - Eigen::Map<Eigen::Matrix<float, 12, 1>>(df);
-        bendingHessians(ind, ind) = bendingHessians(ind, ind) - Eigen::Map<Eigen::Matrix<float, 12, 12>>(dj);
+        bendingForces(ind, Eigen::placeholders::all) = bendingForces(ind, Eigen::placeholders::all).eval() - dfMap;
+        bendingHessians(ind, ind) = bendingHessians(ind, ind).eval() - Eigen::Map<Eigen::Matrix<double, 12, 12>>(dj);
 
         //    //fmt
     }
+*/
 }
 
 
-static void calculateGradEs_HessEs(const Eigen::RowVector3f& node0, const Eigen::RowVector3f& node1, float lk, float EA, float* dF, float* dJ) {
+static void calculateGradEs_HessEs(const Eigen::Vector3d& node0, const Eigen::Vector3d& node1, double lk, double EA, double* dF, double* dJ) {
     /*
     ## Gradient of Es
     edge = node1 - node0
@@ -964,42 +978,49 @@ static void calculateGradEs_HessEs(const Eigen::RowVector3f& node0, const Eigen:
     dJ[3:6,0:3] = - M
     return dF,dJ
     */
-
+/*
    // Gradient of Es
-    Eigen::RowVector3f edge = node1 - node0;
-    float edgeLen = edge.norm();
-    Eigen::RowVector3f tangent = edge / edgeLen;
-    float epsX = edgeLen / lk - 1.0f;
-    Eigen::RowVector3f dF_unit = EA * tangent * epsX;
-    Eigen::Map<Eigen::RowVectorXf> dFMap(dF, 6);
+    Eigen::Vector3d edge = node1 - node0;
+    double edgeLen = edge.norm();
+    Eigen::Vector3d tangent = edge / edgeLen;
+    double epsX = edgeLen / lk - 1.0;
+    Eigen::Vector3d dF_unit = EA * tangent * epsX;
+
+    Eigen::Map<
+        Eigen::Matrix<
+            double, 
+            6, 1, 
+        Eigen::RowMajor>
+    > dFMap(dF);
     dFMap << -dF_unit, dF_unit;
    // 
    // // Hessian of Es
-    Eigen::Matrix3f Id3 = Eigen::Matrix3f::Identity();
+    Eigen::Matrix3d Id3 = Eigen::Matrix3d::Identity();
 
     // Note i did a transpose not in the original formula here...
-    Eigen::Matrix3f M = EA * ((1 / lk - 1 / edgeLen) * Id3 + 1 / edgeLen * (edge.transpose() * edge) / (edgeLen * edgeLen));
-    // Eigen::RowVector3f dF = Eigen::RowVector3f::Zero();
-    Eigen::Map<Eigen::Matrix<float, 6, 6, Eigen::RowMajor>> dJMap(dJ);
+    Eigen::Matrix3d M = EA * ((1 / lk - 1 / edgeLen) * Id3 + 1 / edgeLen * (edge.transpose() * edge) / (edgeLen * edgeLen));
+    // Eigen::Vector3d dF = Eigen::Vector3d::Zero();
+    Eigen::Map<Eigen::Matrix<double, 6, 6, Eigen::RowMajor>> dJMap(dJ);
     dJMap.setZero();
     dJMap.block<3, 3>(0, 0) = M;
     dJMap.block<3, 3>(3, 3) = M;
     dJMap.block<3, 3>(0, 3) = -M;
     dJMap.block<3, 3>(3, 0) = -M;
+    */
 }
 
-static void calculateFs_Js(float* stretchingForcesVecPtr, float* stretchingHessiansVecPtr, const Eigen::MatrixXf& positions, const std::vector<glm::ivec2>& edgeVec, const std::vector<float>& undeformedEdgeLengthVec, const std::vector<float>& elasticStretchingVec, uint32_t dofCount, uint32_t edgeCount) {
+static void calculateFs_Js(double* stretchingForcesVecPtr, double* stretchingHessiansVecPtr, const Eigen::Matrix<double, Eigen::Dynamic, 1, Eigen::RowMajor>& q, const std::vector<glm::ivec2>& edgeVec, const std::vector<double>& undeformedEdgeLengthVec, const std::vector<double>& elasticStretchingVec, uint32_t dofCount, uint32_t edgeCount) {
+/*
+    Eigen::Map<
+        Eigen::Matrix<
+            double,
+            Eigen::Dynamic, 1,
+        Eigen::RowMajor>
+    > stretchForces(stretchingForcesVecPtr, dofCount, 1);
 
     Eigen::Map<
         Eigen::Matrix<
-        float,
-        Eigen::Dynamic, Eigen::Dynamic,
-        Eigen::RowMajor
-        >, Eigen::Unaligned> stretchForces(stretchingForcesVecPtr, dofCount, 1);
-
-    Eigen::Map<
-        Eigen::Matrix<
-        float,
+        double,
         Eigen::Dynamic, Eigen::Dynamic,
         Eigen::RowMajor
         >, Eigen::Unaligned> stretchHessians(stretchingHessiansVecPtr, dofCount, dofCount);
@@ -1009,24 +1030,34 @@ static void calculateFs_Js(float* stretchingForcesVecPtr, float* stretchingHessi
         glm::ivec2 kEdge = edgeVec[edgeIdx];
         uint32_t node0 = kEdge[0];
         uint32_t node1 = kEdge[1];
-        float lk = undeformedEdgeLengthVec[edgeIdx];
-        float ks  = elasticStretchingVec[edgeIdx];
+        double lk = undeformedEdgeLengthVec[edgeIdx];
+        double ks  = elasticStretchingVec[edgeIdx];
 
-        Eigen::RowVector3f x0 = positions.row(node0);
-        Eigen::RowVector3f x1 = positions.row(node1);
+        Eigen::Vector3d x0 = q.segment<3>(3 * node0);
+        Eigen::Vector3d x1 = q.segment<3>(3 * node1);
 
         int ind[] = { 3 * node0, 3 * node0 + 1, 3 * node0 + 2,
                       3 * node1, 3 * node1 + 1, 3 * node1 + 2 };
 
-        float df[6] = {-1.0f, -2.0f, -3.0f, 1.0f, 2.0f, 3.0f};
-        float dj[36];
-        for (int i = 0; i < 36; i++) {
-            dj[i] = i;
-        }
+        double df[6];
+        double dj[36];
+        Eigen::Map<
+            Eigen::Matrix<
+                double, 
+                6, 1,
+            Eigen::RowMajor>
+        > dfMap(df);
+
+        Eigen::Map<
+            Eigen::Matrix<
+                double, 
+                12, 12,
+            Eigen::RowMajor>
+        > djMap(dj);
 
         calculateGradEs_HessEs(x0, x1, lk, ks, df, dj);
-        stretchForces(ind, Eigen::placeholders::all) = stretchForces(ind, Eigen::placeholders::all) -  Eigen::Map<Eigen::Matrix<float, 6, 1>>(df);
-        stretchHessians(ind, ind) = stretchHessians(ind, ind) - Eigen::Map<Eigen::Matrix<float, 6, 6>>(dj);
+        stretchForces(ind) = stretchForces(ind).eval() - dfMap;
+        stretchHessians(ind, ind) = stretchHessians(ind, ind).eval() - djMap;
 
         //fmt::print("Edge {} {}\n", node0, node1);
         //std::cout << "Vec0s ----------- " << x0 << std::endl;
@@ -1035,175 +1066,188 @@ static void calculateFs_Js(float* stretchingForcesVecPtr, float* stretchingHessi
         //std::cout << "Stretching Forces -----------\n" << stretchForces << std::endl;
         //std::cout << "Stretching Hessians -----------\n" << stretchHessians << std::endl;
     }
-
+*/
 }
 
 void ClothSystem::CalculateForces() {
-    // Eigen::Map<
-    //     Eigen::MatrixXf, 
-    //     Eigen::Unaligned, 
-    //     Eigen::Stride<0, 0>    
-    // > positionMap (positionVec.data(), 1, vecValCount, Eigen::Stride<0, 0>(0, 0));
-    // //std::cout << "Vec--------\n" << positionMap << std::endl;
 
-    // Eigen::Map<
-    //     Eigen::MatrixXf,
-    //     Eigen::Unaligned,
-    //     Eigen::Stride<1, 4>
-    // > testMap(positionVec.data(), 3, particleCount, Eigen::Stride<1, 4>(1, 4));
-    // //std::cout << "Mat--------\n" << testMap << std::endl;
-     
-     
-    // Define the float array (input data)
-    // float rawArray[] = {
-    //     0, 0, 0, 1,
-    //     0.1, 0.0993347, 0, 1,
-    //     0.05, 0.0993347, -0.0866025, 1,
-    //     0.15, 0.198669, -0.0866025, 1
-    // };
+    auto currTime = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::milli> duration = currTime - lastTime;
+    if (duration.count() > dt * 1000.0) {
+        
+        Eigen::Stride<Eigen::Dynamic, Eigen::Dynamic> bufferStrides(4, 1);
+        Eigen::Stride<Eigen::Dynamic, Eigen::Dynamic> tmpVecStrides(3, 1);
+        // Iterate through every hinge
+        Eigen::Map<
+            Eigen::Matrix<
+                double, 
+                Eigen::Dynamic, 1>
+        > massVec(massVector.data(), dofCount, 1);
+        
+        Eigen::Map<Eigen::Matrix<
+            double,
+            Eigen::Dynamic, Eigen::Dynamic
+            >> massMat(massMatrix.data(), dofCount, dofCount);
+        // std::cout << massMat << std::endl;
+
+        uint32_t iter = 0;
+        double error = 10 * tol;
+
+        Eigen::Map<
+            Eigen::Matrix<
+                double, 
+                Eigen::Dynamic, 1>
+        > externalForces(externalForcesVec.data(), dofCount, 1);
+        // Eigen::Map<
+        //    Eigen::Matrix<
+        //    double,
+        //    Eigen::Dynamic, 1,
+        //    Eigen::RowMajor
+        //    >, Eigen::Unaligned,
+        //    Eigen::Stride<Eigen::Dynamic, Eigen::Dynamic>
+        // > positionMap(clothPositionVec.data(), particleCount, 3, bufferStrides);
+
+        //Eigen::Map<
+        //    Eigen::Matrix<
+        //    double,
+        //    Eigen::Dynamic, 3,
+        //    Eigen::RowMajor
+        //    >, Eigen::Unaligned,
+        //    Eigen::Stride<Eigen::Dynamic, Eigen::Dynamic>
+        //> velocityMap(velocityVec.data(), particleCount, 3, bufferStrides);
+
+        //Eigen::Map<
+        //    Eigen::Matrix<
+        //    double,
+        //    Eigen::Dynamic, 3,
+        //    Eigen::RowMajor
+        //    >, Eigen::Unaligned,
+        //    Eigen::Stride<Eigen::Dynamic, Eigen::Dynamic>
+        //> forceMap(forceVec.data(), particleCount, 3, bufferStrides);
+
+        // Eigen::MatrixXd positionX1 = positionMap.reshaped<Eigen::RowMajor>(dofCount, 1);
+
+        // lastdofPositions = dofPositions;
+
+        Eigen::Map<
+            Eigen::Matrix<
+                double, 
+                Eigen::Dynamic, 1>
+        > q0(lastdofPositions.data(), dofCount, 1);
+        Eigen::Map<
+            Eigen::Matrix<
+                double, 
+                Eigen::Dynamic, 1>
+        > q(dofPositions.data(), dofCount, 1);
+        Eigen::Map<
+            Eigen::Matrix<
+                double, 
+                Eigen::Dynamic, 1>
+        > u(dofVelocities.data(), dofCount, 1);
+
+        q0 = q;
+
+  
+
+        // dofPositions = positionX1;
+        while (error > tol) {
+            
+            std::vector<double> bendingForcesVec(dofCount, 0.0);
+            std::vector<double> bendingHessiansVec(dofCount * dofCount, 0.0);
+
+            std::vector<double> stretchingForcesVec(dofCount, 0.0);
+            std::vector<double> stretchingHessiansVec(dofCount * dofCount, 0.0);
+
+            Eigen::Map<
+                Eigen::Matrix<
+                    double, 
+                    Eigen::Dynamic, 1>
+            > bendingForces(bendingForcesVec.data(), dofCount, 1);
+            Eigen::Map<
+                Eigen::Matrix<
+                double,
+                Eigen::Dynamic, Eigen::Dynamic
+                >> bendingHessians(bendingHessiansVec.data(), dofCount, dofCount);
+            Eigen::Map<
+                Eigen::Matrix<
+                    double, 
+                    Eigen::Dynamic, 1>
+            > stretchForces(stretchingForcesVec.data(), dofCount, 1);
+
+            Eigen::Map<
+                Eigen::Matrix<
+                double,
+                Eigen::Dynamic, Eigen::Dynamic
+                >> stretchHessians(stretchingHessiansVec.data(), dofCount, dofCount);
 
 
+            
+            //Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, 1>> positionX1(positionMap, dofCount, 1);
 
-    // Define strides: 4 elements per row, skip 1 element per column
-    Eigen::Stride<Eigen::Dynamic, Eigen::Dynamic> bufferStrides(4, 1);
-    Eigen::Stride<Eigen::Dynamic, Eigen::Dynamic> tmpVecStrides(3, 1);
+            //Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, 1>> velocityX1(velocityMap, dofCount, 1);
 
+            //Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, 1>> forceX1(forceMap, dofCount, 1);
 
-    Eigen::Map<
-        Eigen::Matrix<
-            float, 
-            Eigen::Dynamic, 3, 
-            Eigen::RowMajor
-        >, Eigen::Unaligned, 
-        Eigen::Stride<Eigen::Dynamic, Eigen::Dynamic>
-    > positionMap(positionVec.data(), particleCount, 3, bufferStrides);
+            /*
+            // Bending Forces -------------------------------------------------------------
+            calculateFb_Jb(bendingForcesVec.data(), bendingHessiansVec.data(), hingeVec, q, bendingStiffness, thetaBarVec, dofCount, hingeCount);
 
+            // Stretching Forces -------------------------------------------------------------
+            calculateFs_Js(stretchingForcesVec.data(), stretchingHessiansVec.data(), q, edgeVec, undeformedEdgeLengthVec, elasticStretchingVec, dofCount, edgeCount);
+           
+            
+            Eigen::MatrixXd totalForces = bendingForces + stretchForces + externalForces;
+            
+            Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> jacobianForces = bendingHessians + stretchHessians;
+            Eigen::Matrix<double, Eigen::Dynamic, 1> f = (massVec / dt).cwiseProduct((q - q0) / dt - u) - totalForces;
+            Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> J = massMat / (dt * dt) - jacobianForces;
+            
+            
+            Eigen::Matrix<double, Eigen::Dynamic, 1> f_free = f(freeIndices, 1);
+            Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> J_free = J(freeIndices, freeIndices);
+            
+            Eigen::Matrix<double, Eigen::Dynamic, 1> dq_free = J_free.ldlt().solve(f_free);
+            
 
-    // Iterate through every hinge
-    //std::vector<float> bendingForces(dofCount, 0.0f);
-    std::vector<float> bendingForcesVec(dofCount, 0.0f);
-    std::vector<float> bendingHessiansVec(dofCount * dofCount, 0.0f);
+            q(freeIndices) = q(freeIndices).eval() - dq_free;
 
-    calculateFb_Jb(bendingForcesVec.data(), bendingHessiansVec.data(), hingeVec, positionMap, bendingStiffness, 0.0f, dofCount, hingeCount);
+            error = f_free.cwiseAbs().sum();
+            iter += 1;
+            
+            */
+            
+           error = 0.0;
+        }
+        // External Forces -------------------------------------------------------------
 
-        // Fb = np.zeros(ndof)
-        // Jb = np.zeros((ndof,ndof))
-        // for kHinge in range(hinges.shape[0]):
-        //   node0 = hinges[kHinge,0]
-        //   node1 = hinges[kHinge,1]
-        //   node2 = hinges[kHinge,2]
-        //   node3 = hinges[kHinge,3]
-        //   x0 = q[3*node0:3*node0+3]
-        //   x1 = q[3*node1:3*node1+3]
-        //   x2 = q[3*node2:3*node2+3]
-        //   x3 = q[3*node3:3*node3+3]
-        //   ind = [3*node0, 3*node0 + 1, 3*node0 + 2,
-        //          3*node1, 3*node1 + 1, 3*node1 + 2,
-        //          3*node2, 3*node2 + 1, 3*node2 + 2,
-        //          3*node3, 3*node3 + 1, 3*node3 + 2]
-        //   dF, dJ = gradEb_hessEb_Shell(x0, x1, x2, x3, thetaBar, kb)
-        //   Fb[ind] = Fb[ind] - dF
-        //   Jb[np.ix_(ind,ind)] = Jb[np.ix_(ind,ind)] - dJ
-// Stretching Forces -------------------------------------------------------------
+        u = (q - q0) / dt;
 
-    //// Map the raw array to a 4x3 matrix with the defined bufferStrides
-    //Eigen::Map<Eigen::Matrix<float, 4, 3, Eigen::RowMajor>, 0, Eigen::Stride<Eigen::Dynamic, Eigen::Dynamic>>
-    //    positions(rawArray, 4, 3, bufferStrides);
+        for (uint32_t particleIdx = 0; particleIdx < particleCount; particleIdx++) {
+            // dofPositions[dof] = q(dof, 0);
+            // dofVelocities[dof] = u(dof, 0);
+            clothPositionVec[particleIdx * 4] = dofPositions[particleIdx * 3];
+            clothPositionVec[particleIdx * 4 + 1] = dofPositions[particleIdx * 3 + 1];
+            clothPositionVec[particleIdx * 4 + 2] = dofPositions[particleIdx * 3 + 2];
+        }
 
-    // Print the extracted positions
-    //std::cout << "Extracted 4x3 Positions Matrix:\n" << positions << "\n";
-    // Iterate through every edge
+        glNamedBufferSubData(positionBuffer, 0, sizeof(float) * 4 * particleCount, clothPositionVec.data());
+        lastTime = currTime;
+        totalTime += dt;
+        
+    }
 
-    std::vector<float> stretchingForcesVec(dofCount, 0.0f);
-    std::vector<float> stretchingHessiansVec(dofCount * dofCount, 0.0f);
-    calculateFs_Js(stretchingForcesVec.data(), stretchingHessiansVec.data(), positionMap, edgeVec, undeformedEdgeLengthVec, elasticStretchingVec, dofCount, edgeCount);
-    /*
-
-  q = qGuess
-  ndof = len(q)
-  iter = 0
-  error = 10 * tol
-
-  while error > tol:
-
-    # Calculating Bending
-    Fb = np.zeros(ndof)
-    Jb = np.zeros((ndof,ndof))
-    for kHinge in range(hinges.shape[0]):
-      node0 = hinges[kHinge,0]
-      node1 = hinges[kHinge,1]
-      node2 = hinges[kHinge,2]
-      node3 = hinges[kHinge,3]
-      x0 = q[3*node0:3*node0+3]
-      x1 = q[3*node1:3*node1+3]
-      x2 = q[3*node2:3*node2+3]
-      x3 = q[3*node3:3*node3+3]
-      ind = [3*node0, 3*node0 + 1, 3*node0 + 2,
-             3*node1, 3*node1 + 1, 3*node1 + 2,
-             3*node2, 3*node2 + 1, 3*node2 + 2,
-             3*node3, 3*node3 + 1, 3*node3 + 2]
-      dF, dJ = gradEb_hessEb_Shell(x0, x1, x2, x3, thetaBar, kb)
-      Fb[ind] = Fb[ind] - dF
-      Jb[np.ix_(ind,ind)] = Jb[np.ix_(ind,ind)] - dJ
-
-    # Calculating stretching
-    Fs = np.zeros(ndof)
-    Js = np.zeros((ndof,ndof))
-    for kEdge in range(edges.shape[0]):
-      node0 = edges[kEdge,0]
-      node1 = edges[kEdge,1]
-      x0 = q[3*node0:3*node0+3]
-      x1 = q[3*node1:3*node1+3]
-      ind = [3*node0, 3*node0 + 1, 3*node0 + 2,
-             3*node1, 3*node1 + 1, 3*node1 + 2]
-      dF, dJ = gradEs_hessEs(x0, x1, lk[kEdge], ks[kEdge])
-      Fs[ind] = Fs[ind] - dF
-      Js[np.ix_(ind,ind)] = Js[np.ix_(ind,ind)] - dJ
-
-    # Calculating total force
-    F = Fg + Fb + Fs # Viscous forces can sometimes be useful
-    JForces = Js + Jb
-
-    f = massVector/dt * ( (q-q0)/dt - u ) - F
-    J = mMat / dt ** 2 - JForces
-
-    f_free = f[freeIndex]
-    J_free = J[np.ix_(freeIndex, freeIndex)]
-    dq_free = np.linalg.solve(J_free, f_free)
-
-    q[freeIndex] = q[freeIndex] - dq_free
-
-    error = np.sum( np.abs(f_free) )
-    iter += 1
-
-    print('Iter = %d' % iter)
-    print('Error = %f' % error)
-
-  u = (q - q0) / dt
-
-  return q, u
+    std::chrono::duration<double, std::milli> timeSinceStart = std::chrono::high_resolution_clock::now() - startTime;
+    if (timerRunning && timeSinceStart.count() > 5000) {
+        fmt::print("t = 5: {} {} {}", dofPositions[particleCount * 3 - 3], dofPositions[particleCount * 3 - 2], dofPositions[particleCount * 3 - 1]);
+        timerRunning = false;
+    }
     
-    */
-
-
-    // glNamedBufferSubData(
-    //     particleSystemDataBuffer,
-    //     0,
-    //     sizeof(ParticleSystemDataBlock),
-    //     &particleSystemDataBlock
-    // );
-    // glDispatchCompute(particleCount, 1u, 1u);
-    // glMemoryBarrier(GL_ALL_BARRIER_BITS);
-
-    // glFinish();
-
-
 }
 
 void ClothSystem::BindBuffers() const{
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_POSITIONS_SSBO_BINDING, positionBuffer);
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_VELOCITIES_SSBO_BINDING, velocityBuffer);
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_FORCES_SSBO_BINDING, forcesBuffer);
+    //glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_VELOCITIES_SSBO_BINDING, velocityBuffer);
+    //glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_FORCES_SSBO_BINDING, forcesBuffer);
     //glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_DATA_SSBO_BINDING, particleDataBuffer);
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_SYSTEM_DATA_SSBO_BINDING, particleSystemDataBuffer);
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_EDGE_DATA_SSBO_BINDING, edgesBuffer);
@@ -1222,38 +1266,38 @@ void ClothSystem::RenderDebug(GLuint VAO) {
     glNamedBufferSubData(pickedDebugDataBuffer, 0, sizeof(PickedClothData), &pickedClothData);
 
     edgeDebugShader->use();
-    glVertexArrayVertexBuffer(VAO, 0, edgeDebugDataBuffer, 0, sizeof(glm::vec4));
+    glVertexArrayVertexBuffer(VAO, 0, edgeDebugDataBuffer, 0, sizeof(glm::dvec4));
     glVertexArrayElementBuffer(VAO, edgeDebugEBO);
-    glPointSize(10.0f);
-    glLineWidth(10.0f);
+    glPointSize(10.0);
+    glLineWidth(10.0);
     glDrawElements(GL_LINES, 2, GL_UNSIGNED_INT, 0);
     glDrawElements(GL_POINTS, 2, GL_UNSIGNED_INT, 0);
 
     hingeDebugShader->use();
-    glPointSize(20.0f);
-    glLineWidth(20.0f);
+    glPointSize(20.0);
+    glLineWidth(20.0);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     glDrawElements(GL_POINTS, 6, GL_UNSIGNED_INT, 0);
 
     auto currTime = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<float, std::milli> duration = currTime - lastTime;
+    std::chrono::duration<double, std::milli> duration = currTime - lastTime;
     
-    if (duration.count() > 120) {
-        pickedClothData.pickedEdgeIdx = (pickedClothData.pickedEdgeIdx + 1) % edgeCount;
-        // fmt::print("Edge {}: {} {}\n",
-        //     pickedClothData.pickedEdgeIdx, 
-        //     edgeVec[pickedClothData.pickedEdgeIdx].x, 
-        //     edgeVec[pickedClothData.pickedEdgeIdx].y);
+    //if (duration.count() > 120) {
+    //    pickedClothData.pickedEdgeIdx = (pickedClothData.pickedEdgeIdx + 1) % edgeCount;
+    //    // fmt::print("Edge {}: {} {}\n",
+    //    //     pickedClothData.pickedEdgeIdx, 
+    //    //     edgeVec[pickedClothData.pickedEdgeIdx].x, 
+    //    //     edgeVec[pickedClothData.pickedEdgeIdx].y);
 
-        // fmt::print("Hinge {}: {} {} {} {}\n",
-        //     pickedClothData.pickedHingeIdx, 
-        //     hingeVec[pickedClothData.pickedHingeIdx].x, 
-        //     hingeVec[pickedClothData.pickedHingeIdx].y,
-        //     hingeVec[pickedClothData.pickedHingeIdx].z,
-        //     hingeVec[pickedClothData.pickedHingeIdx].w);
-        pickedClothData.pickedHingeIdx = (pickedClothData.pickedHingeIdx + 1) % hingeCount;        
-        lastTime = currTime;
-    }
+    //    // fmt::print("Hinge {}: {} {} {} {}\n",
+    //    //     pickedClothData.pickedHingeIdx, 
+    //    //     hingeVec[pickedClothData.pickedHingeIdx].x, 
+    //    //     hingeVec[pickedClothData.pickedHingeIdx].y,
+    //    //     hingeVec[pickedClothData.pickedHingeIdx].z,
+    //    //     hingeVec[pickedClothData.pickedHingeIdx].w);
+    //    pickedClothData.pickedHingeIdx = (pickedClothData.pickedHingeIdx + 1) % hingeCount;        
+    //    lastTime = currTime;
+    //}
 
 
 }

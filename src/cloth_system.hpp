@@ -9,34 +9,32 @@
 
 struct ClothSystemParameters {
     uint32_t particleCount;
-    float timeStep;
+    double timeStep;
     std::string shaderName;
      uint32_t clothSideLength;
-     float cellSideLength;
-    //float tolerance;
-    float totalMass;
-    //float fluidViscosity;
-    //float gravityAccel;
-    //float initialPosition;
+    double cellSideLength;
+    double totalMass;
+//  double fluidViscosity;
+    double gravityAccel;
+//  double initialPosition;
+    double youngModulus;
+    double thickness;
+
 
 };
 
 struct ClothDataBlock{
-    float mass;
+    double mass;
     // bool fixedIndex; // dunno if that should be here...
 };
 
 struct ClothSystemDataBlock {
     uint32_t particleCount;
-    float timeStep;
-    // float tolerance;
-    // float fluidViscosity;
-    // float gravityAccel;
-    // float youngModulus;
-    // float thickness;
-    // float bendingStiffness;
-    // float stretchStiffness;
-    
+    double timeStep;
+    double tolerance;
+    double gravityAccel;
+    double bendingStiffness;
+    // double fluidViscosity;
 };
 
 template class BaseParticleSystem<ClothDataBlock, ClothSystemDataBlock, ClothSystemParameters>;
@@ -59,16 +57,23 @@ class ClothSystem : public BaseParticleSystem<
     ClothSystemParameters
 > {
     public:
+        std::vector<float> clothPositionVec;
+        std::vector<double> clothVelocityVec;
+        std::vector<double> clothForceVec;
 
-    uint32_t dofCount;
+
+        uint32_t dofCount;
 
         std::vector<glm::vec4> normalsVec;
         GLuint normalsBuffer;
         
         std::vector<glm::ivec2> edgeVec;
-        std::vector<float> undeformedEdgeLengthVec;
-        std::vector<float> elasticStretchingVec;
-        float bendingStiffness;
+        std::vector<double> undeformedEdgeLengthVec;
+        std::vector<double> elasticStretchingVec;
+        double bendingStiffness;
+        double dt;
+        double gravityAccel;
+        double tol;
 
         uint32_t edgeCount;
         GLuint edgesBuffer;
@@ -76,6 +81,19 @@ class ClothSystem : public BaseParticleSystem<
         std::vector<glm::ivec4> hingeVec;
         uint32_t hingeCount;
         GLuint hingesBuffer;
+        std::vector<double> thetaBarVec;
+
+        std::vector<double> externalForcesVec;
+        
+        std::vector<double> dofPositions;
+        std::vector<double> dofVelocities;
+        std::vector<double> lastdofPositions;
+
+        std::vector<double> massVector;
+        std::vector<double> massMatrix;
+        std::vector<uint32_t> fixedNodes;
+        std::vector<uint32_t> fixedIndices;
+        std::vector<uint32_t> freeIndices;
 
 
         struct PickedClothData {
@@ -96,7 +114,7 @@ class ClothSystem : public BaseParticleSystem<
 
         Shader* edgeDebugShader;
         Shader* hingeDebugShader;
-
+        bool timerRunning = true;
         
 
     //ClothSystem(ClothSystemParameters* params);
@@ -110,7 +128,10 @@ class ClothSystem : public BaseParticleSystem<
     virtual void RenderDebug(GLuint VAO) override;
     virtual void CalculateForces() override;
 
+    std::chrono::time_point<std::chrono::high_resolution_clock> startTime;
     std::chrono::time_point<std::chrono::high_resolution_clock> lastTime;
+    double totalTime;
+
 
     // void CalculateNewPositions();
 };

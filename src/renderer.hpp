@@ -71,6 +71,7 @@ class Renderer {
     GLuint debugVAO;
     GLuint instVAO;
     GLuint particleVAO;
+    GLuint clothVAO;
 
     static GLuint quadVAO;
     static GLuint quadVBO;
@@ -136,6 +137,7 @@ class Renderer {
     void CreateVAO();
     void CreateInstanceVAO();
     void CreateParticleVAO();
+    void CreateClothVAO();
     void CreateDebugVAO();
     void CreateFBO(float w, float h);
     void CreateRBO(float w, float h);
@@ -149,6 +151,7 @@ class Renderer {
     void BindInstanceData(const EntityInstanceData& entityInstanceData);
     void BindInstancePrimitive(const Primitive& primitive);
     void BindParticleSystem(const IBaseParticleSystem* particleSystem);
+    // void BindClothSystem(const IBaseParticleSystem* particleSystem);
 
     void BindDebugMesh(const Primitive& mesh);
 
@@ -159,6 +162,8 @@ class Renderer {
     void RenderEntities(const Scene& scene);
     void RenderInstancedStaticModels(const Scene& scene);
     void RenderParticleSystems(const Scene& scene);
+    void RenderClothSystems(const Scene& scene);
+    
     void RenderDebugVolumes(const Scene& scene);
     
     void RenderPostProcess();

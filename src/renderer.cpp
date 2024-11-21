@@ -157,6 +157,7 @@ void Renderer::Init(float w, float h){
     CreateInstanceVAO();
     CreateDebugVAO();
     CreateParticleVAO();
+    CreateClothVAO();
     CreateFBO(w, h);
     CreateRBO(w, h);
 
@@ -218,8 +219,18 @@ void Renderer::CreateParticleVAO(){
     glEnableVertexArrayAttrib(particleVAO, POSITION_ATTRIB_LOC);
     
     // position attribute
-    glVertexArrayAttribFormat(instVAO, POSITION_ATTRIB_LOC, 4, GL_FLOAT, GL_FALSE, 0);
-    glVertexArrayAttribBinding(instVAO, POSITION_ATTRIB_LOC, 0);
+    glVertexArrayAttribFormat(particleVAO, POSITION_ATTRIB_LOC, 4, GL_FLOAT, GL_FALSE, 0);
+    glVertexArrayAttribBinding(particleVAO, POSITION_ATTRIB_LOC, 0);
+}
+
+void Renderer::CreateClothVAO(){
+    glCreateVertexArrays(1, &clothVAO);
+
+    glEnableVertexArrayAttrib(clothVAO, POSITION_ATTRIB_LOC);
+    
+    // position attribute
+    glVertexArrayAttribFormat(clothVAO, POSITION_ATTRIB_LOC, 4, GL_DOUBLE, GL_FALSE, 0);
+    glVertexArrayAttribBinding(clothVAO, POSITION_ATTRIB_LOC, 0);
 }
 
 void Renderer::CreateDebugVAO(){
@@ -472,19 +483,39 @@ void Renderer::RenderParticleSystems(const Scene& scene){
     glLineWidth(1.0f);
 
     for (const auto& particleSystem : scene.particleSystems){
-        particleSystem->BindBuffers();
-        particleSystem->CalculateForces();
-        particleSystem->SetupRender();
-        glBindVertexArray(particleVAO);
-        glVertexArrayVertexBuffer(particleVAO, 0, particleSystem->positionBuffer, 0, sizeof(glm::vec4));
-        glVertexArrayElementBuffer(particleVAO, particleSystem->EBO);
+        if (particleSystem->type == "base"){
+            particleSystem->BindBuffers();
+            particleSystem->CalculateForces();
+            particleSystem->SetupRender();
+            glBindVertexArray(particleVAO);
+            glVertexArrayVertexBuffer(particleVAO, 0, particleSystem->positionBuffer, 0, sizeof(glm::vec4));
+            glVertexArrayElementBuffer(particleVAO, particleSystem->EBO);
 
-        glDrawElements(GL_TRIANGLES, particleSystem->indiceCount, GL_UNSIGNED_INT, 0);
-        glDrawElements(GL_POINTS, particleSystem->indiceCount, GL_UNSIGNED_INT, 0);
-        glFinish();
+            glDrawElements(GL_TRIANGLES, particleSystem->indiceCount, GL_UNSIGNED_INT, 0);
+            glDrawElements(GL_POINTS, particleSystem->indiceCount, GL_UNSIGNED_INT, 0);
+            glFinish();
 
 
-        particleSystem->RenderDebug(particleVAO);
+            particleSystem->RenderDebug(particleVAO);
+        } else if (particleSystem->type == "cloth"){
+            // particleSystem->BindBuffers();
+            // //particleSystem->CalculateForces();
+            // particleSystem->SetupRender();
+            // glBindVertexArray(clothVAO);
+            // glVertexArrayVertexBuffer(clothVAO, 0, particleSystem->positionBuffer, 0, sizeof(glm::dvec4));
+            // glVertexArrayElementBuffer(clothVAO, particleSystem->EBO);
+
+            // glDrawElements(GL_TRIANGLES, particleSystem->indiceCount, GL_UNSIGNED_INT, 0);
+            // glDrawElements(GL_POINTS, particleSystem->indiceCount, GL_UNSIGNED_INT, 0);
+            // glFinish();
+
+            //particleSystem->RenderDebug(clothVAO);
+        }
+
+
+
+
+
 
     }
     glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
@@ -555,7 +586,7 @@ void Renderer::Render(const Scene& scene){ // really bad, we are modifying the s
         RenderEntities(scene);
         RenderInstancedStaticModels(scene);
         RenderParticleSystems(scene);
-        RenderDebugVolumes(scene);
+        //RenderDebugVolumes(scene);
         RenderPostProcess();
         // glBindVertexArray(0);
         // glUseProgram(0);
