@@ -30,22 +30,29 @@ DONE! calculate the gradient of bending (hinges)
 DONE! calculate the hessian of bending (hinges)
 	- DONE! calculate hessTheta
 
-- TODO Debug the gradient 
-- TODO Debug the hessian
+- DONE! Debug the gradient 
+- DONE! Debug the hessian
 
-- TODO get the cloth mesh to update
+- DONE! get the cloth mesh to update
 
-- TODO translate the mainloop
-	DONE translate the stretching calculation
-	- TODO translate the bending calculation
-	- TODO translate the rest of the calculation (the solver)
-	- TODO mess with free indices
-	- TODO translate the error loop
+- DONE! translate the mainloop
+	DONE! translate the stretching calculation
+	- DONE! translate the bending calculation
+	- DONE! translate the rest of the calculation (the solver)
+	- DONE! mess with free indices
+	- DONE! translate the error loop
 
-- TODO create compute shaders for the operations
-- TODO use a gpu to solve these
+- CUT create compute shaders for the operations
+- CUT use a gpu to solve these
+
+- TODO Record Current Times
+- TODO Profile which areas need optimization
+    - TODO Find the hot paths
+	- TODO find the solutions
+	- TODO implement the solutions
+
 - TODO create a presentation
-	- TODO midterm (3 slides?)
+	- DONE? midterm (3 slides?)
 	- TODO final (5 slides)
 - TODO create a report
 	- TODO midterm (5 pages, 5+ references)

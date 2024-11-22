@@ -1,6 +1,7 @@
 #include <cloth_system.hpp>
 #include <shader_c.hpp>
 #include <shader_s.hpp>
+#include <gl_bindings.h>
 #include <chrono>
 #include <iostream>
 #include <Eigen/Dense>
@@ -46,7 +47,10 @@ def mmt(matrix):
     return matrix + matrix.T
 */
 
-static double signedAngle(const Eigen::Vector3d& u, const Eigen::Vector3d& v, const Eigen::Vector3d& n){
+static double signedAngle(
+    const Eigen::Ref<const Eigen::Vector3d>& u, 
+    const Eigen::Ref<const Eigen::Vector3d>& v, 
+    const Eigen::Ref<const Eigen::Vector3d>& n){
     Eigen::Vector3d w = u.cross(v);
     double angle = atan2(w.norm(), u.dot(v));
     if (n.dot(w) < 0){
@@ -56,7 +60,8 @@ static double signedAngle(const Eigen::Vector3d& u, const Eigen::Vector3d& v, co
 }
 
 
-static Eigen::Matrix3d mmt(const Eigen::Matrix3d& matrix){
+static Eigen::Matrix3d mmt(
+    const Eigen::Ref<const Eigen::Matrix3d>& matrix){
     return matrix + matrix.transpose();
 }
 
@@ -103,7 +108,11 @@ def getTheta(x0, x1 = None, x2 = None, x3 = None):
     return theta
     */
 
-static double getTheta(const Eigen::Vector3d& node0, const Eigen::Vector3d& node1, const Eigen::Vector3d& node2, const Eigen::Vector3d& node3){
+static double getTheta(
+        const Eigen::Ref< const Eigen::Vector3d > & node0, 
+        const Eigen::Ref< const Eigen::Vector3d > & node1, 
+        const Eigen::Ref< const Eigen::Vector3d > & node2, 
+        const Eigen::Ref< const Eigen::Vector3d > & node3){
     Eigen::Vector3d m_e0 = node1 - node0;
     Eigen::Vector3d m_e1 = node2 - node0;
     Eigen::Vector3d m_e2 = node3 - node0;
@@ -176,13 +185,17 @@ void ClothSystem::InitializeBufferData(void* params) {
     }
     
     // freeindices 0-9
-    fixedNodes.push_back(0);
     fixedNodes.push_back(1);
-    fixedNodes.push_back(2);
+
+    fixedNodes.push_back(5);
+
+
+    //fixedNodes.push_back(8);
+
     uint32_t currFixedIdx = 0;
     for (uint32_t node = 0; node < particleCount; ++node) {
         if (currFixedIdx < fixedNodes.size() && node == fixedNodes[currFixedIdx]){
-            currFixedIdx += 1;
+            ++currFixedIdx;
             continue;
         }
         freeIndices.push_back(3*node);
@@ -190,6 +203,7 @@ void ClothSystem::InitializeBufferData(void* params) {
         freeIndices.push_back(3*node + 2);
         
     }
+    fixedNodesCount = fixedNodes.size();
 
     // for (uint32_t i = 0; i < clothParams->clothSideLength; ++i) {
 
@@ -353,7 +367,7 @@ void ClothSystem::InitializeBufferData(void* params) {
     
     const double Y = clothParams->youngModulus;
     const double h = clothParams->thickness;
-
+    std::cout << std::endl;
     for (uint32_t edgeIdx = 0; edgeIdx < edgeCount; ++edgeIdx) {
         glm::ivec2 edge = edgeVec[edgeIdx];
         glm::dvec4 edgeStart (clothPositionVec[4 * edge[0]], clothPositionVec[4 * edge[0] + 1], clothPositionVec[4 * edge[0] + 2], 1.0);
@@ -361,6 +375,7 @@ void ClothSystem::InitializeBufferData(void* params) {
         glm::dvec4 edgeVec = edgeEnd - edgeStart;
         undeformedEdgeLengthVec[edgeIdx] = glm::length(edgeVec);
         elasticStretchingVec[edgeIdx] = 0.5 * sqrt(3.0) * Y * h * pow(undeformedEdgeLengthVec[edgeIdx], 2.0);
+        fmt::print("({}, {}), ",edge[0], edge[1]);
         
     }
 
@@ -370,7 +385,7 @@ void ClothSystem::InitializeBufferData(void* params) {
                 double,
                 Eigen::Dynamic, 1>
     > q(dofPositions.data(), dofCount, 1);
-
+    std::cout << std::endl;
     thetaBarVec.resize(hingeCount);
     for (uint32_t hingeIdx = 0; hingeIdx < hingeCount; hingeIdx++){
         glm::ivec4 hinge = hingeVec[hingeIdx];
@@ -380,8 +395,11 @@ void ClothSystem::InitializeBufferData(void* params) {
         Eigen::Vector3d x3 = q.segment<3>(3 * hinge[3]);
 
         thetaBarVec[hingeIdx] = getTheta(x0, x1, x2, x3);
+        fmt::print("({}, {}, {}, {}), ", hinge[0], hinge[1], hinge[2], hinge[3]);
+
     }
 
+    std::cout << std::endl;
     externalForcesVec.resize(dofCount);
     for (uint32_t particleIdx = 0; particleIdx < particleCount; ++particleIdx) {
         externalForcesVec[3 * particleIdx] = 0.0;
@@ -389,7 +407,10 @@ void ClothSystem::InitializeBufferData(void* params) {
         externalForcesVec[3 * particleIdx + 2] = 0.0;
         // glm::dvec4 normal = glm::dvec4(0.0, 1.0, 0.0, 0.0);
         // normalsVec[particleIdx] = normal;
+        fmt::print("{: .8f}, {: .8f}, {: .8f}, ", dofPositions[3 * particleIdx], dofPositions[3 * particleIdx + 1], dofPositions[3 * particleIdx + 2]);
     }
+
+    std::cout << std::endl;
 }
 
 void ClothSystem::InitializeShaders(void* params) {
@@ -401,13 +422,15 @@ void ClothSystem::InitializeShaders(void* params) {
     std::string edgeDebugFragPath = "./resources/shader/" + clothParams->shaderName + "_edge.frag";
     std::string hingeDebugVertPath = "./resources/shader/" + clothParams->shaderName + "_hinge.vert";
     std::string hingeDebugFragPath = "./resources/shader/" + clothParams->shaderName + "_hinge.frag";
+    std::string fixedNodeVertPath = "./resources/shader/" + clothParams->shaderName + "_fixed.vert";
+    std::string fixedNodeFragPath = "./resources/shader/" + clothParams->shaderName + "_fixed.frag";
 
     particleShader = new Shader(vertPath.c_str(), fragPath.c_str());
     particleComputeShader = new ComputeShader(compPath.c_str());
 
     edgeDebugShader = new Shader(edgeDebugVertPath.c_str(), edgeDebugFragPath.c_str());
     hingeDebugShader = new Shader(hingeDebugVertPath.c_str(), hingeDebugFragPath.c_str());
-
+    fixedNodesDebugShader = new Shader(fixedNodeVertPath.c_str(), fixedNodeFragPath.c_str());
 }
 
 void ClothSystem::InitializeBuffers(){
@@ -502,7 +525,23 @@ void ClothSystem::InitializeBuffers(){
         GL_DYNAMIC_STORAGE_BIT
     );
 
+    glCreateBuffers(1, &fixedNodesDataBuffer);
+    glNamedBufferStorage(
+       fixedNodesDataBuffer, 
+       sizeof(uint32_t) * fixedNodes.size(), 
+       fixedNodes.data(),
+        GL_DYNAMIC_STORAGE_BIT
+    );
+
     //https://stackoverflow.com/questions/12399422/how-to-set-linker-flags-for-openmp-in-cmakes-try-compile-function
+    fmt::print("{}", fixedNodesCount);
+    glCreateVertexArrays(1, &fixedNodesVAO);
+
+    glEnableVertexArrayAttrib(fixedNodesVAO, POSITION_ATTRIB_LOC);
+    
+    // nodeIdx attribute
+    glVertexArrayAttribIFormat(fixedNodesVAO, POSITION_ATTRIB_LOC, 1, GL_UNSIGNED_INT, 0);
+    glVertexArrayAttribBinding(fixedNodesVAO, POSITION_ATTRIB_LOC, 0);
 
 }
 
@@ -607,12 +646,19 @@ def hessTheta(x0, x1 = None, x2 = None, x3 = None):
     return hess_theta
     */
 
-static Eigen::MatrixXd uvT(const Eigen::Vector3d& u, const Eigen::Vector3d& v){
-    return u.transpose() * v;
+static Eigen::MatrixXd uvT(
+    const Eigen::Ref< const Eigen::Vector3d> & u, 
+    const Eigen::Ref< const Eigen::Vector3d> & v){
+    return u * v.transpose();
 }
 
-static void hessTheta(const Eigen::Vector3d& node0, const Eigen::Vector3d& node1, const Eigen::Vector3d& node2, const Eigen::Vector3d& node3, double* hess){
-    /*
+static void hessTheta(
+        const Eigen::Ref< const Eigen::Vector3d > & node0, 
+        const Eigen::Ref< const Eigen::Vector3d > & node1, 
+        const Eigen::Ref< const Eigen::Vector3d > & node2, 
+        const Eigen::Ref< const Eigen::Vector3d > & node3, 
+        double* hess){
+    
     Eigen::Vector3d m_e0 = node1 - node0;
     Eigen::Vector3d m_e1 = node2 - node0;
     Eigen::Vector3d m_e2 = node3 - node0;
@@ -692,7 +738,7 @@ static void hessTheta(const Eigen::Vector3d& node0, const Eigen::Vector3d& node1
     hess_theta.block<3, 3>(9, 0) = hess_theta.block<3, 3>(0, 9).transpose();
     hess_theta.block<3, 3>(6, 3) = hess_theta.block<3, 3>(3, 6).transpose();
     hess_theta.block<3, 3>(9, 3) = hess_theta.block<3, 3>(3, 9).transpose();
-*/
+
 }
 
 
@@ -749,8 +795,13 @@ def gradTheta(x0, x1 = None, x2 = None, x3 = None):
     return gradTheta
 */
 
-static void gradTheta(const Eigen::Vector3d& node0, const Eigen::Vector3d& node1, const Eigen::Vector3d& node2, const Eigen::Vector3d& node3, double* grad){
-    /*
+static void gradTheta(
+        const Eigen::Ref< const Eigen::Vector3d >& node0, 
+        const Eigen::Ref< const Eigen::Vector3d >& node1, 
+        const Eigen::Ref< const Eigen::Vector3d >& node2, 
+        const Eigen::Ref< const Eigen::Vector3d >& node3, 
+        double* grad){
+    
     Eigen::Vector3d m_e0 = node1 - node0;
     Eigen::Vector3d m_e1 = node2 - node0;
     Eigen::Vector3d m_e2 = node3 - node0;
@@ -784,13 +835,13 @@ static void gradTheta(const Eigen::Vector3d& node0, const Eigen::Vector3d& node1
     Eigen::Vector3d gradTheta2 = -m_nn1 / m_h01;
     Eigen::Vector3d gradTheta3 = -m_nn2 / m_h02;
 
-    Eigen::Map<Eigen::Matrix<double, 12, 1, Eigen::RowMajor>> dFMap(grad);
+    Eigen::Map<Eigen::Matrix<double, 12, 1>> dFMap(grad);
     dFMap.segment<3>(0) = gradTheta0;
     dFMap.segment<3>(3) = gradTheta1;
     dFMap.segment<3>(6) = gradTheta2;
     dFMap.segment<3>(9) = gradTheta3;
 
-*/
+
 }
 
     /*
@@ -833,7 +884,12 @@ def gradEs_hessEs(node0 = None,node1 = None,l_k = None,EA = None):
 */
 
 
-static void calculateGradEb_HessEb_Shell(const Eigen::Vector3d& node0, const Eigen::Vector3d& node1, const Eigen::Vector3d& node2, const Eigen::Vector3d& node3, double thetaBar, double kb, double* dF, double* dJ){
+static void calculateGradEb_HessEb_Shell(
+    const Eigen::Ref< const Eigen::Vector3d > & node0, 
+    const Eigen::Ref< const Eigen::Vector3d > & node1, 
+    const Eigen::Ref< const Eigen::Vector3d > & node2, 
+    const Eigen::Ref< const Eigen::Vector3d > & node3, 
+    double thetaBar, double kb, double* dF, double* dJ){
     /*
 def gradEb_hessEb_Shell(x0, x1=None, x2=None, x3=None, theta_bar=0, kb=1.0):
     """
@@ -868,51 +924,54 @@ def gradEb_hessEb_Shell(x0, x1=None, x2=None, x3=None, theta_bar=0, kb=1.0):
     return dF, dJ
 
     */
-    /*
+    
     double theta = getTheta(node0, node1, node2, node3);
-    double grad[12] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+    double grad[12];
     gradTheta(node0, node1, node2, node3, grad);
-
+    
     Eigen::Map<
         Eigen::Matrix<
             double,
-            12, 1,
-            Eigen::RowMajor
-        >
+            12, 1>
     > gradMap(grad);
     Eigen::Map<
         Eigen::Matrix<
             double,
-            12, 1
-            Eigen::RowMajor
-        >
+            12, 1>
     > dFMap(dF);
 
     dFMap.segment<12>(0) = 0.5 * kb * (2.0 * (theta - thetaBar) * gradMap);
     
     double hess[144];
     hessTheta(node0, node1, node2, node3, hess);
-    Eigen::Map<Eigen::Matrix<double, 12, 12, Eigen::RowMajor>> dJMap(dJ);
-    Eigen::Map<Eigen::Matrix<double, 12, 12, Eigen::RowMajor>> hessMap(hess);
+    
+    
+    Eigen::Map<Eigen::Matrix<double, 12, 12>> dJMap(dJ);
+    Eigen::Map<Eigen::Matrix<double, 12, 12>> hessMap(hess);
     //// TODO Which is the correct transpose?
-    Eigen::MatrixXd gradgradT = gradMap.transpose() * gradMap;
+    
+    Eigen::MatrixXd gradgradT = gradMap*gradMap.transpose() ;
     dJMap.block<12, 12>(0, 0) = 0.5 * kb * (2.0 * gradgradT + 2.0 * (theta - thetaBar) * hessMap);
-*/
+    
+    
+
 }
-// use span and references
-static void calculateFb_Jb(double* bendingForcesVecPtr, double* bendingHessiansVecPtr, const std::vector<glm::ivec4>& hingeVec, const Eigen::Matrix<double, Eigen::Dynamic, 1, Eigen::RowMajor>& q, double kb, const std::vector<double>& thetaBar, uint32_t dofCount, uint32_t hingeCount) {
-    /*
+static void calculateFb_Jb(double* bendingForcesVecPtr, double* bendingHessiansVecPtr, 
+                        const std::vector<glm::ivec4>& hingeVec, 
+                        const Eigen::Ref<const Eigen::Matrix<double, Eigen::Dynamic, 1>>& q, 
+                        double kb, 
+                        const std::vector<double>& thetaBar, 
+                        uint32_t dofCount, uint32_t hingeCount) {
+    
     Eigen::Map<Eigen::Matrix<
             double,
-            Eigen::Dynamic, 1,
-            Eigen::RowMajor
+            Eigen::Dynamic, 1
             >> bendingForces(bendingForcesVecPtr, dofCount, 1);
     Eigen::Map<
         Eigen::Matrix<
         double,
-        Eigen::Dynamic, Eigen::Dynamic,
-        Eigen::RowMajor
-        >, Eigen::Unaligned> bendingHessians(bendingHessiansVecPtr, dofCount, dofCount);
+        Eigen::Dynamic, Eigen::Dynamic
+        >> bendingHessians(bendingHessiansVecPtr, dofCount, dofCount);
 
 
     // Bending Forces
@@ -940,21 +999,26 @@ static void calculateFb_Jb(double* bendingForcesVecPtr, double* bendingHessiansV
         Eigen::Map<
         Eigen::Matrix<
             double,
-            Eigen::Dynamic, 1,
-            Eigen::RowMajor
-            >
-            > dfMap(df, dofCount, 1);
+            12, 1
+        >> dfMap(df);
 
-        bendingForces(ind, Eigen::placeholders::all) = bendingForces(ind, Eigen::placeholders::all).eval() - dfMap;
-        bendingHessians(ind, ind) = bendingHessians(ind, ind).eval() - Eigen::Map<Eigen::Matrix<double, 12, 12>>(dj);
+        Eigen::Map<
+            Eigen::Matrix<
+            double,
+            12, 12>
+        > djMap(dj);
 
-        //    //fmt
+
+        bendingForces(ind) = bendingForces(ind).eval() - dfMap;
+        bendingHessians(ind, ind) = bendingHessians(ind, ind).eval() - djMap;
     }
-*/
 }
 
 
-static void calculateGradEs_HessEs(const Eigen::Vector3d& node0, const Eigen::Vector3d& node1, double lk, double EA, double* dF, double* dJ) {
+static void calculateGradEs_HessEs(
+    const Eigen::Ref< const Eigen::Vector3d>& node0, 
+    const Eigen::Ref< const Eigen::Vector3d >& node1,
+    double lk, double EA, double* dF, double* dJ) {
     /*
     ## Gradient of Es
     edge = node1 - node0
@@ -978,52 +1042,55 @@ static void calculateGradEs_HessEs(const Eigen::Vector3d& node0, const Eigen::Ve
     dJ[3:6,0:3] = - M
     return dF,dJ
     */
-/*
+
    // Gradient of Es
     Eigen::Vector3d edge = node1 - node0;
     double edgeLen = edge.norm();
     Eigen::Vector3d tangent = edge / edgeLen;
     double epsX = edgeLen / lk - 1.0;
     Eigen::Vector3d dF_unit = EA * tangent * epsX;
-
+    
     Eigen::Map<
         Eigen::Matrix<
             double, 
-            6, 1, 
-        Eigen::RowMajor>
+            6, 1>
     > dFMap(dF);
     dFMap << -dF_unit, dF_unit;
    // 
    // // Hessian of Es
+    
     Eigen::Matrix3d Id3 = Eigen::Matrix3d::Identity();
 
     // Note i did a transpose not in the original formula here...
-    Eigen::Matrix3d M = EA * ((1 / lk - 1 / edgeLen) * Id3 + 1 / edgeLen * (edge.transpose() * edge) / (edgeLen * edgeLen));
+    Eigen::Matrix3d M = EA * ((1 / lk - 1 / edgeLen) * Id3 + 1 / edgeLen * (edge * edge.transpose()) / (edgeLen * edgeLen));
     // Eigen::Vector3d dF = Eigen::Vector3d::Zero();
-    Eigen::Map<Eigen::Matrix<double, 6, 6, Eigen::RowMajor>> dJMap(dJ);
+    Eigen::Map<Eigen::Matrix<double, 6, 6>> dJMap(dJ);
     dJMap.setZero();
     dJMap.block<3, 3>(0, 0) = M;
     dJMap.block<3, 3>(3, 3) = M;
     dJMap.block<3, 3>(0, 3) = -M;
     dJMap.block<3, 3>(3, 0) = -M;
-    */
+    
 }
 
-static void calculateFs_Js(double* stretchingForcesVecPtr, double* stretchingHessiansVecPtr, const Eigen::Matrix<double, Eigen::Dynamic, 1, Eigen::RowMajor>& q, const std::vector<glm::ivec2>& edgeVec, const std::vector<double>& undeformedEdgeLengthVec, const std::vector<double>& elasticStretchingVec, uint32_t dofCount, uint32_t edgeCount) {
-/*
+static void calculateFs_Js(double* stretchingForcesVecPtr, double* stretchingHessiansVecPtr, 
+            const Eigen::Ref<const Eigen::Matrix<double, Eigen::Dynamic, 1>>& q, 
+            const std::vector<glm::ivec2>& edgeVec, 
+            const std::vector<double>& undeformedEdgeLengthVec, 
+            const std::vector<double>& elasticStretchingVec, 
+            uint32_t dofCount, uint32_t edgeCount) {
+
     Eigen::Map<
         Eigen::Matrix<
             double,
-            Eigen::Dynamic, 1,
-        Eigen::RowMajor>
+            Eigen::Dynamic, 1>
     > stretchForces(stretchingForcesVecPtr, dofCount, 1);
 
     Eigen::Map<
         Eigen::Matrix<
         double,
-        Eigen::Dynamic, Eigen::Dynamic,
-        Eigen::RowMajor
-        >, Eigen::Unaligned> stretchHessians(stretchingHessiansVecPtr, dofCount, dofCount);
+        Eigen::Dynamic, Eigen::Dynamic
+        >> stretchHessians(stretchingHessiansVecPtr, dofCount, dofCount);
 
 
     for (uint32_t edgeIdx = 0; edgeIdx < edgeCount; edgeIdx++) {
@@ -1038,35 +1105,24 @@ static void calculateFs_Js(double* stretchingForcesVecPtr, double* stretchingHes
 
         int ind[] = { 3 * node0, 3 * node0 + 1, 3 * node0 + 2,
                       3 * node1, 3 * node1 + 1, 3 * node1 + 2 };
-
+        
         double df[6];
         double dj[36];
         Eigen::Map<
             Eigen::Matrix<
                 double, 
-                6, 1,
-            Eigen::RowMajor>
+                6, 1>
         > dfMap(df);
-
         Eigen::Map<
             Eigen::Matrix<
                 double, 
-                12, 12,
-            Eigen::RowMajor>
+                6, 6>
         > djMap(dj);
 
         calculateGradEs_HessEs(x0, x1, lk, ks, df, dj);
         stretchForces(ind) = stretchForces(ind).eval() - dfMap;
-        stretchHessians(ind, ind) = stretchHessians(ind, ind).eval() - djMap;
-
-        //fmt::print("Edge {} {}\n", node0, node1);
-        //std::cout << "Vec0s ----------- " << x0 << std::endl;
-        //std::cout << "Vec1s ----------- " << x1 << std::endl;
-
-        //std::cout << "Stretching Forces -----------\n" << stretchForces << std::endl;
-        //std::cout << "Stretching Hessians -----------\n" << stretchHessians << std::endl;
+        stretchHessians(ind, ind) = stretchHessians(ind, ind).eval() - djMap;        
     }
-*/
 }
 
 void ClothSystem::CalculateForces() {
@@ -1145,7 +1201,7 @@ void ClothSystem::CalculateForces() {
                 Eigen::Dynamic, 1>
         > u(dofVelocities.data(), dofCount, 1);
 
-        q0 = q;
+        q0 = q.eval();
 
   
 
@@ -1188,15 +1244,16 @@ void ClothSystem::CalculateForces() {
 
             //Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, 1>> forceX1(forceMap, dofCount, 1);
 
-            /*
+            
             // Bending Forces -------------------------------------------------------------
             calculateFb_Jb(bendingForcesVec.data(), bendingHessiansVec.data(), hingeVec, q, bendingStiffness, thetaBarVec, dofCount, hingeCount);
-
+            
             // Stretching Forces -------------------------------------------------------------
             calculateFs_Js(stretchingForcesVec.data(), stretchingHessiansVec.data(), q, edgeVec, undeformedEdgeLengthVec, elasticStretchingVec, dofCount, edgeCount);
            
             
-            Eigen::MatrixXd totalForces = bendingForces + stretchForces + externalForces;
+            
+            Eigen::Matrix<double, Eigen::Dynamic, 1> totalForces = bendingForces + stretchForces + externalForces;
             
             Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> jacobianForces = bendingHessians + stretchHessians;
             Eigen::Matrix<double, Eigen::Dynamic, 1> f = (massVec / dt).cwiseProduct((q - q0) / dt - u) - totalForces;
@@ -1208,17 +1265,27 @@ void ClothSystem::CalculateForces() {
             
             Eigen::Matrix<double, Eigen::Dynamic, 1> dq_free = J_free.ldlt().solve(f_free);
             
-
+            
             q(freeIndices) = q(freeIndices).eval() - dq_free;
-
             error = f_free.cwiseAbs().sum();
             iter += 1;
+            //std::cout << error << " ? " << tol << std::endl;
             
-            */
             
-           error = 0.0;
+           //error = 0.0;
         }
-        // External Forces -------------------------------------------------------------
+
+        //fmt::print("Time: {:.6f}\n[", totalTime);
+        //uint32_t perline = 0;
+        //for (uint32_t freeIdx : freeIndices) {
+        //    fmt::print("{: .8e} ", q(freeIdx));
+        //    perline += 1;
+        //    if (perline == 4) {
+        //        perline = 0;
+        //        fmt::print("\n ");
+        //    }
+        //}
+        //fmt::print("]\n");
 
         u = (q - q0) / dt;
 
@@ -1236,11 +1303,11 @@ void ClothSystem::CalculateForces() {
         
     }
 
-    std::chrono::duration<double, std::milli> timeSinceStart = std::chrono::high_resolution_clock::now() - startTime;
-    if (timerRunning && timeSinceStart.count() > 5000) {
-        fmt::print("t = 5: {} {} {}", dofPositions[particleCount * 3 - 3], dofPositions[particleCount * 3 - 2], dofPositions[particleCount * 3 - 1]);
-        timerRunning = false;
-    }
+    //std::chrono::duration<double, std::milli> timeSinceStart = std::chrono::high_resolution_clock::now() - startTime;
+    //if (timerRunning && timeSinceStart.count() > 5000) {
+    //    fmt::print("t = 5: {} {} {}", dofPositions[particleCount * 3 - 3], dofPositions[particleCount * 3 - 2], dofPositions[particleCount * 3 - 1]);
+    //    timerRunning = false;
+    //}
     
 }
 
@@ -1253,6 +1320,7 @@ void ClothSystem::BindBuffers() const{
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_EDGE_DATA_SSBO_BINDING, edgesBuffer);
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_HINGE_DATA_SSBO_BINDING, hingesBuffer);
     glBindBufferBase(GL_UNIFORM_BUFFER, PICKED_DATA_UBO_BINDING, pickedDebugDataBuffer);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_FIXED_NODES_SSBO_BINDING, fixedNodesDataBuffer);
     particleComputeShader->use();
 }
 
@@ -1262,22 +1330,31 @@ void ClothSystem::SetupRender() {
 }
 
 void ClothSystem::RenderDebug(GLuint VAO) {
-    glBindVertexArray(VAO);
-    glNamedBufferSubData(pickedDebugDataBuffer, 0, sizeof(PickedClothData), &pickedClothData);
+    // glBindVertexArray(VAO);
+    // glNamedBufferSubData(pickedDebugDataBuffer, 0, sizeof(PickedClothData), &pickedClothData);
+    glNamedBufferSubData(fixedNodesDataBuffer, 0, sizeof(uint32_t)* fixedNodesCount, fixedNodes.data());
 
-    edgeDebugShader->use();
-    glVertexArrayVertexBuffer(VAO, 0, edgeDebugDataBuffer, 0, sizeof(glm::dvec4));
-    glVertexArrayElementBuffer(VAO, edgeDebugEBO);
-    glPointSize(10.0);
-    glLineWidth(10.0);
-    glDrawElements(GL_LINES, 2, GL_UNSIGNED_INT, 0);
-    glDrawElements(GL_POINTS, 2, GL_UNSIGNED_INT, 0);
+    //edgeDebugShader->use();
+    //glVertexArrayVertexBuffer(VAO, 0, edgeDebugDataBuffer, 0, sizeof(glm::dvec4));
+    //glVertexArrayElementBuffer(VAO, edgeDebugEBO);
+    //glPointSize(10.0);
+    //glLineWidth(10.0);
+    //glDrawElements(GL_LINES, 2, GL_UNSIGNED_INT, 0);
+    //glDrawElements(GL_POINTS, 2, GL_UNSIGNED_INT, 0);
 
-    hingeDebugShader->use();
+    //hingeDebugShader->use();
+    //glPointSize(20.0);
+    //glLineWidth(20.0);
+    //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    //glDrawElements(GL_POINTS, 6, GL_UNSIGNED_INT, 0);
+    
+    
+    glBindVertexArray(fixedNodesVAO);
+    fixedNodesDebugShader->use();
     glPointSize(20.0);
-    glLineWidth(20.0);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-    glDrawElements(GL_POINTS, 6, GL_UNSIGNED_INT, 0);
+    glVertexArrayVertexBuffer(fixedNodesVAO, 0, fixedNodesDataBuffer, 0, sizeof(uint32_t));
+    glDrawArrays(GL_POINTS, 0, fixedNodesCount);
+
 
     auto currTime = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, std::milli> duration = currTime - lastTime;

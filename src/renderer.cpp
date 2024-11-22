@@ -117,8 +117,8 @@ Renderer::Renderer(float w, float h) : width(w), height(h) {
     mainCameraIdx = Renderer::allCameras.size();
     std::cout << "Main Camera Index: " << mainCameraIdx << std::endl;
     if (allCameras.size() == 0){
-        Renderer::allCameras.push_back(
-            Camera(w, h, glm::vec3(-3, 3.0, -3.0), glm::vec3(0.0, 1.0, 0.0), -315.0f, -60.0f, 30.0f, 0.1f, 30.0f)
+        Renderer::allCameras.push_back(//  -3, 3.0, -3.0
+            Camera(w, h, glm::vec3(-0.7615466, 0.8351303, -0.92849666), glm::vec3(0.0, 1.0, 0.0), -317.0f, -34.0f, 30.0f, 0.1f, 30.0f)
         );
     } else
     {
@@ -586,7 +586,7 @@ void Renderer::Render(const Scene& scene){ // really bad, we are modifying the s
         RenderEntities(scene);
         RenderInstancedStaticModels(scene);
         RenderParticleSystems(scene);
-        //RenderDebugVolumes(scene);
+        RenderDebugVolumes(scene);
         RenderPostProcess();
         // glBindVertexArray(0);
         // glUseProgram(0);

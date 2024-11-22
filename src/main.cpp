@@ -44,7 +44,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window, Renderer* renderer, Scene* scene);
 
 // settings
-const unsigned int SCR_WIDTH = 800;
+const unsigned int SCR_WIDTH = 1000;
 const unsigned int SCR_HEIGHT = 600;
 
 // int CHUNK_SIZE = std::max((NUM_BOIDS + (NUM_THREADS - 1)) / NUM_THREADS, (unsigned int) 1);
@@ -583,7 +583,7 @@ void framebuffer_size_callback(GLFWwindow* window, int w, int h){
     // make sure the viewport matches the new window dimensions; note that w and
     // h will be significantly larger than specified on retina displays.
     glViewport(0, 0, w, h);
-
+    
     for (Renderer& renderer : renderers){
         renderer.Resize(w / renderers.size(), h);
     }
@@ -621,7 +621,11 @@ void processInput(GLFWwindow *window, Renderer* renderer, Scene* scene){ // abho
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS){
         Renderer::allCameras[renderer->mainCameraIdx].moveDown(deltaTime);
     }
-
-
+    /*
+    fmt::print("CamPos: {} {} {}\n", 
+    Renderer::allCameras[renderer->mainCameraIdx].position.x, 
+    Renderer::allCameras[renderer->mainCameraIdx].position.y, 
+    Renderer::allCameras[renderer->mainCameraIdx].position.z);
+    */
 }
 

@@ -33,7 +33,7 @@
 
 const float DEFAULT_YAW         = -135.0f;
 const float DEFAULT_PITC       =  -45.0f;
-const float DEFAULT_SPEED       =  10.0f;
+const float DEFAULT_SPEED       =  5.0f;
 const float DEFAULT_SENSITIVITY =  0.1f;
 const float DEFAULT_FOVY        =  20.0f;
 const float DEFAULT_NEAR        =  0.1f;

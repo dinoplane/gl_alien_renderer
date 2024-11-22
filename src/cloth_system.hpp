@@ -106,6 +106,10 @@ class ClothSystem : public BaseParticleSystem<
         // uint32_t edgeDebugEBOData[2] { 0, 1 };
         // GLuint edgePointDebugBuffer; // 2 vec4s
         // GLuint edgePointEBO;
+        GLuint fixedNodesVAO;
+        GLuint fixedNodesDataBuffer;
+        uint32_t fixedNodesCount;
+        // GLuint fixedNodesEBO;
 
         glm::vec4 edgeDebugDataVec[4] { glm::vec4(0.0f), glm::vec4(0.0f), glm::vec4(0.0f), glm::vec4(0.0f) };
         uint32_t edgeDebugEBOData[6] { 0, 1, 2, 0, 3, 1};
@@ -114,6 +118,8 @@ class ClothSystem : public BaseParticleSystem<
 
         Shader* edgeDebugShader;
         Shader* hingeDebugShader;
+        Shader* fixedNodesDebugShader;
+
         bool timerRunning = true;
         
 
