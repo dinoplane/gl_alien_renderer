@@ -695,7 +695,7 @@ static void hessTheta(
     Eigen::Vector3d m_m02 = m_nn2.cross(m_e0) / m_e0.norm();
     //
     Eigen::Map<Eigen::MatrixXd> hess_theta(hess, 12, 12);
-    hess_theta.setZero();
+    // hess_theta.setZero();
 
     Eigen::MatrixXd M331 = m_cosA3 / (m_h3 * m_h3) * uvT(m_m3, m_nn1);
     Eigen::MatrixXd M311 = m_cosA3 / (m_h3 * m_h1) * uvT(m_m1, m_nn1);

@@ -160,5 +160,22 @@ class ClothSystem : public BaseParticleSystem<
 //    //void CalculateForces() const override;
 //};
     
-    
+/*
+Timing Data:
+
+
+c    Single threaded             Edges  Hinges
+1    4 nodes  : 0.1 ms           5      1
+2    9 nodes  : 0.9 ms          16      8
+3    16 nodes : 24-47 ms        33      21
+4    25 nodes : 45-61 ms        56      40
+5    36 Nodes : 70-134 ms       85      65
+6    49 nodes : 160-227 ms      120     96
+
+
+
+
+*/
+
+
 #endif
