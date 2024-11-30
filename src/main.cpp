@@ -444,6 +444,8 @@ int main(int argc, char **argv)
     //         assert(false);
     //     }
     // }
+    //glfwSetWindowAttrib(window, GLFW_MAXIMIZED, GLFW_TRUE);
+
 
 #define COMPUTE_DEMO 0
 #if COMPUTE_DEMO == 0
@@ -456,6 +458,13 @@ int main(int argc, char **argv)
     for (size_t i = 0; i < RENDERER_COUNT; ++i){
         renderers.push_back(Renderer(SCR_WIDTH / RENDERER_COUNT, SCR_HEIGHT ));
     }
+
+    glfwMaximizeWindow(window);
+
+    int width, height;
+    glfwGetWindowSize(window, &width, &height);
+
+    framebuffer_size_callback(window, width, height);
 
     fmt::print("Number of renderers: {}\n", renderers.size());
     while (!glfwWindowShouldClose(window))
@@ -564,6 +573,7 @@ int main(int argc, char **argv)
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
 
+    std::cout << "Application average ms/frame " << deltaTime * 1000.0f << " (" << 1.0f / deltaTime << " FPS)" << std::endl;
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();

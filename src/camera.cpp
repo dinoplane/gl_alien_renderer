@@ -70,7 +70,7 @@ void Camera::processMouseMovement(float xoffset, float yoffset){
 
     updateCameraVectors();
 
-    // std::cout << "Yaw: " << yaw << " Pitch: " << pitch << std::endl;
+     //std::cout << "Yaw: " << yaw << " Pitch: " << pitch << std::endl;
 }
 
 

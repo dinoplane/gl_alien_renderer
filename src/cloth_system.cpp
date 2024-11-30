@@ -4,7 +4,10 @@
 #include <gl_bindings.h>
 #include <chrono>
 #include <iostream>
+#include<Eigen/Geometry>
 #include <Eigen/Dense>
+#include <Eigen/SparseCore>
+
  
 
 /*
@@ -185,9 +188,18 @@ void ClothSystem::InitializeBufferData(void* params) {
     }
     
     // freeindices 0-9
-    fixedNodes.push_back(1);
+    //fixedNodes.push_back(1);
 
-    fixedNodes.push_back(5);
+    fixedNodes.push_back(41);
+    //fixedNodes.push_back(42);
+    //fixedNodes.push_back(43);
+    //fixedNodes.push_back(67);
+
+    //fixedNodes.push_back(190);
+
+    fixedNodes.push_back(250);
+
+    //fixedNodes.push_back(330);
 
 
     //fixedNodes.push_back(8);
@@ -203,6 +215,7 @@ void ClothSystem::InitializeBufferData(void* params) {
         freeIndices.push_back(3*node + 2);
         
     }
+    freeDOFCount = freeIndices.size();
     fixedNodesCount = fixedNodes.size();
 
     // for (uint32_t i = 0; i < clothParams->clothSideLength; ++i) {
@@ -375,7 +388,7 @@ void ClothSystem::InitializeBufferData(void* params) {
         glm::dvec4 edgeVec = edgeEnd - edgeStart;
         undeformedEdgeLengthVec[edgeIdx] = glm::length(edgeVec);
         elasticStretchingVec[edgeIdx] = 0.5 * sqrt(3.0) * Y * h * pow(undeformedEdgeLengthVec[edgeIdx], 2.0);
-        fmt::print("({}, {}), ",edge[0], edge[1]);
+        //fmt::print("({}, {}), ",edge[0], edge[1]);
         
     }
 
@@ -395,7 +408,7 @@ void ClothSystem::InitializeBufferData(void* params) {
         Eigen::Vector3d x3 = q.segment<3>(3 * hinge[3]);
 
         thetaBarVec[hingeIdx] = getTheta(x0, x1, x2, x3);
-        fmt::print("({}, {}, {}, {}), ", hinge[0], hinge[1], hinge[2], hinge[3]);
+        //fmt::print("({}, {}, {}, {}), ", hinge[0], hinge[1], hinge[2], hinge[3]);
 
     }
 
@@ -407,7 +420,7 @@ void ClothSystem::InitializeBufferData(void* params) {
         externalForcesVec[3 * particleIdx + 2] = 0.0;
         // glm::dvec4 normal = glm::dvec4(0.0, 1.0, 0.0, 0.0);
         // normalsVec[particleIdx] = normal;
-        fmt::print("{: .8f}, {: .8f}, {: .8f}, ", dofPositions[3 * particleIdx], dofPositions[3 * particleIdx + 1], dofPositions[3 * particleIdx + 2]);
+        //fmt::print("{: .8f}, {: .8f}, {: .8f}, ", dofPositions[3 * particleIdx], dofPositions[3 * particleIdx + 1], dofPositions[3 * particleIdx + 2]);
     }
 
     std::cout << std::endl;
@@ -542,6 +555,7 @@ void ClothSystem::InitializeBuffers(){
     // nodeIdx attribute
     glVertexArrayAttribIFormat(fixedNodesVAO, POSITION_ATTRIB_LOC, 1, GL_UNSIGNED_INT, 0);
     glVertexArrayAttribBinding(fixedNodesVAO, POSITION_ATTRIB_LOC, 0);
+    Eigen::setNbThreads(24);
 
 }
 
@@ -645,6 +659,26 @@ def hessTheta(x0, x1 = None, x2 = None, x3 = None):
 
     return hess_theta
     */
+/*
+#          x2
+#          /\
+#         /  \
+#      e1/    \e3
+#       /  t0  \
+#      /        \
+#     /    e0    \
+#   x0------------x1
+#     \          /
+#      \   t1   /
+#       \      /
+#      e2\    /e4
+#         \  /
+#          \/
+#          x3
+#
+#  Edge orientation : e0, e1, e2 point away from x0
+#                       e3, e4 point away from x1
+*/
 
 static Eigen::MatrixXd uvT(
     const Eigen::Ref< const Eigen::Vector3d> & u, 
@@ -695,7 +729,7 @@ static void hessTheta(
     Eigen::Vector3d m_m02 = m_nn2.cross(m_e0) / m_e0.norm();
     //
     Eigen::Map<Eigen::MatrixXd> hess_theta(hess, 12, 12);
-    // hess_theta.setZero();
+     hess_theta.setZero();
 
     Eigen::MatrixXd M331 = m_cosA3 / (m_h3 * m_h3) * uvT(m_m3, m_nn1);
     Eigen::MatrixXd M311 = m_cosA3 / (m_h3 * m_h1) * uvT(m_m1, m_nn1);
@@ -956,6 +990,7 @@ def gradEb_hessEb_Shell(x0, x1=None, x2=None, x3=None, theta_bar=0, kb=1.0):
     
 
 }
+
 static void calculateFb_Jb(double* bendingForcesVecPtr, double* bendingHessiansVecPtr, 
                         const std::vector<glm::ivec4>& hingeVec, 
                         const Eigen::Ref<const Eigen::Matrix<double, Eigen::Dynamic, 1>>& q, 
@@ -1129,6 +1164,8 @@ void ClothSystem::CalculateForces() {
 
     auto currTime = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, std::milli> duration = currTime - lastTime;
+
+    
     if (duration.count() > dt * 1000.0) {
         
         Eigen::Stride<Eigen::Dynamic, Eigen::Dynamic> bufferStrides(4, 1);
@@ -1207,7 +1244,9 @@ void ClothSystem::CalculateForces() {
 
         // dofPositions = positionX1;
         while (error > tol) {
-            
+            //if (iter > 5) {
+            //    break;
+            //}
             std::vector<double> bendingForcesVec(dofCount, 0.0);
             std::vector<double> bendingHessiansVec(dofCount * dofCount, 0.0);
 
@@ -1262,7 +1301,21 @@ void ClothSystem::CalculateForces() {
             
             Eigen::Matrix<double, Eigen::Dynamic, 1> f_free = f(freeIndices, 1);
             Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> J_free = J(freeIndices, freeIndices);
+
+            double* f_free_ptr = f_free.data();
+            double* J_free_ptr = J_free.data();
+
             
+
+            
+            //Eigen::SparseMatrix<double> sp_f_free(freeDOFCount, 1);
+            //Eigen::SparseMatrix<double> sp_J_free(freeDOFCount, freeDOFCount);
+            //
+            //sp_f_free.reserve(Eigen::VectorXi::Constant(1, freeDOFCount));
+            //sp_J_free.reserve(Eigen::VectorXi::Constant(1, freeDOFCount));
+
+
+
             Eigen::Matrix<double, Eigen::Dynamic, 1> dq_free = J_free.ldlt().solve(f_free);
             
             
@@ -1278,12 +1331,12 @@ void ClothSystem::CalculateForces() {
         //fmt::print("Time: {:.6f}\n[", totalTime);
         //uint32_t perline = 0;
         //for (uint32_t freeIdx : freeIndices) {
-        //    fmt::print("{: .8e} ", q(freeIdx));
-        //    perline += 1;
-        //    if (perline == 4) {
-        //        perline = 0;
-        //        fmt::print("\n ");
-        //    }
+        //   fmt::print("{: .8e} ", q(freeIdx));
+        //   perline += 1;
+        //   if (perline == 4) {
+        //       perline = 0;
+        //       fmt::print("\n ");
+        //   }
         //}
         //fmt::print("]\n");
 
@@ -1302,7 +1355,7 @@ void ClothSystem::CalculateForces() {
         totalTime += dt;
         
     }
-
+    
     //std::chrono::duration<double, std::milli> timeSinceStart = std::chrono::high_resolution_clock::now() - startTime;
     //if (timerRunning && timeSinceStart.count() > 5000) {
     //    fmt::print("t = 5: {} {} {}", dofPositions[particleCount * 3 - 3], dofPositions[particleCount * 3 - 2], dofPositions[particleCount * 3 - 1]);
