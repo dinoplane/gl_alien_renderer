@@ -11,7 +11,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set (CMAKE_VERBOSE_MAKEFILE 0) # 1 should be used for debugging
 set (CMAKE_SUPPRESS_REGENERATION TRUE) # Suppresses ZERO_CHECK
 if(MSVC)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /O2 /openmp")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /O2")
 else()
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -std=c++20")
   if(NOT WIN32)
@@ -90,6 +90,14 @@ add_subdirectory( ${VENDOR_DIR}/fastgltf)
 
 
 #pardiso
+add_library(pardiso STATIC IMPORTED GLOBAL)
+# Specify the paths for the library files
+set_target_properties(pardiso PROPERTIES
+    IMPORTED_LOCATION "${VENDOR_DIR}/pardiso/lib/libpardiso.lib"  # Path to the .lib file
+    INTERFACE_INCLUDE_DIRECTORIES "${VENDOR_DIR}/pardiso/include" # Path to the include directory
+)
+
+# Copy the DLL file to the output directory after build
 
 
 #Eigen
@@ -105,6 +113,7 @@ include_directories(
    ${VENDOR_DIR}/tracy/public/tracy
    ${VENDOR_DIR}/fastgltf/include
    ${VENDOR_DIR}/eigen
+   ${VENDOR_DIR}/pardiso/include
    ${SRC_DIR}/
 )
 
@@ -142,6 +151,9 @@ add_executable(${PROJECT_NAME} ${PROJECT_SOURCES} ${PROJECT_HEADERS}
                                ${PROJECT_SHADERS} ${PROJECT_CONFIGS}
                                ${VENDORS_SOURCES})
 
+
+
+
 target_link_libraries(${PROJECT_NAME}
     PUBLIC
     glfw
@@ -150,6 +162,7 @@ target_link_libraries(${PROJECT_NAME}
     fmt::fmt
     Tracy::TracyClient
     fastgltf::fastgltf
+    pardiso
     ${CMAKE_DL_LIBS} # Needed for glad - https://stackoverflow.com/a/56842079/2394163
 )
 
@@ -163,3 +176,13 @@ set_target_properties(${PROJECT_NAME}
     CXX_STANDARD_REQUIRED ON
     CXX_EXTENSIONS OFF
 )
+
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${VENDOR_DIR}/pardiso/lib/libpardiso.dll"
+        $<TARGET_FILE_DIR:${PROJECT_NAME}>)
+
+        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${VENDOR_DIR}/pardiso/lib/libiomp5md.dll"
+        $<TARGET_FILE_DIR:${PROJECT_NAME}>)

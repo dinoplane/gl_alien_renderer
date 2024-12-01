@@ -10,34 +10,35 @@
 #include<Eigen/SparseCholesky>
 //#include<Eigen/SparseLU>
 #include<Eigen/IterativeLinearSolvers>
+#include <pardiso.h>
 
 //#include "pardiso.h"
-//#include <fstream>
-//#include <iostream>
-//#include <iomanip>
-//#include <cmath>
-//#include <cstdlib>
-/*
+#include <fstream>
+#include <iostream>
+#include <iomanip>
+#include <cmath>
+#include <cstdlib>
+
 static void dumpCSR(const char* filename, int n, int* ia, int* ja, double* a)
 {
-  fstream fout(filename, ios::out);
-  fout << n << endl;
-  fout << n << endl;
-  fout << ia[n] << endl;
+  std::fstream fout(filename, std::ios::out);
+  fout << n << std::endl;
+  fout << n << std::endl;
+  fout << ia[n] << std::endl;
   
   for (int i = 0; i <= n; i++)
   {
-    fout << ia[i] << endl;
+    fout << ia[i] << std::endl;
   }
 
   for (int i = 0; i < ia[n]; i++)
   {
-    fout << ja[i] << endl;
+    fout << ja[i] << std::endl;
   }
 
   for (int i = 0; i < ia[n]; i++)
   {
-    fout << a[i] << endl;
+    fout << a[i] << std::endl;
   }
 
   fout.close();
@@ -46,8 +47,8 @@ static void dumpCSR(const char* filename, int n, int* ia, int* ja, double* a)
 
 static void printCSR(int n, int nnz, int* ia, int* ja, double* a)
 {
-  cout << "rows: " << setw(10) << n << endl;
-  cout << "nnz : " << setw(10) << nnz << endl;
+  std::cout << "rows: " << std::setw(10) << n << std::endl;
+  std::cout << "nnz : " << std::setw(10) << nnz << std::endl;
 
   if (nnz == n*n)
   {
@@ -55,9 +56,9 @@ static void printCSR(int n, int nnz, int* ia, int* ja, double* a)
     {
       for (int j = 0; j < n; j++)
       {
-        cout << setw(10) << a[i*n + j];
+        std::cout << std::setw(10) << a[i*n + j];
       }
-      cout << endl;
+      std::cout << std::endl;
     }
   }
   else
@@ -67,9 +68,9 @@ static void printCSR(int n, int nnz, int* ia, int* ja, double* a)
       for (int index = ia[i]; index < ia[i+1]; index++)
       {
         int j = ja[index];
-        cout << setw(10) << "(" << i << ", " << j << ") " << a[index];
+        std::cout << std::setw(10) << "(" << i << ", " << j << ") " << a[index];
       }
-      cout << endl;
+      std::cout << std::endl;
     }
   }
 }
@@ -88,7 +89,7 @@ static void shiftIndices(int n, int nonzeros, int* ia, int* ja, int value)
     }
 }
 
-*/
+
 
 
 #define EIGEN_DONT_PARALLELIZE
@@ -119,93 +120,94 @@ static void doPardiso() {
     int      nnz = ia[n];
     int      mtype = -2;        /* Real unsymmetric matrix */
 
-    //dumpCSR("matrix_sample_mtype_2.csr", n, ia, ja, a);
-    //printCSR(n, nnz, ia, ja, a);
+    dumpCSR("matrix_sample_mtype_2.csr", n, ia, ja, a);
+    printCSR(n, nnz, ia, ja, a);
 
-//     /* Internal solver memory pointer pt,                  */
-//     /* 32-bit: int pt[64]; 64-bit: long int pt[64]         */
-//     /* or void *pt[64] should be OK on both architectures  */ 
-//     void    *pt[64];
+    /* Internal solver memory pointer pt,                  */
+    /* 32-bit: int pt[64]; 64-bit: long int pt[64]         */
+    /* or void *pt[64] should be OK on both architectures  */ 
+    void    *pt[64];
 
-//     /* Pardiso control parameters. */
-//     int      iparm[65];
-//     double   dparm[64];
-//     int      solver;
-//     int      maxfct, mnum, phase, error, msglvl;
+    /* Pardiso control parameters. */
+    int      iparm[65];
+    double   dparm[64];
+    int      solver;
+    int      maxfct, mnum, phase, error, msglvl;
 
-//     /* Number of processors. */
-//     int      num_procs;
+    /* Number of processors. */
+    int      num_procs;
 
-//     /* Auxiliary variables. */
-//     char    *var;
-//     int      i;
+    /* Auxiliary variables. */
+    char    *var;
+    int      i;
 
-//     double   ddum;              /* Double dummy */
-//     int      idum;              /* Integer dummy. */
+    double   ddum;              /* Double dummy */
+    int      idum;              /* Integer dummy. */
 
-// /* -------------------------------------------------------------------- */
-// /* ..  Setup Pardiso control parameters and initialize the solvers      */
-// /*     internal adress pointers. This is only necessary for the FIRST   */
-// /*     call of the PARDISO solver.                                      */
-// /* ---------------------------------------------------------------------*/
+/* -------------------------------------------------------------------- */
+/* ..  Setup Pardiso control parameters and initialize the solvers      */
+/*     internal adress pointers. This is only necessary for the FIRST   */
+/*     call of the PARDISO solver.                                      */
+/* ---------------------------------------------------------------------*/
       
-//     error = 0;
-//     solver = 0; /* use sparse direct solver */
-//     pardisoinit_d(pt,  &mtype, &solver, &iparm[1], dparm, &error);
+    error = 0;
+    solver = 0; /* use sparse direct solver */
+    pardisoinit_d(pt,  &mtype, &solver, &iparm[1], dparm, &error);
 
-//     if (error != 0)
-//     {
-//         if (error == -10 )
-//            printf("No license file found \n");
-//         if (error == -11 )
-//            printf("License is expired \n");
-//         if (error == -12 )
-//            printf("Wrong username or hostname \n");
-//          return 1;
-//     }
-//     else
-//         printf("[PARDISO]: License check was successful ... \n");
+    if (error != 0)
+    {
+        if (error == -10 )
+           printf("No license file found \n");
+        if (error == -11 )
+           printf("License is expired \n");
+        if (error == -12 )
+           printf("Wrong username or hostname \n");
+         
+    }
+    else
+        printf("[PARDISO]: License check was successful ... \n");
  
 
-//     /* Numbers of processors, value of OMP_NUM_THREADS */
-//     var = getenv("OMP_NUM_THREADS");
-//     if(var != NULL)
-//         sscanf( var, "%d", &num_procs );
-//     else 
-//     {
-//         printf("Set environment OMP_NUM_THREADS to 1");
-//         exit(1);
-//     }
-//     iparm[3]  = num_procs;
-//     iparm[11] = 1;
-//     iparm[13] = 0;
+    /* Numbers of processors, value of OMP_NUM_THREADS */
+    // var = getenv("OMP_NUM_THREADS");
+    // if(var != NULL)
+    //     sscanf( var, "%d", &num_procs );
+    // else 
+    // {
+    //     printf("Set environment OMP_NUM_THREADS to 1");
+    //     // exit(1);
+    // }
+    num_procs = 12;
+    iparm[3]  = num_procs;
+    iparm[11] = 1;
+    iparm[13] = 0;
    
     
-//     maxfct = 1;         /* Maximum number of numerical factorizations.  */
-//     mnum   = 1;         /* Which factorization to use. */
+    maxfct = 1;         /* Maximum number of numerical factorizations.  */
+    mnum   = 1;         /* Which factorization to use. */
     
-//     msglvl = 1;         /* Print statistical information  */
-//     error  = 0;         /* Initialize error flag */
+    msglvl = 1;         /* Print statistical information  */
+    error  = 0;         /* Initialize error flag */
 
 
-// /* -------------------------------------------------------------------- */    
-// /* ..  Convert matrix from 0-based C-notation to Fortran 1-based        */
-// /*     notation.                                                        */
-// /* -------------------------------------------------------------------- */ 
-//     shiftIndices(n, nnz, ia, ja, 1);
+/* -------------------------------------------------------------------- */    
+/* ..  Convert matrix from 0-based C-notation to Fortran 1-based        */
+/*     notation.                                                        */
+/* -------------------------------------------------------------------- */ 
+    shiftIndices(n, nnz, ia, ja, 1);
 
 
-// /* -------------------------------------------------------------------- */
-// /*  .. pardiso_chk_matrix(...)                                          */
-// /*     Checks the consistency of the given matrix.                      */
-// /*     Use this functionality only for debugging purposes               */
-// /* -------------------------------------------------------------------- */
-//     pardiso_chkmatrix_d(&mtype, &n, a, ia, ja, &error);
-//     if (error != 0) 
-//     {
-//         printf("\nERROR in consistency of matrix: %d", error);
-//         exit(1);
-//     }
+/* -------------------------------------------------------------------- */
+/*  .. pardiso_chk_matrix(...)                                          */
+/*     Checks the consistency of the given matrix.                      */
+/*     Use this functionality only for debugging purposes               */
+/* -------------------------------------------------------------------- */
+     pardiso_chkmatrix_d(&mtype, &n, a, ia, ja, &error);
+     if (error != 0) 
+     {
+         printf("\nERROR in consistency of matrix: %d", error);
+         // exit(1);
+     }
 
  
 // /* -------------------------------------------------------------------- */    
@@ -213,71 +215,69 @@ static void doPardiso() {
 // /*     all memory that is necessary for the factorization.              */
 // /* -------------------------------------------------------------------- */ 
     
-//     int nrows_S = 2;
-//     phase       = 12;
-//     iparm[38]   = nrows_S; 
+    int nrows_S = 2;
+    phase       = 12;
+    iparm[38]   = nrows_S; 
 
-//     int nb = 0;
+    int nb = 0;
 
-//     pardiso_d(pt, &maxfct, &mnum, &mtype, &phase,
-//                &n, a, ia, ja, &idum, &nb,
-//                &iparm[1], &msglvl, &ddum, &ddum, &error,  dparm);
+    pardiso_d(pt, &maxfct, &mnum, &mtype, &phase,
+               &n, a, ia, ja, &idum, &nb,
+               &iparm[1], &msglvl, &ddum, &ddum, &error,  dparm);
     
-//     if (error != 0) 
-//     {
-//         printf("\nERROR during symbolic factorization: %d", error);
-//         exit(1);
-//     }
-//     printf("\nReordering completed ...\n");
-//     printf("Number of nonzeros in factors  = %d\n", iparm[18]);
-//     printf("Number of factorization GFLOPS = %d\n", iparm[19]);
-//     printf("Number of nonzeros is   S      = %d\n", iparm[39]);
+    if (error != 0) 
+    {
+        printf("\nERROR during symbolic factorization: %d", error);
+        return;
+    }
+    printf("\nReordering completed ...\n");
+    printf("Number of nonzeros in factors  = %d\n", iparm[18]);
+    printf("Number of factorization GFLOPS = %d\n", iparm[19]);
+    printf("Number of nonzeros is   S      = %d\n", iparm[39]);
    
-// /* -------------------------------------------------------------------- */    
-// /* ..  allocate memory for the Schur-complement and copy it there.      */
-// /* -------------------------------------------------------------------- */ 
-//     int nonzeros_S = iparm[39];
+/* -------------------------------------------------------------------- */    
+/* ..  allocate memory for the Schur-complement and copy it there.      */
+/* -------------------------------------------------------------------- */ 
+    int nonzeros_S = iparm[39];
  
-//     int* iS        = new int[nrows_S+1];
-//     int* jS        = new int[nonzeros_S];
-//     double* S      = new double[nonzeros_S];
+    int* iS        = new int[nrows_S+1];
+    int* jS        = new int[nonzeros_S];
+    double* S      = new double[nonzeros_S];
   
-//     pardiso_get_schur_d(pt, &maxfct, &mnum, &mtype, S, iS, jS);
+    pardiso_get_schur_d(pt, &maxfct, &mnum, &mtype, S, iS, jS);
 
 
-// /* -------------------------------------------------------------------- */    
-// /* ..  Convert matrix from 1-based Fortan notation to 0-based C         */
-// /*     notation.                                                        */
-// /* -------------------------------------------------------------------- */ 
-//     shiftIndices(n, nnz, ia, ja, -1);
+/* -------------------------------------------------------------------- */    
+/* ..  Convert matrix from 1-based Fortan notation to 0-based C         */
+/*     notation.                                                        */
+/* -------------------------------------------------------------------- */ 
+    shiftIndices(n, nnz, ia, ja, -1);
     
-// /* -------------------------------------------------------------------- */    
-// /* ..  Convert Schur complement from Fortran notation held internally   */
-// /*     to 0-based C notation                                            */
-// /* -------------------------------------------------------------------- */ 
-//     shiftIndices(nrows_S, nonzeros_S, iS, jS, -1);
+/* -------------------------------------------------------------------- */    
+/* ..  Convert Schur complement from Fortran notation held internally   */
+/*     to 0-based C notation                                            */
+/* -------------------------------------------------------------------- */ 
+    shiftIndices(nrows_S, nonzeros_S, iS, jS, -1);
 
-//     printCSR(nrows_S, nonzeros_S, iS, jS, S);
+    printCSR(nrows_S, nonzeros_S, iS, jS, S);
 
-// /* -------------------------------------------------------------------- */    
-// /* ..  Termination and release of memory.                               */
-// /* -------------------------------------------------------------------- */ 
-//     phase = -1;                 /* Release internal memory. */
+/* -------------------------------------------------------------------- */    
+/* ..  Termination and release of memory.                               */
+/* -------------------------------------------------------------------- */ 
+    phase = -1;                 /* Release internal memory. */
 
-//     pardiso_d(pt, &maxfct, &mnum, &mtype, &phase,
-//             &n, &ddum, ia, ja, &idum, &idum,
-//             &iparm[1], &msglvl, &ddum, &ddum, &error,  dparm);
+    pardiso_d(pt, &maxfct, &mnum, &mtype, &phase,
+            &n, &ddum, ia, ja, &idum, &idum,
+            &iparm[1], &msglvl, &ddum, &ddum, &error,  dparm);
 
 
-//     delete[] iS;
-//     delete[] jS;
-//     delete[] S;
+    delete[] iS;
+    delete[] jS;
+    delete[] S;
 
-//     printf ("EXIT: Completed\n");
+    printf ("EXIT: Completed\n");
 
-//     return 0;
 }
-
 
 
 /*
@@ -850,7 +850,8 @@ void ClothSystem::InitializeBuffers(){
     // nodeIdx attribute
     glVertexArrayAttribIFormat(fixedNodesVAO, POSITION_ATTRIB_LOC, 1, GL_UNSIGNED_INT, 0);
     glVertexArrayAttribBinding(fixedNodesVAO, POSITION_ATTRIB_LOC, 0);
-    Eigen::setNbThreads(12);
+    // Eigen::setNbThreads(12);
+    doPardiso();
 
 }
 
@@ -1488,6 +1489,15 @@ static void calculateFs_Js(double* stretchingForcesVecPtr, SparseEntries* sparse
     }
 }
 
+static void solveSystem(const Eigen::Ref<const Eigen::SparseMatrix<double>>& J_free,
+                        const Eigen::Ref<const Eigen::Matrix<double, Eigen::Dynamic, 1>>& f_free,
+                        Eigen::Ref<Eigen::Matrix<double, Eigen::Dynamic, 1>> dq_free) {
+    Eigen::ConjugateGradient<Eigen::SparseMatrix<double>, Eigen::Lower | Eigen::Upper> solver;
+    solver.compute(J_free);
+    dq_free = solver.solve(f_free);
+}
+
+
 void ClothSystem::CalculateForces() {
 
     auto currTime = std::chrono::high_resolution_clock::now();
@@ -1542,7 +1552,7 @@ void ClothSystem::CalculateForces() {
 
         q0 = q.eval();
 
-  
+        Eigen::Matrix<double, Eigen::Dynamic, 1> dq_free(freeDOFCount);
 
         // dofPositions = positionX1;
         while (error > tol) {
@@ -1619,12 +1629,10 @@ void ClothSystem::CalculateForces() {
             //sp_f_free.reserve(Eigen::VectorXi::Constant(1, freeDOFCount));
             //sp_J_free.reserve(Eigen::VectorXi::Constant(1, freeDOFCount));
 
-            Eigen::ConjugateGradient<Eigen::SparseMatrix<double>, Eigen::Lower | Eigen::Upper> solver;
-            solver.compute(J_free);
-            Eigen::Matrix<double, Eigen::Dynamic, 1> dq_free = solver.solve(f_free);
 
             // Eigen::Matrix<double, Eigen::Dynamic, 1> dq_free = J_free.ldlt().solve(f_free);
-
+            
+            solveSystem(J_free, f_free, dq_free);
             auto endSolverTime = std::chrono::high_resolution_clock::now();
             std::chrono::duration<double> solverTime = endSolverTime - startSolverTime;      
             totalSolveTime += solverTime.count();  
