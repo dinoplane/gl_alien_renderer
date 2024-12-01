@@ -464,12 +464,19 @@ def objfun(qGuess, q0, u, freeIndex, dt, tol,
     F = Fg + Fb + Fs # Viscous forces can sometimes be useful
     JForces = Js + Jb
 
+    JForces_free = JForces[np.ix_(freeIndex, freeIndex)]
+    mMat_free = mMat[np.ix_(freeIndex, freeIndex)]
     f = massVector/dt * ( (q-q0)/dt - u ) - F
     J = mMat / dt ** 2 - JForces
+
+    # print(JForces_free)
+    # print(mMat_free)
 
     f_free = f[freeIndex]
     J_free = J[np.ix_(freeIndex, freeIndex)]
     dq_free = np.linalg.solve(J_free, f_free)
+
+    # print(J_free)
 
     q[freeIndex] = q[freeIndex] - dq_free
 

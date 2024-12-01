@@ -114,6 +114,7 @@ void SceneLoader::LoadScene(const SceneData& sceneData, Scene* scene)
     fmt::printf("Size: particle systems : %u\n", scene->particleSystems.size());
 
     //scene->particleSystems.push_back(ParticleSystem({100, 0.0001, "gen_particle"}));
+    // 
     // scene->particleSystems.push_back(ParticleSystem({100, 0.0001, "gen_particle"}));
     ParticleSystemParameters p{ 10, 0.0001, "gen" };
     //scene->particleSystems.push_back( std::make_unique<ParticleSystem>());
@@ -121,9 +122,9 @@ void SceneLoader::LoadScene(const SceneData& sceneData, Scene* scene)
 
     ClothSystemParameters c;
     c.particleCount = 100;
-    c.timeStep = 0.001;
+    c.timeStep = 0.01;
     c.shaderName = "cloth";
-    c.clothSideLength = 18;
+    c.clothSideLength = 14;
     c.cellSideLength = 0.1;
     c.totalMass = 0.01;
     c.gravityAccel = 9.81;

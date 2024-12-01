@@ -7,8 +7,278 @@
 #include<Eigen/Geometry>
 #include <Eigen/Dense>
 #include <Eigen/SparseCore>
+#include<Eigen/SparseCholesky>
+//#include<Eigen/SparseLU>
+#include<Eigen/IterativeLinearSolvers>
+
+//#include "pardiso.h"
+//#include <fstream>
+//#include <iostream>
+//#include <iomanip>
+//#include <cmath>
+//#include <cstdlib>
+/*
+static void dumpCSR(const char* filename, int n, int* ia, int* ja, double* a)
+{
+  fstream fout(filename, ios::out);
+  fout << n << endl;
+  fout << n << endl;
+  fout << ia[n] << endl;
+  
+  for (int i = 0; i <= n; i++)
+  {
+    fout << ia[i] << endl;
+  }
+
+  for (int i = 0; i < ia[n]; i++)
+  {
+    fout << ja[i] << endl;
+  }
+
+  for (int i = 0; i < ia[n]; i++)
+  {
+    fout << a[i] << endl;
+  }
+
+  fout.close();
+}
+
+
+static void printCSR(int n, int nnz, int* ia, int* ja, double* a)
+{
+  cout << "rows: " << setw(10) << n << endl;
+  cout << "nnz : " << setw(10) << nnz << endl;
+
+  if (nnz == n*n)
+  {
+    for (int i = 0; i < n; i++)
+    {
+      for (int j = 0; j < n; j++)
+      {
+        cout << setw(10) << a[i*n + j];
+      }
+      cout << endl;
+    }
+  }
+  else
+  {
+    for (int i = 0; i < n; i++)
+    {
+      for (int index = ia[i]; index < ia[i+1]; index++)
+      {
+        int j = ja[index];
+        cout << setw(10) << "(" << i << ", " << j << ") " << a[index];
+      }
+      cout << endl;
+    }
+  }
+}
+
+
+static void shiftIndices(int n, int nonzeros, int* ia, int* ja, int value)
+{
+  int i;
+    for (i = 0; i < n+1; i++) 
+    {
+        ia[i] += value;
+    }
+    for (i = 0; i < nonzeros; i++) 
+    {
+        ja[i] += value;
+    }
+}
+
+*/
+
+
+#define EIGEN_DONT_PARALLELIZE
+
+static void doPardiso() {
+/* Matrix data.
+     */
+
+    int    n =10;
+    int    ia[11] = { 0, 6, 11, 15, 19, 22, 26, 29, 32, 33, 34};
+    int    ja[34] = { 0, 2, 5, 6, 8, 9, 1, 2, 4, 8, 9, 2, 7, 8, 
+                      9, 3, 6, 8, 9, 4, 8, 9, 5, 7, 8, 9, 6, 8, 
+                      9, 7, 8, 9, 8, 9};
+    
+    double  a[34] = { 7.0,      1.0,           2.0, 7.0,     17.0, 8.5,
+                          -4.0, 8.0,      2.0,                6.0, 3.0,
+                                1.0,                     5.0, 6.0, 3.0,
+                                     7.0,           9.0,     16.0, 8.0,
+                                          0.0,               -4.0,-2.0,
+                                               3.0,      8.0,18.0, 9.0,
+                                                   11.0,     12.0, 6.0,
+                                                         5.0, 4.0, 2.0,
+                                                              0.0,
+                                                                   0.0};
+
+
+
+    int      nnz = ia[n];
+    int      mtype = -2;        /* Real unsymmetric matrix */
+
+    //dumpCSR("matrix_sample_mtype_2.csr", n, ia, ja, a);
+    //printCSR(n, nnz, ia, ja, a);
+
+//     /* Internal solver memory pointer pt,                  */
+//     /* 32-bit: int pt[64]; 64-bit: long int pt[64]         */
+//     /* or void *pt[64] should be OK on both architectures  */ 
+//     void    *pt[64];
+
+//     /* Pardiso control parameters. */
+//     int      iparm[65];
+//     double   dparm[64];
+//     int      solver;
+//     int      maxfct, mnum, phase, error, msglvl;
+
+//     /* Number of processors. */
+//     int      num_procs;
+
+//     /* Auxiliary variables. */
+//     char    *var;
+//     int      i;
+
+//     double   ddum;              /* Double dummy */
+//     int      idum;              /* Integer dummy. */
+
+// /* -------------------------------------------------------------------- */
+// /* ..  Setup Pardiso control parameters and initialize the solvers      */
+// /*     internal adress pointers. This is only necessary for the FIRST   */
+// /*     call of the PARDISO solver.                                      */
+// /* ---------------------------------------------------------------------*/
+      
+//     error = 0;
+//     solver = 0; /* use sparse direct solver */
+//     pardisoinit_d(pt,  &mtype, &solver, &iparm[1], dparm, &error);
+
+//     if (error != 0)
+//     {
+//         if (error == -10 )
+//            printf("No license file found \n");
+//         if (error == -11 )
+//            printf("License is expired \n");
+//         if (error == -12 )
+//            printf("Wrong username or hostname \n");
+//          return 1;
+//     }
+//     else
+//         printf("[PARDISO]: License check was successful ... \n");
+ 
+
+//     /* Numbers of processors, value of OMP_NUM_THREADS */
+//     var = getenv("OMP_NUM_THREADS");
+//     if(var != NULL)
+//         sscanf( var, "%d", &num_procs );
+//     else 
+//     {
+//         printf("Set environment OMP_NUM_THREADS to 1");
+//         exit(1);
+//     }
+//     iparm[3]  = num_procs;
+//     iparm[11] = 1;
+//     iparm[13] = 0;
+   
+    
+//     maxfct = 1;         /* Maximum number of numerical factorizations.  */
+//     mnum   = 1;         /* Which factorization to use. */
+    
+//     msglvl = 1;         /* Print statistical information  */
+//     error  = 0;         /* Initialize error flag */
+
+
+// /* -------------------------------------------------------------------- */    
+// /* ..  Convert matrix from 0-based C-notation to Fortran 1-based        */
+// /*     notation.                                                        */
+// /* -------------------------------------------------------------------- */ 
+//     shiftIndices(n, nnz, ia, ja, 1);
+
+
+// /* -------------------------------------------------------------------- */
+// /*  .. pardiso_chk_matrix(...)                                          */
+// /*     Checks the consistency of the given matrix.                      */
+// /*     Use this functionality only for debugging purposes               */
+// /* -------------------------------------------------------------------- */
+//     pardiso_chkmatrix_d(&mtype, &n, a, ia, ja, &error);
+//     if (error != 0) 
+//     {
+//         printf("\nERROR in consistency of matrix: %d", error);
+//         exit(1);
+//     }
 
  
+// /* -------------------------------------------------------------------- */    
+// /* ..  Reordering and Symbolic Factorization.  This step also allocates */
+// /*     all memory that is necessary for the factorization.              */
+// /* -------------------------------------------------------------------- */ 
+    
+//     int nrows_S = 2;
+//     phase       = 12;
+//     iparm[38]   = nrows_S; 
+
+//     int nb = 0;
+
+//     pardiso_d(pt, &maxfct, &mnum, &mtype, &phase,
+//                &n, a, ia, ja, &idum, &nb,
+//                &iparm[1], &msglvl, &ddum, &ddum, &error,  dparm);
+    
+//     if (error != 0) 
+//     {
+//         printf("\nERROR during symbolic factorization: %d", error);
+//         exit(1);
+//     }
+//     printf("\nReordering completed ...\n");
+//     printf("Number of nonzeros in factors  = %d\n", iparm[18]);
+//     printf("Number of factorization GFLOPS = %d\n", iparm[19]);
+//     printf("Number of nonzeros is   S      = %d\n", iparm[39]);
+   
+// /* -------------------------------------------------------------------- */    
+// /* ..  allocate memory for the Schur-complement and copy it there.      */
+// /* -------------------------------------------------------------------- */ 
+//     int nonzeros_S = iparm[39];
+ 
+//     int* iS        = new int[nrows_S+1];
+//     int* jS        = new int[nonzeros_S];
+//     double* S      = new double[nonzeros_S];
+  
+//     pardiso_get_schur_d(pt, &maxfct, &mnum, &mtype, S, iS, jS);
+
+
+// /* -------------------------------------------------------------------- */    
+// /* ..  Convert matrix from 1-based Fortan notation to 0-based C         */
+// /*     notation.                                                        */
+// /* -------------------------------------------------------------------- */ 
+//     shiftIndices(n, nnz, ia, ja, -1);
+    
+// /* -------------------------------------------------------------------- */    
+// /* ..  Convert Schur complement from Fortran notation held internally   */
+// /*     to 0-based C notation                                            */
+// /* -------------------------------------------------------------------- */ 
+//     shiftIndices(nrows_S, nonzeros_S, iS, jS, -1);
+
+//     printCSR(nrows_S, nonzeros_S, iS, jS, S);
+
+// /* -------------------------------------------------------------------- */    
+// /* ..  Termination and release of memory.                               */
+// /* -------------------------------------------------------------------- */ 
+//     phase = -1;                 /* Release internal memory. */
+
+//     pardiso_d(pt, &maxfct, &mnum, &mtype, &phase,
+//             &n, &ddum, ia, ja, &idum, &idum,
+//             &iparm[1], &msglvl, &ddum, &ddum, &error,  dparm);
+
+
+//     delete[] iS;
+//     delete[] jS;
+//     delete[] S;
+
+//     printf ("EXIT: Completed\n");
+
+//     return 0;
+}
+
+
 
 /*
 def signedAngle(u = None,v = None,n = None):
@@ -182,22 +452,25 @@ void ClothSystem::InitializeBufferData(void* params) {
     uint32_t clothSideParticleCount = clothParams->clothSideLength + 1;
     double deltaMass = clothParams->totalMass / clothParams->particleCount;
     massVector.resize(dofCount, deltaMass);
-    massMatrix.resize(dofCount*dofCount, 0.0);
-    for (uint32_t i = 0; i < dofCount; ++i) {
-        massMatrix[i * dofCount + i] = deltaMass;
-    }
-    
-    // freeindices 0-9
-    //fixedNodes.push_back(1);
+    // massMatrix.resize(dofCount*dofCount, 0.0);
+    // for (uint32_t i = 0; i < dofCount; ++i) {
+    //     massMatrix[i * dofCount + i] = deltaMass;
+    // }
 
-    fixedNodes.push_back(41);
+
+    // freeindices 0-9
+    fixedNodes.push_back(0);
+    fixedNodes.push_back(1);
+    fixedNodes.push_back(2);
+
+    //fixedNodes.push_back(41);
     //fixedNodes.push_back(42);
     //fixedNodes.push_back(43);
     //fixedNodes.push_back(67);
 
     //fixedNodes.push_back(190);
 
-    fixedNodes.push_back(250);
+    //fixedNodes.push_back(250);
 
     //fixedNodes.push_back(330);
 
@@ -208,15 +481,37 @@ void ClothSystem::InitializeBufferData(void* params) {
     for (uint32_t node = 0; node < particleCount; ++node) {
         if (currFixedIdx < fixedNodes.size() && node == fixedNodes[currFixedIdx]){
             ++currFixedIdx;
-            continue;
-        }
-        freeIndices.push_back(3*node);
-        freeIndices.push_back(3*node + 1);
-        freeIndices.push_back(3*node + 2);
+            fixedIndices.push_back(3 * node);
+            fixedIndices.push_back(3 * node + 1);
+            fixedIndices.push_back(3 * node + 2);
+
+            oldToNewIndiceMapping.push_back(UINT32_MAX);
+            oldToNewIndiceMapping.push_back(UINT32_MAX);
+            oldToNewIndiceMapping.push_back(UINT32_MAX);
+
         
+        }
+        else {
+            freeIndices.push_back(3 * node);
+            freeIndices.push_back(3 * node + 1);
+            freeIndices.push_back(3 * node + 2);
+
+            oldToNewIndiceMapping.push_back(3 * node     - currFixedIdx * 3);
+            oldToNewIndiceMapping.push_back(3 * node + 1 - currFixedIdx * 3);
+            oldToNewIndiceMapping.push_back(3 * node + 2 - currFixedIdx * 3);
+        }
     }
     freeDOFCount = freeIndices.size();
     fixedNodesCount = fixedNodes.size();
+
+    massMatrix = Eigen::SparseMatrix<double>(freeDOFCount, freeDOFCount);
+    SparseEntries massEntries;
+    massEntries.reserve(freeDOFCount);
+    for (uint32_t i = 0; i < freeDOFCount; ++i) {
+        massEntries.push_back(Eigen::Triplet<double>(i, i, deltaMass));
+    }
+    massMatrix.setFromTriplets(massEntries.begin(), massEntries.end());
+
 
     // for (uint32_t i = 0; i < clothParams->clothSideLength; ++i) {
 
@@ -555,7 +850,7 @@ void ClothSystem::InitializeBuffers(){
     // nodeIdx attribute
     glVertexArrayAttribIFormat(fixedNodesVAO, POSITION_ATTRIB_LOC, 1, GL_UNSIGNED_INT, 0);
     glVertexArrayAttribBinding(fixedNodesVAO, POSITION_ATTRIB_LOC, 0);
-    Eigen::setNbThreads(24);
+    Eigen::setNbThreads(12);
 
 }
 
@@ -918,6 +1213,34 @@ def gradEs_hessEs(node0 = None,node1 = None,l_k = None,EA = None):
 */
 
 
+
+static void subFromSparseEntries(const Eigen::Ref< const Eigen::MatrixXd > & mat, 
+                                uint32_t* indices, 
+                                SparseEntries* sparseEntries,
+                                const std::span<uint32_t> oldToNewIndices){
+    for (uint32_t i = 0; i < mat.rows(); ++i){
+        uint32_t oldRowIdx = indices[i];
+        uint32_t newRowIdx = oldToNewIndices[oldRowIdx];
+        if (newRowIdx == UINT32_MAX) {
+            continue;
+        }
+
+        for (uint32_t j = 0; j < mat.cols(); ++j){
+            uint32_t oldColIdx = indices[j];
+            uint32_t newColIdx = oldToNewIndices[oldColIdx];
+            if (newColIdx == UINT32_MAX) {
+                continue;
+            }
+
+            if (mat(i, j) == 0.0) {
+                continue;
+            }
+            
+            sparseEntries->push_back(Eigen::Triplet<double>(newRowIdx, newColIdx, -mat(i, j)));
+        }
+    }
+}
+
 static void calculateGradEb_HessEb_Shell(
     const Eigen::Ref< const Eigen::Vector3d > & node0, 
     const Eigen::Ref< const Eigen::Vector3d > & node1, 
@@ -991,22 +1314,23 @@ def gradEb_hessEb_Shell(x0, x1=None, x2=None, x3=None, theta_bar=0, kb=1.0):
 
 }
 
-static void calculateFb_Jb(double* bendingForcesVecPtr, double* bendingHessiansVecPtr, 
+static void calculateFb_Jb(double* bendingForcesVecPtr, SparseEntries* sparseEntries, // double* bendingHessiansVecPtr, 
                         const std::vector<glm::ivec4>& hingeVec, 
                         const Eigen::Ref<const Eigen::Matrix<double, Eigen::Dynamic, 1>>& q, 
                         double kb, 
                         const std::vector<double>& thetaBar, 
-                        uint32_t dofCount, uint32_t hingeCount) {
+                        uint32_t dofCount, uint32_t hingeCount,
+                        const std::span<uint32_t> oldToNewIndiceMapping) {
     
     Eigen::Map<Eigen::Matrix<
             double,
             Eigen::Dynamic, 1
             >> bendingForces(bendingForcesVecPtr, dofCount, 1);
-    Eigen::Map<
-        Eigen::Matrix<
-        double,
-        Eigen::Dynamic, Eigen::Dynamic
-        >> bendingHessians(bendingHessiansVecPtr, dofCount, dofCount);
+    // Eigen::Map<
+    //     Eigen::Matrix<
+    //     double,
+    //     Eigen::Dynamic, Eigen::Dynamic
+    //     >> bendingHessians(bendingHessiansVecPtr, dofCount, dofCount);
 
 
     // Bending Forces
@@ -1022,30 +1346,31 @@ static void calculateFb_Jb(double* bendingForcesVecPtr, double* bendingHessiansV
         Eigen::Vector3d x2 = q.segment<3>(3 * node2);
         Eigen::Vector3d x3 = q.segment<3>(3 * node3);
 
-        int ind[] = { 3 * node0, 3 * node0 + 1, 3 * node0 + 2,
+        uint32_t ind[] = { 3 * node0, 3 * node0 + 1, 3 * node0 + 2,
                       3 * node1, 3 * node1 + 1, 3 * node1 + 2,
                       3 * node2, 3 * node2 + 1, 3 * node2 + 2,
                       3 * node3, 3 * node3 + 1, 3 * node3 + 2 };
 
-        double df[12];
-        double dj[144];
+        double dF[12];
+        double dJ[144];
 
-        calculateGradEb_HessEb_Shell(x0, x1, x2, x3, thetaBar[hingeIdx], kb, df, dj);
+
         Eigen::Map<
         Eigen::Matrix<
             double,
             12, 1
-        >> dfMap(df);
+        >> dFMap(dF);
 
         Eigen::Map<
             Eigen::Matrix<
             double,
             12, 12>
-        > djMap(dj);
+        > dJMap(dJ);
+        calculateGradEb_HessEb_Shell(x0, x1, x2, x3, thetaBar[hingeIdx], kb, dF, dJ);
 
-
-        bendingForces(ind) = bendingForces(ind).eval() - dfMap;
-        bendingHessians(ind, ind) = bendingHessians(ind, ind).eval() - djMap;
+        bendingForces(ind) = bendingForces(ind).eval() - dFMap;
+        // bendingHessians(ind, ind) = bendingHessians(ind, ind).eval() - dJMap;
+        subFromSparseEntries(dJMap, ind, sparseEntries, oldToNewIndiceMapping);
     }
 }
 
@@ -1108,12 +1433,13 @@ static void calculateGradEs_HessEs(
     
 }
 
-static void calculateFs_Js(double* stretchingForcesVecPtr, double* stretchingHessiansVecPtr, 
+static void calculateFs_Js(double* stretchingForcesVecPtr, SparseEntries* sparseEntries,// double* stretchingHessiansVecPtr, 
             const Eigen::Ref<const Eigen::Matrix<double, Eigen::Dynamic, 1>>& q, 
             const std::vector<glm::ivec2>& edgeVec, 
             const std::vector<double>& undeformedEdgeLengthVec, 
             const std::vector<double>& elasticStretchingVec, 
-            uint32_t dofCount, uint32_t edgeCount) {
+            uint32_t dofCount, uint32_t edgeCount,
+            const std::span<uint32_t> oldToNewIndiceMapping) {
 
     Eigen::Map<
         Eigen::Matrix<
@@ -1121,11 +1447,11 @@ static void calculateFs_Js(double* stretchingForcesVecPtr, double* stretchingHes
             Eigen::Dynamic, 1>
     > stretchForces(stretchingForcesVecPtr, dofCount, 1);
 
-    Eigen::Map<
-        Eigen::Matrix<
-        double,
-        Eigen::Dynamic, Eigen::Dynamic
-        >> stretchHessians(stretchingHessiansVecPtr, dofCount, dofCount);
+    // Eigen::Map<
+    //     Eigen::Matrix<
+    //     double,
+    //     Eigen::Dynamic, Eigen::Dynamic
+    //     >> stretchHessians(stretchingHessiansVecPtr, dofCount, dofCount);
 
 
     for (uint32_t edgeIdx = 0; edgeIdx < edgeCount; edgeIdx++) {
@@ -1138,36 +1464,37 @@ static void calculateFs_Js(double* stretchingForcesVecPtr, double* stretchingHes
         Eigen::Vector3d x0 = q.segment<3>(3 * node0);
         Eigen::Vector3d x1 = q.segment<3>(3 * node1);
 
-        int ind[] = { 3 * node0, 3 * node0 + 1, 3 * node0 + 2,
+        uint32_t ind[] = { 3 * node0, 3 * node0 + 1, 3 * node0 + 2,
                       3 * node1, 3 * node1 + 1, 3 * node1 + 2 };
         
-        double df[6];
-        double dj[36];
+        double dF[6];
+        double dJ[36];
         Eigen::Map<
             Eigen::Matrix<
                 double, 
                 6, 1>
-        > dfMap(df);
+        > dFMap(dF);
         Eigen::Map<
             Eigen::Matrix<
                 double, 
                 6, 6>
-        > djMap(dj);
+        > dJMap(dJ);
 
-        calculateGradEs_HessEs(x0, x1, lk, ks, df, dj);
-        stretchForces(ind) = stretchForces(ind).eval() - dfMap;
-        stretchHessians(ind, ind) = stretchHessians(ind, ind).eval() - djMap;        
+        calculateGradEs_HessEs(x0, x1, lk, ks, dF, dJ);
+        stretchForces(ind) = stretchForces(ind).eval() - dFMap;
+        subFromSparseEntries(dJMap, ind, sparseEntries, oldToNewIndiceMapping);
+        // stretchHessians(ind, ind) = stretchHessians(ind, ind).eval() - dJMap;
+
     }
 }
 
 void ClothSystem::CalculateForces() {
 
     auto currTime = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double, std::milli> duration = currTime - lastTime;
+    std::chrono::duration<double> duration = currTime - lastTime;
 
     
-    if (duration.count() > dt * 1000.0) {
-        
+    if (duration.count() > dt ) {
         Eigen::Stride<Eigen::Dynamic, Eigen::Dynamic> bufferStrides(4, 1);
         Eigen::Stride<Eigen::Dynamic, Eigen::Dynamic> tmpVecStrides(3, 1);
         // Iterate through every hinge
@@ -1177,10 +1504,10 @@ void ClothSystem::CalculateForces() {
                 Eigen::Dynamic, 1>
         > massVec(massVector.data(), dofCount, 1);
         
-        Eigen::Map<Eigen::Matrix<
-            double,
-            Eigen::Dynamic, Eigen::Dynamic
-            >> massMat(massMatrix.data(), dofCount, dofCount);
+        // Eigen::Map<Eigen::Matrix<
+        //     double,
+        //     Eigen::Dynamic, Eigen::Dynamic
+        //     >> massMat(massMatrix.data(), dofCount, dofCount);
         // std::cout << massMat << std::endl;
 
         uint32_t iter = 0;
@@ -1191,32 +1518,7 @@ void ClothSystem::CalculateForces() {
                 double, 
                 Eigen::Dynamic, 1>
         > externalForces(externalForcesVec.data(), dofCount, 1);
-        // Eigen::Map<
-        //    Eigen::Matrix<
-        //    double,
-        //    Eigen::Dynamic, 1,
-        //    Eigen::RowMajor
-        //    >, Eigen::Unaligned,
-        //    Eigen::Stride<Eigen::Dynamic, Eigen::Dynamic>
-        // > positionMap(clothPositionVec.data(), particleCount, 3, bufferStrides);
 
-        //Eigen::Map<
-        //    Eigen::Matrix<
-        //    double,
-        //    Eigen::Dynamic, 3,
-        //    Eigen::RowMajor
-        //    >, Eigen::Unaligned,
-        //    Eigen::Stride<Eigen::Dynamic, Eigen::Dynamic>
-        //> velocityMap(velocityVec.data(), particleCount, 3, bufferStrides);
-
-        //Eigen::Map<
-        //    Eigen::Matrix<
-        //    double,
-        //    Eigen::Dynamic, 3,
-        //    Eigen::RowMajor
-        //    >, Eigen::Unaligned,
-        //    Eigen::Stride<Eigen::Dynamic, Eigen::Dynamic>
-        //> forceMap(forceVec.data(), particleCount, 3, bufferStrides);
 
         // Eigen::MatrixXd positionX1 = positionMap.reshaped<Eigen::RowMajor>(dofCount, 1);
 
@@ -1244,38 +1546,31 @@ void ClothSystem::CalculateForces() {
 
         // dofPositions = positionX1;
         while (error > tol) {
-            //if (iter > 5) {
-            //    break;
-            //}
+            if (iter > 5) {
+                break;
+            }
+            
+            auto startForceTime = std::chrono::high_resolution_clock::now();
             std::vector<double> bendingForcesVec(dofCount, 0.0);
-            std::vector<double> bendingHessiansVec(dofCount * dofCount, 0.0);
 
             std::vector<double> stretchingForcesVec(dofCount, 0.0);
-            std::vector<double> stretchingHessiansVec(dofCount * dofCount, 0.0);
 
             Eigen::Map<
                 Eigen::Matrix<
                     double, 
                     Eigen::Dynamic, 1>
             > bendingForces(bendingForcesVec.data(), dofCount, 1);
-            Eigen::Map<
-                Eigen::Matrix<
-                double,
-                Eigen::Dynamic, Eigen::Dynamic
-                >> bendingHessians(bendingHessiansVec.data(), dofCount, dofCount);
+
             Eigen::Map<
                 Eigen::Matrix<
                     double, 
                     Eigen::Dynamic, 1>
             > stretchForces(stretchingForcesVec.data(), dofCount, 1);
 
-            Eigen::Map<
-                Eigen::Matrix<
-                double,
-                Eigen::Dynamic, Eigen::Dynamic
-                >> stretchHessians(stretchingHessiansVec.data(), dofCount, dofCount);
-
-
+            // Eigen::SparseMatrix<double> bendingSPMat(dofCount, dofCount);
+            // Eigen::SparseMatrix<double> stretchSPMat(dofCount, dofCount);
+            Eigen::SparseMatrix<double> jacobianForces(freeDOFCount, freeDOFCount);
+            SparseEntries hessianEntries;
             
             //Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, 1>> positionX1(positionMap, dofCount, 1);
 
@@ -1285,41 +1580,59 @@ void ClothSystem::CalculateForces() {
 
             
             // Bending Forces -------------------------------------------------------------
-            calculateFb_Jb(bendingForcesVec.data(), bendingHessiansVec.data(), hingeVec, q, bendingStiffness, thetaBarVec, dofCount, hingeCount);
+            calculateFb_Jb(bendingForcesVec.data(), &hessianEntries, hingeVec, q, bendingStiffness, thetaBarVec, dofCount, hingeCount, oldToNewIndiceMapping);
             
             // Stretching Forces -------------------------------------------------------------
-            calculateFs_Js(stretchingForcesVec.data(), stretchingHessiansVec.data(), q, edgeVec, undeformedEdgeLengthVec, elasticStretchingVec, dofCount, edgeCount);
+            calculateFs_Js(stretchingForcesVec.data(), &hessianEntries, q, edgeVec, undeformedEdgeLengthVec, elasticStretchingVec, dofCount, edgeCount, oldToNewIndiceMapping);
            
+            auto endForceTime = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double> forceTime = endForceTime - startForceTime;
+            totalForceTime += forceTime.count();
+            
+            auto startSolverTime = std::chrono::high_resolution_clock::now();
+
+
+
+            jacobianForces.setFromTriplets(hessianEntries.begin(), hessianEntries.end());
             
             
             Eigen::Matrix<double, Eigen::Dynamic, 1> totalForces = bendingForces + stretchForces + externalForces;
-            
-            Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> jacobianForces = bendingHessians + stretchHessians;
             Eigen::Matrix<double, Eigen::Dynamic, 1> f = (massVec / dt).cwiseProduct((q - q0) / dt - u) - totalForces;
-            Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> J = massMat / (dt * dt) - jacobianForces;
-            
-            
-            Eigen::Matrix<double, Eigen::Dynamic, 1> f_free = f(freeIndices, 1);
-            Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> J_free = J(freeIndices, freeIndices);
+            Eigen::Matrix<double, Eigen::Dynamic, 1> f_free = f(freeIndices);
 
-            double* f_free_ptr = f_free.data();
-            double* J_free_ptr = J_free.data();
+            // Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> jacobianForces = bendingHessians + stretchHessians;
+            // Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> J = massMatrix / (dt * dt) - jacobianForces;
+            // Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> J_free = J(freeIndices, freeIndices);
 
-            
+            Eigen::SparseMatrix<double> J_free = massMatrix / (dt * dt) - jacobianForces;
+            //std::cout << "Jacobian-----------------------------\n" << jacobianForces << std::endl;
 
-            
+            //std::cout  << "Jfree-----------------------------\n"  << J_free << std::endl;
+            //Eigen::SparseMatrix<double> J_free = J(freeIndices, freeIndices);
+
+            // double* f_free_ptr = f_free.data();
+            // double* J_free_ptr = J_free.data();
+            // std::cout << J_free << std::endl;
             //Eigen::SparseMatrix<double> sp_f_free(freeDOFCount, 1);
             //Eigen::SparseMatrix<double> sp_J_free(freeDOFCount, freeDOFCount);
             //
             //sp_f_free.reserve(Eigen::VectorXi::Constant(1, freeDOFCount));
             //sp_J_free.reserve(Eigen::VectorXi::Constant(1, freeDOFCount));
 
+            Eigen::ConjugateGradient<Eigen::SparseMatrix<double>, Eigen::Lower | Eigen::Upper> solver;
+            solver.compute(J_free);
+            Eigen::Matrix<double, Eigen::Dynamic, 1> dq_free = solver.solve(f_free);
 
+            // Eigen::Matrix<double, Eigen::Dynamic, 1> dq_free = J_free.ldlt().solve(f_free);
 
-            Eigen::Matrix<double, Eigen::Dynamic, 1> dq_free = J_free.ldlt().solve(f_free);
-            
+            auto endSolverTime = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double> solverTime = endSolverTime - startSolverTime;      
+            totalSolveTime += solverTime.count();  
             
             q(freeIndices) = q(freeIndices).eval() - dq_free;
+
+    
+
             error = f_free.cwiseAbs().sum();
             iter += 1;
             //std::cout << error << " ? " << tol << std::endl;
@@ -1381,6 +1694,7 @@ void ClothSystem::SetupRender() {
 
     particleShader->use();
 }
+
 
 void ClothSystem::RenderDebug(GLuint VAO) {
     // glBindVertexArray(VAO);

@@ -6,6 +6,9 @@
 #include <particle_system.hpp>
 #include <particle_system.cpp>
 #include <chrono>
+#include <Eigen/SparseCore>
+
+using SparseEntries = std::vector<Eigen::Triplet<double>> ;
 
 struct ClothSystemParameters {
     uint32_t particleCount;
@@ -91,10 +94,12 @@ class ClothSystem : public BaseParticleSystem<
         std::vector<double> lastdofPositions;
 
         std::vector<double> massVector;
-        std::vector<double> massMatrix;
+        // std::vector<double> massMatrix;
+        Eigen::SparseMatrix<double> massMatrix;
         std::vector<uint32_t> fixedNodes;
         std::vector<uint32_t> fixedIndices;
         std::vector<uint32_t> freeIndices;
+        std::vector<uint32_t> oldToNewIndiceMapping;
 
 
         struct PickedClothData {
@@ -124,6 +129,8 @@ class ClothSystem : public BaseParticleSystem<
         Shader* fixedNodesDebugShader;
 
         bool timerRunning = true;
+        double totalForceTime;
+        double totalSolveTime;
         
 
     //ClothSystem(ClothSystemParameters* params);
@@ -196,6 +203,29 @@ c    Single threaded
 16   289 nodes : 162.788 ms
 17   324 nodes : 214.5 ms
 18   361 nodes : 346.022 ms
+
+
+
+c    Sparse Multi threaded
+1    4 nodes   : 0.1 ms
+2    9 nodes   : 0.2 ms
+3    16 nodes  : 0.9 ms
+4    25 nodes  : 1.04 ms
+5    36 Nodes  : 1.05 ms
+6    49 nodes  : 0.84 ms
+7    64 nodes  : 0.827 ms
+8    81 nodes  : 1.338 ms
+9    100 nodes : 1.449 ms
+10   121 nodes : 11.96 ms
+11   144 nodes : 33.754 ms
+12   169 nodes : 46.387 ms
+13   196 nodes : 64.464 ms
+14   225 nodes : 89.895  ms
+15   256 nodes : 118.725 ms
+16   289 nodes : 162.788 ms
+17   324 nodes : 214.5 ms
+18   361 nodes : 167.079 ms
+
 
 
 

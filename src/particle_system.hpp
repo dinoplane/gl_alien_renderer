@@ -45,17 +45,31 @@ DONE! calculate the hessian of bending (hinges)
 - CUT create compute shaders for the operations
 - CUT use a gpu to solve these
 
-- TODO Record Current Times
-- TODO Profile which areas need optimization
+- DONE Record Current Times
+- DONE Profile which areas need optimization
     - TODO Find the hot paths
 	- TODO find the solutions
 	- TODO implement the solutions
+
+- TODO Change the final hessians into Sparse Matrices
+	- TODO Stretching
+	- TODO Bending
+	- TODO Final
+	- TODO Write an algorithm to offset indices with respect to the free indices
+
+- TODO Integrate the pardiso solver
+- TODO Change the Edge and Hinge layouts to prefer a column major layout
+- TODO Multithread the gradient and hessian calculations
+	- Fork threads
+	- Thread pool!
+- TODO Use Matrices when when possible...
+
 
 - TODO create a presentation
 	- DONE? midterm (3 slides?)
 	- TODO final (5 slides)
 - TODO create a report
-	- TODO midterm (5 pages, 5+ references)
+	- DONE midterm (5 pages, 5+ references)
 	- TODO final (n pages, 10 references)
 
 
