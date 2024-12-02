@@ -718,6 +718,12 @@ void ClothSystem::InitializeBufferData(void* params) {
         //fmt::print("{: .8f}, {: .8f}, {: .8f}, ", dofPositions[3 * particleIdx], dofPositions[3 * particleIdx + 1], dofPositions[3 * particleIdx + 2]);
     }
 
+    fmt::print("Cloth Side Length: {}\n", clothParams->clothSideLength);
+    fmt::print("Total Nodes: {}\n", particleCount);
+    fmt::print("Total DOF: {}\n", freeDOFCount);
+    fmt::print("Total Edges: {}\n", edgeCount);
+    fmt::print("Total Hinges: {}\n", hingeCount);
+
     std::cout << std::endl;
 }
 
@@ -842,7 +848,7 @@ void ClothSystem::InitializeBuffers(){
     );
 
     //https://stackoverflow.com/questions/12399422/how-to-set-linker-flags-for-openmp-in-cmakes-try-compile-function
-    fmt::print("{}", fixedNodesCount);
+
     glCreateVertexArrays(1, &fixedNodesVAO);
 
     glEnableVertexArrayAttrib(fixedNodesVAO, POSITION_ATTRIB_LOC);
