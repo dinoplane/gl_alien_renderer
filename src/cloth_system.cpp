@@ -459,9 +459,27 @@ void ClothSystem::InitializeBufferData(void* params) {
 
 
     // freeindices 0-9
-    fixedNodes.push_back(0);
-    fixedNodes.push_back(1);
-    fixedNodes.push_back(2);
+    uint32_t clothSideLength = clothParams->clothSideLength;
+    // All 4 corners
+    // fixedNodes.push_back(0);
+    // fixedNodes.push_back(clothSideLength);
+    // fixedNodes.push_back(clothSideParticleCount * clothSideLength);
+    // fixedNodes.push_back(clothSideParticleCount * clothSideLength + clothSideLength);
+
+    // TableCloth
+    // fixedNodes.push_back(clothSideLength / 2);
+    // fixedNodes.push_back(clothSideParticleCount * clothSideLength / 2);
+    // fixedNodes.push_back(clothSideParticleCount * clothSideLength / 2 + clothSideLength);
+    // fixedNodes.push_back(clothSideParticleCount * clothSideLength + clothSideLength / 2);
+
+    // BedSheet
+    fixedNodes.push_back(clothSideParticleCount * (clothSideLength / 3) + (clothSideLength / 3));
+    fixedNodes.push_back(clothSideParticleCount * (clothSideLength / 3) + (2 * clothSideLength / 3));
+    fixedNodes.push_back(clothSideParticleCount * (2 * clothSideLength / 3) + (clothSideLength / 3));
+    fixedNodes.push_back(clothSideParticleCount * (2 * clothSideLength / 3) + (2 * clothSideLength / 3));
+
+    std::sort(fixedNodes.begin(), fixedNodes.end());
+
 
     //fixedNodes.push_back(41);
     //fixedNodes.push_back(42);
@@ -1771,8 +1789,8 @@ void ClothSystem::CalculateForces() {
 
             // Eigen::Matrix<double, Eigen::Dynamic, 1> dq_free = J_free.ldlt().solve(f_free);
             J_free.makeCompressed();
-            // SolveSystemWithConjugateGradient(J_free, f_free, dq_free);
-            SolveSystemWithPardiso(J_free, f_free, dq_free, pardisoData);
+             SolveSystemWithConjugateGradient(J_free, f_free, dq_free);
+            //SolveSystemWithPardiso(J_free, f_free, dq_free, pardisoData);
             auto endSolverTime = std::chrono::high_resolution_clock::now();
             std::chrono::duration<double> solverTime = endSolverTime - startSolverTime;      
             totalSolveTime += solverTime.count();  
@@ -1781,8 +1799,8 @@ void ClothSystem::CalculateForces() {
 
     
 
-            //error = f_free.cwiseAbs().sum();
-            error = 0.0f;
+            error = f_free.cwiseAbs().sum();
+            //error = 0.0f;
             iter += 1;
             //std::cout << error << " ? " << tol << std::endl;
             
