@@ -440,7 +440,7 @@ void ClothSystem::InitializeBufferData(void* params) {
 
     fmt::print("Cloth Side Length: {}\n", clothParams->clothSideLength);
     fmt::print("Total Nodes: {}\n", particleCount);
-    fmt::print("Total DOF: {}\n", freeDOFCount);
+    fmt::print("Total DOF: {}\n", dofCount);
     fmt::print("Total Edges: {}\n", edgeCount);
     fmt::print("Total Hinges: {}\n", hingeCount);
 
