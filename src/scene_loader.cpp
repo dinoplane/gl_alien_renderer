@@ -124,7 +124,7 @@ void SceneLoader::LoadScene(const SceneData& sceneData, Scene* scene)
     c.particleCount = 100;
     c.timeStep = 0.01;
     c.shaderName = "cloth";
-    c.clothSideLength = 8;
+    c.clothSideLength = 50;
     c.cellSideLength = 0.1;
     c.totalMass = 0.01;
     c.gravityAccel = 9.81;

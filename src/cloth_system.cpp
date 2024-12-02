@@ -1775,7 +1775,8 @@ void ClothSystem::CalculateForces() {
 
     
 
-            error = f_free.cwiseAbs().sum();
+            //error = f_free.cwiseAbs().sum();
+            error = 0.0f;
             iter += 1;
             //std::cout << error << " ? " << tol << std::endl;
             
