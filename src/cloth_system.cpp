@@ -851,7 +851,8 @@ void ClothSystem::InitializeBuffers(){
     glVertexArrayAttribIFormat(fixedNodesVAO, POSITION_ATTRIB_LOC, 1, GL_UNSIGNED_INT, 0);
     glVertexArrayAttribBinding(fixedNodesVAO, POSITION_ATTRIB_LOC, 0);
     // Eigen::setNbThreads(12);
-    doPardiso();
+    // doPardiso();
+    InitializePardiso();
 
 }
 
@@ -1489,13 +1490,145 @@ static void calculateFs_Js(double* stretchingForcesVecPtr, SparseEntries* sparse
     }
 }
 
-static void solveSystem(const Eigen::Ref<const Eigen::SparseMatrix<double>>& J_free,
+static void SolveSystemWithConjugateGradient(const Eigen::Ref<const Eigen::SparseMatrix<double>>& J_free,
                         const Eigen::Ref<const Eigen::Matrix<double, Eigen::Dynamic, 1>>& f_free,
                         Eigen::Ref<Eigen::Matrix<double, Eigen::Dynamic, 1>> dq_free) {
     Eigen::ConjugateGradient<Eigen::SparseMatrix<double>, Eigen::Lower | Eigen::Upper> solver;
     solver.compute(J_free);
     dq_free = solver.solve(f_free);
 }
+
+void ClothSystem::InitializePardiso(){
+    pardisoData.mtype = 11;        /* Real symmetric? */
+
+    // void* pt[64];
+
+    // /* Pardiso control parameters. */
+    // int      iparm[65];
+    // double   dparm[64];
+    // int      solver;
+    // int      maxfct, mnum, phase, error, msglvl;
+
+    // /* Number of processors. */
+    // int      num_procs;
+
+    // /* Auxiliary variables. */
+    // char* var;
+    // int      i;
+
+    // double   ddum;              /* Double dummy */
+    // int      idum;              /* Integer dummy. */
+
+    /* -------------------------------------------------------------------- */
+    /* ..  Setup Pardiso control parameters and initialize the solvers      */
+    /*     internal adress pointers. This is only necessary for the FIRST   */
+    /*     call of the PARDISO solver.                                      */
+    /* ---------------------------------------------------------------------*/
+
+    pardisoData.error = 0;
+    pardisoData.solver = 0; /* use sparse direct solver */
+    pardisoinit_d(pardisoData.pt, &pardisoData.mtype, &pardisoData.solver, &pardisoData.iparm[1], pardisoData.dparm, &pardisoData.error);
+
+    pardisoData.num_procs = 12;
+    pardisoData.iparm[3] = pardisoData.num_procs;
+    pardisoData.iparm[7] = 1;
+    pardisoData.iparm[11] = 0;
+    pardisoData.iparm[13] = 0;
+    pardisoData.iparm[27] = 0; /* recaling */
+
+    pardisoData.maxfct = 1;         /* Maximum number of numerical factorizations.  */
+    pardisoData.mnum = 1;         /* Which factorization to use. */
+
+    pardisoData.msglvl = 0; // 0         /* Print statistical information  */
+    pardisoData.error = 0;         /* Initialize error flag */
+            /* Analyse and factorize the matrix */
+    pardisoData.n = freeDOFCount;         /* Number of equations */
+    pardisoData.nrhs = 1;         /* Number of right hand sides. */
+}
+
+static void SolveSystemWithPardiso(Eigen::Ref< Eigen::SparseMatrix<double>> J_free,
+    Eigen::Ref<Eigen::Matrix<double, Eigen::Dynamic, 1>> f_free,
+    Eigen::Ref<Eigen::Matrix<double, Eigen::Dynamic, 1>> dq_free,
+    ClothSystem::PardisoData& pardisoData) {
+
+    // int    n = J_free.rows();
+    int    *ia = J_free.outerIndexPtr();
+    int    *ja = J_free.innerIndexPtr();
+
+    double  *a = J_free.valuePtr();
+
+    double  *b = f_free.data();
+    double  *x = dq_free.data();
+
+    int      nnz = ia[pardisoData.n];
+
+
+
+
+    /* -------------------------------------------------------------------- */
+    /* ..  Convert matrix from 0-based C-notation to Fortran 1-based        */
+    /*     notation.                                                        */
+    /* -------------------------------------------------------------------- */
+    shiftIndices(pardisoData.n, nnz, ia, ja, 1);
+
+
+    /* -------------------------------------------------------------------- */
+    /*  .. pardiso_chk_matrix(...)                                          */
+    /*     Checks the consistency of the given matrix.                      */
+    /*     Use this functionality only for debugging purposes               */
+    /* -------------------------------------------------------------------- */
+    //pardiso_chkmatrix_d(&pardisoData.mtype, &pardisoData.n, a, ia, ja, &pardisoData.error);
+    //if (pardisoData.error != 0)
+    //{
+    //    std::printf("\nERROR in consistency of matrix: %d", pardisoData.error);
+    //}
+
+
+    // /* -------------------------------------------------------------------- */    
+    // /* ..  Reordering and Symbolic Factorization.  This step also allocates */
+    // /*     all memory that is necessary for the factorization.              */
+    // /* -------------------------------------------------------------------- */ 
+    
+    double   ddum;              /* Double dummy */
+    int      idum;              /* Integer dummy. */
+    pardisoData.phase = 13;
+
+
+    pardiso_d(pardisoData.pt, &pardisoData.maxfct, &pardisoData.mnum, &pardisoData.mtype, &pardisoData.phase,
+        &pardisoData.n, a, ia, ja, &idum, &pardisoData.nrhs,
+        &pardisoData.iparm[1], &pardisoData.msglvl, b, x, &pardisoData.error, pardisoData.dparm);
+
+    if (pardisoData.error != 0)
+    {
+        std::printf("\nERROR during solve: %d", pardisoData.error);
+        return;
+    }
+
+
+
+    /* -------------------------------------------------------------------- */
+    /* ..  Convert matrix from 1-based Fortan notation to 0-based C         */
+    /*     notation.                                                        */
+    /* -------------------------------------------------------------------- */
+    shiftIndices(pardisoData.n, nnz, ia, ja, -1);
+
+    /* -------------------------------------------------------------------- */
+    /* ..  Termination and release of memory.                               */
+    /* -------------------------------------------------------------------- */
+    pardisoData.phase = -1;                 /* Release internal memory. */
+
+    pardiso_d(pardisoData.pt, &pardisoData.maxfct, &pardisoData.mnum, &pardisoData.mtype, &pardisoData.phase,
+        &pardisoData.n, a, ia, ja, &idum, &pardisoData.nrhs,
+        &pardisoData.iparm[1], &pardisoData.msglvl, &ddum, &ddum, &pardisoData.error, pardisoData.dparm);
+
+
+
+
+    //std::printf("EXIT: Completed\n");s
+
+
+}
+
 
 
 void ClothSystem::CalculateForces() {
@@ -1631,8 +1764,9 @@ void ClothSystem::CalculateForces() {
 
 
             // Eigen::Matrix<double, Eigen::Dynamic, 1> dq_free = J_free.ldlt().solve(f_free);
-            
-            solveSystem(J_free, f_free, dq_free);
+            J_free.makeCompressed();
+            // SolveSystemWithConjugateGradient(J_free, f_free, dq_free);
+            SolveSystemWithPardiso(J_free, f_free, dq_free, pardisoData);
             auto endSolverTime = std::chrono::high_resolution_clock::now();
             std::chrono::duration<double> solverTime = endSolverTime - startSolverTime;      
             totalSolveTime += solverTime.count();  

@@ -132,6 +132,18 @@ class ClothSystem : public BaseParticleSystem<
         double totalForceTime;
         double totalSolveTime;
         
+        struct PardisoData {
+            void* pt[64];
+            int mtype;
+            int solver;
+            int iparm[65];
+            double dparm[64];
+            int maxfct, mnum, phase, error, msglvl, num_procs;
+            int n , nrhs;
+            int perm;
+
+
+        } pardisoData;
 
     //ClothSystem(ClothSystemParameters* params);
         //virtual void Initialize(void* params) override;
@@ -143,6 +155,8 @@ class ClothSystem : public BaseParticleSystem<
     virtual void SetupRender() override;
     virtual void RenderDebug(GLuint VAO) override;
     virtual void CalculateForces() override;
+    void InitializePardiso();
+    
 
     std::chrono::time_point<std::chrono::high_resolution_clock> startTime;
     std::chrono::time_point<std::chrono::high_resolution_clock> lastTime;
