@@ -16,6 +16,7 @@
 #include <entity.hpp>
 #include <scenedata.hpp>
 #include <scene.hpp>
+#include <cloth_system.hpp>
 #include <renderer.hpp>
 #include <scene_loader.hpp>
 #include <model_loader.hpp>
@@ -51,9 +52,11 @@ const unsigned int SCR_HEIGHT = 600;
 // // std::barrier sync_point(NUM_THREADS);
 
 // // timing
-float currentFrame = 0.0f;
-float deltaTime = 0.0f;	// time between current frame and last frame
-float lastFrame = 0.0f;
+double currentFrame = 0.0;
+double deltaTime = 0.0;	// time between current frame and last frame
+double lastFrame = 0.0;
+double totalTime = 0.0;
+uint32_t frameCount = 0;
 
 bool firstMouse = true;
 
@@ -457,10 +460,19 @@ int main(int argc, char **argv)
         renderers.push_back(Renderer(SCR_WIDTH / RENDERER_COUNT, SCR_HEIGHT ));
     }
 
+    glfwMaximizeWindow(window);
+
+    int width, height;
+    glfwGetWindowSize(window, &width, &height);
+
+    framebuffer_size_callback(window, width, height);
+
     fmt::print("Number of renderers: {}\n", renderers.size());
     while (!glfwWindowShouldClose(window))
     {
         ZoneScoped;
+
+
 
         processInput(window, &renderers[currRendererIdx], &scene);
         RenderToFrame( scene );
@@ -503,6 +515,8 @@ int main(int argc, char **argv)
         currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
+        totalTime += deltaTime;
+        ++frameCount;
     }
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -563,6 +577,12 @@ int main(int argc, char **argv)
 #endif
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
+    ClothSystem* cl = static_cast<ClothSystem*> (scene.particleSystems[0].get());
+    std::cout << "Application force ms/frame " << cl->totalForceTime / frameCount * 1000 << " (" << cl->totalForceTime / totalTime * 100.0 << " %)" << std::endl;
+    std::cout << "Application solve ms/frame " << cl->totalSolveTime / frameCount * 1000 << " (" << cl->totalSolveTime / totalTime * 100.0 << " %)" << std::endl;
+    
+
+    std::cout << "Application average ms/frame " << totalTime / frameCount * 1000 << " (" << frameCount / totalTime << " FPS)" << std::endl;
 
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();

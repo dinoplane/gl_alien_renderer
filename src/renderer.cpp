@@ -118,12 +118,12 @@ Renderer::Renderer(float w, float h) : width(w), height(h) {
     std::cout << "Main Camera Index: " << mainCameraIdx << std::endl;
     if (allCameras.size() == 0){
         Renderer::allCameras.push_back(//  -3, 3.0, -3.0
-            Camera(w, h, glm::vec3(-0.7615466, 0.8351303, -0.92849666), glm::vec3(0.0, 1.0, 0.0), -317.0f, -34.0f, 30.0f, 0.1f, 30.0f)
+            Camera(w, h, glm::vec3(-1.8238577, 1.5064527, -0.163382), glm::vec3(0.0, 1.0, 0.0), -364.101, -34.2001f, 30.0f, 0.1f, 30.0f)
         );
     } else
     {
         Renderer::allCameras.push_back(
-            Camera(w, h, glm::vec3(-10.0, 20.0, -10.0), glm::vec3(0.0, 1.0, 0.0), -315.0f, -60.0f, 30.0f, 0.1f, pow( 10.0f, allCameras.size() + 1))
+            Camera(w, h, glm::vec3(1.6593089, 3.049368, -1.3266003), glm::vec3(0.0, 1.0, 0.0), -216.8, -69.7, 30.0f, 0.1f, pow( 10.0f, allCameras.size() + 1))
         );
     }
     allCameras[mainCameraIdx].setPerspectiveSize(w, h);

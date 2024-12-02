@@ -63,6 +63,7 @@ class ClothSystem : public BaseParticleSystem<
 
 
         uint32_t dofCount;
+        uint32_t freeDOFCount;
 
         std::vector<glm::vec4> normalsVec;
         GLuint normalsBuffer;
@@ -121,7 +122,8 @@ class ClothSystem : public BaseParticleSystem<
         Shader* fixedNodesDebugShader;
 
         bool timerRunning = true;
-        
+        double totalForceTime;
+        double totalSolveTime;
 
     //ClothSystem(ClothSystemParameters* params);
         //virtual void Initialize(void* params) override;

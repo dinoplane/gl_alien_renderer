@@ -4,6 +4,7 @@
 #include <gl_bindings.h>
 #include <chrono>
 #include <iostream>
+#include <algorithm>
 #include <Eigen/Dense>
  
 
@@ -185,9 +186,36 @@ void ClothSystem::InitializeBufferData(void* params) {
     }
     
     // freeindices 0-9
-    fixedNodes.push_back(1);
+    uint32_t clothSideLength = clothParams->clothSideLength;
+    // All 4 corners
+    // fixedNodes.push_back(0);
+    // fixedNodes.push_back(clothSideLength);
+    // fixedNodes.push_back(clothSideParticleCount * clothSideLength);
+    // fixedNodes.push_back(clothSideParticleCount * clothSideLength + clothSideLength);
+    
+    // TableCloth
+    // fixedNodes.push_back(clothSideLength / 2);
+    // fixedNodes.push_back(clothSideParticleCount * clothSideLength / 2);
+    // fixedNodes.push_back(clothSideParticleCount * clothSideLength / 2 + clothSideLength);
+    // fixedNodes.push_back(clothSideParticleCount * clothSideLength + clothSideLength / 2);
 
-    fixedNodes.push_back(5);
+    // BedSheet
+    fixedNodes.push_back(clothSideParticleCount * (    clothSideLength / 3) +  (    clothSideLength / 3));
+    fixedNodes.push_back(clothSideParticleCount * (    clothSideLength / 3) +  (2 * clothSideLength / 3));
+    fixedNodes.push_back(clothSideParticleCount * (2 * clothSideLength / 3) +  (    clothSideLength / 3));
+    fixedNodes.push_back(clothSideParticleCount * (2 * clothSideLength / 3) +  (2 * clothSideLength / 3));
+
+    std::sort(fixedNodes.begin(), fixedNodes.end());
+
+
+    // fixedNodes.push_back(clothSideLength * clothSideLength);
+
+    // fixedNodes.push_back(clothSideLength * clothSideLength / 3 + clothSideLength / 3);
+    // fixedNodes.push_back(clothSideLength * clothSideLength / 3 + 2 * clothSideLength / 3);
+    // fixedNodes.push_back(2 * clothSideLength * clothSideLength / 3 + clothSideLength / 3);
+    // fixedNodes.push_back(2 * clothSideLength * clothSideLength / 3 + 2 * clothSideLength / 3);
+
+    // fixedNodes.push_back(5);
 
 
     //fixedNodes.push_back(8);
@@ -204,7 +232,7 @@ void ClothSystem::InitializeBufferData(void* params) {
         
     }
     fixedNodesCount = fixedNodes.size();
-
+    freeDOFCount = freeIndices.size();
     // for (uint32_t i = 0; i < clothParams->clothSideLength; ++i) {
 
     // }
@@ -375,7 +403,7 @@ void ClothSystem::InitializeBufferData(void* params) {
         glm::dvec4 edgeVec = edgeEnd - edgeStart;
         undeformedEdgeLengthVec[edgeIdx] = glm::length(edgeVec);
         elasticStretchingVec[edgeIdx] = 0.5 * sqrt(3.0) * Y * h * pow(undeformedEdgeLengthVec[edgeIdx], 2.0);
-        fmt::print("({}, {}), ",edge[0], edge[1]);
+        // fmt::print("({}, {}), ",edge[0], edge[1]);
         
     }
 
@@ -395,7 +423,7 @@ void ClothSystem::InitializeBufferData(void* params) {
         Eigen::Vector3d x3 = q.segment<3>(3 * hinge[3]);
 
         thetaBarVec[hingeIdx] = getTheta(x0, x1, x2, x3);
-        fmt::print("({}, {}, {}, {}), ", hinge[0], hinge[1], hinge[2], hinge[3]);
+        // fmt::print("({}, {}, {}, {}), ", hinge[0], hinge[1], hinge[2], hinge[3]);
 
     }
 
@@ -407,8 +435,15 @@ void ClothSystem::InitializeBufferData(void* params) {
         externalForcesVec[3 * particleIdx + 2] = 0.0;
         // glm::dvec4 normal = glm::dvec4(0.0, 1.0, 0.0, 0.0);
         // normalsVec[particleIdx] = normal;
-        fmt::print("{: .8f}, {: .8f}, {: .8f}, ", dofPositions[3 * particleIdx], dofPositions[3 * particleIdx + 1], dofPositions[3 * particleIdx + 2]);
+        // fmt::print("{: .8f}, {: .8f}, {: .8f}, ", dofPositions[3 * particleIdx], dofPositions[3 * particleIdx + 1], dofPositions[3 * particleIdx + 2]);
     }
+
+    fmt::print("Cloth Side Length: {}\n", clothParams->clothSideLength);
+    fmt::print("Total Nodes: {}\n", particleCount);
+    fmt::print("Total DOF: {}\n", freeDOFCount);
+    fmt::print("Total Edges: {}\n", edgeCount);
+    fmt::print("Total Hinges: {}\n", hingeCount);
+
 
     std::cout << std::endl;
 }
@@ -534,7 +569,7 @@ void ClothSystem::InitializeBuffers(){
     );
 
     //https://stackoverflow.com/questions/12399422/how-to-set-linker-flags-for-openmp-in-cmakes-try-compile-function
-    fmt::print("{}", fixedNodesCount);
+    
     glCreateVertexArrays(1, &fixedNodesVAO);
 
     glEnableVertexArrayAttrib(fixedNodesVAO, POSITION_ATTRIB_LOC);
@@ -695,7 +730,7 @@ static void hessTheta(
     Eigen::Vector3d m_m02 = m_nn2.cross(m_e0) / m_e0.norm();
     //
     Eigen::Map<Eigen::MatrixXd> hess_theta(hess, 12, 12);
-    // hess_theta.setZero();
+    hess_theta.setZero();
 
     Eigen::MatrixXd M331 = m_cosA3 / (m_h3 * m_h3) * uvT(m_m3, m_nn1);
     Eigen::MatrixXd M311 = m_cosA3 / (m_h3 * m_h1) * uvT(m_m1, m_nn1);
@@ -1207,6 +1242,7 @@ void ClothSystem::CalculateForces() {
 
         // dofPositions = positionX1;
         while (error > tol) {
+            auto startForceTime = std::chrono::high_resolution_clock::now();
             
             std::vector<double> bendingForcesVec(dofCount, 0.0);
             std::vector<double> bendingHessiansVec(dofCount * dofCount, 0.0);
@@ -1251,7 +1287,12 @@ void ClothSystem::CalculateForces() {
             // Stretching Forces -------------------------------------------------------------
             calculateFs_Js(stretchingForcesVec.data(), stretchingHessiansVec.data(), q, edgeVec, undeformedEdgeLengthVec, elasticStretchingVec, dofCount, edgeCount);
            
+            auto endForceTime = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double> forceTime = endForceTime - startForceTime;
+            totalForceTime += forceTime.count();
             
+            auto startSolverTime = std::chrono::high_resolution_clock::now();
+
             
             Eigen::Matrix<double, Eigen::Dynamic, 1> totalForces = bendingForces + stretchForces + externalForces;
             
@@ -1265,10 +1306,15 @@ void ClothSystem::CalculateForces() {
             
             Eigen::Matrix<double, Eigen::Dynamic, 1> dq_free = J_free.ldlt().solve(f_free);
             
+            auto endSolverTime = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double> solverTime = endSolverTime - startSolverTime;      
+            totalSolveTime += solverTime.count();  
+            
             
             q(freeIndices) = q(freeIndices).eval() - dq_free;
             error = f_free.cwiseAbs().sum();
             iter += 1;
+
             //std::cout << error << " ? " << tol << std::endl;
             
             
