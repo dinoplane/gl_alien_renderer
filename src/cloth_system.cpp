@@ -876,7 +876,7 @@ void ClothSystem::InitializeBuffers(){
     glVertexArrayAttribBinding(fixedNodesVAO, POSITION_ATTRIB_LOC, 0);
     // Eigen::setNbThreads(12);
     // doPardiso();
-    InitializePardiso();
+    //InitializePardiso();
 
 }
 
