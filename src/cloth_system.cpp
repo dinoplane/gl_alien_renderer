@@ -1868,7 +1868,7 @@ void ClothSystem::CalculateForces() {
         for (uint32_t particleIdx = 0; particleIdx < particleCount; particleIdx++) {
             // dofPositions[dof] = q(dof, 0);
             // dofVelocities[dof] = u(dof, 0);
-            clothPositionVec[particleIdx * 4] = dofPositions[particleIdx * 3];
+            clothPositionVec[particleIdx * 4    ] = dofPositions[particleIdx * 3    ];
             clothPositionVec[particleIdx * 4 + 1] = dofPositions[particleIdx * 3 + 1];
             clothPositionVec[particleIdx * 4 + 2] = dofPositions[particleIdx * 3 + 2];
         }
