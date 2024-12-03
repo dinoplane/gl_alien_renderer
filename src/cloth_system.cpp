@@ -522,11 +522,11 @@ void ClothSystem::InitializeBufferData(void* params) {
     freeDOFCount = freeIndices.size();
     fixedNodesCount = fixedNodes.size();
 
-    massMatrix = Eigen::SparseMatrix<double>(freeDOFCount, freeDOFCount);
+    massMatrix = Eigen::SparseMatrix<double, Eigen::RowMajor>(freeDOFCount, freeDOFCount);
     SparseEntries massEntries;
     massEntries.reserve(freeDOFCount);
     for (uint32_t i = 0; i < freeDOFCount; ++i) {
-        massEntries.push_back(Eigen::Triplet<double>(i, i, deltaMass));
+        massEntries.push_back(Eigen::Triplet<double>(i, i, deltaMass / (dt * dt)));
     }
     massMatrix.setFromTriplets(massEntries.begin(), massEntries.end());
 
@@ -1257,6 +1257,10 @@ static void subFromSparseEntries(const Eigen::Ref< const Eigen::MatrixXd > & mat
             if (newColIdx == UINT32_MAX) {
                 continue;
             }
+            
+            if (newColIdx < newRowIdx) {
+                continue;
+            }
 
             if (mat(i, j) == 0.0) {
                 continue;
@@ -1523,7 +1527,7 @@ static void SolveSystemWithConjugateGradient(const Eigen::Ref<const Eigen::Spars
 }
 
 void ClothSystem::InitializePardiso(){
-    pardisoData.mtype = 11;        /* Real symmetric? */
+    pardisoData.mtype = -2;        /* Real symmetric? */
 
     // void* pt[64];
 
@@ -1556,21 +1560,22 @@ void ClothSystem::InitializePardiso(){
     pardisoData.num_procs = 12;
     pardisoData.iparm[3] = pardisoData.num_procs;
     pardisoData.iparm[7] = 1;
-    pardisoData.iparm[11] = 0;
-    pardisoData.iparm[13] = 0;
-    pardisoData.iparm[27] = 0; /* recaling */
+
+    //pardisoData.iparm[11] = 0;
+    //pardisoData.iparm[13] = 0;
+    //pardisoData.iparm[27] = 0; /* recaling */
 
     pardisoData.maxfct = 1;         /* Maximum number of numerical factorizations.  */
     pardisoData.mnum = 1;         /* Which factorization to use. */
 
-    pardisoData.msglvl = 0; // 0         /* Print statistical information  */
+    pardisoData.msglvl = 0;         /* Print statistical information  */
     pardisoData.error = 0;         /* Initialize error flag */
             /* Analyse and factorize the matrix */
     pardisoData.n = freeDOFCount;         /* Number of equations */
     pardisoData.nrhs = 1;         /* Number of right hand sides. */
 }
 
-static void SolveSystemWithPardiso(Eigen::Ref< Eigen::SparseMatrix<double>> J_free,
+static void SolveSystemWithPardiso(Eigen::Ref< Eigen::SparseMatrix<double, Eigen::RowMajor>> J_free,
     Eigen::Ref<Eigen::Matrix<double, Eigen::Dynamic, 1>> f_free,
     Eigen::Ref<Eigen::Matrix<double, Eigen::Dynamic, 1>> dq_free,
     ClothSystem::PardisoData& pardisoData) {
@@ -1601,11 +1606,11 @@ static void SolveSystemWithPardiso(Eigen::Ref< Eigen::SparseMatrix<double>> J_fr
     /*     Checks the consistency of the given matrix.                      */
     /*     Use this functionality only for debugging purposes               */
     /* -------------------------------------------------------------------- */
-    //pardiso_chkmatrix_d(&pardisoData.mtype, &pardisoData.n, a, ia, ja, &pardisoData.error);
-    //if (pardisoData.error != 0)
-    //{
-    //    std::printf("\nERROR in consistency of matrix: %d", pardisoData.error);
-    //}
+    pardiso_chkmatrix_d(&pardisoData.mtype, &pardisoData.n, a, ia, ja, &pardisoData.error);
+    if (pardisoData.error != 0)
+    {
+        std::printf("\nERROR in consistency of matrix: %d", pardisoData.error);
+    }
 
 
     // /* -------------------------------------------------------------------- */    
@@ -1653,6 +1658,32 @@ static void SolveSystemWithPardiso(Eigen::Ref< Eigen::SparseMatrix<double>> J_fr
 
 }
 
+static bool isSymmetricOptimized(const Eigen::Ref<Eigen::SparseMatrix<double>>& mat) {
+    if (mat.rows() != mat.cols()) {
+        return false; // Must be square
+    }
+
+    for (int k = 0; k < mat.outerSize(); ++k) {
+        for (Eigen::Ref<Eigen::SparseMatrix<double>>::InnerIterator it(mat, k); it; ++it) {
+            if (it.row() != it.col() && mat.coeff(it.col(), it.row()) != it.value()) {
+                fmt::print("Here {} != {} at {} {}", mat.coeff(it.col(), it.row()), it.value(), it.row(), it.col());
+                return false; // Off-diagonal elements are not symmetric
+            }
+        }
+    }
+    return true;
+}
+
+static void printSparseMatrix(const Eigen::Ref<Eigen::SparseMatrix<double>>& mat) {
+    std::cout << std::fixed << std::setprecision(2);
+    for (int i = 0; i < mat.rows(); ++i) {
+        for (int j = 0; j < mat.cols(); ++j) {
+            // Use coeff() to get the value at (i, j), it returns 0 for missing entries
+            std::cout << std::setw(8) << mat.coeff(i, j) << " ";
+        }
+        std::cout << std::endl;
+    }
+}
 
 
 void ClothSystem::CalculateForces() {
@@ -1736,7 +1767,7 @@ void ClothSystem::CalculateForces() {
 
             // Eigen::SparseMatrix<double> bendingSPMat(dofCount, dofCount);
             // Eigen::SparseMatrix<double> stretchSPMat(dofCount, dofCount);
-            Eigen::SparseMatrix<double> jacobianForces(freeDOFCount, freeDOFCount);
+            Eigen::SparseMatrix<double, Eigen::RowMajor> jacobianForces(freeDOFCount, freeDOFCount);
             SparseEntries hessianEntries;
             
             //Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, 1>> positionX1(positionMap, dofCount, 1);
@@ -1771,8 +1802,7 @@ void ClothSystem::CalculateForces() {
             // Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> J = massMatrix / (dt * dt) - jacobianForces;
             // Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> J_free = J(freeIndices, freeIndices);
 
-            Eigen::SparseMatrix<double> J_free = massMatrix / (dt * dt) - jacobianForces;
-            //std::cout << "Jacobian-----------------------------\n" << jacobianForces << std::endl;
+            Eigen::SparseMatrix<double, Eigen::RowMajor> J_free = massMatrix  - jacobianForces;
 
             //std::cout  << "Jfree-----------------------------\n"  << J_free << std::endl;
             //Eigen::SparseMatrix<double> J_free = J(freeIndices, freeIndices);
@@ -1789,8 +1819,21 @@ void ClothSystem::CalculateForces() {
 
             // Eigen::Matrix<double, Eigen::Dynamic, 1> dq_free = J_free.ldlt().solve(f_free);
             J_free.makeCompressed();
-             SolveSystemWithConjugateGradient(J_free, f_free, dq_free);
-            //SolveSystemWithPardiso(J_free, f_free, dq_free, pardisoData);
+            //Eigen::SparseMatrix<double, Eigen::RowMajor> upperTri = J_free.triangularView<Eigen::Upper>();
+            //Eigen::SparseMatrix<double> transpose = jacobianForces.transpose();
+
+            //std::cout << "\n" << jacobianForces << std::endl;
+            
+            //std::cout << "Jacobian-----------------------------\n" << J_free << std::endl;
+            //printSparseMatrix(J_free);
+            //std::cout << J_free.innerIndices() << std::endl;
+            //std::cout << J_free.outerIndices() << std::endl;
+            //std::cout << J_free.nonZeros() << std::endl;
+            //fmt::print("Is it symmetric? {}\n", isSymmetricOptimized(jacobianForces));
+            
+            //fmt::print("Is it true? {}: ", (jacobianForces - transpose).norm() == 0.0);
+             //SolveSystemWithConjugateGradient(J_free, f_free, dq_free);
+            SolveSystemWithPardiso(J_free, f_free, dq_free, pardisoData);
             auto endSolverTime = std::chrono::high_resolution_clock::now();
             std::chrono::duration<double> solverTime = endSolverTime - startSolverTime;      
             totalSolveTime += solverTime.count();  

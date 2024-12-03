@@ -95,7 +95,7 @@ class ClothSystem : public BaseParticleSystem<
 
         std::vector<double> massVector;
         // std::vector<double> massMatrix;
-        Eigen::SparseMatrix<double> massMatrix;
+        Eigen::SparseMatrix<double, Eigen::RowMajor> massMatrix;
         std::vector<uint32_t> fixedNodes;
         std::vector<uint32_t> fixedIndices;
         std::vector<uint32_t> freeIndices;
