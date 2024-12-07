@@ -39,7 +39,7 @@
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
-#include <Tracy.hpp>
+// #include <Tracy.hpp>
 
 
 
@@ -354,7 +354,7 @@ void message_callback(GLenum source, GLenum type, GLuint id, GLenum severity, GL
 
 
 static void RenderToFrame (const Scene& scene){
-    ZoneScoped;
+    // ZoneScoped;
     // First Pass
     for (const auto& particleSystem : scene.particleSystems) {
         particleSystem->CalculateForces();
@@ -384,6 +384,18 @@ static void RenderToFrame (const Scene& scene){
     // glDrawArrays(GL_TRIANGLES, 0, 6);
 // glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 }
+
+
+/*
+TODO List
+- Add a way to load multiple textures for the indirect call
+    - Procedurally create a texture atlas
+    - Add appropriate material indices to the shader and model data
+    - In the shader determine the formula for sampling the texture
+
+
+
+*/
 
 
 
@@ -482,7 +494,7 @@ int main(int argc, char **argv)
     fmt::print("Number of renderers: {}\n", renderers.size());
     while (!glfwWindowShouldClose(window))
     {
-        ZoneScoped;
+        // ZoneScoped;
 
         processInput(window, &renderers[currRendererIdx], &scene);
         RenderToFrame( scene );

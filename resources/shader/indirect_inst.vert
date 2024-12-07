@@ -20,9 +20,17 @@ struct Material {
 };
 
 struct Primitive {
-    uint materialIndex;
-    uint textureIndex;
+    uint materialIdx;
+    uint textureIdx;
 };
+
+struct AtlasOffsetsData {
+    float offsetX;
+    float mipLevel; // Unused, but there for padding
+    float textureWidth;
+    float textureHeight;
+};
+
 // ---------------------------------------------------------------------
 
 
@@ -76,6 +84,16 @@ layout (binding = 6, std430) readonly buffer materialPropertiesBuf {
     Material materialProperties[]; // arrlen total materials in model, indexed with materialIndices[gl_DrawID]
 };
 
+
+layout (binding = 7, std430) readonly buffer atlasOffsetsBuf {
+    float toffsetX;
+    float tmipLevel; // Unused, but there for padding
+    float totalTextureWidth;
+    float totalTextureHeight;
+    AtlasOffsetsData atlasOffsets[]; // arrlen total materials in model, indexed with materialIndices[gl_DrawID]
+};
+
+
 // SSBO containing the texture properties
 // layout (binding = 7, std430) readonly buffer materialPropertiesBuf {
 //     sampler2D albedoTextures[]; // arrlen total textures in model, indexed with textureIndices[gl_DrawID]
@@ -97,10 +115,17 @@ struct inputData {
 
 layout (location = 10) out vec3 Normal;
 layout (location = 11) out vec2 TexCoord;
+layout (location = 12) out uint materialIdx;
 
 void main()
 {
     gl_Position = projection * view * worldFromModel[visibleInstIndices[gl_InstanceID]] * nodeProperties[nodePrimProperties[gl_DrawID].nodeIdx].modelFromNode * vec4(aPos, 1.0);
     Normal = aNormal;
-    TexCoord = aTexCoord;
+    float offsetX = atlasOffsets[primitiveProperties[nodePrimProperties[gl_DrawID].primIdx].textureIdx].offsetX;
+    float textureWidth = atlasOffsets[primitiveProperties[nodePrimProperties[gl_DrawID].primIdx].textureIdx].textureWidth;
+    float textureHeight = atlasOffsets[primitiveProperties[nodePrimProperties[gl_DrawID].primIdx].textureIdx].textureHeight;
+
+    TexCoord.x = (offsetX + aTexCoord.x * textureWidth) / totalTextureWidth;
+    TexCoord.y = aTexCoord.y * textureHeight / totalTextureHeight;
+    materialIdx = primitiveProperties[nodePrimProperties[gl_DrawID].primIdx].materialIdx;
 }

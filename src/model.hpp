@@ -24,6 +24,19 @@ struct NodePrimProperties {
     uint32_t primIdx;
 };
 
+struct AtlasOffsets {
+    GLsizei offsetX;
+    GLsizei mipLevel; // Unused, but there for padding
+    GLsizei textureWidth;
+    GLsizei textureHeight;
+};
+struct GPUAtlasOffsets {
+    GLfloat offsetX;
+    GLfloat mipLevel; // Unused, but there for padding
+    GLfloat textureWidth;
+    GLfloat textureHeight;
+};
+
 struct Node {
     glm::mat4x4 nodeTransformMatrix;
     uint32_t meshIndex;
@@ -66,6 +79,10 @@ class Model {
     GLuint materialPropertiesBuffer;
     GLuint textureArray;
 
+    GLuint textureAtlas;
+    std::vector<AtlasOffsets> atlasOffsetsBufferVec; // The first one will specify 0 and the atlas width
+    std::vector<GPUAtlasOffsets> gpuAtlasOffsetsBufferVec;
+    GLuint gpuAtlasOffsetsBuffer;
 
     // std::vector<glm::mat4>
 

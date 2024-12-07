@@ -5,7 +5,7 @@
 #include <gpu_structs.hpp>
 #include <fmt/core.h>
 #include <fmt/printf.h>
-#include <Tracy.hpp>
+// #include <Tracy.hpp>
 
 
 

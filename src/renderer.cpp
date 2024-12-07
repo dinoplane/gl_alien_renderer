@@ -389,10 +389,12 @@ void Renderer::BindInstanceData(const EntityInstanceData& entInstData){
 
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, NODE_PROPERTIES_SSBO_BINDING, entInstData.instModel.nodePropertiesBuffer);
 
-    // glBindBufferBase(GL_SHADER_STORAGE_BUFFER, MODEL_FROM_MESH_SSBO_BINDING, entInstData.instModel.meshPropertiesBuffer);
 
-    // glBindBufferBase(GL_SHADER_STORAGE_BUFFER, MATERIAL_PROPERTIES_SSBO_BINDING, entInstData.instModel.materialPropertiesBuffer);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, ATLAS_OFFSETS_SSBO_BINDING, entInstData.instModel.gpuAtlasOffsetsBuffer);
+    
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, MATERIAL_PROPERTIES_SSBO_BINDING, entInstData.instModel.materialPropertiesBuffer);
 
+    glBindTexture(GL_TEXTURE_2D, entInstData.instModel.textureAtlas);
     // glBindBufferBase(GL_SHADER_STORAGE_BUFFER, TEXTURES_SSBO_BINDING, entInstData.instModel.textureArray);
 
 }
@@ -582,7 +584,7 @@ void Renderer::RenderDebugVolumes(const Scene& scene){
 
 void Renderer::Render(const Scene& scene){ // really bad, we are modifying the scene state
     // render
-    ZoneScoped;
+    // ZoneScoped;
         glBindFramebuffer(GL_FRAMEBUFFER, FBO);
         glNamedFramebufferTexture(FBO, GL_COLOR_ATTACHMENT0, srcFBOTexture, 0);
 

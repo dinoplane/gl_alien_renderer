@@ -240,13 +240,17 @@ bool ModelLoader::LoadModelImage(const fastgltf::Asset& asset, const fastgltf::I
 			glTextureStorage2D(texture, getLevelCount(width, height), GL_RGBA8, width, height);
             glTextureSubImage2D(texture, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
             stbi_image_free(data);
+			outTexture->textureWidth = width;
+			outTexture->textureHeight = height;
+			outTexture->mipLevels = getLevelCount(width, height);
 			fmt::print("Loaded Image: {}\n", path);
         },
         [&](const fastgltf::sources::Array& vector) {
             int width, height, nrChannels;
             unsigned char *data = stbi_load_from_memory(reinterpret_cast<const stbi_uc*>(vector.bytes.data()), static_cast<int>(vector.bytes.size()), &width, &height, &nrChannels, 4);
-
-
+	
+			std::cout << "Width: " << width << " Height: " << height << '\n';
+			std::cout << "Level: " <<  getLevelCount(width, height) << "\n";
 			glTextureParameteri(texture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
 			glTextureParameteri(texture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 			glTextureParameteri(texture, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -255,6 +259,9 @@ bool ModelLoader::LoadModelImage(const fastgltf::Asset& asset, const fastgltf::I
 			glTextureStorage2D(texture, getLevelCount(width, height), GL_RGBA8, width, height);
             glTextureSubImage2D(texture, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
             stbi_image_free(data);
+			outTexture->textureWidth = width;
+			outTexture->textureHeight = height;
+			outTexture->mipLevels = getLevelCount(width, height);
 			fmt::print("Loaded Image: {}\n", "From Memory");
 
         },
@@ -281,6 +288,9 @@ bool ModelLoader::LoadModelImage(const fastgltf::Asset& asset, const fastgltf::I
 					glTextureStorage2D(texture, getLevelCount(width, height), GL_RGBA8, width, height);
                     glTextureSubImage2D(texture, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
                     stbi_image_free(data);
+					outTexture->textureWidth = width;
+					outTexture->textureHeight = height;
+					outTexture->mipLevels = getLevelCount(width, height);
                 }
             }, buffer.data);
 			fmt::print("Loaded Image: {}\n", "From BufferView");
@@ -317,6 +327,13 @@ bool ModelLoader::LoadModel(const fastgltf::Asset& asset, Model * model){
 	model->materials.resize(asset.materials.size() + 1);
 	model->meshes.resize(asset.meshes.size());
 
+	GLsizei totalTextureWidth = 0;
+	GLsizei maxTextureHeight = 0;
+	GLsizei maxMipMapLevels = 0;
+
+	model->atlasOffsetsBufferVec.resize(asset.images.size() + 1);
+	model->atlasOffsetsBufferVec[0] = { 0, 0, 0, 0 };
+	
 	for ( size_t imageIdx = 0; imageIdx < asset.images.size(); ++imageIdx ){
 		const fastgltf::Image& gltfImage = asset.images[imageIdx];
 		Texture& texture = model->textures[imageIdx];
@@ -324,6 +341,50 @@ bool ModelLoader::LoadModel(const fastgltf::Asset& asset, Model * model){
 			assert(false);
 			return false;
 		}
+		maxTextureHeight = std::max(maxTextureHeight, texture.textureHeight);
+		maxMipMapLevels = std::max(maxMipMapLevels, texture.mipLevels);
+
+		model->atlasOffsetsBufferVec[imageIdx + 1] = { totalTextureWidth, texture.mipLevels, texture.textureWidth, texture.textureHeight };
+		totalTextureWidth += texture.textureWidth;
+	}
+	
+	model->atlasOffsetsBufferVec[0] = { 0, 0, totalTextureWidth, maxTextureHeight };
+
+
+
+	// Create a giant texture atlas
+	glCreateTextures(GL_TEXTURE_2D, 1, &model->textureAtlas);
+	glTextureParameteri(model->textureAtlas, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTextureParameteri(model->textureAtlas, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTextureParameteri(model->textureAtlas, GL_TEXTURE_MIN_FILTER, GL_NEAREST);	
+	glTextureParameteri(model->textureAtlas, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTextureStorage2D(model->textureAtlas, 1, GL_RGBA8, totalTextureWidth, maxTextureHeight);
+
+	
+	for ( size_t imageIdx = 0; imageIdx < model->textures.size(); ++imageIdx ){
+		const Texture& srcTexture = model->textures[imageIdx];
+		
+		glCopyImageSubData(
+			srcTexture.texture, GL_TEXTURE_2D, 0, 0, 0, 0, 
+			
+			model->textureAtlas, GL_TEXTURE_2D, 0, model->atlasOffsetsBufferVec[imageIdx + 1].offsetX, 0, 0, 
+			
+			srcTexture.textureWidth, srcTexture.textureHeight, 1);
+	}
+	
+
+	// for ( size_t imageIdx = 0; imageIdx < model->textures.size(); ++imageIdx ){
+	// 	glDeleteTextures(1, &model->textures[imageIdx].texture);
+	// }
+
+	model->gpuAtlasOffsetsBufferVec.resize(asset.images.size() + 1);
+	for ( size_t imageIdx = 0; imageIdx < model->atlasOffsetsBufferVec.size(); ++imageIdx ){
+		model->gpuAtlasOffsetsBufferVec[imageIdx] = { 
+			static_cast<GLfloat>(model->atlasOffsetsBufferVec[imageIdx].offsetX),
+		 	static_cast<GLfloat>(model->atlasOffsetsBufferVec[imageIdx].mipLevel),
+			static_cast<GLfloat>(model->atlasOffsetsBufferVec[imageIdx].textureWidth),
+			static_cast<GLfloat>(model->atlasOffsetsBufferVec[imageIdx].textureHeight) 
+		};
 	}
 
 	// Add a default material
@@ -362,9 +423,13 @@ bool ModelLoader::LoadModel(const fastgltf::Asset& asset, Model * model){
 	glCreateBuffers( 1,  &model->EBO );
 	glNamedBufferStorage( model->EBO, indices.size() * sizeof( uint32_t ), indices.data(), GL_DYNAMIC_STORAGE_BIT );
 
-	glCreateBuffers(1, &model->nodePropertiesBuffer);
-	glNamedBufferStorage( model->nodePropertiesBuffer, model->nodePropertiesBufferVec.size() * sizeof(NodeProperties), model->nodePrimPropertiesBufferVec.data(), GL_DYNAMIC_STORAGE_BIT);
 
+
+	glCreateBuffers(1, &model->gpuAtlasOffsetsBuffer);
+	glNamedBufferStorage(model->gpuAtlasOffsetsBuffer, model->gpuAtlasOffsetsBufferVec.size() * sizeof(GPUAtlasOffsets), model->gpuAtlasOffsetsBufferVec.data(), GL_DYNAMIC_STORAGE_BIT);
+	
+	glCreateBuffers(1, &model->materialPropertiesBuffer);
+	glNamedBufferStorage(model->materialPropertiesBuffer, model->materials.size() * sizeof(Material), model->materials.data(), GL_DYNAMIC_STORAGE_BIT);
 
 	// const auto& sceneIndex = asset.desfaultScene.value_or(0);
 	glm::vec3 min = glm::vec3(std::numeric_limits<float>::max());
@@ -408,6 +473,10 @@ bool ModelLoader::LoadModel(const fastgltf::Asset& asset, Model * model){
 	}
 	glCreateBuffers(1, &model->nodePrimPropertiesBuffer);
 	glNamedBufferStorage(model->nodePrimPropertiesBuffer, model->nodePrimPropertiesBufferVec.size() * sizeof(NodePrimProperties), model->nodePrimPropertiesBufferVec.data(), GL_DYNAMIC_STORAGE_BIT);
+
+	glCreateBuffers(1, &model->primitivePropertiesBuffer);
+	glNamedBufferStorage( model->primitivePropertiesBuffer, model->primitivePropertiesBufferVec.size() * sizeof(PrimitiveProperties), model->primitivePropertiesBufferVec.data(), GL_DYNAMIC_STORAGE_BIT);
+
 
 	glCreateBuffers(1, &model->drawCmdBuffer);
 	glNamedBufferStorage(model->drawCmdBuffer, model->drawCmdBufferVec.size() * sizeof(IndirectDrawCommand), model->drawCmdBufferVec.data(), GL_DYNAMIC_STORAGE_BIT);

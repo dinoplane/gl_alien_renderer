@@ -11,6 +11,9 @@ enum MaterialUniformFlags : uint32_t {
 
 struct Texture {
     GLuint texture;
+    GLsizei textureWidth;
+    GLsizei textureHeight;
+    GLsizei mipLevels;
 };
 
 
