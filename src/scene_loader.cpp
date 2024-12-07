@@ -116,24 +116,24 @@ void SceneLoader::LoadScene(const SceneData& sceneData, Scene* scene)
     //scene->particleSystems.push_back(ParticleSystem({100, 0.0001, "gen_particle"}));
     // 
     // scene->particleSystems.push_back(ParticleSystem({100, 0.0001, "gen_particle"}));
-    ParticleSystemParameters p{ 10, 0.0001, "gen" };
+    // ParticleSystemParameters p{ 10, 0.0001, "gen" };
     //scene->particleSystems.push_back( std::make_unique<ParticleSystem>());
     //scene->particleSystems[0]->Initialize(&p);
 
-    ClothSystemParameters c;
-    c.particleCount = 100;
-    c.timeStep = 0.005;
-    c.shaderName = "cloth";
-    c.clothSideLength = 20;
-    c.cellSideLength = 0.1;
-    c.totalMass = 0.01;
-    c.gravityAccel = 9.81;
-    c.youngModulus = 1.0e5;
-    c.thickness = 0.001;
+    // ClothSystemParameters c;
+    // c.particleCount = 100;
+    // c.timeStep = 0.005;
+    // c.shaderName = "cloth";
+    // c.clothSideLength = 20;
+    // c.cellSideLength = 0.1;
+    // c.totalMass = 0.01;
+    // c.gravityAccel = 9.81;
+    // c.youngModulus = 1.0e5;
+    // c.thickness = 0.001;
 
 
-    scene->particleSystems.push_back(std::make_unique<ClothSystem>());
-    scene->particleSystems[0]->Initialize(&c);
+    // scene->particleSystems.push_back(std::make_unique<ClothSystem>());
+    // scene->particleSystems[0]->Initialize(&c);
 
 
     // scene->particleSystems.push_back();
