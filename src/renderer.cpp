@@ -118,12 +118,12 @@ Renderer::Renderer(float w, float h) : width(w), height(h) {
     std::cout << "Main Camera Index: " << mainCameraIdx << std::endl;
     if (allCameras.size() == 0){
         Renderer::allCameras.push_back(//  -3, 3.0, -3.0
-            Camera(w, h, glm::vec3(-1.8238577, 1.5064527, - 0.163382), glm::vec3(0.0, 1.0, 0.0), -364.101, -34.2001f, 30.0f, 0.1f, 30.0f)
+            Camera(w, h, glm::vec3(-1.82, 1.51, - 0.16), glm::vec3(0.0, 1.0, 0.0), -371, -32.1, 30.0f, 0.1f, 30.0f)
         );
     } else
     {
         Renderer::allCameras.push_back(
-            Camera(w, h, glm::vec3(1.6593089, 3.049368, - 1.3266003), glm::vec3(0.0, 1.0, 0.0), -216.8, -63.7, 30.0f, 0.1f, pow( 10.0f, allCameras.size() + 1))
+            Camera(w, h, glm::vec3(1.66, 3.05, - 1.33), glm::vec3(0.0, 1.0, 0.0), -216, -70.0, 30.0f, 0.1f, pow( 10.0f, allCameras.size() + 1))
         );
     }
     allCameras[mainCameraIdx].setPerspectiveSize(w, h);
@@ -485,7 +485,7 @@ void Renderer::RenderParticleSystems(const Scene& scene){
     for (const auto& particleSystem : scene.particleSystems){
         if (particleSystem->type == "base"){
             particleSystem->BindBuffers();
-            particleSystem->CalculateForces();
+            
             particleSystem->SetupRender();
             glBindVertexArray(particleVAO);
             glVertexArrayVertexBuffer(particleVAO, 0, particleSystem->positionBuffer, 0, sizeof(glm::vec4));

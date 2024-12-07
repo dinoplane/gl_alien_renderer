@@ -34,7 +34,7 @@
 #include <util.h>
 
 #include <iostream>
-
+#include <fstream>
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
@@ -351,6 +351,9 @@ void message_callback(GLenum source, GLenum type, GLuint id, GLenum severity, GL
 static void RenderToFrame (const Scene& scene){
     ZoneScoped;
     // First Pass
+    for (const auto& particleSystem : scene.particleSystems) {
+        particleSystem->CalculateForces();
+    }
     for (Renderer& renderer : renderers){
         renderer.Render(scene);
     }
@@ -360,6 +363,7 @@ static void RenderToFrame (const Scene& scene){
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
     int startPixel = 0;
+
     for (Renderer& renderer : renderers){
 
         // cout << "Rendering to screen " << startPixel << " " << renderer.width  << " " << renderer.height << endl;
@@ -491,6 +495,23 @@ int main(int argc, char **argv)
             ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
             ImGui::Text("Culling %s", (Renderer::doCull ? "Enabled" : "Disabled"));
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", deltaTime * 1000.0f, 1.0f / deltaTime);
+
+            int currRenderer = 0;
+            int currCam = 0;
+            for (Renderer& renderer : renderers) {
+                std::string rendererSepTextLabel = "Renderer" + std::to_string(currRenderer);
+                ImGui::SeparatorText(rendererSepTextLabel.c_str());
+
+                for (Camera& cam : renderer.allCameras) {
+                    std::string sepTextLabel = "Camera " + std::to_string(currCam);
+                    ImGui::SeparatorText(sepTextLabel.c_str());
+                    ImGui::Text("Position: %.2f, %.2f, %.2f\n", cam.position.x, cam.position.y, cam.position.z);
+                    ImGui::Text("Pitch: %.2f, Yaw: %.2f\n", cam.pitch, cam.yaw);
+                    ++currCam;
+                }
+                ++currRenderer;
+            }
+
             ImGui::End();
         }
 
@@ -584,6 +605,20 @@ int main(int argc, char **argv)
     
 
     std::cout << "Application average ms/frame " << totalTime / frameCount * 1000 << " (" << frameCount / totalTime << " FPS)" << std::endl;
+
+
+    // Create and open a text file
+    std::ofstream MyFile("filename.txt");
+
+    // Write to the file
+    MyFile << "Files can be tricky, but it is fun enough!";
+
+    // Close the file
+    MyFile.close();
+
+
+
+
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();

@@ -183,6 +183,7 @@ class Renderer {
     uint32_t mainCameraIdx {0};
     uint32_t currCameraIdx {0};
     bool debugOn {true};
+    bool startSim{false};
 };
 
 #endif

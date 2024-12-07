@@ -126,22 +126,27 @@ void ClothSystem::InitializeBufferData(void* params) {
 
     uint32_t clothSideLength = clothParams->clothSideLength;
     // All 4 corners
-    // fixedNodes.push_back(0);
-    // fixedNodes.push_back(clothSideLength);
-    // fixedNodes.push_back(clothSideParticleCount * clothSideLength);
-    // fixedNodes.push_back(clothSideParticleCount * clothSideLength + clothSideLength);
+     //fixedNodes.push_back(0);
+     //fixedNodes.push_back(clothSideLength);
+     //fixedNodes.push_back(clothSideParticleCount * clothSideLength);
+     //fixedNodes.push_back(clothSideParticleCount * clothSideLength + clothSideLength);
 
-    // TableCloth
-    // fixedNodes.push_back(clothSideLength / 2);
-    // fixedNodes.push_back(clothSideParticleCount * clothSideLength / 2);
-    // fixedNodes.push_back(clothSideParticleCount * clothSideLength / 2 + clothSideLength);
-    // fixedNodes.push_back(clothSideParticleCount * clothSideLength + clothSideLength / 2);
+    // Round table
+     //fixedNodes.push_back(clothSideLength / 2);
+     //fixedNodes.push_back(clothSideParticleCount * clothSideLength / 2);
+     //fixedNodes.push_back(clothSideParticleCount * clothSideLength / 2 + clothSideLength);
+     //fixedNodes.push_back(clothSideParticleCount * clothSideLength + clothSideLength / 2);
 
-    // BedSheet
+    // TableCloth 
     fixedNodes.push_back(clothSideParticleCount * (clothSideLength / 3) + (clothSideLength / 3));
     fixedNodes.push_back(clothSideParticleCount * (clothSideLength / 3) + (2 * clothSideLength / 3));
     fixedNodes.push_back(clothSideParticleCount * (2 * clothSideLength / 3) + (clothSideLength / 3));
     fixedNodes.push_back(clothSideParticleCount * (2 * clothSideLength / 3) + (2 * clothSideLength / 3));
+
+    // Handkerchief
+    //fixedNodes.push_back(clothSideParticleCount * (clothSideLength / 2) + (clothSideLength / 2));
+    //fixedNodes.push_back(clothSideParticleCount * (clothSideLength / 2) + (clothSideLength / 2) + 1);
+
 
     std::sort(fixedNodes.begin(), fixedNodes.end());
 
