@@ -1,4 +1,5 @@
 import sys
+import random
 
 def dump_entity_data(file_handle, entity_data):
     file_handle.write("{\n")
@@ -15,21 +16,24 @@ def main():
         height = int(sys.argv[3])
         depth = int(sys.argv[4])
 
-        DIST_INCR = 2
+        DIST_INCR = 500
         ANGLE_INCR = 5
-        SCALE = 1.0
+        SCALE = 0.01
 
         for i in range(width):
             for j in range(height):
                 for k in range(depth):
+                    s = random.random() * SCALE
                     entData = {
-                        "classname": "peeper",
-                        "origin": "{} {} {}".format(DIST_INCR*i, DIST_INCR*j, DIST_INCR*k),
-                        "angles": "{} {} {}".format(ANGLE_INCR*i, ANGLE_INCR*j, ANGLE_INCR*k),
+                        "classname": "asteroid",
+                        "origin": "{} {} {}".format(DIST_INCR*i + random.random() * DIST_INCR,
+                                                    DIST_INCR*j + random.random() * DIST_INCR,
+                                                    DIST_INCR*k + random.random() * DIST_INCR),
+                        "angles": "{} {} {}".format(random.random() * 360, random.random() * 360, random.random() * 360),
                         
-                        "scale": "{} {} {}".format(SCALE, SCALE, SCALE),
+                        "scale": "{} {} {}".format(s, s, s),
                         
-                        "mesh" : "./resources/assets/models/arctic_peeper/scene.gltf",
+                        "mesh" : "./resources/assets/models/asteroid_01/scene.gltf",
                         "material": "base_inst.shader",
                         "is_instanced" : "1"
                     }

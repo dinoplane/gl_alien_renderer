@@ -86,7 +86,7 @@ std::string cameraSettingsPath = "camera_settings.txt";
 void setupCmdArgs(int argc, char **argv){
     if (argc == 2){
         scenePath = argv[1];
-    } else scenePath = "./scene/1fumo.scn";
+    } else scenePath = "./scene/space.scn";
 
     // int i = 1;
     // while (i < argc){

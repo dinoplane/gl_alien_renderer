@@ -347,71 +347,45 @@
     }
   ],
   "extensionsRequired": [
-    "KHR_materials_pbrSpecularGlossiness"
   ],
   "extensionsUsed": [
-    "KHR_materials_pbrSpecularGlossiness"
   ],
   "materials": [
     {
+      "alphaCutoff": 0.05,
+      "alphaMode": "MASK",
       "doubleSided": true,
-      "extensions": {
-        "KHR_materials_pbrSpecularGlossiness": {
-          "diffuseFactor": [
-            1.0,
-            0.0,
-            0.0,
-            1.0
-          ],
-          "glossinessFactor": 0.1959591794,
-          "specularFactor": [
-            0.0,
-            0.0,
-            0.0
-          ]
-        }
-      },
-      "name": "SUIT"
+      "name": "material_0",
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 0
+        },
+        "metallicFactor": 0.0
+      }
     },
     {
+      "alphaCutoff": 0.05,
+      "alphaMode": "MASK",
       "doubleSided": true,
-      "extensions": {
-        "KHR_materials_pbrSpecularGlossiness": {
-          "diffuseFactor": [
-            1.0,
-            0.0,
-            0.0,
-            1.0
-          ],
-          "glossinessFactor": 0.1959591794,
-          "specularFactor": [
-            0.0,
-            0.0,
-            0.0
-          ]
-        }
-      },
-      "name": "material"
+      "name": "material_1",
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 0
+        },
+        "metallicFactor": 0.0
+      }
     },
     {
+      "alphaCutoff": 0.05,
+      "alphaMode": "MASK",
       "doubleSided": true,
-      "extensions": {
-        "KHR_materials_pbrSpecularGlossiness": {
-          "diffuseFactor": [
-            0.06116867716040303,
-            1.0,
-            0.9606197931857225,
-            1.0
-          ],
-          "glossinessFactor": 0.1959591794,
-          "specularFactor": [
-            0.0,
-            0.0,
-            0.0
-          ]
-        }
-      },
-      "name": "GLASS"
+      "name": "material_2",
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 0
+        },
+        "metallicFactor": 0.0
+      }
     }
   ],
   "meshes": [

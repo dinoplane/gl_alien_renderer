@@ -603,7 +603,7 @@ void Renderer::Render(const Scene& scene){ // really bad, we are modifying the s
         RenderEntities(scene);
         RenderInstancedStaticModels(scene);
         RenderParticleSystems(scene);
-        //RenderDebugVolumes(scene);
+        RenderDebugVolumes(scene);
         RenderPostProcess();
         // glBindVertexArray(0);
         // glUseProgram(0);
