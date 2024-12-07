@@ -72,13 +72,12 @@ class Camera {
         Camera(
                 float w=800, float h=600,
                 glm::vec3 pos = glm::vec3(5.0f, 5.0f, 5.0f),
-                glm::vec3 upv = glm::vec3(0.0f, 1.0f, 0.0f),
                 float yaw_val = DEFAULT_YAW, float pitch_val = DEFAULT_PITC,
                 float fovY_val = DEFAULT_FOVY, float zNear_val = DEFAULT_NEAR, float zFar_val = DEFAULT_FAR
             ) : speed(DEFAULT_SPEED), sensitivity(DEFAULT_SENSITIVITY){
             // viewMat = glm::mat4(1.0);
             position = pos;
-            worldUp = upv;
+            worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
             yaw = yaw_val;
             pitch = pitch_val;
 

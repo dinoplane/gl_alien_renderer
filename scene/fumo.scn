@@ -1,9 +1,9 @@
 {
-"classname" "fumo"
+"classname" "cactuar"
 "origin" "0 0 0"
 "angles" "0 0 0"
-"scale" "2.0 2.0 2.0"
-"mesh" "./resources/assets/models/fumo/scene.gltf"
+"scale" "0.1 0.1 0.1"
+"mesh" "./resources/assets/models/cactuar/scene.gltf"
 "material" "base_inst.shader"
 "is_instanced" "1"
 }

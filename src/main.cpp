@@ -41,6 +41,9 @@
 #include "imgui_impl_opengl3.h"
 #include <Tracy.hpp>
 
+
+
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window, Renderer* renderer, Scene* scene);
 
@@ -78,10 +81,12 @@ std::string scenePath;
 
 fastgltf::Asset asset;
 
+std::string cameraSettingsPath = "camera_settings.txt";
+
 void setupCmdArgs(int argc, char **argv){
     if (argc == 2){
         scenePath = argv[1];
-    } else scenePath = "./scene/blank.scn";
+    } else scenePath = "./scene/1fumo.scn";
 
     // int i = 1;
     // while (i < argc){
@@ -454,16 +459,17 @@ int main(int argc, char **argv)
     //glfwSetWindowAttrib(window, GLFW_MAXIMIZED, GLFW_TRUE);
 
 
-#define COMPUTE_DEMO 0
-#if COMPUTE_DEMO == 0
+
     SceneLoader::LoadScene(SceneLoader::LoadSceneData(scenePath), &scene);//Scene::GenerateDefaultScene();
 
     for ( const auto& [classname, entInstData] : scene.entityInstanceMap ){
         fmt::print("Material Index alpha cut off {}\n", entInstData.instModel.materials[0].alphaCutoff);
     }
     
+    SceneLoader::LoadCameraSettings(cameraSettingsPath, &Renderer::allCameras, &Renderer::allDebugMeshes);
+
     for (size_t i = 0; i < RENDERER_COUNT; ++i){
-        renderers.push_back(Renderer(SCR_WIDTH / RENDERER_COUNT, SCR_HEIGHT ));
+        renderers.push_back(Renderer(SCR_WIDTH / RENDERER_COUNT, SCR_HEIGHT, i));
     }
 
     glfwMaximizeWindow(window);
@@ -498,18 +504,13 @@ int main(int argc, char **argv)
 
             int currRenderer = 0;
             int currCam = 0;
-            for (Renderer& renderer : renderers) {
-                std::string rendererSepTextLabel = "Renderer" + std::to_string(currRenderer);
-                ImGui::SeparatorText(rendererSepTextLabel.c_str());
 
-                for (Camera& cam : renderer.allCameras) {
-                    std::string sepTextLabel = "Camera " + std::to_string(currCam);
-                    ImGui::SeparatorText(sepTextLabel.c_str());
-                    ImGui::Text("Position: %.2f, %.2f, %.2f\n", cam.position.x, cam.position.y, cam.position.z);
-                    ImGui::Text("Pitch: %.2f, Yaw: %.2f\n", cam.pitch, cam.yaw);
-                    ++currCam;
-                }
-                ++currRenderer;
+            for (Camera& cam : Renderer::allCameras) {
+                std::string sepTextLabel = "Camera " + std::to_string(currCam);
+                ImGui::SeparatorText(sepTextLabel.c_str());
+                ImGui::Text("Position: %.2f, %.2f, %.2f\n", cam.position.x, cam.position.y, cam.position.z);
+                ImGui::Text("Pitch: %.2f, Yaw: %.2f\n", cam.pitch, cam.yaw);
+                ++currCam;
             }
 
             ImGui::End();
@@ -543,79 +544,26 @@ int main(int argc, char **argv)
         glfwPollEvents();
     }
 
-#else
-    computeRenderers.push_back(ComputeRenderer(SCR_WIDTH , SCR_HEIGHT ));
-    while (!glfwWindowShouldClose(window))
-    {
-        RenderCompute();
-
-
-
-
-    {
-    // Start the Dear ImGui frame
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-
-        // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-        if (show_demo_window)
-            ImGui::ShowDemoWindow(&show_demo_window);
-
-        // 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
-        {
-            ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", deltaTime * 1000.0f, 1.0f / deltaTime);
-            ImGui::End();
-        }
-
-        // 3. Show another simple window.
-        if (show_another_window)
-        {
-            ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-            ImGui::Text("Hello from another window!");
-            if (ImGui::Button("Close Me"))
-                show_another_window = false;
-            ImGui::End();
-        }
-
-        // Rendering
-        ImGui::Render();
-        int display_w, display_h;
-        glfwGetFramebufferSize(window, &display_w, &display_h);
-        // glViewport(0, 0, display_w, display_h);
-        // glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
-        // glClear(GL_COLOR_BUFFER_BIT);
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-        currentFrame = glfwGetTime();
-        deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
-    }
-        glfwSwapBuffers(window);
-        glfwPollEvents();
-    }
-
-#endif
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
 
-    ClothSystem* cl = static_cast<ClothSystem*> (scene.particleSystems[0].get());
-    std::cout << "Application force ms/frame " << cl->totalForceTime / frameCount * 1000 << " (" << cl->totalForceTime / totalTime * 100.0 << " %)" << std::endl;
-    std::cout << "Application solve ms/frame " << cl->totalSolveTime / frameCount * 1000 << " (" << cl->totalSolveTime / totalTime * 100.0 << " %)" << std::endl;
-    
+    //ClothSystem* cl = static_cast<ClothSystem*> (scene.particleSystems[0].get());
+    //std::cout << "Application force ms/frame " << cl->totalForceTime / frameCount * 1000 << " (" << cl->totalForceTime / totalTime * 100.0 << " %)" << std::endl;
+    //std::cout << "Application solve ms/frame " << cl->totalSolveTime / frameCount * 1000 << " (" << cl->totalSolveTime / totalTime * 100.0 << " %)" << std::endl;
+    //
 
-    std::cout << "Application average ms/frame " << totalTime / frameCount * 1000 << " (" << frameCount / totalTime << " FPS)" << std::endl;
+    //std::cout << "Application average ms/frame " << totalTime / frameCount * 1000 << " (" << frameCount / totalTime << " FPS)" << std::endl;
 
 
     // Create and open a text file
-    std::ofstream MyFile("filename.txt");
+    //std::ofstream MyFile("camera_settings.txt");
 
-    // Write to the file
-    MyFile << "Files can be tricky, but it is fun enough!";
+    //// Write to the file
+    //MyFile << "Files can be tricky, but it is fun enough!";
 
-    // Close the file
-    MyFile.close();
-
+    //// Close the file
+    //MyFile.close();
+    SceneLoader::SaveCameraSettings(cameraSettingsPath, Renderer::allCameras);
 
 
 
@@ -684,3 +632,8 @@ void processInput(GLFWwindow *window, Renderer* renderer, Scene* scene){ // abho
     */
 }
 
+/*
+Camera 0 Width: 960 Height: 1001 Yaw: -277.2 Pitch: 34.3 Fov: 30 Near: 0.1 Far: 30 Position: -1.82 1.51 -0.16
+Camera 1 Width: 960 Height: 1001 Yaw: 817.9 Pitch: 46.2 Fov: 30 Near: 0.1 Far: 100 Position: 1.66 3.05 -1.33
+
+*/

@@ -1,0 +1,2 @@
+Camera 0 Width: 960 Height: 1001 Yaw: -276.5 Pitch: 53.5 Fov: 30 Near: 0.1 Far: 30 Position: -1.82 1.51 -0.16
+Camera 1 Width: 960 Height: 1001 Yaw: 812.1 Pitch: 14.6 Fov: 30 Near: 0.1 Far: 100 Position: 1.66 3.05 -1.33

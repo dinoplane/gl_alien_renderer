@@ -1,0 +1,9 @@
+{
+"classname" "fumo"
+"origin" "0 0 2"
+"angles" "0 0 5"
+"scale" "10.0 10.0 10.0"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}

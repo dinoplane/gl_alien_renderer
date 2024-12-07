@@ -98,7 +98,7 @@ void Renderer::RenderPostProcess(){
 
 }
 
-Renderer::Renderer(float w, float h) : width(w), height(h) {
+Renderer::Renderer(float w, float h, uint32_t _mainCameraIdx) : width(w), height(h), mainCameraIdx  {_mainCameraIdx} {
     Init(w, h);
     if (debugShader == nullptr){
         debugShader = new Shader("./resources/shader/debug.vert", "./resources/shader/debug.frag");
@@ -114,21 +114,36 @@ Renderer::Renderer(float w, float h) : width(w), height(h) {
         Renderer::SetupScreenQuad();
     }
 
-    mainCameraIdx = Renderer::allCameras.size();
-    std::cout << "Main Camera Index: " << mainCameraIdx << std::endl;
+    // mainCameraIdx = Renderer::allCameras.size();
+    // std::cout << "Main Camera Index: " << mainCameraIdx << std::endl;
     if (allCameras.size() == 0){
+        std::cout << "Warning: no cameras loaded" << std::endl;        
         Renderer::allCameras.push_back(//  -3, 3.0, -3.0
-            Camera(w, h, glm::vec3(-1.82, 1.51, - 0.16), glm::vec3(0.0, 1.0, 0.0), -371, -32.1, 30.0f, 0.1f, 30.0f)
+            Camera(w, h, glm::vec3(-1.82, 1.51, - 0.16), -371, -32.1, 30.0f, 0.1f, 30.0f)
         );
-    } else
-    {
+
         Renderer::allCameras.push_back(
-            Camera(w, h, glm::vec3(1.66, 3.05, - 1.33), glm::vec3(0.0, 1.0, 0.0), -216, -70.0, 30.0f, 0.1f, pow( 10.0f, allCameras.size() + 1))
+            Camera(w, h, glm::vec3(1.66, 3.05, - 1.33), -216, -70.0, 30.0f, 0.1f, pow( 10.0f, allCameras.size() + 1))
         );
+        
+    Renderer::allDebugMeshes.push_back(Primitive::CreateFrustum(Renderer::allCameras[0]));
+    
+    Renderer::allDebugMeshes.push_back(Primitive::CreateFrustum(Renderer::allCameras[1]));
     }
     allCameras[mainCameraIdx].setPerspectiveSize(w, h);
-
-    Renderer::allDebugMeshes.push_back(Primitive::CreateFrustum(Renderer::allCameras[mainCameraIdx]));
+    Renderer::allDebugMeshes[mainCameraIdx] = Primitive::CreateFrustum(Renderer::allCameras[mainCameraIdx]);
+    
+    //     Renderer::allCameras.push_back(//  -3, 3.0, -3.0
+    //         Camera(w, h, glm::vec3(-1.82, 1.51, - 0.16), glm::vec3(0.0, 1.0, 0.0), -371, -32.1, 30.0f, 0.1f, 30.0f)
+    //     );
+    // } else
+    // {
+    //     Renderer::allCameras.push_back(
+    //         Camera(w, h, glm::vec3(1.66, 3.05, - 1.33), glm::vec3(0.0, 1.0, 0.0), -216, -70.0, 30.0f, 0.1f, pow( 10.0f, allCameras.size() + 1))
+    //     );
+    // }
+    // allCameras[mainCameraIdx].setPerspectiveSize(w, h);
+    // Renderer::allDebugMeshes.push_back(Primitive::CreateFrustum(Renderer::allCameras[mainCameraIdx]));
 
     glCreateBuffers(1, &cameraMatricesUBO);
     glNamedBufferStorage(cameraMatricesUBO, 2 * sizeof(glm::mat4), NULL, GL_DYNAMIC_STORAGE_BIT);
@@ -453,7 +468,7 @@ void Renderer::RenderInstancedStaticModels(const Scene& scene){
 
         uint32_t visibleInstCount = 123;
         glGetNamedBufferSubData(entInstData.visibleInstIndicesSSBO, 0, sizeof(uint32_t), &visibleInstCount);
-        fmt::print("Visible Instance Count: {}\n", visibleInstCount);
+        // fmt::print("Visible Instance Count: {}\n", visibleInstCount);
 
         scene.shaders[1].use();
         glBindBufferBase(GL_UNIFORM_BUFFER, PROJ_VIEW_UBO_BINDING, cameraMatricesUBO);
@@ -598,3 +613,8 @@ void Renderer::SwitchCamera(const Scene& scene){
 
     std::cout << "Now using Camera #" << mainCameraIdx << std::endl;
 }
+
+// void Renderer::AddCamera(const Camera& camera){
+//     Renderer::allCameras.push_back(camera);
+//     Renderer::allDebugMeshes.push_back(Primitive::CreateFrustum(camera));
+// }

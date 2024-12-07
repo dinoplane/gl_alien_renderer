@@ -250,3 +250,79 @@ SceneData SceneLoader::LoadSceneData(const std::string& scenePath)
     // PrintSceneData(sceneData);
     return sceneData;
 }
+
+
+void SceneLoader::LoadCameraSettings(const std::string& cameraSettingsPath, std::vector<Camera>* cameras, std::vector<Primitive>* debugMeshes)
+{
+    std::ifstream cameraSettingsFile(cameraSettingsPath);
+    if (!cameraSettingsFile.is_open())
+    {
+        std::cerr << "Failed to open camera settings file: " << cameraSettingsPath << std::endl;
+        return;
+    }
+
+    std::string line;
+    while (std::getline(cameraSettingsFile, line))
+    {
+        if (line.empty())
+        {
+            continue;
+        }
+
+        std::istringstream iss(line);
+        std::string token;
+        //Camera camera;
+        float width, height, fov, yaw, pitch, camNear, camFar;
+        glm::vec3 pos, up, front;
+        iss >> token >> token;
+        std::cout << token << std::endl;
+        iss
+            >> token >> width;
+        std::cout << token << std::endl;
+        iss
+            >> token >> height;
+        iss
+            >> token >> yaw;
+        iss
+            >> token >> pitch;
+        iss
+            >> token >> fov;
+        iss
+            >> token >> camNear;
+        iss
+            >> token >> camFar;
+        iss >> token >> pos.x >> pos.y >> pos.z;
+
+         cameras->push_back(Camera(width, height, pos, yaw, pitch, fov, camNear, camFar));
+         debugMeshes->push_back(Primitive::CreateFrustum((*cameras)[cameras->size() - 1]));
+    }
+
+    cameraSettingsFile.close();
+}
+
+void SceneLoader::SaveCameraSettings(const std::string& cameraSettingsPath, const std::vector<Camera>& cameras)
+{
+    std::ofstream cameraSettingsFile(cameraSettingsPath, std::ios::out | std::ios::trunc);
+    if (!cameraSettingsFile.is_open())
+    {
+        std::cerr << "Failed to open camera settings file: " << cameraSettingsPath << std::endl;
+        return;
+    }
+
+    int cameraIdx = 0;
+    for (const Camera& camera : cameras)
+    {
+        cameraSettingsFile  << "Camera " << cameraIdx++;
+        cameraSettingsFile  << " Width: " << camera.width 
+                            << " Height: " <<  camera.height 
+                            << " Yaw: " << camera.yaw 
+                            << " Pitch: " << camera.pitch
+                            << " Fov: " << camera.fovY 
+                            << " Near: " << camera.zNear 
+                            << " Far: " << camera.zFar;
+        cameraSettingsFile  << " Position: " << camera.position.x << " " << camera.position.y << " " << camera.position.z << std::endl;
+        // cameraSettingsFile << " " << camera.front.x << " " << camera.front.y << " " << camera.front.z;
+    }
+
+    cameraSettingsFile.close();
+}

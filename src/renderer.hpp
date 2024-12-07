@@ -131,7 +131,7 @@ class Renderer {
     // static void LoadCameras();
 
     // Scene* scene;
-    Renderer(float w, float h);
+    Renderer(float w, float h, uint32_t mainCameraIdx);
 
     void Init(float w, float h);
     void CreateVAO();
