@@ -1,0 +1,9 @@
+{
+"classname" "city"
+"origin" "0 0 0"
+"angles" "0 0 0"
+"scale" "1.0 1.0 1.0"
+"mesh" "./resources/assets/models/city/scene.gltf"
+"material" "base_inst.shader"
+"is_instanced" "1"
+}

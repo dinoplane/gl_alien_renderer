@@ -51,6 +51,9 @@ void processInput(GLFWwindow *window, Renderer* renderer, Scene* scene);
 const unsigned int SCR_WIDTH = 1000;
 const unsigned int SCR_HEIGHT = 600;
 
+const size_t RENDERER_SIDE = 3;
+const size_t RENDERER_COUNT = RENDERER_SIDE * RENDERER_SIDE;
+
 // int CHUNK_SIZE = std::max((NUM_BOIDS + (NUM_THREADS - 1)) / NUM_THREADS, (unsigned int) 1);
 // // std::barrier sync_point(NUM_THREADS);
 
@@ -86,7 +89,7 @@ std::string cameraSettingsPath = "camera_settings.txt";
 void setupCmdArgs(int argc, char **argv){
     if (argc == 2){
         scenePath = argv[1];
-    } else scenePath = "./scene/space.scn";
+    } else scenePath = "./scene/minecraft.scn";
 
     // int i = 1;
     // while (i < argc){
@@ -286,6 +289,12 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         Renderer::ToggleCull(scene);
         fmt::print("Culling: {}\n", Renderer::doCull);
     }
+
+    if (key == GLFW_KEY_F && action == GLFW_PRESS){
+        // Renderer::doCull = ~Renderer::doCull;
+        Renderer::ToggleDebug();
+    }
+
 }
 
 
@@ -368,13 +377,33 @@ static void RenderToFrame (const Scene& scene){
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
     int startPixel = 0;
+    int startPixelX = 0;
+    
+    int startPixelY = 0;
+    for (size_t i = 0; i < RENDERER_SIDE; ++i){
+        startPixelX = 0;
+        for (size_t j = 0; j < RENDERER_SIDE; ++j){
+            glBlitNamedFramebuffer(renderers[i * RENDERER_SIDE + j].FBO, 0,
+             0, 0,
+             renderers[i * RENDERER_SIDE + j].width, renderers[i * RENDERER_SIDE + j].height, 
 
-    for (Renderer& renderer : renderers){
+            startPixelX, startPixelY,
+            startPixelX + renderers[i * RENDERER_SIDE + j].width, startPixelY + renderers[i * RENDERER_SIDE + j].height,
+            GL_COLOR_BUFFER_BIT, GL_LINEAR);
+            // startPixel += renderers[i * RENDERER_SIDE + j].width;
 
-        // cout << "Rendering to screen " << startPixel << " " << renderer.width  << " " << renderer.height << endl;
-        glBlitNamedFramebuffer(renderer.FBO, 0, 0, 0, renderer.width, renderer.height, startPixel, 0, startPixel + renderer.width, renderer.height, GL_COLOR_BUFFER_BIT, GL_LINEAR);
-        startPixel += renderer.width;
+            startPixelX += renderers[i * RENDERER_SIDE + j].width;
+            
+        }
+        startPixelY += renderers[0].height;
     }
+
+    // for (Renderer& renderer : renderers){
+
+    //     // cout << "Rendering to screen " << startPixel << " " << renderer.width  << " " << renderer.height << endl;
+    //     glBlitNamedFramebuffer(renderer.FBO, 0, 0, 0, renderer.width, renderer.height, startPixel, 0, startPixel + renderer.width, renderer.height, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+    //     startPixel += renderer.width;
+    // }
 // glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
     // screenShader->use();
     // glBindVertexArray(quadVAO);
@@ -402,7 +431,7 @@ TODO List
 // Add load texture function
 int main(int argc, char **argv)
 {
-    const size_t RENDERER_COUNT = 2;
+
 
 	GLFWwindow* window;
 	if (setupGLFW() < 0){
@@ -481,8 +510,10 @@ int main(int argc, char **argv)
     SceneLoader::LoadCameraSettings(cameraSettingsPath, &Renderer::allCameras, &Renderer::allDebugMeshes);
 
     for (size_t i = 0; i < RENDERER_COUNT; ++i){
-        renderers.push_back(Renderer(SCR_WIDTH / RENDERER_COUNT, SCR_HEIGHT, i));
+        renderers.push_back(Renderer(SCR_WIDTH / RENDERER_SIDE, SCR_HEIGHT / RENDERER_SIDE, 0));
+        renderers[i].shaderIdx = i;
     }
+    Renderer::allCameras[0].setPerspectiveSize(SCR_WIDTH / RENDERER_SIDE, SCR_HEIGHT / RENDERER_SIDE);
 
     glfwMaximizeWindow(window);
 
@@ -600,7 +631,7 @@ void framebuffer_size_callback(GLFWwindow* window, int w, int h){
     glViewport(0, 0, w, h);
     
     for (Renderer& renderer : renderers){
-        renderer.Resize(w / renderers.size(), h);
+        renderer.Resize(w / RENDERER_SIDE, h / RENDERER_SIDE);
     }
 }
 

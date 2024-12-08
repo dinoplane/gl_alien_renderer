@@ -1,0 +1,11 @@
+Model Information:
+* title:	Lowpoly City
+* source:	https://sketchfab.com/3d-models/lowpoly-city-f0fa343fe2a24bee954ef85dc9a84778
+* author:	Cedric ASA (https://sketchfab.com/Cedric01)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Lowpoly City" (https://sketchfab.com/3d-models/lowpoly-city-f0fa343fe2a24bee954ef85dc9a84778) by Cedric ASA (https://sketchfab.com/Cedric01) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

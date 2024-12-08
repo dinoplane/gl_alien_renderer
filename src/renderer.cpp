@@ -21,6 +21,7 @@
 
 std::vector<Camera> Renderer::allCameras;
 std::vector<Primitive> Renderer::allDebugMeshes;
+std::vector<Shader*> Renderer::allPostProcessShaders;
 Shader* Renderer::debugShader = nullptr;
 Shader* Renderer::debugWireShader = nullptr;
 Shader* Renderer::postProcessShader = nullptr;
@@ -31,6 +32,7 @@ ComputeShader* Renderer::instCountSetShader = nullptr;
 GLuint Renderer::quadVAO = 0;
 GLuint Renderer::quadVBO = 0;
 uint32_t Renderer::doCull = 0;
+bool Renderer::debugOn = false;
 
 
 void Renderer::SetupScreenQuad(){
@@ -83,11 +85,16 @@ void Renderer::ToggleCull(const Scene& scene){
     }
 }
 
+void Renderer::ToggleDebug(){
+    Renderer::debugOn = !Renderer::debugOn;
+}
+
 void Renderer::RenderPostProcess(){
     // render
-    if (mainCameraIdx == 0){
-        passthroughShader->use();
-    } else postProcessShader->use();
+    // if (shaderIdx == 0){
+    //     passthroughShader->use();
+    // } else postProcessShader->use();
+    Renderer::allPostProcessShaders[shaderIdx % Renderer::allPostProcessShaders.size()]->use();
     glBindVertexArray(Renderer::quadVAO);
     glVertexArrayVertexBuffer(Renderer::quadVAO, 0, Renderer::quadVBO, 0, sizeof(float) * 4);
     glDisable(GL_DEPTH_TEST);
@@ -108,9 +115,28 @@ Renderer::Renderer(float w, float h, uint32_t _mainCameraIdx) : width(w), height
         instCountSetShader = new ComputeShader("./resources/shader/indirect_instcount_set.comp");
 
 
-        postProcessShader = new Shader("./resources/shader/screen.vert", "./resources/shader/screen.frag");
+        postProcessShader = new Shader("./resources/shader/screen.vert", "./resources/shader/kuwahara.frag");
         passthroughShader = new Shader("./resources/shader/screen.vert", "./resources/shader/passthrough.frag");
         postProcessShader->use();
+
+        Shader* embossShader = new Shader("./resources/shader/screen.vert", "./resources/shader/mine.frag");
+        Shader* edgeDetectShader = new Shader("./resources/shader/screen.vert", "./resources/shader/screen.frag");
+        Shader* blurShader = new Shader("./resources/shader/screen.vert", "./resources/shader/blur.frag");
+        Shader* invertShader = new Shader("./resources/shader/screen.vert", "./resources/shader/invert.frag");
+        Shader* abberationShader = new Shader("./resources/shader/screen.vert", "./resources/shader/abberation.frag");
+        Shader* pixelateShader = new Shader("./resources/shader/screen.vert", "./resources/shader/pixelate.frag");
+        Shader* neonShader = new Shader("./resources/shader/screen.vert", "./resources/shader/neon.frag");
+
+
+        Renderer::allPostProcessShaders.push_back(passthroughShader);
+        Renderer::allPostProcessShaders.push_back(postProcessShader);
+        Renderer::allPostProcessShaders.push_back(embossShader);
+        Renderer::allPostProcessShaders.push_back(edgeDetectShader);
+        Renderer::allPostProcessShaders.push_back(blurShader);
+        Renderer::allPostProcessShaders.push_back(invertShader);
+        Renderer::allPostProcessShaders.push_back(abberationShader);
+        Renderer::allPostProcessShaders.push_back(pixelateShader);
+        Renderer::allPostProcessShaders.push_back(neonShader);
         Renderer::SetupScreenQuad();
     }
 
@@ -603,7 +629,8 @@ void Renderer::Render(const Scene& scene){ // really bad, we are modifying the s
         RenderEntities(scene);
         RenderInstancedStaticModels(scene);
         RenderParticleSystems(scene);
-        RenderDebugVolumes(scene);
+        if (debugOn)
+            RenderDebugVolumes(scene);
         RenderPostProcess();
         // glBindVertexArray(0);
         // glUseProgram(0);

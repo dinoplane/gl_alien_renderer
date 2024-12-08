@@ -45,9 +45,11 @@ class Renderer {
     static ComputeShader* cullShader;
     static ComputeShader* instCountSetShader;
 
-    static std::unordered_map<std::string, Shader*> allPostProcessShaders;
+    //static std::unordered_map<std::string, Shader*> allPostProcessShaders;
     static Shader* postProcessShader;
     static Shader* passthroughShader;
+
+    static std::vector<Shader*> allPostProcessShaders;
 
     static constexpr float quadVertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
         // positions   // texCoords
@@ -64,6 +66,7 @@ class Renderer {
 
     static void SetupScreenQuad();
     static void ToggleCull(const Scene& scene);
+    static void ToggleDebug();
 
 
 
@@ -102,6 +105,9 @@ class Renderer {
     } frustumCullDataUBOBlock;
     static uint32_t doCull;
 
+    static bool debugOn;
+    
+    uint32_t shaderIdx;
 
 
     // GLuint meshPropertiesUBO;
@@ -182,7 +188,6 @@ class Renderer {
     public:
     uint32_t mainCameraIdx {0};
     uint32_t currCameraIdx {0};
-    bool debugOn {true};
     bool startSim{false};
 };
 

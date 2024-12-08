@@ -1,16 +1,16 @@
 {
-"classname" "sus"
-"origin" "0 0 0"
-"angles" "347.91802352212494 284.42749876137145 192.43142841308574"
-"scale" "0.1 0.1 0.1"
-"mesh" "./resources/assets/models/among_us/scene.gltf"
+"classname" "fumo"
+"origin" "-3.7 -0.2 -1.3"
+"angles" "0 0 0"
+"scale" "1 1 1"
+"mesh" "./resources/assets/models/fumo/scene.gltf"
 "material" "base_inst.shader"
 "is_instanced" "1"
 }
 {
 "classname" "earth"
 "origin" "0 0 0"
-"angles" "347.91802352212494 284.42749876137145 192.43142841308574"
+"angles" "0 0 0"
 "scale" "0.1 0.1 0.1"
 "mesh" "./resources/assets/models/earth/scene.gltf"
 "material" "base_inst.shader"
