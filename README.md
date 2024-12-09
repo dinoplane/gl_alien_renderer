@@ -1,5 +1,11 @@
 # Alien Gl Renderer 
 
+Cloth Simulation Video here!
+[![Link to Video](https://youtu.be/ppvQZppc3sY)]
+
+The cloth simulation source code is [![here](https://github.com/dinoplane/gl_alien_renderer/blob/main/src/cloth_system.cpp)]
+
+
 This project is a sandbox for the for me to improve and learn numerous graphics concepts:
 
 I post my progress here: https://x.com/isacsac2017
@@ -19,9 +25,13 @@ Below is a running list of finished, in progress, and cut features, in addition 
 - ImGui interface
 - Tracy Profiler
 - Scene loading
-
+- Cloth Simulation
 
 ## (Fixed) Bugs:
+- Materials not loading:
+    - a result of unable to create a "buffer of textures"
+    - fix: use a texture atlas
+
 - Instancing not working with MultiDrawIndirect?
     - This was caused when I used a struct to contain both the visibleInstIndices and the visibleInstCount. 
     - Using sizeof the struct yielded 32 bytes only. sizeof did not account for the fact that there was a vector inside of itself. 

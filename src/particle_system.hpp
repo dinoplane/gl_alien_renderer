@@ -45,8 +45,12 @@ public:
 	virtual void InitializeSystemData(void* params) {};
 	virtual void InitializeBufferData(void* params) {};
 	virtual void InitializeShaders(void* params) {};
+	virtual void Clear() {};
+	virtual void Reinitialize(void* params) {};
 	virtual void InitializeBuffers() {};
 	virtual void BindBuffers() const{};
+	virtual void UnbindBuffers() const{};
+	
 	virtual void SetupRender() {};
 	virtual void CalculateForces() {};
 	virtual void RenderDebug(GLuint VAO) {};
@@ -83,8 +87,15 @@ class BaseParticleSystem : public IBaseParticleSystem{
 	virtual void InitializeSystemData(void* params) override;
 	virtual void InitializeBufferData(void* params) override;
 	virtual void InitializeShaders(void* params) override;
-	virtual void InitializeBuffers();
+
+	virtual void InitializeBuffers() override;
+
+	virtual void Clear() override;
+	virtual void Reinitialize(void* params) override;
+
 	virtual void BindBuffers() const override;
+	virtual void UnbindBuffers() const override;
+	
 	virtual void CalculateForces() override;
 	virtual void RenderDebug(GLuint VAO) override {};
 	virtual void SetupRender() override;

@@ -9,11 +9,14 @@
 
 using SparseEntries = std::vector<Eigen::Triplet<double>> ;
 
+
+#define PARDISO_SOLVE 0
+
 struct ClothSystemParameters {
     uint32_t particleCount;
     double timeStep;
     std::string shaderName;
-     uint32_t clothSideLength;
+    uint32_t clothSideLength;
     double cellSideLength;
     double totalMass;
     double gravityAccel;
@@ -87,7 +90,13 @@ class ClothSystem : public BaseParticleSystem<
         std::vector<double> lastdofPositions;
 
         std::vector<double> massVector;
-        Eigen::SparseMatrix<double, Eigen::RowMajor> massMatrix;
+        Eigen::SparseMatrix<double, 
+        #if PARDISO_SOLVE == 1
+        Eigen::RowMajor
+        #else
+        Eigen::ColMajor
+        #endif
+        > massMatrix;
         std::vector<uint32_t> fixedNodes;
         std::vector<uint32_t> fixedIndices;
         std::vector<uint32_t> freeIndices;
@@ -134,6 +143,10 @@ class ClothSystem : public BaseParticleSystem<
     virtual void InitializeBufferData(void* params) override;
     virtual void InitializeShaders(void* params) override;
     virtual void InitializeBuffers() override;
+
+    virtual void Clear() override;
+    virtual void Reinitialize(void* params) override;
+
     virtual void BindBuffers() const override;
     virtual void SetupRender() override;
     virtual void RenderDebug(GLuint VAO) override;

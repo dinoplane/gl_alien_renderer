@@ -187,6 +187,46 @@ void BaseParticleSystem<
 	BaseParticleDataBlock, 
 	BaseParticleSystemDataBlock, 
 	BaseParticleSystemParameters
+>::Clear(){
+    // Clear System Data (Base has nothing that needs to be cleared)
+
+    // Clear Buffers
+    
+    // Clear Shaders
+    delete particleShader;
+    delete particleComputeShader;
+
+    glDeleteBuffers(1, &positionBuffer);
+    glDeleteBuffers(1, &velocityBuffer);
+    glDeleteBuffers(1, &forcesBuffer);
+    glDeleteBuffers(1, &EBO);
+    glDeleteBuffers(1, &particleSystemDataBuffer);
+}
+
+template <
+	typename BaseParticleDataBlock, 
+	typename BaseParticleSystemDataBlock, 
+	typename BaseParticleSystemParameters
+> 
+void BaseParticleSystem<
+	BaseParticleDataBlock, 
+	BaseParticleSystemDataBlock, 
+	BaseParticleSystemParameters
+>::Reinitialize(void* params){
+    Clear();
+
+    Initialize(params);
+}
+
+template <
+	typename BaseParticleDataBlock, 
+	typename BaseParticleSystemDataBlock, 
+	typename BaseParticleSystemParameters
+> 
+void BaseParticleSystem<
+	BaseParticleDataBlock, 
+	BaseParticleSystemDataBlock, 
+	BaseParticleSystemParameters
 >::CalculateForces() {
     
     //BindParticleSystem(&particleSystem);
@@ -208,6 +248,7 @@ template <
 	typename BaseParticleSystemDataBlock, 
 	typename BaseParticleSystemParameters
 > 
+
 void BaseParticleSystem<
 	BaseParticleDataBlock, 
 	BaseParticleSystemDataBlock, 
@@ -220,6 +261,26 @@ void BaseParticleSystem<
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_SYSTEM_DATA_SSBO_BINDING, particleSystemDataBuffer);
     particleComputeShader->use();
 }
+
+
+template <
+	typename BaseParticleDataBlock, 
+	typename BaseParticleSystemDataBlock, 
+	typename BaseParticleSystemParameters
+> 
+void BaseParticleSystem<
+	BaseParticleDataBlock, 
+	BaseParticleSystemDataBlock, 
+	BaseParticleSystemParameters
+>::UnbindBuffers() const {
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_POSITIONS_SSBO_BINDING, 0);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_VELOCITIES_SSBO_BINDING, 0);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_FORCES_SSBO_BINDING, 0);
+    //glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_DATA_SSBO_BINDING, 0);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_SYSTEM_DATA_SSBO_BINDING, 0);
+    glUseProgram(0);
+}
+
 
 template <
 	typename BaseParticleDataBlock, 

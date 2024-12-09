@@ -21,6 +21,7 @@
 #define EIGEN_DONT_PARALLELIZE
 
 
+
 static double signedAngle(
     const Eigen::Ref<const Eigen::Vector3d>& u, 
     const Eigen::Ref<const Eigen::Vector3d>& v, 
@@ -105,8 +106,6 @@ void ClothSystem::InitializeSystemData(void* params) {
     type = "base";
 };
 
-
-
 void ClothSystem::InitializeBufferData(void* params) {
     ClothSystemParameters* clothParams = static_cast<ClothSystemParameters*>(params);
     clothParams->particleCount = (clothParams->clothSideLength+ 1) * (clothParams->clothSideLength + 1);
@@ -177,7 +176,13 @@ void ClothSystem::InitializeBufferData(void* params) {
     freeDOFCount = freeIndices.size();
     fixedNodesCount = fixedNodes.size();
 
-    massMatrix = Eigen::SparseMatrix<double, Eigen::RowMajor>(freeDOFCount, freeDOFCount);
+    massMatrix = Eigen::SparseMatrix<double,
+    #if PARDISO_SOLVE == 1
+        Eigen::RowMajor
+    #else
+        Eigen::ColMajor
+    #endif
+     >(freeDOFCount, freeDOFCount);
     SparseEntries massEntries;
     massEntries.reserve(freeDOFCount);
     for (uint32_t i = 0; i < freeDOFCount; ++i) {
@@ -395,8 +400,51 @@ void ClothSystem::InitializeShaders(void* params) {
     fixedNodesDebugShader = new Shader(fixedNodeVertPath.c_str(), fixedNodeFragPath.c_str());
 }
 
+void ClothSystem::Clear(){
+    fixedNodes.clear();
+    oldToNewIndiceMapping.clear();
+    freeIndices.clear();
+    fixedIndices.clear();
+    massVector.clear();
+    massMatrix.resize(0, 0);
+    dofPositions.clear();
+    dofVelocities.clear();
+    lastdofPositions.clear();
+    externalForcesVec.clear();
+    normalsVec.clear();
+    clothPositionVec.clear();
+    clothVelocityVec.clear();
+    clothForceVec.clear();
+    edgeVec.clear();
+    undeformedEdgeLengthVec.clear();
+    elasticStretchingVec.clear();
+    thetaBarVec.clear();
+    hingeVec.clear();
+    indicesVec.clear();
+    particleDataVec.clear();
+    
+
+    UnbindBuffers();
+    glDeleteVertexArrays(1, &fixedNodesVAO);
+    
+    glDeleteBuffers(1, &positionBuffer);
+    glDeleteBuffers(1, &EBO);
+    glDeleteBuffers(1, &edgesBuffer);
+    glDeleteBuffers(1, &hingesBuffer);
+    glDeleteBuffers(1, &edgeDebugDataBuffer);
+    glDeleteBuffers(1, &edgeDebugEBO);
+    glDeleteBuffers(1, &pickedDebugDataBuffer);
+    glDeleteBuffers(1, &fixedNodesDataBuffer);
+}
+
+void ClothSystem::Reinitialize(void* params){
+    Clear();
+    Initialize(params);
+    totalForceTime = 0.0;
+    totalSolveTime = 0.0;
+}
+
 void ClothSystem::InitializeBuffers(){
-    // BaseParticleSystem::InitializeBuffers();
     glCreateBuffers(1, &positionBuffer);
     glNamedBufferStorage(
         positionBuffer, 
@@ -404,23 +452,6 @@ void ClothSystem::InitializeBuffers(){
         clothPositionVec.data(),
          GL_DYNAMIC_STORAGE_BIT
     );
-
-    // glCreateBuffers(1, &velocityBuffer);
-    // glNamedBufferStorage(
-    //     velocityBuffer, 
-    //     sizeof(double) * vecValCount, 
-    //     clothVelocityVec.data(),
-    //      GL_DYNAMIC_STORAGE_BIT
-    // );
-
-    // glCreateBuffers(1, &forcesBuffer);
-    // glNamedBufferStorage(
-    //     forcesBuffer, 
-    //     sizeof(double) * vecValCount, 
-    //     clothForceVec.data(),
-    //      GL_DYNAMIC_STORAGE_BIT
-    // );
-    
 
     glCreateBuffers(1, &EBO);
     glNamedBufferStorage(
@@ -430,21 +461,13 @@ void ClothSystem::InitializeBuffers(){
          GL_DYNAMIC_STORAGE_BIT
     );
 
-    // glCreateBuffers(1, &particleDataBuffer);
-    // glNamedBufferStorage(
-    //     particleDataBuffer, 
-    //     sizeof(ParticleDataBlock) * particleCount, 
-    //     nullptr,
-    //      GL_DYNAMIC_STORAGE_BIT
-    // );
-
-     glCreateBuffers(1, &particleSystemDataBuffer);
-     glNamedBufferStorage(
-         particleSystemDataBuffer, 
-         sizeof(ClothSystemDataBlock), 
-         &particleSystemDataBlock,
-          GL_DYNAMIC_STORAGE_BIT
-     );
+    //  glCreateBuffers(1, &particleSystemDataBuffer);
+    //  glNamedBufferStorage(
+    //      particleSystemDataBuffer, 
+    //      sizeof(ClothSystemDataBlock), 
+    //      &particleSystemDataBlock,
+    //       GL_DYNAMIC_STORAGE_BIT
+    //  );
 
 
     glCreateBuffers(1, &edgesBuffer);
@@ -667,9 +690,11 @@ static void subFromSparseEntries(const Eigen::Ref< const Eigen::MatrixXd > & mat
                 continue;
             }
             
+            #if PARDISO_SOLVE == 1
             if (newColIdx < newRowIdx) {
                 continue;
             }
+            #endif
 
             if (mat(i, j) == 0.0) {
                 continue;
@@ -919,11 +944,11 @@ static void SolveSystemWithPardiso(Eigen::Ref< Eigen::SparseMatrix<double, Eigen
     /*     Checks the consistency of the given matrix.                      */
     /*     Use this functionality only for debugging purposes               */
     /* -------------------------------------------------------------------- */
-    pardiso_chkmatrix_d(&pardisoData.mtype, &pardisoData.n, a, ia, ja, &pardisoData.error);
-    if (pardisoData.error != 0)
-    {
-        std::printf("\nERROR in consistency of matrix: %d", pardisoData.error);
-    }
+    // pardiso_chkmatrix_d(&pardisoData.mtype, &pardisoData.n, a, ia, ja, &pardisoData.error);
+    // if (pardisoData.error != 0)
+    // {
+    //     std::printf("\nERROR in consistency of matrix: %d", pardisoData.error);
+    // }
 
 
     // /* -------------------------------------------------------------------- */    
@@ -1028,7 +1053,13 @@ void ClothSystem::CalculateForces() {
                     Eigen::Dynamic, 1>
             > stretchForces(stretchingForcesVec.data(), dofCount, 1);
 
-            Eigen::SparseMatrix<double, Eigen::RowMajor> jacobianForces(freeDOFCount, freeDOFCount);
+            Eigen::SparseMatrix<double, 
+            #if PARDISO_SOLVE == 1
+             Eigen::RowMajor
+            #else
+             Eigen::ColMajor
+            #endif
+            > jacobianForces(freeDOFCount, freeDOFCount);
             SparseEntries hessianEntries;
             
             // Bending Forces -------------------------------------------------------------
@@ -1048,10 +1079,20 @@ void ClothSystem::CalculateForces() {
             Eigen::Matrix<double, Eigen::Dynamic, 1> f = (massVec / dt).cwiseProduct((q - q0) / dt - u) - totalForces;
             Eigen::Matrix<double, Eigen::Dynamic, 1> f_free = f(freeIndices);
 
-            Eigen::SparseMatrix<double, Eigen::RowMajor> J_free = massMatrix  - jacobianForces;
+            Eigen::SparseMatrix<double,
+            #if PARDISO_SOLVE == 1
+             Eigen::RowMajor
+            #else
+             Eigen::ColMajor
+            #endif
+             > J_free = massMatrix  - jacobianForces;
             J_free.makeCompressed();
+            
+            #if PARDISO_SOLVE == 1
             SolveSystemWithPardiso(J_free, f_free, dq_free, pardisoData);
-
+            #else
+            SolveSystemWithConjugateGradient(J_free, f_free, dq_free);
+            #endif
             auto endSolverTime = std::chrono::high_resolution_clock::now();
             std::chrono::duration<double> solverTime = endSolverTime - startSolverTime;      
             totalSolveTime += solverTime.count();  
