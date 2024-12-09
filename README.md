@@ -1,7 +1,7 @@
 # Alien Gl Renderer 
 
 Cloth Simulation Video here!
-[![Link to Video](https://www.youtube.com/watch?v=ppvQZppc3sY)]
+[![Link to Video](https://img.youtube.com/vi/ppvQZppc3sY/0.jpg)](https://www.youtube.com/watch?v=ppvQZppc3sY)
 
 The cloth simulation source code is [![here](https://github.com/dinoplane/gl_alien_renderer/blob/main/src/cloth_system.cpp)]
 
