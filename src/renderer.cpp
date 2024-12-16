@@ -268,10 +268,16 @@ void Renderer::CreateClothVAO(){
     glCreateVertexArrays(1, &clothVAO);
 
     glEnableVertexArrayAttrib(clothVAO, POSITION_ATTRIB_LOC);
-    
+    // glEnableVertexArrayAttrib(clothVAO, TEXCOORD_ATTRIB_LOC);
     // position attribute
     glVertexArrayAttribFormat(clothVAO, POSITION_ATTRIB_LOC, 4, GL_DOUBLE, GL_FALSE, 0);
     glVertexArrayAttribBinding(clothVAO, POSITION_ATTRIB_LOC, 0);
+
+    
+    // glVertexArrayAttribFormat(clothVAO, TEXCOORD_ATTRIB_LOC, 2, GL_FLOAT, GL_FALSE, offsetof(Vertex, texcoords));
+    // glVertexArrayAttribBinding(clothVAO, TEXCOORD_ATTRIB_LOC, 0);
+
+
 }
 
 void Renderer::CreateDebugVAO(){
@@ -519,11 +525,11 @@ void Renderer::RenderInstancedStaticModels(const Scene& scene){
 }
 
 void Renderer::RenderParticleSystems(const Scene& scene){
-    glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+    //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
     //glEnable(GL_BLEND);
     //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glPointSize(5.0f);
-    glLineWidth(1.0f);
+    //glPointSize(5.0f);
+    //glLineWidth(1.0f);
 
     for (const auto& particleSystem : scene.particleSystems){
         if (particleSystem->type == "base"){
@@ -535,7 +541,7 @@ void Renderer::RenderParticleSystems(const Scene& scene){
             glVertexArrayElementBuffer(particleVAO, particleSystem->EBO);
 
             glDrawElements(GL_TRIANGLES, particleSystem->indiceCount, GL_UNSIGNED_INT, 0);
-            glDrawElements(GL_POINTS, particleSystem->indiceCount, GL_UNSIGNED_INT, 0);
+            //glDrawElements(GL_POINTS, particleSystem->indiceCount, GL_UNSIGNED_INT, 0);
             glFinish();
 
 
@@ -561,9 +567,9 @@ void Renderer::RenderParticleSystems(const Scene& scene){
 
 
     }
-    glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-    glPointSize(5.0f);
-    glLineWidth(1.0f);
+    //glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+    //glPointSize(5.0f);
+    //glLineWidth(1.0f);
 }
 
 void Renderer::RenderDebugVolumes(const Scene& scene){

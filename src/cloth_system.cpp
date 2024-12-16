@@ -16,6 +16,7 @@
 #include <iomanip>
 #include <cmath>
 #include <cstdlib>
+#include "stb_image.h"
 
 
 #define EIGEN_DONT_PARALLELIZE
@@ -111,6 +112,7 @@ void ClothSystem::InitializeBufferData(void* params) {
     clothParams->particleCount = (clothParams->clothSideLength+ 1) * (clothParams->clothSideLength + 1);
     clothPositionVec.resize(vecValCount);
     particleDataVec.resize(clothParams->particleCount);
+    clothTexcoords.resize(clothParams->particleCount);
 
     lastdofPositions.resize(dofCount);
     dofPositions.resize(dofCount);
@@ -125,10 +127,10 @@ void ClothSystem::InitializeBufferData(void* params) {
 
     uint32_t clothSideLength = clothParams->clothSideLength;
     // All 4 corners
-     //fixedNodes.push_back(0);
-     //fixedNodes.push_back(clothSideLength);
-     //fixedNodes.push_back(clothSideParticleCount * clothSideLength);
-     //fixedNodes.push_back(clothSideParticleCount * clothSideLength + clothSideLength);
+     fixedNodes.push_back(0);
+    //  fixedNodes.push_back(clothSideLength);
+     fixedNodes.push_back(clothSideParticleCount * clothSideLength);
+    //  fixedNodes.push_back(clothSideParticleCount * clothSideLength + clothSideLength);
 
     // Round table
      //fixedNodes.push_back(clothSideLength / 2);
@@ -137,10 +139,10 @@ void ClothSystem::InitializeBufferData(void* params) {
      //fixedNodes.push_back(clothSideParticleCount * clothSideLength + clothSideLength / 2);
 
     // TableCloth 
-    fixedNodes.push_back(clothSideParticleCount * (clothSideLength / 3) + (clothSideLength / 3));
-    fixedNodes.push_back(clothSideParticleCount * (clothSideLength / 3) + (2 * clothSideLength / 3));
-    fixedNodes.push_back(clothSideParticleCount * (2 * clothSideLength / 3) + (clothSideLength / 3));
-    fixedNodes.push_back(clothSideParticleCount * (2 * clothSideLength / 3) + (2 * clothSideLength / 3));
+    //fixedNodes.push_back(clothSideParticleCount * (clothSideLength / 3) + (clothSideLength / 3));
+    //fixedNodes.push_back(clothSideParticleCount * (clothSideLength / 3) + (2 * clothSideLength / 3));
+    //fixedNodes.push_back(clothSideParticleCount * (2 * clothSideLength / 3) + (clothSideLength / 3));
+    //fixedNodes.push_back(clothSideParticleCount * (2 * clothSideLength / 3) + (2 * clothSideLength / 3));
 
     // Handkerchief
     //fixedNodes.push_back(clothSideParticleCount * (clothSideLength / 2) + (clothSideLength / 2));
@@ -190,6 +192,12 @@ void ClothSystem::InitializeBufferData(void* params) {
     }
     massMatrix.setFromTriplets(massEntries.begin(), massEntries.end());
 
+    // Texcoord calculations
+    float maxClothWidth = (clothParams->clothSideLength + 0.5f) * clothParams->cellSideLength;
+    float maxClothHeight = clothParams->clothSideLength * yIncrement;
+
+
+
     for (uint32_t rowIdx = 0; rowIdx < clothSideParticleCount; ++rowIdx) {
         glm::dvec4 rowStartPosition =
             meshStartPosition;
@@ -210,7 +218,7 @@ void ClothSystem::InitializeBufferData(void* params) {
                 dofPositions[particleIdx * 3 + i] = currentPosition[i];
                 dofVelocities[particleIdx * 3 + i] = 0.0;
             }
-
+            clothTexcoords[particleIdx] = glm::vec2(currentPosition.x / maxClothWidth, -currentPosition.z / maxClothHeight);
             particleDataVec[particleIdx].mass = deltaMass;
             currentPosition.x += clothParams->cellSideLength;
         }
@@ -368,8 +376,8 @@ void ClothSystem::InitializeBufferData(void* params) {
 
     externalForcesVec.resize(dofCount);
     for (uint32_t particleIdx = 0; particleIdx < particleCount; ++particleIdx) {
-        externalForcesVec[3 * particleIdx] = 0.0;
-        externalForcesVec[3 * particleIdx + 1] = -gravityAccel * particleDataVec[particleIdx].mass;
+        externalForcesVec[3 * particleIdx] = -gravityAccel * particleDataVec[particleIdx].mass;
+        externalForcesVec[3 * particleIdx + 1] = - 0.5 * gravityAccel * particleDataVec[particleIdx].mass;
         externalForcesVec[3 * particleIdx + 2] = 0.0;
     }
 
@@ -422,6 +430,7 @@ void ClothSystem::Clear(){
     hingeVec.clear();
     indicesVec.clear();
     particleDataVec.clear();
+    clothTexcoords.clear();
     
 
     UnbindBuffers();
@@ -435,6 +444,8 @@ void ClothSystem::Clear(){
     glDeleteBuffers(1, &edgeDebugEBO);
     glDeleteBuffers(1, &pickedDebugDataBuffer);
     glDeleteBuffers(1, &fixedNodesDataBuffer);
+    glDeleteBuffers(1, &clothTexcoordsBuffer);
+    glDeleteTextures(1, &clothTexture);
 }
 
 void ClothSystem::Reinitialize(void* params){
@@ -518,10 +529,32 @@ void ClothSystem::InitializeBuffers(){
         GL_DYNAMIC_STORAGE_BIT
     );
 
+    glCreateBuffers(1, &clothTexcoordsBuffer);
+    glNamedBufferStorage(
+        clothTexcoordsBuffer,
+        sizeof(glm::vec2) * clothTexcoords.size(),
+        clothTexcoords.data(),
+        GL_DYNAMIC_STORAGE_BIT
+    );
+
+    int texwidth, texheight, nrChannels;
+
+    const std::string path = "./resources/assets/chaewon.png"; // Thanks C++.
+    unsigned char *data = stbi_load(path.c_str(), &texwidth, &texheight, &nrChannels, 4);
+    glCreateTextures(GL_TEXTURE_2D, 1, &clothTexture);
+
+    glTextureParameteri(clothTexture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+    glTextureParameteri(clothTexture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+    glTextureParameteri(clothTexture, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTextureParameteri(clothTexture, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    glTextureStorage2D(clothTexture, 1, GL_RGBA8, texwidth, texheight);
+    glTextureSubImage2D(clothTexture, 0, 0, 0, texwidth, texheight, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    stbi_image_free(data);
+
     //https://stackoverflow.com/questions/12399422/how-to-set-linker-flags-for-openmp-in-cmakes-try-compile-function
 
     glCreateVertexArrays(1, &fixedNodesVAO);
-
     glEnableVertexArrayAttrib(fixedNodesVAO, POSITION_ATTRIB_LOC);
     
     // nodeIdx attribute
@@ -1138,6 +1171,9 @@ void ClothSystem::BindBuffers() const{
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_HINGE_DATA_SSBO_BINDING, hingesBuffer);
     glBindBufferBase(GL_UNIFORM_BUFFER, PICKED_DATA_UBO_BINDING, pickedDebugDataBuffer);
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_FIXED_NODES_SSBO_BINDING, fixedNodesDataBuffer);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, PARTICLE_TEXCOORDS_SSBO_BINDING, clothTexcoordsBuffer);
+    glBindTexture(GL_TEXTURE_2D, clothTexture);
+
     particleComputeShader->use();
 }
 

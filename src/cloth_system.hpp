@@ -22,6 +22,7 @@ struct ClothSystemParameters {
     double gravityAccel;
     double youngModulus;
     double thickness;
+    std::string clothTextureName;
 };
 
 struct ClothDataBlock{
@@ -117,6 +118,10 @@ class ClothSystem : public BaseParticleSystem<
         uint32_t edgeDebugEBOData[6] { 0, 1, 2, 0, 3, 1};
         GLuint edgeDebugDataBuffer; // 4 vec4s
         GLuint edgeDebugEBO;
+
+        std::vector<glm::vec2> clothTexcoords;
+        GLuint clothTexcoordsBuffer;
+        GLuint clothTexture;
 
         Shader* edgeDebugShader;
         Shader* hingeDebugShader;
