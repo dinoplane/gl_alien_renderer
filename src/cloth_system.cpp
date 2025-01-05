@@ -9,7 +9,11 @@
 #include <Eigen/SparseCore>
 #include<Eigen/SparseCholesky>
 #include<Eigen/IterativeLinearSolvers>
+
+
+#if PARDISO_SOLVE == 1
 #include <pardiso.h>
+#endif
 
 #include <fstream>
 #include <iostream>
@@ -561,9 +565,12 @@ void ClothSystem::InitializeBuffers(){
     glVertexArrayAttribIFormat(fixedNodesVAO, POSITION_ATTRIB_LOC, 1, GL_UNSIGNED_INT, 0);
     glVertexArrayAttribBinding(fixedNodesVAO, POSITION_ATTRIB_LOC, 0);
     // Eigen::setNbThreads(12);
-    // doPardiso();
-    InitializePardiso();
 
+
+    #if PARDISO_SOLVE == 1
+        // doPardiso();
+        InitializePardiso();
+    #endif
 }
 
 static Eigen::MatrixXd uvT(
@@ -911,6 +918,8 @@ static void SolveSystemWithConjugateGradient(const Eigen::Ref<const Eigen::Spars
     dq_free = solver.solve(f_free);
 }
 
+#if PARDISO_SOLVE == 1
+
 static void shiftIndices(int n, int nonzeros, int* ia, int* ja, int value)
 {
   int i;
@@ -949,6 +958,7 @@ void ClothSystem::InitializePardiso(){
     pardisoData.n = freeDOFCount;         /* Number of equations */
     pardisoData.nrhs = 1;         /* Number of right hand sides. */
 }
+
 
 static void SolveSystemWithPardiso(Eigen::Ref< Eigen::SparseMatrix<double, Eigen::RowMajor>> J_free,
     Eigen::Ref<Eigen::Matrix<double, Eigen::Dynamic, 1>> f_free,
@@ -1019,6 +1029,8 @@ static void SolveSystemWithPardiso(Eigen::Ref< Eigen::SparseMatrix<double, Eigen
         &pardisoData.n, a, ia, ja, &idum, &pardisoData.nrhs,
         &pardisoData.iparm[1], &pardisoData.msglvl, &ddum, &ddum, &pardisoData.error, pardisoData.dparm);
 }
+
+#endif
 
 void ClothSystem::CalculateForces() {
 

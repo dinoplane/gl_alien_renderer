@@ -90,12 +90,12 @@ add_subdirectory( ${VENDOR_DIR}/fastgltf)
 
 
 #pardiso
-add_library(pardiso STATIC IMPORTED GLOBAL)
-# Specify the paths for the library files
-set_target_properties(pardiso PROPERTIES
-    IMPORTED_LOCATION "${VENDOR_DIR}/pardiso/lib/libpardiso.lib"  # Path to the .lib file
-    INTERFACE_INCLUDE_DIRECTORIES "${VENDOR_DIR}/pardiso/include" # Path to the include directory
-)
+# add_library(pardiso STATIC IMPORTED GLOBAL)
+# # Specify the paths for the library files
+# set_target_properties(pardiso PROPERTIES
+#     IMPORTED_LOCATION "${VENDOR_DIR}/pardiso/lib/libpardiso.lib"  # Path to the .lib file
+#     INTERFACE_INCLUDE_DIRECTORIES "${VENDOR_DIR}/pardiso/include" # Path to the include directory
+# )
 
 # Copy the DLL file to the output directory after build
 
@@ -113,7 +113,7 @@ include_directories(
    ${VENDOR_DIR}/tracy/public/tracy
    ${VENDOR_DIR}/fastgltf/include
    ${VENDOR_DIR}/eigen
-   ${VENDOR_DIR}/pardiso/include
+  #  ${VENDOR_DIR}/pardiso/include
    ${SRC_DIR}/
 )
 
@@ -162,7 +162,7 @@ target_link_libraries(${PROJECT_NAME}
     fmt::fmt
     Tracy::TracyClient
     fastgltf::fastgltf
-    pardiso
+    # pardiso
     ${CMAKE_DL_LIBS} # Needed for glad - https://stackoverflow.com/a/56842079/2394163
 )
 
@@ -177,12 +177,12 @@ set_target_properties(${PROJECT_NAME}
     CXX_EXTENSIONS OFF
 )
 
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${VENDOR_DIR}/pardiso/lib/libpardiso.dll"
-        $<TARGET_FILE_DIR:${PROJECT_NAME}>)
+# add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+#     COMMAND ${CMAKE_COMMAND} -E copy_if_different
+#         "${VENDOR_DIR}/pardiso/lib/libpardiso.dll"
+#         $<TARGET_FILE_DIR:${PROJECT_NAME}>)
 
-        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${VENDOR_DIR}/pardiso/lib/libiomp5md.dll"
-        $<TARGET_FILE_DIR:${PROJECT_NAME}>)
+#         add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+#     COMMAND ${CMAKE_COMMAND} -E copy_if_different
+#         "${VENDOR_DIR}/pardiso/lib/libiomp5md.dll"
+#         $<TARGET_FILE_DIR:${PROJECT_NAME}>)

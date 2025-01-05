@@ -156,8 +156,10 @@ class ClothSystem : public BaseParticleSystem<
     virtual void SetupRender() override;
     virtual void RenderDebug(GLuint VAO) override;
     virtual void CalculateForces() override;
+
+    #if PARDISO_SOLVE == 1
     void InitializePardiso();
-    
+    #endif
 
     std::chrono::time_point<std::chrono::high_resolution_clock> startTime;
     std::chrono::time_point<std::chrono::high_resolution_clock> lastTime;
