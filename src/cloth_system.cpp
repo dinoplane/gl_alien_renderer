@@ -122,7 +122,7 @@ void ClothSystem::InitializeBufferData(void* params) {
     dofPositions.resize(dofCount);
     dofVelocities.resize(dofCount);
 
-    glm::dvec4 meshStartPosition = glm::dvec4(0.0, 0.0, 0.0, 1.0);
+    glm::dvec4 meshStartPosition = glm::dvec4(-4.36647, 0.2, -1.0, 1.0);
     double yIncrement = 0.5 * sqrt(3.0) * clothParams->cellSideLength;
 
     uint32_t clothSideParticleCount = clothParams->clothSideLength + 1;
