@@ -543,7 +543,7 @@ void ClothSystem::InitializeBuffers(){
 
     int texwidth, texheight, nrChannels;
 
-    const std::string path = "./resources/assets/chaewon.png"; // Thanks C++.
+    const std::string path = "./resources/assets/baka.jpg"; // Thanks C++.
     unsigned char *data = stbi_load(path.c_str(), &texwidth, &texheight, &nrChannels, 4);
     glCreateTextures(GL_TEXTURE_2D, 1, &clothTexture);
 

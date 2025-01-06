@@ -166,8 +166,6 @@ target_link_libraries(${PROJECT_NAME}
     ${CMAKE_DL_LIBS} # Needed for glad - https://stackoverflow.com/a/56842079/2394163
 )
 
-# set(CMAKE_BUILD_TYPE RelWithDebInfo)
-
 set_target_properties(${PROJECT_NAME}
   PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
